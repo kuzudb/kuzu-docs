@@ -18,4 +18,20 @@ jobs:
       - name: Build website
         run: npm run build
       
-    
+      - name: Clone kuzudb.github.io
+        run: git clone kuzudb.github.io
+        
+      - name: Remove old documentations
+        run: rm -rf kuzudb.github.io/docusaurus
+        
+      - name: Copy new documentations
+        run: |
+          mv build docusaurus
+          cp -R docusaurus kuzudb.github.io
+        
+      - name: Push changes
+        working-directory: kuzudb.github.io
+        run: |
+          git add .
+          git commit -m "Update documentation"
+          git push origin "documentation-update-${{ github.sha }}"
