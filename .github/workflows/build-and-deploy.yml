@@ -37,4 +37,4 @@ jobs:
           git config --global user.email "contact@kuzudb.com"
           git add .
           git commit -m "Update documentation"
-          git push -u origin
+          git push -u "documentation-update-${{ github.sha }}"
