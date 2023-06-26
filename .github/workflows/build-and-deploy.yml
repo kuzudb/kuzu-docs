@@ -32,8 +32,9 @@ jobs:
       - name: Push changes
         working-directory: kuzudb.github.io
         run: |
+          git checkout -b "documentation-update-${{ github.sha }}"
           git config --global user.name "CI User"
           git config --global user.email "contact@kuzudb.com"
           git add .
           git commit -m "Update documentation"
-          git push origin "documentation-update-${{ github.sha }}"
+          git push -u origin
