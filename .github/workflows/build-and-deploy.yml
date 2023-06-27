@@ -18,8 +18,11 @@ jobs:
       - name: Build website
         run: npm run build
       
-      - name: Clone kuzudb.github.io
-        run: git clone https://github.com/kuzudb/kuzudb.github.io
+      - uses: actions/checkout@v3
+        with:
+          repository: kuzudb/kuzudb.github.io
+          token: ${{ secrets.DOC_PUSH_TOKEN }}
+          path: kuzudb.github.io
         
       - name: Remove old documentations
         run: rm -rf kuzudb.github.io/docusaurus
@@ -37,4 +40,4 @@ jobs:
           git config --global user.email "contact@kuzudb.com"
           git add .
           git commit -m "Update documentation"
-          git push -u "documentation-update-${{ github.sha }}"
+          git push -u origin "documentation-update-${{ github.sha }}"
