@@ -27,10 +27,10 @@ jobs:
       - name: Remove old documentations
         run: rm -rf kuzudb.github.io/docusaurus
         
-      - name: Copy new documentations
+      - name: Move new documentations
         run: |
-          mv build docusaurus
-          cp -R docusaurus kuzudb.github.io
+          mv build kuzudb.github.io/docusaurus
+          
         
       - name: Push changes
         working-directory: kuzudb.github.io
