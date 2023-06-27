@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'Kùzu Documentations',
+  tagline: 'Kùzu is an in-process property graph database management system built for query speed and scalability.',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -42,8 +42,8 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          // editUrl:
+          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {
           showReadingTime: true,
@@ -67,7 +67,7 @@ const config = {
         logo: {
           alt: 'Kùzu',
           src: 'img/kuzu-logo.png',
-          href: '/',
+          href: 'https://kuzudb.com/',
         },
         items: [
           {
@@ -76,7 +76,7 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {href: '/docs/blog/', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/kuzudb/kuzu',
             label: 'GitHub',
@@ -88,28 +88,20 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/getting-started',
-              },
-            ],
-          },
-          {
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'Slack',
+                href: 'https://join.slack.com/t/kuzudb/shared_invite/zt-1w0thj6s7-0bLaU8Sb~4fDMKJ~oejG_g',
               },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
+
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://twitter.com/kuzudb',
+              },
+              {
+                label: 'YouTube',
+                href: 'https://www.youtube.com/@KuzuDB',
               },
             ],
           },
@@ -118,11 +110,11 @@ const config = {
             items: [
               {
                 label: 'Blog',
-                to: '/blog',
+                href: '/docs/blog/',
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/kuzudb/kuzu',
               },
             ],
           },
