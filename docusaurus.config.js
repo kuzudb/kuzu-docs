@@ -110,7 +110,7 @@ const config = {
             items: [
               {
                 label: 'Blog',
-                href: '/docs/blog/',
+                href: 'https://kuzudb.com/docs/blog/',
               },
               {
                 label: 'GitHub',
