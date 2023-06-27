@@ -41,3 +41,16 @@ jobs:
           git add .
           git commit -m "Update documentation"
           git push -u origin "documentation-update-${{ github.sha }}"
+      
+      - name: Create pull request
+        working-directory: kuzudb.github.io
+        run: |
+          echo "${{ secrets.DOC_PUSH_TOKEN }}" > token.txt
+          gh auth login --with-token < token.txt
+          rm -rf token.txt
+          gh pr create \
+            --body "Action triggered by commit: <a href='https://github.com/kuzudb/kuzu-docs/commit/${{ github.sha }}'> ${{ github.sha }} </a>" \
+            --title "Update documentations" \
+            --head "documentation-update-${{ github.sha }}" \
+            --base "main"
+      
