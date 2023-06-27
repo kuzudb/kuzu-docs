@@ -76,7 +76,7 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          {href: '/docs/blog/', label: 'Blog', position: 'left'},
+          {href: 'https://kuzudb.com/docs/blog/', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/kuzudb/kuzu',
             label: 'GitHub',
