@@ -3,7 +3,7 @@ title: Interval
 sidebar_position: 2
 ---
 
-# Interval
+# INTERVAL
 `INTERVAL` consists of multiple date parts and represents the total time length of these date parts. Kùzu follows [DuckDB's implementation](https://duckdb.org/docs/sql/data_types/interval) for the format of specifying intervals.
 
 
