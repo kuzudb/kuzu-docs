@@ -1,11 +1,16 @@
+---
+title: Prepared Statement
+sidebar_position: 4
+---
+
 # Prepared Statement
 
 <a name="#PreparedStatement"></a>
 
-- [PreparedStatement](#preparedstatement)
-  - [new PreparedStatement(connection, preparedStatement)](#new-preparedstatementconnection-preparedstatement)
-  - [preparedStatement.isSuccess() ⇒ Boolean](#preparedstatementissuccess--boolean)
-  - [preparedStatement.getErrorMessage() ⇒ String](#preparedstatementgeterrormessage--string)
+- [Prepared Statement](#prepared-statement)
+    - [new PreparedStatement(connection, preparedStatement)](#new-preparedstatementconnection-preparedstatement)
+    - [preparedStatement.isSuccess() ⇒ Boolean](#preparedstatementissuccess--boolean)
+    - [preparedStatement.getErrorMessage() ⇒ String](#preparedstatementgeterrormessage--string)
 
 <a name="new_PreparedStatement_new"></a>
 

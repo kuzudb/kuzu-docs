@@ -1,11 +1,16 @@
+---
+title: Database
+sidebar_position: 1
+---
+
 # Database
 
 <a name="Database"></a>
 
 - [Database](#database)
-  - [new Database(databasePath, bufferManagerSize)](#new-databasedatabasepath-buffermanagersize)
-  - [database.init()](#databaseinit)
-  - [database.setLoggingLevel(loggingLevel)](#databasesetlogginglevellogginglevel)
+    - [new Database(databasePath, bufferManagerSize)](#new-databasedatabasepath-buffermanagersize)
+    - [database.init()](#databaseinit)
+    - [database.setLoggingLevel(loggingLevel)](#databasesetlogginglevellogginglevel)
 
 <a name="new_Database_new"></a>
 

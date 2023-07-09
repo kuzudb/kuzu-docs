@@ -1,18 +1,23 @@
+---
+title: Query Result
+sidebar_position: 3
+---
+
 # Query Result
 
 <a name="QueryResult"></a>
 
-- [QueryResult](#queryresult)
-  - [new QueryResult(connection, queryResult)](#new-queryresultconnection-queryresult)
-  - [queryResult.resetIterator()](#queryresultresetiterator)
-  - [queryResult.hasNext() ⇒ Boolean](#queryresulthasnext--boolean)
-  - [queryResult.getNumTuples() ⇒ Number](#queryresultgetnumtuples--number)
-  - [queryResult.getNext() ⇒ Promise.<Object\>](#queryresultgetnext--promiseobject)
-  - [queryResult.each(resultCallback, doneCallback, errorCallback)](#queryresulteachresultcallback-donecallback-errorcallback)
-  - [queryResult.getAll() ⇒ Promise.<Array.<Object\>\>](#queryresultgetall--promisearrayobject)
-  - [queryResult.all(resultCallback, errorCallback)](#queryresultallresultcallback-errorcallback)
-  - [queryResult.getColumnDataTypes() ⇒ Promise.<Array.<String\>\>](#queryresultgetcolumndatatypes--promisearraystring)
-  - [queryResult.getColumnNames() ⇒ Promise.<Array.<String\>\>](#queryresultgetcolumnnames--promisearraystring)
+- [Query Result](#query-result)
+    - [new QueryResult(connection, queryResult)](#new-queryresultconnection-queryresult)
+    - [queryResult.resetIterator()](#queryresultresetiterator)
+    - [queryResult.hasNext() ⇒ Boolean](#queryresulthasnext--boolean)
+    - [queryResult.getNumTuples() ⇒ Number](#queryresultgetnumtuples--number)
+    - [queryResult.getNext() ⇒ Promise.\<Object\>](#queryresultgetnext--promiseobject)
+    - [queryResult.each(resultCallback, doneCallback, errorCallback)](#queryresulteachresultcallback-donecallback-errorcallback)
+    - [queryResult.getAll() ⇒ Promise.\<Array.\<Object\>\>](#queryresultgetall--promisearrayobject)
+    - [queryResult.all(resultCallback, errorCallback)](#queryresultallresultcallback-errorcallback)
+    - [queryResult.getColumnDataTypes() ⇒ Promise.\<Array.\<String\>\>](#queryresultgetcolumndatatypes--promisearraystring)
+    - [queryResult.getColumnNames() ⇒ Promise.\<Array.\<String\>\>](#queryresultgetcolumnnames--promisearraystring)
 
 <a name="new_QueryResult_new"></a>
 

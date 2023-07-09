@@ -1,9 +1,6 @@
 ---
-layout: default
 title: Value
-parent: C++
-grand_parent: Client APIs
-nav_order: 47
+sidebar_position: 5
 ---
 
 # Value
