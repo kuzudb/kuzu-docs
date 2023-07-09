@@ -3,7 +3,7 @@ title: Database Configuration
 sidebar_position: 4
 ---
 
-# Database Configutation
+# Database Configuration
 
 The configuration of Kùzu can be changed through standalone `Call` statement. Different from the `Call` clause, this statement of changing configuration cannot be used with other query clauses.
 
