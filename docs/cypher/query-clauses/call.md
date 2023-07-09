@@ -42,9 +42,9 @@ Output:
 
 ### CURRENT_SETTING
 
-CURRENT_SETTING returns the value of given setting.
+CURRENT_SETTING returns the value of given database configuration.
 
-TODO(Ziyi): list possible parameter as 
+All supported configurable database options can be found here: [configuration](../configuration.md)
 
 ```
 CALL current_setting('threads') return *;
