@@ -64,12 +64,11 @@ DB_VERSION returns current database version.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
-| KUZU_Version | database version | STRING |
+| version | database version | STRING |
 
-TODO(Ziyi): segfaul if param is empty. Also change column name to version. Don't mix camal case with underscore
 
 ```
-CALL db_version('') RETURN *;
+CALL db_version() RETURN *;
 ```
 Output:
 ```
