@@ -204,25 +204,25 @@ RETURN e;
 ```
 Output:
 ```
--------------------------------------------------------
-| e                                                   |
--------------------------------------------------------
-| (0:0)-[label:Follows, {_id:2:0, since:2020}]->(0:1) |
--------------------------------------------------------
-| (0:0)-[label:Follows, {_id:2:1, since:2020}]->(0:2) |
--------------------------------------------------------
-| (0:0)-[label:LivesIn, {_id:3:0, since:}]->(1:0)     |
--------------------------------------------------------
-| (0:1)-[label:Follows, {_id:2:2, since:2021}]->(0:2) |
--------------------------------------------------------
-| (0:1)-[label:LivesIn, {_id:3:1, since:}]->(1:0)     |
--------------------------------------------------------
-| (0:2)-[label:Follows, {_id:2:3, since:2022}]->(0:3) |
--------------------------------------------------------
-| (0:2)-[label:LivesIn, {_id:3:2, since:}]->(1:1)     |
--------------------------------------------------------
-| (0:3)-[label:LivesIn, {_id:3:3, since:}]->(1:2)     |
--------------------------------------------------------
+---------------------------------------------------------
+| e                                                     |
+---------------------------------------------------------
+| (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) |
+---------------------------------------------------------
+| (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) |
+---------------------------------------------------------
+| (0:0)-{_LABEL: LivesIn, _ID: 3:0, }->(1:0)            |
+---------------------------------------------------------
+| (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) |
+---------------------------------------------------------
+| (0:1)-{_LABEL: LivesIn, _ID: 3:1, }->(1:0)            |
+---------------------------------------------------------
+| (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) |
+---------------------------------------------------------
+| (0:2)-{_LABEL: LivesIn, _ID: 3:2, }->(1:1)            |
+---------------------------------------------------------
+| (0:3)-{_LABEL: LivesIn, _ID: 3:3, }->(1:2)            |
+---------------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=lEZAboFLfLku).
 
@@ -255,13 +255,13 @@ WHERE a.name = "Adam"
 RETURN a, c.name, c.population;
 ```
 ```
----------------------------------------------------------------------
-| a                                      | c.name    | c.population |
----------------------------------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30}) | Waterloo  | 150000       |
----------------------------------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30}) | Kitchener | 200000       |
----------------------------------------------------------------------
+----------------------------------------------------------------------------
+| a                                             | c.name    | c.population |
+----------------------------------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | Waterloo  | 150000       |
+----------------------------------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | Kitchener | 200000       |
+----------------------------------------------------------------------------
 ```
 
 ### Match Multiple Patterns
@@ -306,11 +306,11 @@ RETURN a, e.since, b.name;
 ```
 and both queries output:
 ```
--------------------------------------------------------------
-| a                                      | e.since | b.name |
--------------------------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30}) | 2020    | Zhang  |
--------------------------------------------------------------
+--------------------------------------------------------------------
+| a                                             | e.since | b.name |
+--------------------------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | 2020    | Zhang  |
+--------------------------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=1frFFis4onqw).
 
@@ -373,17 +373,17 @@ RETURN b.name, e;
 ```
 Output:
 ```
------------------------------------
-| b.name  | e                     |
------------------------------------
-| Karissa | [0:0,2:0,0:1]         |
------------------------------------
-| Zhang   | [0:0,2:0,0:1,2:2,0:2] |
------------------------------------
-| Zhang   | [0:0,2:1,0:2]         |
------------------------------------
-| Noura   | [0:0,2:1,0:2,2:3,0:3] |
------------------------------------
+----------------------------------------------------------------------------------------------
+| b.name  | e                                                                                |
+----------------------------------------------------------------------------------------------
+| Karissa | {_NODES: [], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]}     |
+----------------------------------------------------------------------------------------------
+| Zhang   | {_NODES: [{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}], _RELS: [(0:0)-{_... |
+----------------------------------------------------------------------------------------------
+| Zhang   | {_NODES: [], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2)]}     |
+----------------------------------------------------------------------------------------------
+| Noura   | {_NODES: [{_ID: 0:2, _LABEL: User, name: Zhang, age: 50}], _RELS: [(0:0)-{_LA... |
+----------------------------------------------------------------------------------------------
 ```
 
 **Fruther notes on variable length relationships**
@@ -392,7 +392,7 @@ Output:
 
 ### Single Shortest Path
 On top of variable length relationships, user can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST min..max]`.
-The following query finds all
+The following query finds a shortest path between `Adam` and any city and returns city name as well as length of the path.
 ```
 MATCH (a:User)-[e* SHORTEST 1..4]->(b:City) 
 WHERE a.name = 'Adam'
@@ -412,9 +412,120 @@ Output:
 ```
 
 ### All Shortest Path
+You can also search for all shortest path with `ALL SHORTEST` key word, e.g. `-[:Label* ALL SHORTEST min..max]`
 
-**Further notes on shortest path**
-- All shortest path or weighted shortest path is not yet supported.
+The following query finds all shortest path between `Zhang` and `Waterloo`.
+```
+MATCH p = (a)-[* ALL SHORTEST 1..3 ]-(b) 
+WHERE a.name = 'Zhang' AND b.name = 'Waterloo' 
+RETURN COUNT(*) AS num_shortest_path;
+```
+Output:
+```
+---------------------
+| num_shortest_path |
+---------------------
+| 2                 |
+---------------------
+```
+
+### Filter Variable Length Relationships
+We also support running predicate on recursive pattern to constaint the relationship being travered.
+
+The following query finds name of users that are followed between 1 - 2 hops by Adam before 2022.
+```
+MATCH p = (a:User)-[:Follows*1..2 (r, _ | WHERE r.since < 2022) ]->(b:User)
+WHERE a.name = 'Adam' 
+RETURN DISTINCT b.name;
+```
+Output:
+```
+-----------
+| b.name  |
+-----------
+| Karissa |
+-----------
+| Zhang   |
+-----------
+```
+Note that our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents recursive relationship. Since we currently don't allow filter on recursive node, the second variable must be `_`.
+
+## Named Path
+Kùzu treats path a first-class citizen so user can assign a named variable to a path (i.e. connected graph ) and use it later on.
+ 
+The following query returns all path between `Adam` and `Karissa`.
+```
+MATCH p = (a:User)-[:Follows]->(b:User) 
+WHERE a.name = 'Adam' AND b.name = 'Karissa' 
+RETURN p;
+```
+Output:
+```
+------------------------------------------------------------------------------------
+| p                                                                                |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us... |
+------------------------------------------------------------------------------------
+```
+Named path can also be assigned to recursive graph pattern.
+```
+MATCH p = (a:User)-[:Follows*1..2]->(:User)-[:LivesIn]->(:City) 
+WHERE a.name = 'Adam' 
+RETURN p;
+```
+Output:
+```
+------------------------------------------------------------------------------------
+| p                                                                                |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:1, _LABEL: ... |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:2, _LABEL: ... |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:1, _LABEL: ... |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:2, _LABEL: ... |
+------------------------------------------------------------------------------------
+```
+Multiple named path can appear in a single `MATCH` clause.
+```
+MATCH p1 = (a:User)-[:Follows]->(b:User), p2 = (b)-[:LivesIn]->(:City) 
+WHERE a.name = 'Adam' 
+RETURN p1, p2;
+```
+Output:
+```
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| p1                                                                               | p2                                                                               |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us... | {_NODES: [{_ID: 0:1, _LABEL: User, name: Karissa, age: 40, },{_ID: 1:0, _LABE... |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: Us... | {_NODES: [{_ID: 0:2, _LABEL: User, name: Zhang, age: 50, },{_ID: 1:1, _LABEL:... |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+### Extracting Nodes And Rels From a Path
+Interanally `PATH` is processed as a `STRUCT{LIST[NODE], LIST[REL]}` see [`PATH data type`](../data-types/path.md) for details. Users can access nodes and rels within a path through `nodes(p)` and `rels(p)` function calls.
+
+```
+MATCH p = (a:User)-[:Follows*1..2]->(:User) 
+WHERE a.name = 'Adam' 
+RETURN nodes(p), (rels(p)[1]).since AS since;
+```
+Output:
+```
+--------------------------------------------------------------------------------------------
+| NODES(p)                                                                         | since |
+--------------------------------------------------------------------------------------------
+| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name:... | 2020  |
+--------------------------------------------------------------------------------------------
+| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name:... | 2020  |
+--------------------------------------------------------------------------------------------
+| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
+--------------------------------------------------------------------------------------------
+| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
+--------------------------------------------------------------------------------------------
+```
 
 [^1]: MATCH is similar to the FROM clause of SQL, where the list of tables that need to be joined are specified. 
 [^2]: openCypher also supports variable-length patterns where either or both of min and max bounds can be missing. Kùzu does not yet support this and users need to explicitly indicate both bounds.
