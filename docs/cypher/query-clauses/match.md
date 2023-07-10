@@ -430,7 +430,7 @@ Output:
 ```
 
 **Fruther notes on shortest path**
-We force the lower bound of shortest path to be 1 to avoid ambiguity. There are interpretation when the lower bound is greater than 1, 
+We force the lower bound of shortest path to be 1 to avoid ambiguity. There are two interpretations when the lower bound is greater than 1, 
 - Compute shortest path and then return path whose length is greater than lower bound.
 - Compute path with length greater than lower bound and then return shoetest path.
 
