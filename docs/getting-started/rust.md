@@ -10,7 +10,7 @@ kuzu = "0.0.5"
 ```
 Below is an example to get you started. Full documentation can be found [here](https://docs.rs/kuzu/latest/kuzu/).
 
-The kuzu crate will by default build kuzu from source and link it statically into kuzu. You can also link it against the dynamic release libraries (see [the docs](https://docs.rs/kuzu/latest/kuzu/#Building) for details).
+The kuzu crate will by default build and statically link kuzu's C++ library from source. You can also link against the dynamic release libraries (see [the docs](https://docs.rs/kuzu/latest/kuzu/#building) for details).
 
 ```rust
 use kuzu::{Database, Connection, Error};
