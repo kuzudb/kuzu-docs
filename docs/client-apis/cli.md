@@ -20,7 +20,7 @@ description: Through CLI, you can issue Cypher queries or call shell commands.
     - [Interrupt](#interrupt)
     - [Non-interactive usage](#non-interactive-usage)
   
-Please see the [getting started page](../getting-started/introduction-examples.md#cli) for instructions on how
+Please see the [getting started page](../getting-started/cli.md) for instructions on how
 to install Kùzu's command line interface and its basic usage. Through CLI, you can issue Cypher queries or call shell commands.
 
 ### `:help`

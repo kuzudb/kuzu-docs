@@ -3,7 +3,7 @@ import DocCardList from '@theme/DocCardList';
 # C++ API
 
 This module contains C++ API documentaion. Please
-see the [getting started instructions](../../getting-started/introduction-examples.md#c-api) for details on installation and environment setup. This part
+see the [getting started instructions](../../getting-started/cpp.md) for details on installation and environment setup. This part
 of the documentation gives details about the different classes in the C++
 API and their functions. Here is a short example on a small program that
 demonstrates how to construct at `Database` instance and issue a query.

@@ -1,7 +1,7 @@
 import DocCardList from '@theme/DocCardList';
 
 # Python API
-This module contains Python API documentaion. Please see the [getting started instructions](../../getting-started/introduction-examples.md#python-api) for
+This module contains Python API documentaion. Please see the [getting started instructions](../../getting-started/python.md) for
 details on installation. Below is an example that demonstrates how to create a database and issue a query.
 
 Currently Kùzu doesn't support manually begin a transaction.
