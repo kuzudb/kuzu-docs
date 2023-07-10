@@ -7,7 +7,7 @@ description: Pattern matching functions are used to match strings against regula
 
 Cypher supports regular expression with `=~` operator. The `=~` operator succeeds only if its pattern matches the entire string.
 
-Examples
+- Example:
 ```
 RETURN 'abc' =~ 'abc';
 True
@@ -26,7 +26,7 @@ False
 
 To use special characters (e.g. `.`, `*`) without special meaning, escape them with backslash (`\`).
 
-Example
+- Example:
 ```
 RETURN 'peter_n@example.com' =~ '.*\\.com';
 True
@@ -35,7 +35,7 @@ True
 ### Case-insensitive Regular Expressions
 To use case-insensitive regular expressions, preappend a regular expression with `?i`
 
-Example
+- Example:
 ```
 RETURN 'abc' =~ '(?i)A.*';
 True
