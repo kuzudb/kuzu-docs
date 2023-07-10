@@ -52,17 +52,17 @@ RETURN a;
 ```
 Output:
 ```
----------------------------------------------
-| a                                         |
----------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30})    |
----------------------------------------------
-| (label:User, 0:1, {name:Karissa, age:40}) |
----------------------------------------------
-| (label:User, 0:2, {name:Zhang, age:50})   |
----------------------------------------------
-| (label:User, 0:3, {name:Noura, age:25})   |
----------------------------------------------
+----------------------------------------------------
+| a                                                |
+----------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30}    |
+----------------------------------------------------
+| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} |
+----------------------------------------------------
+| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}   |
+----------------------------------------------------
+| {_ID: 0:3, _LABEL: User, name: Noura, age: 25}   |
+----------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=xjiF39SzeCb7).
 
@@ -74,23 +74,23 @@ RETURN a;
 ```
 Output:
 ```
-----------------------------------------------------------------
-| a                                                            |
-----------------------------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30, population:})          |
-----------------------------------------------------------------
-| (label:User, 0:1, {name:Karissa, age:40, population:})       |
-----------------------------------------------------------------
-| (label:User, 0:2, {name:Zhang, age:50, population:})         |
-----------------------------------------------------------------
-| (label:User, 0:3, {name:Noura, age:25, population:})         |
-----------------------------------------------------------------
-| (label:City, 1:0, {name:Waterloo, age:, population:150000})  |
-----------------------------------------------------------------
-| (label:City, 1:1, {name:Kitchener, age:, population:200000}) |
-----------------------------------------------------------------
-| (label:City, 1:2, {name:Guelph, age:, population:75000})     |
-----------------------------------------------------------------
+-----------------------------------------------------------------
+| a                                                             |
+-----------------------------------------------------------------
+| {_ID: 1:0, _LABEL: City, name: Waterloo, population: 150000}  |
+-----------------------------------------------------------------
+| {_ID: 1:1, _LABEL: City, name: Kitchener, population: 200000} |
+-----------------------------------------------------------------
+| {_ID: 1:2, _LABEL: City, name: Guelph, population: 75000}     |
+-----------------------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30, }               |
+-----------------------------------------------------------------
+| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40, }            |
+-----------------------------------------------------------------
+| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50, }              |
+-----------------------------------------------------------------
+| {_ID: 0:3, _LABEL: User, name: Noura, age: 25, }              |
+-----------------------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=3yO3HHwNeBy3).
 
@@ -102,23 +102,23 @@ RETURN a;
 ```
 Output:
 ```
-----------------------------------------------------------------
-| a                                                            |
-----------------------------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30, population:})          |
-----------------------------------------------------------------
-| (label:User, 0:1, {name:Karissa, age:40, population:})       |
-----------------------------------------------------------------
-| (label:User, 0:2, {name:Zhang, age:50, population:})         |
-----------------------------------------------------------------
-| (label:User, 0:3, {name:Noura, age:25, population:})         |
-----------------------------------------------------------------
-| (label:City, 1:0, {name:Waterloo, age:, population:150000})  |
-----------------------------------------------------------------
-| (label:City, 1:1, {name:Kitchener, age:, population:200000}) |
-----------------------------------------------------------------
-| (label:City, 1:2, {name:Guelph, age:, population:75000})     |
-----------------------------------------------------------------
+-----------------------------------------------------------------
+| a                                                             |
+-----------------------------------------------------------------
+| {_ID: 1:0, _LABEL: City, name: Waterloo, population: 150000}  |
+-----------------------------------------------------------------
+| {_ID: 1:1, _LABEL: City, name: Kitchener, population: 200000} |
+-----------------------------------------------------------------
+| {_ID: 1:2, _LABEL: City, name: Guelph, population: 75000}     |
+-----------------------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30, }               |
+-----------------------------------------------------------------
+| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40, }            |
+-----------------------------------------------------------------
+| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50, }              |
+-----------------------------------------------------------------
+| {_ID: 0:3, _LABEL: User, name: Noura, age: 25, }              |
+-----------------------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=4NBsUUP_evvh).
 
@@ -132,17 +132,17 @@ RETURN a.name, e, b.name;
 ```
 Output:
 ```
----------------------------------------------------------------------------
-| a.name  | e                                                   | b.name  |
----------------------------------------------------------------------------
-| Adam    | (0:0)-[label:Follows, {_id:2:0, since:2020}]->(0:1) | Karissa |
----------------------------------------------------------------------------
-| Adam    | (0:0)-[label:Follows, {_id:2:1, since:2020}]->(0:2) | Zhang   |
----------------------------------------------------------------------------
-| Karissa | (0:1)-[label:Follows, {_id:2:2, since:2021}]->(0:2) | Zhang   |
----------------------------------------------------------------------------
-| Zhang   | (0:2)-[label:Follows, {_id:2:3, since:2022}]->(0:3) | Noura   |
----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+| a.name  | e                                                     | b.name  |
+-----------------------------------------------------------------------------
+| Adam    | (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) | Karissa |
+-----------------------------------------------------------------------------
+| Adam    | (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) | Zhang   |
+-----------------------------------------------------------------------------
+| Karissa | (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) | Zhang   |
+-----------------------------------------------------------------------------
+| Zhang   | (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) | Noura   |
+-----------------------------------------------------------------------------
 ```
 
 The following query matches all the relationships through an incoming relationship from "a" (so "a" and "b" are swapped in output):
@@ -152,17 +152,17 @@ RETURN a.name, e, b.name;
 ```
 Output:
 ```
----------------------------------------------------------------------------
-| a.name  | e                                                   | b.name  |
----------------------------------------------------------------------------
-| Karissa | (0:0)-[label:Follows, {_id:2:0, since:2020}]->(0:1) | Adam    |
----------------------------------------------------------------------------
-| Zhang   | (0:0)-[label:Follows, {_id:2:1, since:2020}]->(0:2) | Adam    |
----------------------------------------------------------------------------
-| Zhang   | (0:1)-[label:Follows, {_id:2:2, since:2021}]->(0:2) | Karissa |
----------------------------------------------------------------------------
-| Noura   | (0:2)-[label:Follows, {_id:2:3, since:2022}]->(0:3) | Zhang   |
----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+| a.name  | e                                                     | b.name  |
+-----------------------------------------------------------------------------
+| Karissa | (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) | Adam    |
+-----------------------------------------------------------------------------
+| Zhang   | (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) | Adam    |
+-----------------------------------------------------------------------------
+| Zhang   | (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) | Karissa |
+-----------------------------------------------------------------------------
+| Noura   | (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) | Zhang   |
+-----------------------------------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=Djpu4aDafG5U).
 
@@ -174,25 +174,25 @@ RETURN a.name, e, b.name;
 ```
 Output:
 ```
------------------------------------------------------------------------------
-| a.name  | e                                                   | b.name    |
------------------------------------------------------------------------------
-| Adam    | (0:0)-[label:Follows, {_id:2:0, since:2020}]->(0:1) | Karissa   |
------------------------------------------------------------------------------
-| Adam    | (0:0)-[label:Follows, {_id:2:1, since:2020}]->(0:2) | Zhang     |
------------------------------------------------------------------------------
-| Adam    | (0:0)-[label:LivesIn, {_id:3:0, since:}]->(1:0)     | Waterloo  |
------------------------------------------------------------------------------
-| Karissa | (0:1)-[label:Follows, {_id:2:2, since:2021}]->(0:2) | Zhang     |
------------------------------------------------------------------------------
-| Karissa | (0:1)-[label:LivesIn, {_id:3:1, since:}]->(1:0)     | Waterloo  |
------------------------------------------------------------------------------
-| Zhang   | (0:2)-[label:Follows, {_id:2:3, since:2022}]->(0:3) | Noura     |
------------------------------------------------------------------------------
-| Zhang   | (0:2)-[label:LivesIn, {_id:3:2, since:}]->(1:1)     | Kitchener |
------------------------------------------------------------------------------
-| Noura   | (0:3)-[label:LivesIn, {_id:3:3, since:}]->(1:2)     | Guelph    |
------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+| a.name  | e                                                     | b.name    |
+-------------------------------------------------------------------------------
+| Adam    | (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) | Karissa   |
+-------------------------------------------------------------------------------
+| Adam    | (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) | Zhang     |
+-------------------------------------------------------------------------------
+| Adam    | (0:0)-{_LABEL: LivesIn, _ID: 3:0, }->(1:0)            | Waterloo  |
+-------------------------------------------------------------------------------
+| Karissa | (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) | Zhang     |
+-------------------------------------------------------------------------------
+| Karissa | (0:1)-{_LABEL: LivesIn, _ID: 3:1, }->(1:0)            | Waterloo  |
+-------------------------------------------------------------------------------
+| Zhang   | (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) | Noura     |
+-------------------------------------------------------------------------------
+| Zhang   | (0:2)-{_LABEL: LivesIn, _ID: 3:2, }->(1:1)            | Kitchener |
+-------------------------------------------------------------------------------
+| Noura   | (0:3)-{_LABEL: LivesIn, _ID: 3:3, }->(1:2)            | Guelph    |
+-------------------------------------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=ylYHrLeQfLao).
 
@@ -204,25 +204,25 @@ RETURN e;
 ```
 Output:
 ```
--------------------------------------------------------
-| e                                                   |
--------------------------------------------------------
-| (0:0)-[label:Follows, {_id:2:0, since:2020}]->(0:1) |
--------------------------------------------------------
-| (0:0)-[label:Follows, {_id:2:1, since:2020}]->(0:2) |
--------------------------------------------------------
-| (0:0)-[label:LivesIn, {_id:3:0, since:}]->(1:0)     |
--------------------------------------------------------
-| (0:1)-[label:Follows, {_id:2:2, since:2021}]->(0:2) |
--------------------------------------------------------
-| (0:1)-[label:LivesIn, {_id:3:1, since:}]->(1:0)     |
--------------------------------------------------------
-| (0:2)-[label:Follows, {_id:2:3, since:2022}]->(0:3) |
--------------------------------------------------------
-| (0:2)-[label:LivesIn, {_id:3:2, since:}]->(1:1)     |
--------------------------------------------------------
-| (0:3)-[label:LivesIn, {_id:3:3, since:}]->(1:2)     |
--------------------------------------------------------
+---------------------------------------------------------
+| e                                                     |
+---------------------------------------------------------
+| (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) |
+---------------------------------------------------------
+| (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) |
+---------------------------------------------------------
+| (0:0)-{_LABEL: LivesIn, _ID: 3:0, }->(1:0)            |
+---------------------------------------------------------
+| (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) |
+---------------------------------------------------------
+| (0:1)-{_LABEL: LivesIn, _ID: 3:1, }->(1:0)            |
+---------------------------------------------------------
+| (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) |
+---------------------------------------------------------
+| (0:2)-{_LABEL: LivesIn, _ID: 3:2, }->(1:1)            |
+---------------------------------------------------------
+| (0:3)-{_LABEL: LivesIn, _ID: 3:3, }->(1:2)            |
+---------------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=lEZAboFLfLku).
 
@@ -255,13 +255,13 @@ WHERE a.name = "Adam"
 RETURN a, c.name, c.population;
 ```
 ```
----------------------------------------------------------------------
-| a                                      | c.name    | c.population |
----------------------------------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30}) | Waterloo  | 150000       |
----------------------------------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30}) | Kitchener | 200000       |
----------------------------------------------------------------------
+----------------------------------------------------------------------------
+| a                                             | c.name    | c.population |
+----------------------------------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | Waterloo  | 150000       |
+----------------------------------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | Kitchener | 200000       |
+----------------------------------------------------------------------------
 ```
 
 ### Match Multiple Patterns
@@ -306,11 +306,11 @@ RETURN a, e.since, b.name;
 ```
 and both queries output:
 ```
--------------------------------------------------------------
-| a                                      | e.since | b.name |
--------------------------------------------------------------
-| (label:User, 0:0, {name:Adam, age:30}) | 2020    | Zhang  |
--------------------------------------------------------------
+--------------------------------------------------------------------
+| a                                             | e.since | b.name |
+--------------------------------------------------------------------
+| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | 2020    | Zhang  |
+--------------------------------------------------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=1frFFis4onqw).
 
@@ -373,17 +373,17 @@ RETURN b.name, e;
 ```
 Output:
 ```
------------------------------------
-| b.name  | e                     |
------------------------------------
-| Karissa | [0:0,2:0,0:1]         |
------------------------------------
-| Zhang   | [0:0,2:0,0:1,2:2,0:2] |
------------------------------------
-| Zhang   | [0:0,2:1,0:2]         |
------------------------------------
-| Noura   | [0:0,2:1,0:2,2:3,0:3] |
------------------------------------
+----------------------------------------------------------------------------------------------
+| b.name  | e                                                                                |
+----------------------------------------------------------------------------------------------
+| Karissa | {_NODES: [], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]}     |
+----------------------------------------------------------------------------------------------
+| Zhang   | {_NODES: [{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}], _RELS: [(0:0)-{_... |
+----------------------------------------------------------------------------------------------
+| Zhang   | {_NODES: [], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2)]}     |
+----------------------------------------------------------------------------------------------
+| Noura   | {_NODES: [{_ID: 0:2, _LABEL: User, name: Zhang, age: 50}], _RELS: [(0:0)-{_LA... |
+----------------------------------------------------------------------------------------------
 ```
 
 **Fruther notes on variable length relationships**
@@ -391,8 +391,8 @@ Output:
 - The maximum length of variable length relationships is capped at 30. 
 
 ### Single Shortest Path
-On top of variable length relationships, user can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST min..max]`.
-The following query finds all
+On top of variable length relationships, user can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST 1..max]`.
+The following query finds a shortest path between `Adam` and any city and returns city name as well as length of the path.
 ```
 MATCH (a:User)-[e* SHORTEST 1..4]->(b:City) 
 WHERE a.name = 'Adam'
@@ -411,8 +411,127 @@ Output:
 ----------------------
 ```
 
-**Further notes on shortest path**
-- All shortest path or weighted shortest path is not yet supported.
+### All Shortest Path
+You can also search for all shortest path with `ALL SHORTEST` key word, e.g. `-[:Label* ALL SHORTEST 1..max]`
+
+The following query finds all shortest path between `Zhang` and `Waterloo`.
+```
+MATCH p = (a)-[* ALL SHORTEST 1..3 ]-(b) 
+WHERE a.name = 'Zhang' AND b.name = 'Waterloo' 
+RETURN COUNT(*) AS num_shortest_path;
+```
+Output:
+```
+---------------------
+| num_shortest_path |
+---------------------
+| 2                 |
+---------------------
+```
+
+**Fruther notes on shortest path**
+We force the lower bound of shortest path to be 1 to avoid ambiguity. There are two interpretations when the lower bound is greater than 1, 
+- Compute shortest path and then return path whose length is greater than lower bound.
+- Compute path with length greater than lower bound and then return shoetest path.
+
+### Filter Variable Length Relationships
+We also support running predicate on recursive pattern to constaint the relationship being travered.
+
+The following query finds name of users that are followed between 1 - 2 hops by Adam before 2022.
+```
+MATCH p = (a:User)-[:Follows*1..2 (r, _ | WHERE r.since < 2022) ]->(b:User)
+WHERE a.name = 'Adam' 
+RETURN DISTINCT b.name;
+```
+Output:
+```
+-----------
+| b.name  |
+-----------
+| Karissa |
+-----------
+| Zhang   |
+-----------
+```
+Note that our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents recursive relationship. Since we currently don't allow filter on recursive node, the second variable must be `_`.
+
+## Named Path
+Kùzu treats path a first-class citizen so user can assign a named variable to a path (i.e. connected graph ) and use it later on.
+ 
+The following query returns all path between `Adam` and `Karissa`.
+```
+MATCH p = (a:User)-[:Follows]->(b:User) 
+WHERE a.name = 'Adam' AND b.name = 'Karissa' 
+RETURN p;
+```
+Output:
+```
+------------------------------------------------------------------------------------
+| p                                                                                |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us... |
+------------------------------------------------------------------------------------
+```
+Named path can also be assigned to recursive graph pattern.
+```
+MATCH p = (a:User)-[:Follows*1..2]->(:User)-[:LivesIn]->(:City) 
+WHERE a.name = 'Adam' 
+RETURN p;
+```
+Output:
+```
+------------------------------------------------------------------------------------
+| p                                                                                |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:1, _LABEL: ... |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:2, _LABEL: ... |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:1, _LABEL: ... |
+------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:2, _LABEL: ... |
+------------------------------------------------------------------------------------
+```
+Multiple named path can appear in a single `MATCH` clause.
+```
+MATCH p1 = (a:User)-[:Follows]->(b:User), p2 = (b)-[:LivesIn]->(:City) 
+WHERE a.name = 'Adam' 
+RETURN p1, p2;
+```
+Output:
+```
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| p1                                                                               | p2                                                                               |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us... | {_NODES: [{_ID: 0:1, _LABEL: User, name: Karissa, age: 40, },{_ID: 1:0, _LABE... |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: Us... | {_NODES: [{_ID: 0:2, _LABEL: User, name: Zhang, age: 50, },{_ID: 1:1, _LABEL:... |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+### Extracting Nodes, Rels From a Path
+Interanally `PATH` is processed as a `STRUCT{LIST[NODE], LIST[REL]}` see [`PATH data type`](../data-types/path.md) for details. Users can access nodes and rels within a path through `nodes(p)` and `rels(p)` function calls.
+
+```
+MATCH p = (a:User)-[:Follows*1..2]->(:User) 
+WHERE a.name = 'Adam' 
+RETURN nodes(p), (rels(p)[1]).since AS since;
+```
+Output:
+```
+--------------------------------------------------------------------------------------------
+| NODES(p)                                                                         | since |
+--------------------------------------------------------------------------------------------
+| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name:... | 2020  |
+--------------------------------------------------------------------------------------------
+| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name:... | 2020  |
+--------------------------------------------------------------------------------------------
+| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
+--------------------------------------------------------------------------------------------
+| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
+--------------------------------------------------------------------------------------------
+```
+More path functions can be found [here](../expressions/path_functions.md).
 
 [^1]: MATCH is similar to the FROM clause of SQL, where the list of tables that need to be joined are specified. 
 [^2]: openCypher also supports variable-length patterns where either or both of min and max bounds can be missing. Kùzu does not yet support this and users need to explicitly indicate both bounds.

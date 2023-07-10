@@ -1,8 +1,9 @@
 ---
-sidebar_position: 2
+title: Query Result
+sidebar_position: 3
 ---
 
-# QueryResult and QuerySummary
+# QueryResult
 `QueryResult` captures all information related to the execution of a query. Each returned tuple is wrapped into a [FlatTuple](flat-tuple.md) where each entry is wrapped as a [Value](value.md).
 You can also obtain a `QuerySummary` from a QueryResult, to learn profiling information, such as execution time, about the query you executed.
 

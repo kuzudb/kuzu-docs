@@ -98,7 +98,7 @@ decided based on a.name (in descending order). If you removed the
 last `DESC` in the above query, the first two tuples in the result
 would be swapped.
 
-## Note on Using ORDER BY after WITH:
+#### Note on Using ORDER BY after WITH:
 You can use ORDER BY after [WITH](with.md) only if you use a LIMIT and/or SKIP, so you should
 use it to keep or remove the "top-k" or "bottom-k" of a set of intermediate tuples. The reason for this
 restriction is that otherwise, ordering intermediate results is not useful, because if 

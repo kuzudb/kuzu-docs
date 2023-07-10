@@ -1,5 +1,5 @@
 ---
-title: Query result
+title: Query Result
 sidebar_position: 2
 ---
 

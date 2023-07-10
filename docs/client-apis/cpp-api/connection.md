@@ -1,8 +1,9 @@
 ---
+title: Connection
 sidebar_position: 1
 ---
 
-# Connection & Querying
+# Connection
 
 To issue a query, you need to create a `Connection` using a pointer to 
 a [Database](database.md) instance. You can use connections

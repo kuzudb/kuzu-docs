@@ -1,5 +1,5 @@
 ---
-title: Connection & Querying
+title: Connection
 sidebar_position: 1
 ---
 
