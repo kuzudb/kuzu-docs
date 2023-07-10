@@ -17,7 +17,7 @@ In this example, we assume that the so/dylib, the header file, the CSV files, an
 ├── user.csv
 ├── city.csv
 ├── follows.csv
-└── lives_in.csv
+└── lives-in.csv
 ```
 
 - A `test.c` program:
@@ -52,7 +52,7 @@ int main()
     kuzu_query_result_destroy(result);
     result = kuzu_connection_query(conn, "COPY Follows FROM \"follows.csv\"");
     kuzu_query_result_destroy(result);
-    result = kuzu_connection_query(conn, "COPY LivesIn FROM \"lives_in.csv\"");
+    result = kuzu_connection_query(conn, "COPY LivesIn FROM \"lives-in.csv\"");
     kuzu_query_result_destroy(result);
 
     // Execute a simple query.

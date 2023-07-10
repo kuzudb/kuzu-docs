@@ -34,7 +34,7 @@ fn main() -> Result<(), Error> {
     conn.query("COPY User FROM 'user.csv'")?;
     conn.query("COPY City FROM 'city.csv'")?;
     conn.query("COPY Follows FROM 'follows.csv'")?;
-    conn.query("COPY LivesIn FROM 'lives_in.csv'")?;
+    conn.query("COPY LivesIn FROM 'lives-in.csv'")?;
 
     let query_result = conn.query("MATCH (u:User) RETURN u.name, u.age;")?;
 
