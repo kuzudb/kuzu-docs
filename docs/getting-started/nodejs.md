@@ -8,7 +8,7 @@ Kùzu Node.js API can be installed with npm: `npm install kuzu`.
 Once the Node.js API is installed, you can import it in Node.js and use it to perform Cypher queries. Below is a short example
 of how to get started. Details of the [Node.js API is here](../client-apis/nodejs-api).
 
-```
+```js
 // Import library
 const kuzu = require("kuzu");
 

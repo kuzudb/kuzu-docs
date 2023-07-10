@@ -22,7 +22,7 @@ In this example, we assume that the so/dylib, the header file, the CSV files, an
 
 - The `test.c` program:
 
-```
+```c
 #include <stdio.h>
 
 #include "include/kuzu.h"
@@ -92,12 +92,12 @@ int main()
 Since we did not install the `libkuzu` as a system library, we need to override the linker search path to correctly compile the C code and run the compiled program.
 
 On Linux:
-```
+```bash
 env LIBRARY_PATH=. LD_LIBRARY_PATH=. gcc test.c -lkuzu
 env LIBRARY_PATH=. LD_LIBRARY_PATH=. ./a.out
 ```
 On macOS:
-```
+```bash
 env DYLD_LIBRARY_PATH=. LIBRARY_PATH=. clang test.c -lkuzu
 env DYLD_LIBRARY_PATH=. LIBRARY_PATH=. ./a.out
 ```

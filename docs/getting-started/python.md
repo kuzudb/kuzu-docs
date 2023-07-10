@@ -11,20 +11,20 @@ You can find detailed information on the Python API [here](../client-apis/python
 
 - Import library:
 
-```
+```python
 import kuzu
 ```
 
 - Create an empty database and connect to it with Python API:
 
-```
+```python
 db = kuzu.Database('./test')
 conn = kuzu.Connection(db)
 ```
 
 - Define the schema:
 
-```
+```python
 conn.execute("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))")
 conn.execute("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))")
 conn.execute("CREATE REL TABLE Follows(FROM User TO User, since INT64)")
@@ -33,7 +33,7 @@ conn.execute("CREATE REL TABLE LivesIn(FROM User TO City)")
 
 - Load data:
 
-```
+```python
 conn.execute('COPY User FROM "user.csv"')
 conn.execute('COPY City FROM "city.csv"')
 conn.execute('COPY Follows FROM "follows.csv"')
@@ -42,7 +42,7 @@ conn.execute('COPY LivesIn FROM "lives-in.csv"')
 
 - Execute a simple query:
 
-```
+```python
 results = conn.execute('MATCH (u:User) RETURN u.name, u.age;')
 while results.has_next():
     print(results.get_next())
@@ -57,7 +57,7 @@ Output:
 ```
 
 Alternatively, the Python API can also output results as a Pandas data frame:
-```
+```python
 results = conn.execute('MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;').getAsDF()
 print(results)
 ```
@@ -72,7 +72,7 @@ Output:
 ```
 
 Moreover, you can output results in the Arrow format:
-```
+```python
 results = conn.execute('MATCH (u:User) RETURN u.name, u.age;')
 print(results.get_as_arrow(chunk_size=100))
 ```
