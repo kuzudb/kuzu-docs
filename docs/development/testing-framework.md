@@ -1,3 +1,8 @@
+---
+title: Testing Framework
+sidebar_position: 1
+---
+
 # Testing Framework
 ![](https://codecov.io/github/kuzudb/kuzu/branch/master/graph/badge.svg?token=N1AT6H79LM")  
 
