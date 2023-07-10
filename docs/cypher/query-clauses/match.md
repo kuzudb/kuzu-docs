@@ -391,7 +391,7 @@ Output:
 - The maximum length of variable length relationships is capped at 30. 
 
 ### Single Shortest Path
-On top of variable length relationships, user can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST min..max]`.
+On top of variable length relationships, user can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST 1..max]`.
 The following query finds a shortest path between `Adam` and any city and returns city name as well as length of the path.
 ```
 MATCH (a:User)-[e* SHORTEST 1..4]->(b:City) 
@@ -412,7 +412,7 @@ Output:
 ```
 
 ### All Shortest Path
-You can also search for all shortest path with `ALL SHORTEST` key word, e.g. `-[:Label* ALL SHORTEST min..max]`
+You can also search for all shortest path with `ALL SHORTEST` key word, e.g. `-[:Label* ALL SHORTEST 1..max]`
 
 The following query finds all shortest path between `Zhang` and `Waterloo`.
 ```
@@ -428,6 +428,11 @@ Output:
 | 2                 |
 ---------------------
 ```
+
+**Fruther notes on shortest path**
+We force the lower bound of shortest path to be 1 to avoid ambiguity. There are interpretation when the lower bound is greater than 1, 
+- Compute shortest path and then return path whose length is greater than lower bound.
+- Compute path with length greater than lower bound and then return shoetest path.
 
 ### Filter Variable Length Relationships
 We also support running predicate on recursive pattern to constaint the relationship being travered.
@@ -504,7 +509,7 @@ Output:
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-### Extracting Nodes And Rels From a Path
+### Extracting Nodes, Rels From a Path
 Interanally `PATH` is processed as a `STRUCT{LIST[NODE], LIST[REL]}` see [`PATH data type`](../data-types/path.md) for details. Users can access nodes and rels within a path through `nodes(p)` and `rels(p)` function calls.
 
 ```
@@ -526,6 +531,7 @@ Output:
 | [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
 --------------------------------------------------------------------------------------------
 ```
+More path functions can be found [here](../expressions/path_functions.md).
 
 [^1]: MATCH is similar to the FROM clause of SQL, where the list of tables that need to be joined are specified. 
 [^2]: openCypher also supports variable-length patterns where either or both of min and max bounds can be missing. Kùzu does not yet support this and users need to explicitly indicate both bounds.
