@@ -7,9 +7,11 @@ Apache Parquet is an open source, column-oriented data file format designed for 
 
 ## Notes
 Similar to importing from CSV files, there are several rules about importing from parquet files.
-- **Starting with empty tables**: see [notes in CSV import](csv-import.md#several-notes) for details.
-- **Copying nodes before rels**: see [notes in CSV import](csv-import.md#several-notes) for details.
-- **Extra columns in csv files**: see [notes in CSV import](csv-import.md#several-notes) for details.
+- **Starting with empty tables** 
+- **Copying nodes before rels**
+- **Extra columns in csv files**
+
+See [notes in CSV import](csv-import.md#several-notes) for details.
 
 ## `COPY FROM` a Parquet File to a Node Table
 Similar to copy from a csv file to a node table, the order of the columns in a parquet file need to match the order of predefined properties for node tables in the catalog, i.e. the order used when defining the schema of a node table.
