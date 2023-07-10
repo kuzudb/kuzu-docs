@@ -3,8 +3,11 @@ title: C++
 sidebar_position: 3
 ---
 
-Kùzu C++ API is distributed as so/dylib/dll+lib library files and a header file (`kuzu.hpp`). The C++ API can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest). After the C++ API is downloaded and extracted into a directory, it can be used without installation by just specifying the library search path for the linker.
-Below is a short example of how to get started. Details of the [C++ API is here](../client-apis/cpp-api).
+The Kùzu C++ API is distributed as so/dylib/dll+lib library files along with a header file (`kuzu.hpp`). 
+The C++ API can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest). 
+Once you've downloaded and extracted the C++ API into a directory, it's ready to use without any additional installation. Just need to specify the library search path for the linker.
+Below is a brief guide on how to get started.
+Details of the C++ API is [here](../client-apis/cpp-api).
 - Setup:
 In this example, we assume that the so/dylib/dll+lib, the header file, the CSV files, and the cpp code file is under the same directory:
 
@@ -20,7 +23,7 @@ In this example, we assume that the so/dylib/dll+lib, the header file, the CSV f
 └── lives-in.csv
 ```
 
-- A `test.cpp` program:
+- The `test.cpp` program:
 
 ```
 #include <iostream>

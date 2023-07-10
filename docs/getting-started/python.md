@@ -3,10 +3,11 @@ title: Python
 sidebar_position: 2
 ---
 
-Kùzu Python API can be installed with pip: `pip install kuzu`. 
+You can easily install the latest Kùzu Python API using pip: `pip install kuzu`. 
 
-Once the Python API is installed, you can import it in Python and use it to perform Cypher queries. Below is a short example
-of how to get started. Details of the [Python API is here](../client-apis/python-api).
+Once the Python API is installed, you'll be able to import it in Python and execute Cypher queries. 
+Below is a brief demonstration on getting started. 
+You can find detailed information on the Python API [here](../client-apis/python-api).
 
 - Import library:
 
@@ -21,7 +22,7 @@ db = kuzu.Database('./test')
 conn = kuzu.Connection(db)
 ```
 
-- Create the schema:
+- Define the schema:
 
 ```
 conn.execute("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))")
@@ -70,7 +71,7 @@ Output:
 3	Zhang	2022	Noura
 ```
 
-The Python API can also output results in arrow format:
+Moreover, you can output results in the Arrow format:
 ```
 results = conn.execute('MATCH (u:User) RETURN u.name, u.age;')
 print(results.get_as_arrow(chunk_size=100))
@@ -87,7 +88,7 @@ u.age: [[30,40,50,25]]
 
 ## Colab Notebooks
 
-We provided a list of colab notebooks that demonstrate how Kùzu can be used through Python APIs, and integrated with the Python data science ecosystem:
+We've compiled a series of Google Colab notebooks that demonstrate how Kùzu can be used through Python APIs, and integrated with the Python data science ecosystem:
 
 - [General Kùzu Demo](https://colab.research.google.com/drive/15OLPggnRSBmR_K9yzq6iAGE5MDzNwqoN)
 - [Cypher in Kùzu](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm)
