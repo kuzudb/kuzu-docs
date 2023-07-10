@@ -1,6 +1,6 @@
 ---
 title: Path
-sidebar_position: 22
+sidebar_position: 7
 ---
 
 # PATH
