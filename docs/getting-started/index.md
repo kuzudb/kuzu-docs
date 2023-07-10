@@ -5,12 +5,14 @@ import DocCardList from '@theme/DocCardList';
 Welcome to Kùzu!
 
 Let's get started!
-The following sections are intended to give a simple introduction to Kùzu with some hands-on experience, including how to install and use Kùzu through our CLI, and supported APIs.
-We also cover essential parts of our Cypher query language.
+The following sections are intended to provide a straightforward introduction to Kùzu, including hands-on experience with [installation](./../installation.md), usage via our Command Line Interface (CLI), and our supported APIs.
+Additionally, it covers essential parts of our Cypher query language.
 For complete cypher statements we supported, please visit our [Cypher documentation section](../cypher).
-For you to get started easily without any troubles of installing Kùzu locally, we also prepared some [Colab notebook examples](./python#colab-notebooks).
+To simplify your journey, we've prepared several [Google Colab notebook examples](./python#colab-notebooks), allowing you to explore Kùzu without the troubles of local installation.
 
-After you have worked through this tutorial, you might want to move on to reading [Data Import](../data-import/) to understand options available to start a database with data importation, or [Cypher](../cypher) to gain a more formal knowledge of the query language.
-Those who are interested in our CLI and supported APIs can find more details in [Client APIs](../client-apis).
+Upon completion of this tutorial, you may wish to move on to our [Data Import](../data-import/) section to understand options available to start a database with data importation, or [Cypher](../cypher) to gain a more formal knowledge of the query language.
+For those who are interested in our CLI and supported APIs, the [Client APIs](../client-apis) section provide detailed information.
+
+Welcome aboard, and enjoy your exploration of Kùzu!
 
 <DocCardList />

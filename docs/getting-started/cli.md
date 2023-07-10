@@ -3,15 +3,18 @@ title: Command Line
 sidebar_position: 1
 ---
 
-Kùzu CLI (Command Line Interface) is a single, dependency free executable. It is precompiled for Mac, Linux and Windows. The CLI can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest). After the CLI is downloaded and extracted into a directory, you can navigate the directory from your terminal, and set the execute permissions with `chmod +x kuzu`. Then you can run the executable with `./kuzu <db_path>` where `<db_path>` is the directory for the database files. This path can point to an existing database or to a directory that does not yet exist and Kùzu will create the directory and initialize an empty database for you. You will see a prompt as below if you pass `test` as you `<db_path>`:
+The Kùzu Command Line Interface (CLI) is a unified, dependency-free executable, precompiled for Mac, Linux and Windows systems.
+The CLI can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest).
+After the CLI is downloaded and extracted into a directory, you can navigate the directory via your terminal, and set the execute permissions with `chmod +x kuzu`. 
+You are now ready to run the executable using `./kuzu <db_path>`, where `<db_path>` is the directory for the database files. This path can either point to an existing database or a yet-to-be-created directory, in which case Kùzu will automatically create the directory and initialize an empty database for you.
+If you input `test` as your `<db_path>`, you should see the following prompt:
 
 ```
 ./kuzu_shell ./test
 kuzu> 
 ```
 
-Once the CLI has opened, enter a Cypher query then hit the enter key to execute it. Instructions of how to load nodes and rels from CSV files 
-and run a Cypher query is shown below:
+Upon launching the CLI, you can enter a Cypher query and press enter to execute it. The instructions below outline how to load nodes and rels from CSV files and how to run a Cypher query:
 - Create the schema:
 
 ```
@@ -28,7 +31,7 @@ kuzu> CREATE REL TABLE Follows(FROM User TO User, since INT64);
 ---------------------------------------
 ```
 
-- Load data (replace `"user.csv"` with the full path to your csv and use quotation marks around the path):
+- Load data (be sure to replace `"user.csv"` with the full path to your csv file and use quotation marks around the path):
 
 ```
 kuzu> COPY User FROM "user.csv";
