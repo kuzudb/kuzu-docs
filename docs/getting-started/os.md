@@ -14,3 +14,6 @@ Kùzu Node.js API is based on Node-API version 5. For a list of compatible Node.
 
 ## Java
 Kùzu Java API is compatible with Java 8+. The OS compatibility is the same as C/C++ APIs. For MacOS, it supports >=10.15 for Intel-based Macs and >= 11.0 for ARM-based Macs. For Linux, it supports most modern Linux distros such as RHEL/CentOS/Rocky Linux/Oracle Linux 7.0 or later and Ubuntu 18.04 or later on x86-64 architecture. For Windows, it supports Windows 10 and 11.
+
+## Rust
+The Kùzu Rust API links against Kùzu's C++ API. By default it compiles the C++ library from source, and the build process has been tested on Windows using MSVC, and macOS and Linux using GCC. If linking to the release binaries (see [here](https://docs.rs/kuzu/latest/kuzu/#building)) the restrictions mentioned for the C++ API above apply.
