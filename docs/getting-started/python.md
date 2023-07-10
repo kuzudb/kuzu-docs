@@ -36,7 +36,7 @@ conn.execute("CREATE REL TABLE LivesIn(FROM User TO City)")
 conn.execute('COPY User FROM "user.csv"')
 conn.execute('COPY City FROM "city.csv"')
 conn.execute('COPY Follows FROM "follows.csv"')
-conn.execute('COPY LivesIn FROM "lives_in.csv"')
+conn.execute('COPY LivesIn FROM "lives-in.csv"')
 ```
 
 - Execute a simple query:

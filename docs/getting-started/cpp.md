@@ -17,7 +17,7 @@ In this example, we assume that the so/dylib/dll+lib, the header file, the CSV f
 ├── user.csv
 ├── city.csv
 ├── follows.csv
-└── lives_in.csv
+└── lives-in.csv
 ```
 
 - A `test.cpp` program:
@@ -48,7 +48,7 @@ int main() {
     connection->query("COPY User FROM \"user.csv\"");
     connection->query("COPY City FROM \"city.csv\"");
     connection->query("COPY Follows FROM \"follows.csv\"");
-    connection->query("COPY LivesIn FROM \"lives_in.csv\"");
+    connection->query("COPY LivesIn FROM \"lives-in.csv\"");
 
     // Execute a simple query.
     auto result =

@@ -31,7 +31,7 @@ const kuzu = require("kuzu");
   await conn.query('COPY User FROM "user.csv"');
   await conn.query('COPY City FROM "city.csv"');
   await conn.query('COPY Follows FROM "follows.csv"');
-  await conn.query('COPY LivesIn FROM "lives_in.csv"');
+  await conn.query('COPY LivesIn FROM "lives-in.csv"');
 
   const queryResult = await conn.query("MATCH (u:User) RETURN u.name, u.age;");
 
