@@ -1,5 +1,5 @@
 ---
-slug: kuzu-pyg-remote-backend.html
+slug: kuzu-pyg-remote-backend
 authors: [chang, semih]
 tags: [use-case]
 ---
