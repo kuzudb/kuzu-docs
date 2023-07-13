@@ -10,7 +10,7 @@ Kùzu is a transactional system. Specifically, it implements a transaction manag
 sub-system that is atomic, durable and supports serializability (satisfying these
 properties is traditionally known as being ACID-compliant in database terminology). That is, every
 query, data manipulation command, every DDL (i.e., new node/rel table schema definitions),  
-or `COPY FROM' commands to Kùzu is part of a transaction. Therefore they depict all-or-nothing
+or `COPY FROM` commands to Kùzu is part of a transaction. Therefore they depict all-or-nothing
 behavior, so after these commands or a set of them execute and committed successfully, you are guaranteed
 that all of their changes will persist entirely. If they do not execute successfully or are
 rolled back, you are guaranteed that none of their changes will persist. These conditions hold,
