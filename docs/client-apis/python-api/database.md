@@ -50,6 +50,7 @@ Set the logging level.
 -------
 
 <a id="database.Database.get_torch_geometric_remote_backend"></a>
+
 **get\_torch\_geometric\_remote\_backend**
 
 ```python
