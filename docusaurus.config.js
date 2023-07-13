@@ -56,6 +56,9 @@ const config = {
           //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
           remarkPlugins: [math],
           rehypePlugins: [katex],
+          blogSidebarCount: "ALL",
+          blogSidebarTitle: "All our posts",
+          postsPerPage: 5,
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -143,7 +146,7 @@ const config = {
               {
                 label: "Bilibili",
                 href: "https://space.bilibili.com/410352593",
-              }
+              },
             ],
           },
           {
