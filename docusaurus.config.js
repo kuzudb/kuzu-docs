@@ -72,6 +72,7 @@ const config = {
         logo: {
           alt: "Kùzu",
           src: "img/kuzu-logo.png",
+          srcDark: "img/kuzu-logo-inverse.png",
           href: "https://kuzudb.com/",
         },
         items: [
