@@ -18,7 +18,7 @@
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
+[data-theme="dark"] {
   --ifm-color-primary: #239bd7;
   --ifm-color-primary-dark: #208bc2;
   --ifm-color-primary-darker: #1e84b7;
@@ -32,5 +32,14 @@
 .img-center {
   display: flex;
   justify-content: center;
-  width: 100%,
+  width: 100%;
+}
+
+a.navbar__link.navbar__link--social{
+  padding-left:0;
+  padding-right:0;
+}
+
+div.toggle_node_modules-\@docusaurus-theme-classic-lib-theme-ColorModeToggle-styles-module{
+  padding-left: 6px;
 }
