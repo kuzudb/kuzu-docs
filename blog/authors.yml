@@ -1,23 +1,29 @@
 semih:
   name: Semih Salihoğlu
   url: https://cs.uwaterloo.ca/~ssalihog/
+  image_url: https://kuzudb.com/img/blog/semih.jpg
 
 chang:
   name: Chang Liu
   url: https://www.linkedin.com/in/mewim/
+  image_url: https://kuzudb.com/img/blog/chang.gif
 
 guodong:
   name: Guodong Jin
   url: https://guodongjin.com/
+  image_url: https://kuzudb.com/img/blog/guodong.jpg
 
 xiyang:
   name: Xiyang Feng
-  url: https://www.linkedin.com/in/%E8%A5%BF%E6%B4%8B-%E5%86%AF-8b797923a/
+  url: https://github.com/andyfengHKU
+  image_url: https://kuzudb.com/img/blog/xiyang.jpg
 
 ziyi:
   name: Ziyi Chen
-  url: https://www.linkedin.com/in/ziyi-chen-133547178/
+  url: https://github.com/acquamarin
+  image_url: https://kuzudb.com/img/blog/ziyi.jpg
 
 team:
   name: Kùzu Team
   url: https://github.com/kuzudb/
+  image_url: https://kuzudb.com/img/blog/team.jpg

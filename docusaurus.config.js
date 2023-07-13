@@ -8,7 +8,7 @@ const katex = require("rehype-katex");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Kùzu Documentations",
+  title: "Kùzu",
   tagline:
     "Kùzu is an in-process property graph database management system built for query speed and scalability.",
   favicon: "img/favicon.ico",
@@ -21,8 +21,8 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
+  organizationName: "kuzudb", // Usually your GitHub org/user name.
+  projectName: "kuzu", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -84,9 +84,40 @@ const config = {
           },
           { to: "/blog/", label: "Blog", position: "left" },
           {
-            href: "https://github.com/kuzudb/kuzu",
-            label: "GitHub",
+            type: "html",
             position: "right",
+            value: `
+            <a href="https://github.com/kuzudb/kuzu" class="navbar__link navbar__link--social">
+              <i class="fa-brands fa-github fa-xl"></i>
+            </a>
+            `,
+          },
+          {
+            type: "html",
+            position: "right",
+            value: `
+            <a href="https://join.slack.com/t/kuzudb/shared_invite/zt-1w0thj6s7-0bLaU8Sb~4fDMKJ~oejG_g" class="navbar__link navbar__link--social">
+              <i class="fa-brands fa-slack fa-xl"></i>
+            </a>
+            `,
+          },
+          {
+            type: "html",
+            position: "right",
+            value: `
+            <a href="https://twitter.com/kuzudb" class="navbar__link navbar__link--social">
+              <i class="fa-brands fa-twitter fa-xl"></i>
+            </a>
+            `,
+          },
+          {
+            type: "html",
+            position: "right",
+            value: `
+            <a href="https://www.youtube.com/@KuzuDB" class="navbar__link navbar__link--social">
+              <i class="fa-brands fa-youtube fa-xl"></i>
+            </a>
+            `,
           },
         ],
       },
@@ -109,6 +140,10 @@ const config = {
                 label: "YouTube",
                 href: "https://www.youtube.com/@KuzuDB",
               },
+              {
+                label: "Bilibili",
+                href: "https://space.bilibili.com/410352593",
+              }
             ],
           },
           {
@@ -116,7 +151,7 @@ const config = {
             items: [
               {
                 label: "Blog",
-                href: "https://kuzudb.com/docs/blog/",
+                to: "/blog",
               },
               {
                 label: "GitHub",
@@ -132,16 +167,23 @@ const config = {
         darkTheme: darkCodeTheme,
         additionalLanguages: ["java", "rust"],
       },
-      stylesheets: [
-        {
-          href: "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
-          type: "text/css",
-          integrity:
-            "sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM",
-          crossorigin: "anonymous",
-        },
-      ],
     }),
+  stylesheets: [
+    {
+      href: "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
+      type: "text/css",
+      integrity:
+        "sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM",
+      crossorigin: "anonymous",
+    },
+    {
+      href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+      type: "text/css",
+      integrity:
+        "sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==",
+      crossorigin: "anonymous",
+      referrerpolicy: "no-referrer",
+    },
+  ],
 };
-
 module.exports = config;
