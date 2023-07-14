@@ -141,7 +141,7 @@ what is the maximum number of triangles they contain?
 It still surprises me that the answer to this question was not known until 2008.
 It just looks like a fundamental question someone in databases must have answered before. 
 Now excuse me for bombarding your brains with some necessary math definitions.
-These two papers showed that the answer is: $IN^{\rho^\*}$, where $\rho^\*$ is a property 
+These two papers showed that the answer is: $IN^{\rho^*}$, where $\rho^*$ is a property 
 of $Q$ called the *fractional edge cover number* of $Q$. 
 This is the solution to
 an optimization problem and best explained by thinking about the "join query graph",
@@ -157,13 +157,13 @@ called the fractional edge cover number of the query. For the triangle query,
 one edge cover, shown in Fig 2a, is [1, 1, 0], which has
 a total weight of 1 + 1 + 0 = 2. 
 The minimum weight edge cover is [1/2, 1/2, 1/2], shown in Fig 2b, 
-with a total weight  of 1.5. Therefore, the fractional edge cover number $\rho^\*$
+with a total weight  of 1.5. Therefore, the fractional edge cover number $\rho^*$
 of the triangle query is 1.5.
 In general, each edge cover is an upper bound but the FOCS paper showed
 that the fractional edge cover number is the tight upper bound.
 So the maximum number of triangles there can be on a graph with $IN$ edges is $\Theta(IN^{1.5})$ 
 and this is tight, i.e., there are such graphs. Nice scientific progress!
-Nowadays, the quantity $IN^{\rho^\*}$ is known as the `AGM bound` of a query,
+Nowadays, the quantity $IN^{\rho^*}$ is known as the `AGM bound` of a query,
 after the first letters of the last names of the authors of the FOCS paper.
 
 
@@ -399,7 +399,7 @@ was: "Are they so good that they are optimal even in their worst-case performanc
 
 The term actually means that the worst-case runtime of these algorithms
 meets a known lower bound for the worst-case runtime of any join algorithm,
-which is  $\Omega(IN^{\rho^\*})$.
+which is  $\Omega(IN^{\rho^*})$.
 Probably a more standard term would be to call them 
 "asymptotically optimal", just like people call sort merge an asymptotically optimal 
 sorting algorithm under the comparison model.
