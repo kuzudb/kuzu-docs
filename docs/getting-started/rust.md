@@ -6,7 +6,7 @@ sidebar_position: 6
 The rust API can be used by adding the kuzu crate to your dependencies in `Cargo.toml`:
 ```toml
 [dependencies]
-kuzu = "0.0.5"
+kuzu = "0.0.6"
 ```
 Below is an example to get you started. Full documentation can be found [here](https://docs.rs/kuzu/latest/kuzu/).
 

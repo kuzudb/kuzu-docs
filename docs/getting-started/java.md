@@ -75,7 +75,7 @@ java -cp '.:src/main/resources/kuzu_java.jar' src/main/java/org/example/Main.jav
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
