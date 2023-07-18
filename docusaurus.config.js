@@ -170,6 +170,40 @@ const config = {
         darkTheme: darkCodeTheme,
         additionalLanguages: ["java", "rust"],
       },
+      metadata: [
+        {
+          name: "og:locale",
+          content: "en_US",
+        },
+        {
+          name: "og:type",
+          content: "article",
+        },
+        {
+          name: "og:site_name",
+          content: "Kùzu",
+        },
+        {
+          name: "og:image",
+          content: "https://kuzudb.com/img/logo-u-with-orange-tick.jpg",
+        },
+        {
+          name: "twitter:card",
+          content: "summary",
+        },
+        {
+          name: "twitter:site",
+          content: "@kuzudb",
+        },
+        {
+          name: "twitter:creator",
+          content: "@kuzudb",
+        },
+        {
+          name: "twitter:image",
+          content: "https://kuzudb.com/img/logo-u-with-orange-tick.jpg",
+        },
+      ],
     }),
   stylesheets: [
     {
