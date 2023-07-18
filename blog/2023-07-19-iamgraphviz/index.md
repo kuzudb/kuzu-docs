@@ -10,6 +10,7 @@ tags: [use-case]
 ---
 import SchemaImage from './schema.png';
 import ReadOnlyVizImage from './readonlyviz.png';
+import AdminVizImage from './adminviz.png';
 
 # IAMGraphViz: Visualizing AWS IAM Identity Center Permission Data with Kùzu
 
@@ -35,15 +36,15 @@ The IAMGraphViz project is designed and implemented as a web application using a
 Before landing on Kùzu, we surveyed using several other GDBMSs, such as Neo4j, but they were all harder to use. 
 Neo4j, for example, requires hosting a separate database. We then discovered Kùzu, which only required a `pip install` and 
 import statement and we could simply embed it into our application. In this project our datasets could fit entirely onto a single compute node,
- and so Kùzu was far simpler for us to work with than alternatives.
+and so Kùzu was far simpler for us to work with than alternatives.
 
 The actual IAMGraphViz is more complex than what we will present in this post.
 For example, IAMGraphViz has drop down menus, e.g., to select an access level (e.g., `AdministratorAccess`), and enter
 an AWS account or a user ID in a text box, and will generate Cypher queries on the fly to generate
-visualizations. Instead, this post  follows 
-the [Colab](https://colab.research.google.com/drive/1DwiXGKkusdZDkra44ifFaKwdkljBSEDl#scrollTo=PJiBfwhw0QYu) here. 
+visualizations. Instead, this post follows 
+the [Colab](https://colab.research.google.com/drive/1fotlNnOj1FGad6skBG7MRrHVdHd3jIl6) here. 
 I demoed IAMGraphViz to Chang Liu from the Kùzu team and he kindly agreed to 
-re-create a few similar visualizations on IAMGraphViz using [pyvis](https://pyviz.org/) and a synthethic 
+re-create a few similar visualizations on IAMGraphViz using [pyvis](https://pyvis.readthedocs.io/en/latest/) and a synthethic 
 data generator to write this post. And before we go on: IAMGraphViz 
 was built as poc and if you're a Common Fate user reading this and would
 like this feature launched give your feedback to [me here](mailto:chris@commonfate.io).  So let's get to it!
@@ -81,48 +82,65 @@ For simplicity, we will only model AWS managed policies in this post.
 ## Example Visualizations
 
 ### Data Generation
-In the attached [Colab notebook](https://colab.research.google.com/drive/1DwiXGKkusdZDkra44ifFaKwdkljBSEDl#scrollTo=PJiBfwhw0QYu), we first generate some test data
+In the attached [Colab notebook](https://colab.research.google.com/drive/1fotlNnOj1FGad6skBG7MRrHVdHd3jIl6), we first generate some test data
 containing Users, Groups, ManagedPolicies, PermissionSets etc. For simplicity, we assume that there are three fixed groups: "Admins", "Developers", and "Auditors" and three ManagedPolicies: "AdministratorAccess", "PowerUserAccess", and "ReadOnlyAccess". Users, Accounts, 
 AccountAssignments, and PermissionSets are randomly generated and we randomly link different nodes to
 other nodes according to our schema.
 
-### Visualization 1: Draw all users with direct or indirect `ReadOnlyAccess` access to any account
+### Visualization 1: Draw all users with direct or indirect `ReadOnlyAccess` access to an account
 
 In our first query, we are given a particular account we would like to investigate and find
-all users who have `ReadOnlyAccess` to the resources of any account. The query we use is:
-```
-MATCH (u:User)<-[l*1..2]-(aa:AccountAssignment)-[l5]->(a:Account),
+all users who have `ReadOnlyAccess` to the resources of this account. Let's assume
+the account's name is "account-db2071".
+ 
+``` cypher
+MATCH (u:User)<-[l*1..3]-(aa:AccountAssignment)-[l5]-(a:Account),
 (aa:AccountAssignment)-[aaps]->(ps:PermissionSet)<-[psmpa]-(mpa:ManagedPolicyAttachment)-[mpap]->(p:ManagedPolicy)
-WHERE p.id = 'arn:aws:iam::aws:policy/ReadOnlyAccess'
+WHERE p.id = "arn:aws:iam::aws:policy/ReadOnlyAccess" AND a.sid = "account-db2071"
 RETURN *;
 ```
 
-In the actual IAMGraphViz implementation, we template this query with one parameter for the managed policy, which users pick interactively by selecting from
+In the actual IAMGraphViz implementation, we template this query with two parameters, one for the 
+account ID, and one for the managed policy, which users pick interactively by selecting from
 a dropdown menu.
-Note also that the `[:*1..2]` binding is a variable-length path because we want to find
+Note also that the `[:*1..3]` binding is a variable-length path because we want to find
 both the direct connections from a `User` to an `AccountAssignment` (that is further connected to
-`foobar`) as well as 
+`ManagedPolicy`) as well as 
 indirect connections through a `Group` node. The visualization we generate is shown below:
 
 <div class="img-center">
 <img src={ReadOnlyVizImage}/>
 </div>
 
-
 Note the presence of both directly and indirectly connected users to the account.
-The visualization in both the actual implementation and the [Colab notebook](https://colab.research.google.com/drive/1DwiXGKkusdZDkra44ifFaKwdkljBSEDl#scrollTo=PJiBfwhw0QYu) is generated simply 
-by converting the results of the query into the node and link objects of the graph viz library,
-e.g., pyviz in the case of the Colab notebook.
+The visualization in both the actual implementation and the [Colab notebook](https://colab.research.google.com/drive/1fotlNnOj1FGad6skBG7MRrHVdHd3jIl6) is generated simply 
+by converting the results of the query into the node and link objects of the graph visualization library,
+e.g., pyvis in the case of the Colab notebook.
 
 ### Visualization 2: Draw all accounts a user has `AdministratorAccess` to
 
-TODO (Chang): Complete in a similar way to Viz 1.
+In our second query, we are given a particular user we would like to investigate and find all accounts that the user has `AdministratorAccess` to. Let's assume the user's name is "Steven Rose". 
+
+To retrive the accounts, we define a Cypher query very similar to the previous one. The only difference is that we now use the user as query predicate instead of the account. The query is as follows:
+
+``` cypher
+MATCH (u:User)<-[l*1..3]-(aa:AccountAssignment)-[l5]-(a:Account),
+(aa:AccountAssignment)-[aaps]->(ps:PermissionSet)<-[psmpa]-(mpa:ManagedPolicyAttachment)-[mpap]->(p:ManagedPolicy)
+WHERE p.id = "arn:aws:iam::aws:policy/AdministratorAccess" AND u.name = "Steven Rose"
+RETURN *;
+```
+
+The visualization we generate is shown below:
+
+<div class="img-center">
+<img src={AdminVizImage}/>
+</div>
 
 ## Closing Words
 Many other graph visualizations can be helpful for infrastructure engineers to analyze the 
 IAM network of an enterprise. For example, to find inconsistent privileges given to users,
 we might want to *find and plot multiple paths from a user to an account with different privileges*.
 Or we might want to extend our model with more fine grained resources that are connected to accounts
-and analyze paths from users to these resources (see the [PMapper](https://github.com/nccgroup/PMapper) project that models the IAM data in a more detailed way]. The key takeaway is this: graph visualizations can be very powerful to analyze cloud permission data and embedding Kùzu into your applications
+and analyze paths from users to these resources (see the [PMapper](https://github.com/nccgroup/PMapper) project that models the IAM data in a more detailed way). The key takeaway is this: graph visualizations can be very powerful to analyze cloud permission data and embedding Kùzu into your applications
 to develop tools like IAMGraphViz is extremely easy and fun 🥳🙌💪!
 
