@@ -184,11 +184,6 @@ const config = {
           content: "Kùzu",
         },
         {
-          name: "og:description",
-          content:
-            "Kùzu is an in-process property graph database management system built for query speed and scalability.",
-        },
-        {
           name: "og:image",
           content: "https://kuzudb.com/img/logo-u-with-orange-tick.jpg",
         },
