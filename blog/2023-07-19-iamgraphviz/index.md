@@ -21,7 +21,7 @@ They provide tools to simplify access at scale to AWS, Azure, and Google Cloud a
 You can learn about what you can do with Common Fate on the [their website](https://www.commonfate.io/). 
 Here, we will talk about a recent proof of concept graph visualization tool called IAMGraphViz that 
 [Chris Norman](https://www.linkedin.com/in/chrnorm/?originalSubdomain=uk) from Common Fate, 
-who is co-authoring this post with [Chang Liu](https://www.linkedin.com/in/mewim/)), developed using Kùzu! 
+who is co-authoring this post with [Chang Liu](https://www.linkedin.com/in/mewim/), developed using Kùzu! 
 IAMGraphViz is intended for infrastructure engineers to dig deep into the permission assignments 
 in AWS IAM Identity Center using graph visualization. Using IAMGraphViz, 
 one can easily visualize who has what type of access to different accounts on AWS 
