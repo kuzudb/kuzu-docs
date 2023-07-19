@@ -48,7 +48,7 @@ I demoed IAMGraphViz to Chang Liu from the Kùzu team and he kindly agreed to
 re-create a few similar visualizations on IAMGraphViz using [pyvis](https://pyvis.readthedocs.io/en/latest/) and a synthethic 
 data generator to write this post. And before we go on: IAMGraphViz 
 was built as poc and if you're a Common Fate user reading this and would
-like this feature launched give your feedback to [me here](mailto:chris@commonfate.io). **TODO(Chris): Did you want to remove or edit this. 
+like this feature launched give your feedback to me. **TODO(Chris): Did you want to remove or edit this. 
 From your message on Slack, I thought you wanted to change this to not confuse CommonFate users.** So let's get to it!
 
 ## Quick AWS IAM Overview
