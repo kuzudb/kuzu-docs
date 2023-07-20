@@ -19,9 +19,8 @@ import AdminVizImage from './adminviz.png';
 [Common Fate](https://www.commonfate.io/)  is a framework for managing complex cloud permissions. 
 They provide tools to simplify access at scale to AWS, Azure, and Google Cloud accounts. 
 You can learn about what you can do with Common Fate on [their website](https://www.commonfate.io/). 
-Here, we will talk about a recent proof of concept graph visualization tool called IAMGraphViz that 
-[Chris Norman](https://www.linkedin.com/in/chrnorm/?originalSubdomain=uk) from Common Fate, 
-who is co-authoring this post with [Chang Liu](https://www.linkedin.com/in/mewim/), developed using Kùzu! 
+Here, we will talk about a recent proof of concept graph visualization tool called IAMGraphViz that  
+[Chang Liu](https://www.linkedin.com/in/mewim/) (who is coauthoring this post) and I developed using Kùzu! 
 IAMGraphViz is intended for infrastructure engineers to dig deep into the permission assignments 
 in AWS IAM Identity Center using graph visualization. Using IAMGraphViz, 
 one can easily visualize who has what type of access to different accounts on AWS 
@@ -36,20 +35,11 @@ The IAMGraphViz project is designed and implemented as a web application using a
 Before landing on Kùzu, we surveyed using several other GDBMSs, such as Neo4j, but they were all harder to use. 
 Neo4j, for example, requires hosting a separate database. We then discovered Kùzu, which only required a `pip install` and 
 import statement and we could simply embed it into our application. In this project our datasets could fit entirely onto a single compute node,
-and so Kùzu was far simpler for us to work with than alternatives. **TODO(Chris): Can you say something about costs as well for the customers? 
-I remember you saying that hosting a database would mean more cost for your clients, no?**
+and so Kùzu was far simpler for us to work with than alternatives. Kùzu is also far cheaper and more serverless-friendly than running a separate database.
 
-The actual IAMGraphViz is more complex than what we will present in this post.
-For example, IAMGraphViz has drop down menus, e.g., to select an access level (e.g., `AdministratorAccess`), and enter
-an AWS account or a user ID in a text box, and will generate Cypher queries on the fly to generate
-visualizations. Instead, this post follows 
-the [Colab](https://colab.research.google.com/drive/1fotlNnOj1FGad6skBG7MRrHVdHd3jIl6) here. 
-I demoed IAMGraphViz to Chang Liu from the Kùzu team and he kindly agreed to 
-re-create a few similar visualizations on IAMGraphViz using [pyvis](https://pyvis.readthedocs.io/en/latest/) and a synthethic 
-data generator to write this post. And before we go on: IAMGraphViz 
-was built as poc and if you're a Common Fate user reading this and would
-like this feature launched give your feedback to me. **TODO(Chris): Did you want to remove or edit this. 
-From your message on Slack, I thought you wanted to change this to not confuse CommonFate users.** So let's get to it!
+This post follows the [Colab](https://colab.research.google.com/drive/1fotlNnOj1FGad6skBG7MRrHVdHd3jIl6) that Chang Liu created after we discussed this use case together.
+
+So let's get to it!
 
 ## Quick AWS IAM Overview
 
