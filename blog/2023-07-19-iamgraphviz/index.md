@@ -12,7 +12,7 @@ import SchemaImage from './schema.png';
 import ReadOnlyVizImage from './readonlyviz.png';
 import AdminVizImage from './adminviz.png';
 
-# IAMGraphViz: Visualizing AWS IAM Identity Center Permission Data with Kùzu
+# IAMGraphViz: Visualizing AWS IAM Permissions with Kùzu
 
 ## IAMGraphViz Overview
 
