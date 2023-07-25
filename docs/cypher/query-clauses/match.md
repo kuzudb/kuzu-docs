@@ -125,7 +125,7 @@ View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgb
 ## Match Relationships
 
 ### Match Directed Relationships With a Label
-Similar to binding variables to node records, you can bind variables to relationship records and return them. You can specificy the direction of relationship by `<-` or `->`. The following query finds all "a" Users that follow a "b" User through an outgoing relationship from "a", and returns name of "a", relationship "e", and name of "b", where "e" will match the relationship from "a" to "b".
+Similar to binding variables to node records, you can bind variables to relationship records and return them. You can specify the direction of relationship by `<-` or `->`. The following query finds all "a" Users that follow a "b" User through an outgoing relationship from "a", and returns name of "a", relationship "e", and name of "b", where "e" will match the relationship from "a" to "b".
 ```
 MATCH (a:User)-[e:Follows]->(b:User)
 RETURN a.name, e, b.name;
@@ -227,7 +227,7 @@ Output:
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=lEZAboFLfLku).
 
 ### Match Undirected Relationships
-User can match a relationship in both directions by not specifiying a relationship direction (i.e. `-`). The following query finds all "b" users who either follows or being followed by "Karissa". 
+Users can match a relationship in both directions by not specifiying a relationship direction (i.e. `-`). The following query finds all "b" users who either follows or being followed by "Karissa". 
 
 ```
 MATCH (a:User)-[e:Follows]-(b:User) Where a.name = 'Karissa' RETURN b.name;
@@ -245,7 +245,7 @@ Output:
 
 ### Omit Binding Variables to Nodes or Relationships
 You can also omit binding a variable to a node or relationship in your graph patterns if 
-you will not use them in somewhere else in your query (e.g., WHERE or RETURN). For example, below, we query for 2-hop paths searching for "the cities that Users that "a" Users follows".
+you will not use them in somewhere else in your query (e.g., WHERE or RETURN). For example, below, we query for 2-hop paths searching for "the cities of Users that "a" Follows".
 Because we do not need to return the Users that "a" Users follows or the properties
 of the Follows and LivesIn edges that form these 2-paths, we can omit giving variable names to them.
 
@@ -386,12 +386,12 @@ Output:
 ----------------------------------------------------------------------------------------------
 ```
 
-**Fruther notes on variable length relationships**
+**Further notes on variable length relationships**
 - Returning properties of variable length relationships is not yet supported.
 - The maximum length of variable length relationships is capped at 30. 
 
 ### Single Shortest Path
-On top of variable length relationships, user can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST 1..max]`.
+On top of variable length relationships, users can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST 1..max]`.
 The following query finds a shortest path between `Adam` and any city and returns city name as well as length of the path.
 ```
 MATCH (a:User)-[e* SHORTEST 1..4]->(b:City) 
@@ -429,13 +429,13 @@ Output:
 ---------------------
 ```
 
-**Fruther notes on shortest path**
+**Further notes on shortest path**
 We force the lower bound of shortest path to be 1 to avoid ambiguity. There are two interpretations when the lower bound is greater than 1, 
-- Compute shortest path and then return path whose length is greater than lower bound.
-- Compute path with length greater than lower bound and then return shoetest path.
+- Compute shortest path and then return the path whose length is greater than the lower bound.
+- Compute the path with length greater than lower bound and then return the shortest path.
 
 ### Filter Variable Length Relationships
-We also support running predicate on recursive pattern to constaint the relationship being travered.
+We also support running predicates on recursive patterns to constrain the relationship being traversed.
 
 The following query finds name of users that are followed between 1 - 2 hops by Adam before 2022.
 ```
@@ -456,9 +456,9 @@ Output:
 Note that our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents recursive relationship. Since we currently don't allow filter on recursive node, the second variable must be `_`.
 
 ## Named Path
-Kùzu treats path a first-class citizen so user can assign a named variable to a path (i.e. connected graph ) and use it later on.
+Kùzu treats paths as a first-class citizen, so users can assign a named variable to a path (i.e. connected graph ) and use it later on.
  
-The following query returns all path between `Adam` and `Karissa`.
+The following query returns all paths between `Adam` and `Karissa`.
 ```
 MATCH p = (a:User)-[:Follows]->(b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
@@ -472,7 +472,7 @@ Output:
 | {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us... |
 ------------------------------------------------------------------------------------
 ```
-Named path can also be assigned to recursive graph pattern.
+Named paths can also be assigned to recursive graph patterns.
 ```
 MATCH p = (a:User)-[:Follows*1..2]->(:User)-[:LivesIn]->(:City) 
 WHERE a.name = 'Adam' 
