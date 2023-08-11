@@ -64,7 +64,7 @@ Execute a query.
 **Parameters**
 - `query : str` Query to execute.
 
-- `parameters : list` Parameters for the query.
+- `parameters : list[tuple(str, any)]` Parameters for the query.
 
 **Returns**
 - `QueryResult` Query result.
