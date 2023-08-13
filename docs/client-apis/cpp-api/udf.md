@@ -8,9 +8,9 @@ Kùzu provides users with two interfaces that enable them to define their own cu
 
 ## createScalarFunction
 This API allows user to register ordinary scalar functions which are defined in c++ and use them as Kùzu built-in functions in a query. UDF functions are as efficient as the built-in functions.
-There are two variants of `createScalarFunction`:
+Since two c++ primitive types may map to the same Cypher(e.g. `int32` can map to both `INT32` or `DATE` in Kùzu), Kùzu provides two overloaded APIs which can eliminate the ambiguity in datatype mapping.
 
-### 1. Create a scalar function and automatically infer the parameter and result type in Kùzu.
+### 1. Create a scalar function by automatically inferring the parameter and result type in Kùzu.
 ```
 template<typename TR, typename... Args>
 void createScalarFunction(const std::string& name, TR (*udfFunc)(Args...))
@@ -87,3 +87,37 @@ conn->createScalarFunction("addMicro",
 // Issue a query using the UDF.
 conn->query("MATCH (p:person) return addMicro(p.registerTime, to_int32(p.ID))")
 ```
+
+## createVectorizedFunction
+Kùzu executes functions on input data in an efficient and vectorized way. In addition to creating scalar user-defined functions(UDFs), Kùzu also provides support for vectorized UDFs. Similar to `createScalarFunction`, the `createVectorizedFunction` also offers two APIs to enhance clarity in datatype mapping.
+
+### Vector types in Kùzu:
+#### 1. Flat vector: The vector only holds one value at `selectedPositions[0]` position.
+```
+Example:
+// Get the position, which stores the value, in the flatVector.
+auto pos = flatVector->state->selVector->selectedPositions[0];
+// Check whether the value is null.
+auto isNull = flatVector->isNull(pos)
+// Get the value in the vector using the position.
+auto value = flatVector->getValue<datatype>(pos)
+// Set the value in the vector using the position.
+flatVector->setValue(pos, 5 /* valueToSet */)
+// Set the value to not-null in the vector using the position.
+flatVector->setNull(pos, false /* notNull */)
+```
+#### 2. Unflat vector: The vector can hold SELECTED_SIZE number of values.
+```
+Example:
+// Traverse the unflat int64 vector, and add 5 to each value if not null.
+ for (auto i = 0u; i < vector.state->selVector->selectedSize; i++) {
+        // Get the position which stores the ith value in the vector.
+        auto pos = vector.state->selVector->selectedPositions[i];
+        // Check whether the value is null.
+        if (!vector.isNull(pos)) {
+            // Retrieve the ith value.
+            auto originalVal = vector.getValue<int64_t>(pos);
+            // Update the ith value.
+            vector.setValue(pos, originalVal + 5);
+        }
+}
