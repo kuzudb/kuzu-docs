@@ -57,7 +57,7 @@ void createScalarFunction(const std::string& name, TR (*udfFunc)(Args...))
   * ARGS: are the type of the arguments in c++, Kùzu currently support UDF functions with up to 3 parameters.
 * parameters:
   * name: the name of the function to be created in Kùzu (note: function name must be unique).
-  * parameterTypes: the types of parameters in cypher.
+  * parameterTypes: the type of parameters in cypher.
   * returnType: the type of return value in cypher.
   * udfFunc: the UDF defined in c++.
 Note: This function also checks the template types of UDF against the Cypher types passed as arguments(parameterTypes and returnType) and they must follow the rule defined in the data type mapping table.
@@ -121,3 +121,99 @@ Example:
             vector.setValue(pos, originalVal + 5);
         }
 }
+```
+
+### 1. Create a vectorized function by automatically inferring the parameter and result type in Kùzu.
+```
+template<typename TR, typename... Args>
+void createVectorizedFunction(const std::string& name, function::scalar_exec_func scalarFunc)
+```
+#### a. Parameters:
+* template parameters:
+  * TR: return type of the UDF in c++.
+  * ARGS: are the type of the arguments in c++, Kùzu currently support UDF functions with up to 3 parameters.
+* parameters:
+  * name: the name of the function to be created in Kùzu (note: function name must be unique).
+  * scalarFunc: a vectorized udf function. The vectorized udf function takes in a vector of ValueVectors and puts the result in the resultVector.
+
+#### b. Inference rule for c++ type to cypher type is defined as:
+| C++ type | Cypher type |
+| ---------| ----------- |
+| bool | BOOL |
+| int16 | INT16 |
+| int32 | INT32 |
+| int64 | INT64 |
+| float | FLOAT |
+| double | DOUBLE |
+| std::string | STRING |
+
+#### c. Example:
+```
+// Create a vectorized function which adds 4 to each value.
+static void addFour(
+    const std::vector<std::shared_ptr<ValueVector>>& parameters, ValueVector& result) {
+    assert(parameters.size() == 1);
+    auto parameter = parameters[0];
+    result.resetAuxiliaryBuffer();
+    result.state = parameter->state;
+    if (parameter->state->isFlat()) {
+        auto pos = parameter->state->selVector->selectedPositions[0];
+        result.setValue(pos, parameter->getValue<int64_t>(pos) + 4);
+    } else {
+        for (auto i = 0u; i < parameter->state->selVector->selectedSize; i++) {
+            auto pos = parameter->state->selVector->selectedPositions[i];
+            result.setValue(pos, parameter->getValue<int64_t>(pos) + 4);
+        }
+    }
+}
+// Register the vectorized function using the createVectorizedFunction API.
+conn->createVectorizedFunction<int64_t, int64_t>("addFour", &addFour);
+// Issue a query using the UDF.
+conn->query("MATCH (p:person) return addFour(p.age)");
+```
+
+### 2. Create a vectorized function with input and return type in cypher.
+```
+ void createVectorizedFunction(const std::string& name,
+        std::vector<common::LogicalTypeID> parameterTypes, common::LogicalTypeID returnType,
+        function::scalar_exec_func scalarFunc)
+```
+#### a. Parameters:
+* parameters:
+  * name: the name of the function to be created in Kùzu (note: function name must be unique).
+  * parameterTypes: the type of parameters in cypher.
+  * returnType: the type of return value in cypher.
+  * scalarFunc: a vectorized udf function. The vectorized udf function takes in a vector of ValueVectors and puts the result in the resultVector.
+
+#### b. Inference rule for c++ type to cypher type is defined as:
+| Cypher type | C++ type |
+| ---------| ----------- |
+| BOOL | bool |
+| INT16 | int16 |
+| INT32, DATE | int32 |
+| INT64, TIMESTAMP | int64 |
+| FLOAT | float |
+| DOUBLE | double |
+| STRING | std::string |
+
+#### c. Example:
+```
+// Create a scalar function which adds right(number of days) to the left(date).
+struct AddDate {
+    static inline void operation(date_t& left, int64_t& right, date_t& result) {
+        result.days = (int32_t)(left.days + right);
+    }
+};
+// Utilize the pre-defined `function::BinaryFunctionExecutor::execute` API to execute the AddDate function on parameters.
+// Note: Users can utilize Kùzu pre-defined FunctionExecutors(UnaryFunctionExecutor, BinaryFunctionExecutor, TernaryFunctionExecutor) to execute operations on parameters without writing code to retrieve the valueVectors.
+static void addDate(
+    const std::vector<std::shared_ptr<ValueVector>>& parameters, ValueVector& result) {
+    assert(parameters.size() == 2);
+    function::BinaryFunctionExecutor::execute<date_t, int64_t, date_t, AddDate>(
+        *parameters[0], *parameters[1], result);
+}
+// Register the vectorized function using the createVectorizedFunction API.
+conn->createVectorizedFunction("addDate", std::vector<LogicalTypeID>{LogicalTypeID::DATE, LogicalTypeID::INT64}, LogicalTypeID::DATE, &addDate);
+// Issue a query using the UDF.
+conn->query("MATCH (p:person) return addDate(p.birthdate, p.age)");
+```
