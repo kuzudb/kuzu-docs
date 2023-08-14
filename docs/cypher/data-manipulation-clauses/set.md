@@ -13,11 +13,11 @@ We will use the database, whose schema and data import commands are given [here]
 You can import this database by copy pasting the commands on that page. 
 
 # SET 
-SET is similar to SQL's SET clause, and allows updating properties of node or relationship records to new values (possibly NULL).
+`SET` is similar to SQL's SET clause, and allows updating properties of node or relationship records to new values (possibly NULL).
 
-## Set node properties
+## Set Node Properties
 
-### Set single label node properties
+### Set Single Label Node Properties
 The following query sets the age property of the User node with name Adam to 50 (which is 30 in the original database).
 
 ```
@@ -45,7 +45,7 @@ RETURN u.*;
 ------------------
 ```
 
-### Set multi label node properties
+### Set Multi Label Node Properties
 Kùzu also supports updating node properties with multi-label nodes.
 ```
 MATCH (u)
@@ -70,9 +70,9 @@ RETURN u.name, u.population;
 ----------------------------
 ```
 
-## Set relationship properties
+## Set Relationship Properties
 
-### Set single label relationship properties
+### Set Single Label Relationship Properties
 The following query sets the `since` property of the Follows relationship(From Adam to Karissa) to 2012 (which is 2020 in the original database).
 
 ```
@@ -87,7 +87,7 @@ RETURN f;
 ---------------------------------------------------------
 ```
 
-### Set multi label relationship properties
+### Set Multi Label Relationship Properties
 ```
 MATCH (u0)-[f]->()
 WHERE u0.name = 'Adam'

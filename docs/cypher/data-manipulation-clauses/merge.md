@@ -15,9 +15,9 @@ We will use the database, whose schema and data import commands are given [here]
 
 Similar to `INSERT ON CONFLICT` in sql, `MERGE` clause comes with `ON CREATE` and `ON MATCH` set operation allowing user to specify addition update logic if the pattern is (not) found.
 
-## Merge nodes
+## Merge Nodes
 
-### Merge exiting nodes
+### Merge Exiting Nodes
 The following query tries to merge a user with name "Adam". Since user "Adam" exists in the database, the match is found no user is created.
 ```
 MERGE (n:User {name : 'Adam'}) RETURN n.*;
@@ -34,7 +34,7 @@ MATCH (:User) RETURN COUNT(*);
 ----------------
 ```
 
-### Merge non-existing nodes
+### Merge Non-existing Nodes
 The following query tries to merge a user with name "Bob". Since user "Bob" does not exist in the database, a new user with name "Bob" is created.
 ```
 MERGE (n:User {name : 'Bob'}) RETURN n.*;
@@ -72,9 +72,9 @@ MERGE (n:User {name : 'Bob'}) ON CREATE SET n.age = 60 RETURN n.*;
 | Bob    | 60    |
 ------------------
 ```
-## Merge relationships
+## Merge Relationships
 
-### Merge existing relationships
+### Merge Existing Relationships
 The following query tries to merge a follows edge since 2020 between "Adam" and "Zhang". A match is found in this case.
 ```
 MATCH (a:User), (b:User) 
@@ -95,7 +95,7 @@ RETURN e;
 ---------------------------------------------------------
 ```
 
-### Merge non-existing relationships
+### Merge Non-existing Relationships
 The following query tries to merge a follows edge since 2022 between "Adam" and "Zhang". No match is found and an edge is created.
 ```
 MATCH (a:User), (b:User) 
@@ -148,7 +148,7 @@ RETURN e;
 ---------------------------------------------------------
 ```
 
-## Merge complex patterns
+## Merge Complex Patterns
 Previous examples have shown how to merge single node and relationship pattern. It's also possible to merge a complex pattern involving 
 
 TODO(Xiyang): the following query has a bug
