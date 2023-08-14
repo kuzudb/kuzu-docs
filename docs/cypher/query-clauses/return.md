@@ -66,6 +66,8 @@ Output:
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=N1EK35S419JF).
 
 
+
+
 ## Returning Node and Relationship Properties
 You can also return properties of variables by explicitly specifying properties in the `RETURN` clause.
 ```
@@ -87,6 +89,31 @@ Output:
 -----------------------------
 ```
 View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgbvk6N2dIP30oqyUucm#scrollTo=rYG1C5gj2KNA).
+
+As a syntactic sugar, Kùzu supports returning all properties of node or rel with `*`.
+
+```
+MATCH (a:User) RETURN a.*;
+-------------------
+| a.name  | a.age |
+-------------------
+| Adam    | 30    |
+-------------------
+| Karissa | 40    |
+-------------------
+| Zhang   | 50    |
+-------------------
+| Noura   | 25    |
+-------------------
+MATCH (a:User)-[e:Follows]->(b:User) WHERE a.name='Adam' RETURN e.*;
+-----------
+| e.since |
+-----------
+| 2020    |
+-----------
+| 2020    |
+-----------
+```
 
 ## Using Distinct for Duplicate Elimination
 You can use RETURN DISTINCT to do duplicate elimination of the returned tuples.
