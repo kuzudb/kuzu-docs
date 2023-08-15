@@ -263,15 +263,19 @@ currently support the following functions:
 
 #### Pre-defined variables
 
-You can insert Kùzu directory path in the test result by writing
-`${KUZU_ROOT_DIRECTORY}`.
+The following variables are available to use inside the statements:
+
+| Variable| Description |
+|---|---
+| `${KUZU_ROOT_DIRECTORY}` | Kùzu directory path |
+| `${DATABASE_PATH}` | When a test case runs, a temporary database path is created and cleaned up after the suite finishes. This variable represents the path of the running test case. |
 
 
 ### Defining statement blocks
 
 A statement block can be defined and re-used along the test file.  
 `-DEFINE_STATEMENT_BLOCK` define a block that can be used by
-calling `-STATEMENT_BLOCK` in any part of the test case body. It
+calling `-INSERT_STATEMENT_BLOCK` in any part of the test case body. It
 can be useful to perform checks without having to re-write the same staments
 again.
 
@@ -285,12 +289,12 @@ again.
 ]
 
 -CASE TestCaseA
--STATEMENT_BLOCK CREATE_PERSON_REL
+-INSERT_STATEMENT_BLOCK CREATE_PERSON_REL
 -STATEMENT ...
 ---- ok
 
 -CASE TestCaseB
--STATEMENT_BLOCK CREATE_PERSON_REL
+-INSERT_STATEMENT_BLOCK CREATE_PERSON_REL
 -STATEMENT ...
 ---- ok
 ```
@@ -329,7 +333,7 @@ Full example with comments.
 
 # This is also part of TestRelationSet test case
 -LOG Create Relation Set
--STATEMENT_BLOCK create_rel_set
+-INSERT_STATEMENT_BLOCK create_rel_set
 -STATEMENT MATCH (a:person)-[e:knows]->(b:person) RETURN COUNT(*)
 ---- 1
 4
