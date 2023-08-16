@@ -1,11 +1,11 @@
 ---
-title: Data Definition
+title: Macro
 sidebar_position: 5
 ---
 # Create Macro
 Kùzu allows user to create a macro in catalog using the `create macro` statement. The process of creating macros involves using the `CREATE MACRO` keyword followed by the macro's name. Users can optionally include parameters with optional default value within parentheses after the name. The "AS" keyword comes next, followed by the actual cypher expression of the macro. It's important to note that a scalar macro is limited to returning only a single value.
 
-## 1. Default parameters:
+## Default parameters
 Users can assign default value to parameters. If a query does not specify a value for a parameter, the predefined default value(if exists) will be applied instead. Note: parameters with default value must be defined after parameters without default value in the signature of the macro.
 ```
 // Create a macro which adds two parameters. If the second parameter(b) is not provided, the default value (3) will be used instead.
@@ -16,8 +16,9 @@ return addWithDefault(2);  // returns 5 (2 + 3)
 return addWithDefault(4, 7);  // returns 11 (4 + 7)
 ```
 
-## 2. Supported macro expression types:
-### a. Case Expression Macro
+## Supported macro expression types
+
+### Case Expression Macro
 ```
 // Creates a case macro which executes sub-expressions based on input value.
 CREATE MACRO case_macro(x) AS CASE x WHEN 35 THEN x + 1 ELSE x - 5 END
@@ -25,7 +26,7 @@ CREATE MACRO case_macro(x) AS CASE x WHEN 35 THEN x + 1 ELSE x - 5 END
 match (a:person) return case_macro(a.age) as age
 ```
 
-### b. Function Expression Macro
+### Function Expression Macro
 ```
 // Creates a function macro which executes an arithmetic expression.
 CREATE MACRO func_macro(x) AS x + 3 + 2.5 + to_float(2.1)
@@ -33,7 +34,7 @@ CREATE MACRO func_macro(x) AS x + 3 + 2.5 + to_float(2.1)
 match (a:person) return func_macro(a.age) as age
 ```
 
-### c. Literal Expression Macro
+### Literal Expression Macro
 ```
 // Creates a literal macro which simply returns a literal value.
 CREATE MACRO str_literal() AS 'result'
@@ -41,7 +42,7 @@ CREATE MACRO str_literal() AS 'result'
 return str_literal()
 ```
 
-### d. Property Expression Macro
+### Property Expression Macro
 ```
 // Creates a property macro which simply returns a property of the parameter.
 CREATE MACRO prop_macro(x) AS x.ID
@@ -49,7 +50,7 @@ CREATE MACRO prop_macro(x) AS x.ID
 match (a:person) return prop_macro(a) as age
 ```
 
-### e. Variable Expression Macro
+### Variable Expression Macro
 ```
 // Creates a variable macro which simply returns the parameter.
 CREATE MACRO var_macro(x) AS x
