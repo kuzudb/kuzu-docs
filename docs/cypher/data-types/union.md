@@ -50,6 +50,13 @@ MATCH (d:demo) RETURN union_extract(d.b, 'str');
 --------------------------
 | aa                     |
 --------------------------
-```
 
-## TODO(Ziyi): union_tag failed
+MATCH (d:demo) RETURN union_tag(d.b);
+------------------
+| UNION_TAG(d.b) |
+------------------
+| num            |
+------------------
+| str            |
+------------------
+```

@@ -151,7 +151,21 @@ RETURN e;
 ## Merge Complex Patterns
 Previous examples have shown how to merge single node and relationship pattern. It's also possible to merge a complex pattern involving 
 
-TODO(Xiyang): the following query has a bug
 ```
 MERGE (:User {name:'A'})-[:Follows]->(:User {name:'B'})-[:LivesIn]->(:City {name:'Toronto'});
+MATCH (a:User)-[:Follows]->(b:User)-[:LivesIn]->(c:City)
+RETURN a.name, b.name, c.name;
+---------------------------------
+| a.name  | b.name  | c.name    |
+---------------------------------
+| Adam    | Karissa | Waterloo  |
+---------------------------------
+| Karissa | Zhang   | Kitchener |
+---------------------------------
+| Adam    | Zhang   | Kitchener |
+---------------------------------
+| Zhang   | Noura   | Guelph    |
+---------------------------------
+| A       | B       | Toronto   |
+---------------------------------
 ```
