@@ -3,14 +3,14 @@ title: Database
 sidebar_position: 0
 ---
 
-## class kuzu_database
+## struct kuzu_database
 
 kuzu_database manages all database components.  
 
 ---
 
-```c++
-KUZU_C_API kuzu_database* kuzu_database_init (const char * database_path, uint64_t buffer_pool_size)
+```c
+kuzu_database* kuzu_database_init (const char * database_path, uint64_t buffer_pool_size)
 ```
 Allocates memory and creates a kuzu database instance at database_path with bufferPoolSize=buffer_pool_size. Caller is responsible for calling kuzu_database_destroy() to release the allocated memory. 
 
@@ -23,8 +23,8 @@ Allocates memory and creates a kuzu database instance at database_path with buff
 
 ---
 
-```c++
-KUZU_C_API void kuzu_database_destroy (kuzu_database * database)
+```c
+void kuzu_database_destroy (kuzu_database * database)
 ```
 Destroys the kuzu database instance and frees the allocated memory. 
 
@@ -33,8 +33,8 @@ Destroys the kuzu database instance and frees the allocated memory.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_database_set_logging_level (const char * logging_level)
+```c
+void kuzu_database_set_logging_level (const char * logging_level)
 ```
 Sets the logging level of the database. 
 

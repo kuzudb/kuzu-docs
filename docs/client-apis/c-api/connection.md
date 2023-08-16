@@ -3,14 +3,14 @@ title: Connection
 sidebar_position: 1
 ---
 
-## class kuzu_connection
+## struct kuzu_connection
 
 kuzu_connection is used to interact with a Database instance. Each connection is thread-safe. Multiple connections can connect to the same Database instance in a multi-threaded environment.  
 
 ---
 
-```c++
-KUZU_C_API kuzu_connection* kuzu_connection_init (kuzu_database * database)
+```c
+kuzu_connection* kuzu_connection_init (kuzu_database * database)
 ```
 Allocates memory and creates a connection to the database. Caller is responsible for calling kuzu_connection_destroy() to release the allocated memory. 
 
@@ -22,8 +22,8 @@ Allocates memory and creates a connection to the database. Caller is responsible
 
 ---
 
-```c++
-KUZU_C_API void kuzu_connection_destroy (kuzu_connection * connection)
+```c
+void kuzu_connection_destroy (kuzu_connection * connection)
 ```
 Destroys the connection instance and frees the allocated memory. 
 
@@ -32,8 +32,8 @@ Destroys the connection instance and frees the allocated memory.
 
 ---
 
-```c++
-KUZU_C_API kuzu_query_result* kuzu_connection_query (kuzu_connection * connection, const char * query)
+```c
+kuzu_query_result* kuzu_connection_query (kuzu_connection * connection, const char * query)
 ```
 Executes the given query and returns the result. 
 
@@ -46,8 +46,8 @@ Executes the given query and returns the result.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_connection_begin_read_only_transaction (kuzu_connection * connection)
+```c
+void kuzu_connection_begin_read_only_transaction (kuzu_connection * connection)
 ```
 Begins a read-only transaction in the given connection. 
 
@@ -56,8 +56,8 @@ Begins a read-only transaction in the given connection.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_connection_begin_write_transaction (kuzu_connection * connection)
+```c
+void kuzu_connection_begin_write_transaction (kuzu_connection * connection)
 ```
 Begins a write transaction in the given connection. 
 
@@ -66,8 +66,8 @@ Begins a write transaction in the given connection.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_connection_commit (kuzu_connection * connection)
+```c
+void kuzu_connection_commit (kuzu_connection * connection)
 ```
 Commits the current transaction. 
 
@@ -76,8 +76,8 @@ Commits the current transaction.
 
 ---
 
-```c++
-KUZU_C_API kuzu_query_result* kuzu_connection_execute (kuzu_connection * connection, kuzu_prepared_statement * prepared_statement)
+```c
+kuzu_query_result* kuzu_connection_execute (kuzu_connection * connection, kuzu_prepared_statement * prepared_statement)
 ```
 Executes the prepared_statement using connection. 
 
@@ -87,8 +87,8 @@ Executes the prepared_statement using connection.
 
 ---
 
-```c++
-KUZU_C_API uint64_t kuzu_connection_get_max_num_thread_for_exec (kuzu_connection * connection)
+```c
+uint64_t kuzu_connection_get_max_num_thread_for_exec (kuzu_connection * connection)
 ```
 Returns the maximum number of threads of the connection to use for executing queries. 
 
@@ -97,8 +97,8 @@ Returns the maximum number of threads of the connection to use for executing que
 
 ---
 
-```c++
-KUZU_C_API char* kuzu_connection_get_node_property_names (kuzu_connection * connection, const char * table_name)
+```c
+char* kuzu_connection_get_node_property_names (kuzu_connection * connection, const char * table_name)
 ```
 Returns all property names of the given node table. 
 
@@ -108,8 +108,8 @@ Returns all property names of the given node table.
 
 ---
 
-```c++
-KUZU_C_API char* kuzu_connection_get_node_table_names (kuzu_connection * connection)
+```c
+char* kuzu_connection_get_node_table_names (kuzu_connection * connection)
 ```
 Returns all node table names of the database. 
 
@@ -118,8 +118,8 @@ Returns all node table names of the database.
 
 ---
 
-```c++
-KUZU_C_API char* kuzu_connection_get_rel_property_names (kuzu_connection * connection, const char * table_name)
+```c
+char* kuzu_connection_get_rel_property_names (kuzu_connection * connection, const char * table_name)
 ```
 Returns all property names of the given rel table. 
 
@@ -129,8 +129,8 @@ Returns all property names of the given rel table.
 
 ---
 
-```c++
-KUZU_C_API char* kuzu_connection_get_rel_table_names (kuzu_connection * connection)
+```c
+char* kuzu_connection_get_rel_table_names (kuzu_connection * connection)
 ```
 Returns all rel table names of the database. 
 
@@ -140,8 +140,8 @@ Returns all rel table names of the database.
 ---
 
 
-```c++
-KUZU_C_API void kuzu_connection_interrupt (kuzu_connection * connection)
+```c
+void kuzu_connection_interrupt (kuzu_connection * connection)
 ```
 Interrupts the current query execution in the connection. 
 
@@ -150,8 +150,8 @@ Interrupts the current query execution in the connection.
 
 ---
 
-```c++
-KUZU_C_API kuzu_prepared_statement* kuzu_connection_prepare (kuzu_connection * connection, const char * query)
+```c
+kuzu_prepared_statement* kuzu_connection_prepare (kuzu_connection * connection, const char * query)
 ```
 Prepares the given query and returns the prepared statement. 
 
@@ -162,8 +162,8 @@ Prepares the given query and returns the prepared statement.
 ---
 
 
-```c++
-KUZU_C_API void kuzu_connection_rollback (kuzu_connection * connection)
+```c
+void kuzu_connection_rollback (kuzu_connection * connection)
 ```
 Rollbacks the current transaction. 
 
@@ -172,8 +172,8 @@ Rollbacks the current transaction.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_connection_set_max_num_thread_for_exec (kuzu_connection * connection, uint64_t num_threads)
+```c
+void kuzu_connection_set_max_num_thread_for_exec (kuzu_connection * connection, uint64_t num_threads)
 ```
 Sets the maximum number of threads to use for executing queries. 
 
@@ -183,8 +183,8 @@ Sets the maximum number of threads to use for executing queries.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_connection_set_query_timeout (kuzu_connection * connection, uint64_t timeout_in_ms)
+```c
+void kuzu_connection_set_query_timeout (kuzu_connection * connection, uint64_t timeout_in_ms)
 ```
 Sets query timeout value in milliseconds for the connection. 
 

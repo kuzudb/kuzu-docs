@@ -3,14 +3,14 @@ title: Prepared Statement
 sidebar_position: 6
 ---
 
-## class kuzu_prepared_statement
+## struct kuzu_prepared_statement
 
 kuzu_prepared_statement is a parameterized query which can avoid planning the same query for repeated execution.  
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_destroy (kuzu_prepared_statement * prepared_statement)
+```c
+void kuzu_prepared_statement_destroy (kuzu_prepared_statement * prepared_statement)
 ```
 Destroys the prepared statement instance and frees the allocated memory. 
 
@@ -20,8 +20,8 @@ Destroys the prepared statement instance and frees the allocated memory.
 ---
 
 
-```c++
-KUZU_C_API char* kuzu_prepared_statement_get_error_message (kuzu_prepared_statement * prepared_statement)
+```c
+char* kuzu_prepared_statement_get_error_message (kuzu_prepared_statement * prepared_statement)
 ```
 
 **Returns:**
@@ -29,8 +29,8 @@ KUZU_C_API char* kuzu_prepared_statement_get_error_message (kuzu_prepared_statem
 
 ---
 
-```c++
-KUZU_C_API bool kuzu_prepared_statement_is_success (kuzu_prepared_statement * prepared_statement)
+```c
+bool kuzu_prepared_statement_is_success (kuzu_prepared_statement * prepared_statement)
 ```
 
 **Returns:**
@@ -38,8 +38,8 @@ KUZU_C_API bool kuzu_prepared_statement_is_success (kuzu_prepared_statement * pr
 
 ---
 
-```c++
-KUZU_C_API bool kuzu_prepared_statement_allow_active_transaction (kuzu_prepared_statement * prepared_statement)
+```c
+bool kuzu_prepared_statement_allow_active_transaction (kuzu_prepared_statement * prepared_statement)
 ```
 DDL and COPY statements are automatically wrapped in a transaction and committed. As such, they cannot be part of an active transaction. 
 
@@ -48,8 +48,8 @@ DDL and COPY statements are automatically wrapped in a transaction and committed
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_bool (kuzu_prepared_statement * prepared_statement, char * param_name, bool value)
+```c
+void kuzu_prepared_statement_bind_bool (kuzu_prepared_statement * prepared_statement, char * param_name, bool value)
 ```
 Binds the given boolean value to the given parameter name in the prepared statement. 
 
@@ -60,8 +60,8 @@ Binds the given boolean value to the given parameter name in the prepared statem
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_date (kuzu_prepared_statement * prepared_statement, char * param_name, kuzu_date_t value)
+```c
+void kuzu_prepared_statement_bind_date (kuzu_prepared_statement * prepared_statement, char * param_name, kuzu_date_t value)
 ```
 Binds the given date value to the given parameter name in the prepared statement. 
 
@@ -72,8 +72,8 @@ Binds the given date value to the given parameter name in the prepared statement
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_double (kuzu_prepared_statement * prepared_statement, char * param_name, double value)
+```c
+void kuzu_prepared_statement_bind_double (kuzu_prepared_statement * prepared_statement, char * param_name, double value)
 ```
 Binds the given double value to the given parameter name in the prepared statement. 
 
@@ -84,8 +84,8 @@ Binds the given double value to the given parameter name in the prepared stateme
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_float (kuzu_prepared_statement * prepared_statement, char * param_name, float value)
+```c
+void kuzu_prepared_statement_bind_float (kuzu_prepared_statement * prepared_statement, char * param_name, float value)
 ```
 Binds the given float value to the given parameter name in the prepared statement. 
 
@@ -96,8 +96,8 @@ Binds the given float value to the given parameter name in the prepared statemen
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_int16 (kuzu_prepared_statement * prepared_statement, char * param_name, int16_t value)
+```c
+void kuzu_prepared_statement_bind_int16 (kuzu_prepared_statement * prepared_statement, char * param_name, int16_t value)
 ```
 Binds the given int16_t value to the given parameter name in the prepared statement. 
 
@@ -108,8 +108,8 @@ Binds the given int16_t value to the given parameter name in the prepared statem
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_int32 (kuzu_prepared_statement * prepared_statement, char * param_name, int32_t value)
+```c
+void kuzu_prepared_statement_bind_int32 (kuzu_prepared_statement * prepared_statement, char * param_name, int32_t value)
 ```
 Binds the given int32_t value to the given parameter name in the prepared statement. 
 
@@ -120,8 +120,8 @@ Binds the given int32_t value to the given parameter name in the prepared statem
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_int64 (kuzu_prepared_statement * prepared_statement, char * param_name, int64_t value)
+```c
+void kuzu_prepared_statement_bind_int64 (kuzu_prepared_statement * prepared_statement, char * param_name, int64_t value)
 ```
 Binds the given int64_t value to the given parameter name in the prepared statement. 
 
@@ -132,8 +132,8 @@ Binds the given int64_t value to the given parameter name in the prepared statem
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_interval (kuzu_prepared_statement * prepared_statement, char * param_name, kuzu_interval_t value)
+```c
+void kuzu_prepared_statement_bind_interval (kuzu_prepared_statement * prepared_statement, char * param_name, kuzu_interval_t value)
 ```
 Binds the given interval value to the given parameter name in the prepared statement. 
 
@@ -144,8 +144,8 @@ Binds the given interval value to the given parameter name in the prepared state
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_string (kuzu_prepared_statement * prepared_statement, char * param_name, char * value)
+```c
+void kuzu_prepared_statement_bind_string (kuzu_prepared_statement * prepared_statement, char * param_name, char * value)
 ```
 Binds the given string value to the given parameter name in the prepared statement. 
 
@@ -156,8 +156,8 @@ Binds the given string value to the given parameter name in the prepared stateme
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_timestamp (kuzu_prepared_statement * prepared_statement, char * param_name, kuzu_timestamp_t value)
+```c
+void kuzu_prepared_statement_bind_timestamp (kuzu_prepared_statement * prepared_statement, char * param_name, kuzu_timestamp_t value)
 ```
 Binds the given timestamp value to the given parameter name in the prepared statement. 
 
@@ -168,8 +168,8 @@ Binds the given timestamp value to the given parameter name in the prepared stat
 
 ---
 
-```c++
-KUZU_C_API void kuzu_prepared_statement_bind_value (kuzu_prepared_statement * prepared_statement, char * param_name, kuzu_value * value)
+```c
+void kuzu_prepared_statement_bind_value (kuzu_prepared_statement * prepared_statement, char * param_name, kuzu_value * value)
 ```
 Binds the given kuzu value to the given parameter name in the prepared statement. 
 
