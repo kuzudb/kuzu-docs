@@ -1,25 +1,21 @@
 ---
-title: CSV Export
+title: CSV
 ---
 
-Using the `COPY TO` command, you can export query results to a CSV file. 
-By default, a header is included, and fields are separated by commas (,). Each row will be written as displayed in the query output.
+# Data Export to CSV
 
-Below are some examples:
+`COPY TO` clause can export query result into a CSV file. By default, a header is included, and fields are separated by commas `,`.
 
 ```
-COPY (MATCH (p:person) RETURN p.ID, p.name) TO 'person.csv';
+COPY (MATCH (u:User) RETURN u.*) TO 'user.csv';
 ```
 The CSV file will be written as follow:
-
 ```
-p.ID,p.name
-0,"Alice"
-2,"Bob"
-3,"Carol"
-5,"Dan"
-9,"Greg"
-...
+u.name,u.age
+"Adam",30
+"Karissa",40
+"Zhang",50
+"Noura",25
 ```
 
 ```
