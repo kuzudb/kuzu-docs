@@ -11,6 +11,7 @@ The configuration of Kùzu can be changed through standalone `Call` statement. D
 | ----------- | --------------- |
 | THREADS | number of threads used by execution |
 | TIMEOUT | timeout of query execution in ms | 
+| VAR_LENGTH_EXTEND_MAX_DEPTH | maximum depth of var length extend |
 
 ### Change Number of Threads for Execution
 
@@ -39,3 +40,15 @@ CALL current_setting('timeout') return *;
 -----------
 ```
 
+### Change maximum depth of var length extend
+
+```
+CALL var_length_extend_max_depth=10;
+CALL current_setting('var_length_extend_max_depth') RETURN *;
+
+-------------------------------
+| var_length_extend_max_depth |
+-------------------------------
+| 10                          |
+-------------------------------
+```
