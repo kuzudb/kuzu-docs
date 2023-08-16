@@ -3,10 +3,6 @@ title: Union Functions
 description: Union functions are used to create and extract union.
 ---
 
-const std::string UNION_VALUE_FUNC_NAME = "UNION_VALUE";
-const std::string UNION_TAG_FUNC_NAME = "UNION_TAG";
-const std::string UNION_EXTRACT_FUNC_NAME = "UNION_EXTRACT";
-
 # Union Functions
 
 | Function | Description | Example | Result |
