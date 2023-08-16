@@ -5,7 +5,7 @@ sidebar_position: 13
 
 # UNION
 
-Kùzu's `UNION` is implemented by taking DuckDB's `UNION` type as a reference. Simialr to C++ `std::variant`, `UNION` is a nested data type that is capable of holding multiple alternative values with different types. The value under key "tag" is considered as the value being currently hold by the `UNION`.
+Simialr to C++ `std::variant`, `UNION` is a nested data type that is capable of holding multiple alternative values with different types. The value under key "tag" is considered as the value being currently hold by the `UNION`.
 
 Internally, `UNION` are implemented as `STRUCT` with "tag" as one of its keys.
 
