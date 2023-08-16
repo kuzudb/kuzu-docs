@@ -6,9 +6,9 @@ sidebar_position: 8
 # UDF API
 Kùzu provides users with two interfaces that enable them to define their own custom scalar and vectorized functions.
 
-## createScalarFunction
+## Connection::createScalarFunction
 This API allows user to register ordinary scalar functions which are defined in c++ and use them as Kùzu built-in functions in a query. UDF functions are as efficient as the built-in functions.
-Since two c++ primitive types may map to the same Cypher(e.g. `int32` can map to both `INT32` or `DATE` in Kùzu), Kùzu provides two overloaded APIs which can eliminate the ambiguity in datatype mapping.
+Since two c++ primitive types may map to the same Cypher data types(e.g. `int32` can map to both `INT32` or `DATE` in Kùzu), Kùzu provides two overloaded APIs which can eliminate the ambiguity in datatype mapping.
 
 ### 1. Create a scalar function by automatically inferring the parameter and result type in Kùzu.
 ```
@@ -88,7 +88,7 @@ conn->createScalarFunction("addMicro",
 conn->query("MATCH (p:person) return addMicro(p.registerTime, to_int32(p.ID))")
 ```
 
-## createVectorizedFunction
+## Connection::createVectorizedFunction
 Kùzu executes functions on input data in an efficient and vectorized way. In addition to creating scalar user-defined functions(UDFs), Kùzu also provides support for vectorized UDFs. Similar to `createScalarFunction`, the `createVectorizedFunction` also offers two APIs to enhance clarity in datatype mapping.
 
 ### Vector types in Kùzu:
