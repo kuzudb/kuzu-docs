@@ -14,7 +14,7 @@ const config = {
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://your-docusaurus-test-site.com",
+  url: "https://kuzudb.com",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/docusaurus/",
@@ -204,6 +204,12 @@ const config = {
           content: "https://kuzudb.com/img/logo-u-with-orange-tick.jpg",
         },
       ],
+      algolia: {
+        appId: "XV0PE3XW33",
+        apiKey: "4bfd55d3ab2a3f3a4ee8a806d6bf8099",
+        indexName: "kuzudb",
+        contextualSearch: true,
+      },
     }),
   stylesheets: [
     {
