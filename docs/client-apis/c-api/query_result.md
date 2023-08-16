@@ -181,3 +181,23 @@ Returns the execution time of the given query summary.
 - `query_summary` The query summary to get execution time. 
 
 ---
+
+```c++
+KUZU_C_API struct ArrowSchema kuzu_query_result_get_arrow_schema(kuzu_query_result* query_result);
+```
+Returns the query result's schema as ArrowSchema.
+
+**Parameters**
+- `query_result` The query result instance to return.
+
+---
+
+```c++
+KUZU_C_API struct ArrowArray kuzu_query_result_get_next_arrow_chunk(
+    kuzu_query_result* query_result, int64_t chunk_size);
+```
+Returns the next chunk of the query result as arrow array. The arrow array internally stores an arrow struct with fields for each of the columns.
+
+**Parameters**
+- `query_result` The query result instance to return.
+- `chunk_size` The number of tuples to return in the chunk.
