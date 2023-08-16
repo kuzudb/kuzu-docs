@@ -50,25 +50,27 @@ Kùzu also supports updating node properties with multi-label nodes.
 ```
 MATCH (u)
 SET u.population = 0
-RETURN u.name, u.population; 
-----------------------------
-| u.name    | u.population |
-----------------------------
-| Waterloo  | 0            |
-----------------------------
-| Kitchener | 0            |
-----------------------------
-| Guelph    | 0            |
-----------------------------
-| Adam      |              |
-----------------------------
-| Karissa   |              |
-----------------------------
-| Zhang     |              |
-----------------------------
-| Noura     |              |
-----------------------------
+RETURN label(u), u.name, u.population; 
+-------------------------------------------------------
+| LABEL(u._ID,[User,City]) | u.name    | u.population |
+-------------------------------------------------------
+| User                     | Adam      |              |
+-------------------------------------------------------
+| User                     | Karissa   |              |
+-------------------------------------------------------
+| User                     | Zhang     |              |
+-------------------------------------------------------
+| User                     | Noura     |              |
+-------------------------------------------------------
+| City                     | Waterloo  | 0            |
+-------------------------------------------------------
+| City                     | Kitchener | 0            |
+-------------------------------------------------------
+| City                     | Guelph    | 0            |
+-------------------------------------------------------
 ```
+
+Note that node tabel "User" doesn't contain the "population" property, thus tuples belonging to "User" table are ignored (reamining as NULLs) during `Set` operations.
 
 ## Set Relationship Properties
 
