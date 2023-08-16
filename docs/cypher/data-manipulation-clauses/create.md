@@ -10,14 +10,11 @@ We will use the database, whose schema and data import commands are given [here]
 
 <img src={RunningExample} style={{width: 800}} />
 
-You can import this database by copy pasting the commands on that page. 
-
 # CREATE
-`CREATE` is similar to the INSERT clause of SQL and lets you insert records into your
-node and relationship tables. We describe the generic semantics of the 
-CREATE clause momentarily [below](#generic-semantics). We first start with some simple examples. 
+`CREATE` is similar to the `INSERT` clause of SQL and lets you insert records into your node and relationship tables. We describe the generic semantics of the 
+`CREATE` clause momentarily [below](#generic-semantics). We first start with some simple examples. 
 
-## Inserting Nodes
+## Insert Nodes
 The following query inserts a single (Alice, 35) node record into the User node table:
 
 ```
@@ -31,10 +28,7 @@ a User node with name Alice, you would get the above tuple:
 ```
 MATCH (a:User) 
 WHERE a.name = 'Alice' 
-RETURN *
-```
-Output:
-```
+RETURN a.*;
 ------------------
 | a.name | a.age |
 ------------------
@@ -52,10 +46,7 @@ CREATE (u:User {name: 'Dimitri'})
 ```
 MATCH (a:User) 
 WHERE a.name = 'Dimitri' 
-RETURN *
-```
-Output:
-```
+RETURN a.*;
 -------------------
 | a.name  | a.age |
 -------------------
@@ -63,7 +54,7 @@ Output:
 -------------------
 ```
 
-## Inserting Relationships
+## Insert Relationships
 You can insert records to your relationship tables by
 first binding two variables `s` and `t` to nodes, and then
 "drawing" a relationship pattern between `s` and `t`. 
@@ -90,7 +81,7 @@ in the database:
 ```
 MATCH (a:User), (b:User) 
 WHERE a.name = "Zhang" 
-CREATE (a)-[:Follows {since :  2022}]->(b)
+CREATE (a)-[:Follows {since:2022}]->(b);
 ```
 This is because the "a" variable matches to User node "Zhang" and the "b" variable matches to any node in the "User" table. As a result, this query creates a Follows relationship from User node "Zhang" to every other User nodes.
 

@@ -3,20 +3,10 @@ title: Query Result
 sidebar_position: 2
 ---
 
-## class kuzu_query_result
+## struct kuzu_query_result
 
-kuzu_query_result stores the result of a query.  
-
----
-
-## class kuzu_query_summary
-
-kuzu_query_summary stores the execution time, plan, compiling time and query options of a query.  
-
----
-
-```c++
-KUZU_C_API void kuzu_query_result_destroy (kuzu_query_result * query_result)
+```c
+void kuzu_query_result_destroy (kuzu_query_result * query_result)
 ```
 Destroys the given query result instance. 
 
@@ -25,8 +15,8 @@ Destroys the given query result instance.
 
 ---
 
-```c++
-KUZU_C_API kuzu_logical_type* kuzu_query_result_get_column_data_type (kuzu_query_result * query_result, uint64_t index)
+```c
+kuzu_logical_type* kuzu_query_result_get_column_data_type (kuzu_query_result * query_result, uint64_t index)
 ```
 Returns the data type of the column at the given index. 
 
@@ -36,8 +26,8 @@ Returns the data type of the column at the given index.
 
 ---
 
-```c++
-KUZU_C_API char* kuzu_query_result_get_column_name (kuzu_query_result * query_result, uint64_t index)
+```c
+char* kuzu_query_result_get_column_name (kuzu_query_result * query_result, uint64_t index)
 ```
 Returns the column name at the given index. 
 
@@ -47,8 +37,8 @@ Returns the column name at the given index.
 
 ---
 
-```c++
-KUZU_C_API char* kuzu_query_result_get_error_message (kuzu_query_result * query_result)
+```c
+char* kuzu_query_result_get_error_message (kuzu_query_result * query_result)
 ```
 Returns the error message if the query is failed. 
 
@@ -57,8 +47,8 @@ Returns the error message if the query is failed.
 
 ---
 
-```c++
-KUZU_C_API kuzu_flat_tuple* kuzu_query_result_get_next (kuzu_query_result * query_result)
+```c
+kuzu_flat_tuple* kuzu_query_result_get_next (kuzu_query_result * query_result)
 ```
 Returns the next tuple in the query result. Throws an exception if there is no more tuple. 
 
@@ -67,8 +57,8 @@ Returns the next tuple in the query result. Throws an exception if there is no m
 
 ---
 
-```c++
-KUZU_C_API uint64_t kuzu_query_result_get_num_columns (kuzu_query_result * query_result)
+```c
+uint64_t kuzu_query_result_get_num_columns (kuzu_query_result * query_result)
 ```
 Returns the number of columns in the query result. 
 
@@ -77,8 +67,8 @@ Returns the number of columns in the query result.
 
 ---
 
-```c++
-KUZU_C_API uint64_t kuzu_query_result_get_num_tuples (kuzu_query_result * query_result)
+```c
+uint64_t kuzu_query_result_get_num_tuples (kuzu_query_result * query_result)
 ```
 Returns the number of tuples in the query result. 
 
@@ -88,8 +78,8 @@ Returns the number of tuples in the query result.
 ---
 
 
-```c++
-KUZU_C_API kuzu_query_summary* kuzu_query_result_get_query_summary (kuzu_query_result * query_result)
+```c
+kuzu_query_summary* kuzu_query_result_get_query_summary (kuzu_query_result * query_result)
 ```
 Returns the query summary of the query result. 
 
@@ -98,8 +88,8 @@ Returns the query summary of the query result.
 
 ---
 
-```c++
-KUZU_C_API bool kuzu_query_result_has_next (kuzu_query_result * query_result)
+```c
+bool kuzu_query_result_has_next (kuzu_query_result * query_result)
 ```
 Returns true if we have not consumed all tuples in the query result, false otherwise. 
 
@@ -108,8 +98,8 @@ Returns true if we have not consumed all tuples in the query result, false other
 
 ---
 
-```c++
-KUZU_C_API bool kuzu_query_result_is_success (kuzu_query_result * query_result)
+```c
+bool kuzu_query_result_is_success (kuzu_query_result * query_result)
 ```
 Returns true if the query is executed successful, false otherwise. 
 
@@ -118,8 +108,8 @@ Returns true if the query is executed successful, false otherwise.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_query_result_reset_iterator (kuzu_query_result * query_result)
+```c
+void kuzu_query_result_reset_iterator (kuzu_query_result * query_result)
 ```
 Resets the iterator of the query result to the beginning of the query result. 
 
@@ -128,8 +118,8 @@ Resets the iterator of the query result to the beginning of the query result.
 
 ---
 
-```c++
-KUZU_C_API char* kuzu_query_result_to_string (kuzu_query_result * query_result)
+```c
+char* kuzu_query_result_to_string (kuzu_query_result * query_result)
 ```
 Returns the query result as a string. 
 
@@ -138,8 +128,8 @@ Returns the query result as a string.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_query_result_write_to_csv (kuzu_query_result * query_result, const char * file_path, char delimiter, char escape_char, char new_line)
+```c
+void kuzu_query_result_write_to_csv (kuzu_query_result * query_result, const char * file_path, char delimiter, char escape_char, char new_line)
 ```
 Writes the query result to the given file path as CSV. 
 
@@ -152,8 +142,8 @@ Writes the query result to the given file path as CSV.
 
 ---
 
-```c++
-KUZU_C_API void kuzu_query_summary_destroy (kuzu_query_summary * query_summary)
+```c
+void kuzu_query_summary_destroy (kuzu_query_summary * query_summary)
 ```
 Destroys the given query summary. 
 
@@ -162,8 +152,8 @@ Destroys the given query summary.
 
 ---
 
-```c++
-KUZU_C_API double kuzu_query_summary_get_compiling_time (kuzu_query_summary * query_summary)
+```c
+double kuzu_query_summary_get_compiling_time (kuzu_query_summary * query_summary)
 ```
 Returns the compilation time of the given query summary. 
 
@@ -172,8 +162,8 @@ Returns the compilation time of the given query summary.
 
 ---
 
-```c++
-KUZU_C_API double kuzu_query_summary_get_execution_time (kuzu_query_summary * query_summary)
+```c
+double kuzu_query_summary_get_execution_time (kuzu_query_summary * query_summary)
 ```
 Returns the execution time of the given query summary. 
 
@@ -181,3 +171,23 @@ Returns the execution time of the given query summary.
 - `query_summary` The query summary to get execution time. 
 
 ---
+
+```c
+struct ArrowSchema kuzu_query_result_get_arrow_schema(kuzu_query_result* query_result);
+```
+Returns the query result's schema as ArrowSchema.
+
+**Parameters**
+- `query_result` The query result instance to return.
+
+---
+
+```c
+struct ArrowArray kuzu_query_result_get_next_arrow_chunk(
+    kuzu_query_result* query_result, int64_t chunk_size);
+```
+Returns the next chunk of the query result as arrow array. The arrow array internally stores an arrow struct with fields for each of the columns.
+
+**Parameters**
+- `query_result` The query result instance to return.
+- `chunk_size` The number of tuples to return in the chunk.

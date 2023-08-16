@@ -130,6 +130,29 @@ writes the query result to a csv file.
 
 ---
 
+**getArrowSchema**
+
+```c++
+std::unique_ptr<ArrowSchema> getArrowSchema() const;
+```
+
+**Returns:**
+- the arrow schema of the query result.
+
+---
+
+**getNextArrowChunk**
+
+```c++
+std::unique_ptr<ArrowArray> getNextArrowChunk(int64_t chunkSize);
+```
+
+**Parameters**
+- `chunkSize`: number of tuples to return in the chunk.
+
+**Returns:**
+- the next chunk of the query result as an arrow array. The arrow array internally stores an arrow struct with fields for each of the columns.
+
 ## class kuzu::main::QuerySummary
 
 QuerySummary stores the execution time, plan, compiling time and query options of a query.  
@@ -165,4 +188,3 @@ std::string getPlan ()
 - physical plan for query in string format. 
 
 ---
-
