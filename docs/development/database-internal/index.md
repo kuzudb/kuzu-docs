@@ -45,8 +45,8 @@ Catalog module contains schema level informations that are generated through DDL
 ### Storage
 
 Storage module contains data that needs to be persistent on disk. Spefically,
-- BufferManager: manage all memories being used in the system (except for small memories that are allocated from OS). Controls when to read/write a disk page.
-- Index: hash index.
+- BufferManager: manage all memories being used in the system (except for small memories that are allocated from OS); cache recently read pages in memory.
+- Index: hash index for primary keys.
 - Column: vanilla column data structure.
 - Lists: CSR-like data structure.
 - NodeTable: a collection of multiple columns.
