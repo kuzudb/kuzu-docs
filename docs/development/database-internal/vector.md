@@ -22,9 +22,9 @@ For primitive data type, we can represents data in `data` field. E.g. to represe
 
 The privious storage requires each element to have a fixed size. This however, does NOT work with `STRING` type whose size may vary. We implemnt `STRING` as a 16 bytes data structure with first 8 bytes as prefix and last 8 bytes as a pointer pointing to a memory location storing the rest of string. The fixed length part of `STRING` is stored in `data` and the overflow part is stored in `auxilaryBuffer`.
 
-#### Recursive Type ValueVector
+#### Nested Type ValueVector
 
-Although recursive type value vector can be organized as overflow in the same way as `STRING`, we want to utilize the fact that the child type of a recursive type is known and can still be stored in column-oriented value vector.
+Although nested type value vector can be organized as overflow in the same way as `STRING`, we want to utilize the fact that the child type of a nested type is known and can still be stored in column-oriented value vector.
 
 For `STRUCT` type, we store children vectors in `auxilaryBuffer`. E.g.
 ```
