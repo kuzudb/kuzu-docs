@@ -1,6 +1,6 @@
 ---
 title: Performance Debugging
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # EXPLAIN and PROFILE
