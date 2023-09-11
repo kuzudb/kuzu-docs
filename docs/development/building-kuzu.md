@@ -9,7 +9,13 @@ sidebar_position: 1
 
 To build from source code, Kùzu requires Cmake(>=3.11), Python(>=3.7), and a compiler that supports C++20. Note that the header files of Python 3 are also required. The minimum supported version of C++ compilers is GCC 10, Clang 11, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but they are not tested.
 
-Below are the instructions for building Kùzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. The instructions for other Debian-based Linux distros, such as Debian, Linux Mint, and Pop!\_OS, should be similar to Ubuntu 22.04 LTS. The instructions for other Red Hat-based Linux distros, such as CentOS, Fedora, and Rocky Linux, and Oracle Linux, should be similar to AlmaLinux 9.2. The instructions for other Arch-based Linux distros, such as Manjaro, should be similar to Arch Linux. For other versions of macOS, the instructions should be similar to macOS 12. For other versions of Windows, the instructions should be similar to Windows 10.
+Below are the instructions for building Kùzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. These instructions should also work for other similar platforms:
+
+- For other Debian-based Linux distros, such as *Debian*, *Linux Mint*, and *Pop!\_OS*, the instructions should be similar to Ubuntu 22.04 LTS.
+- For other Red Hat-based Linux distros, such as *CentOS*, *Fedora*, *Rocky Linux*, and *Oracle Linux*, the instructions should be similar to AlmaLinux 9.2.
+- For other Arch-based Linux distros, such as *Manjaro*, the instructions should be similar to Arch Linux.
+- For other versions of *macOS*, the instructions should be similar to macOS 12.
+- For other versions of *Windows*, the instructions should be similar to Windows 10.
 
 ## Building Instructions
 
