@@ -12,7 +12,7 @@ To build from source code, Kùzu requires Cmake(>=3.11), Python(>=3.7), and a co
 Below are the instructions for building Kùzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. These instructions should also work for other similar platforms:
 
 - For other Debian-based Linux distros, such as *Debian*, *Linux Mint*, and *Pop!\_OS*, the instructions should be similar to Ubuntu 22.04 LTS.
-- For other Red Hat-based Linux distros, such as *CentOS*, *Fedora*, *Rocky Linux*, and *Oracle Linux*, the instructions should be similar to AlmaLinux 9.2.
+- For other Red Hat-based Linux distros, such as *Red Hat Enterprise Linux (RHEL)*, *CentOS*, *Fedora*, *Rocky Linux*, and *Oracle Linux*, the instructions should be similar to AlmaLinux 9.2.
 - For other Arch-based Linux distros, such as *Manjaro*, the instructions should be similar to Arch Linux.
 - For other versions of *macOS*, the instructions should be similar to macOS 12.
 - For other versions of *Windows*, the instructions should be similar to Windows 10.
