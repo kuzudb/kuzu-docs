@@ -31,7 +31,7 @@ apt install -y build-essential cmake gcc g++ python3 python3-dev
 #### Build Kùzu
 
 ```bash
-make release NUM_THREADS=$nproc
+make release NUM_THREADS=$(nproc)
 ```
 
 ### AlmaLinux 9.2
@@ -46,7 +46,7 @@ dnf install -y cmake gcc gcc-c++ python3 python3-devel
 #### Build Kùzu
 
 ```bash
-make release NUM_THREADS=$nproc
+make release NUM_THREADS=$(nproc)
 ```
 
 ### Arch Linux
@@ -61,7 +61,7 @@ pacman -S --needed base-devel cmake gcc python
 #### Build Kùzu
 
 ```bash
-make release NUM_THREADS=$nproc
+make release NUM_THREADS=$(nproc)
 ```
 
 ### macOS 12
