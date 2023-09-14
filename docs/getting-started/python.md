@@ -58,7 +58,7 @@ Output:
 
 Alternatively, the Python API can also output results as a Pandas data frame:
 ```python
-results = conn.execute('MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;').getAsDF()
+results = conn.execute('MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;').get_as_df()
 print(results)
 ```
 
