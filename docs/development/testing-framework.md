@@ -146,7 +146,7 @@ and convering the CSV to Parquet.
 ### Other properties
 
 
-Other optional parameters include `-BUFFER_POOL_SIZE` and `-SKIP`. By including 
+Other optional parameters include `-BUFFER_POOL_SIZE`, `-CHECKPOINT_WAIT_TIMEOUT` and `-SKIP`. By including 
 `-SKIP` in the header, the entire suite will be deactivated, but the tests 
 will still be displayed as disabled when running through `ctest`.
 
@@ -298,6 +298,50 @@ again.
 -STATEMENT ...
 ---- ok
 ```
+### Multiple connections
+The following example illustrates how to use multiple connections:
+
+```
+-GROUP Set_Transaction
+-DATASET CSV tinysnb
+
+--
+
+-CASE TimeoutErrorTest
+-CHECKPOINT_WAIT_TIMEOUT 10000
+-CREATE_CONNECTION conn_read
+-CREATE_CONNECTION conn_write
+-STATEMENT [conn_read] BEGIN READ TRANSACTION;
+---- ok
+-STATEMENT [conn_write] BEGIN WRITE TRANSACTION;
+---- ok
+-STATEMENT [conn_write] MATCH (a:person) WHERE a.ID=0 set a.age=70;
+---- ok
+-STATEMENT [conn_write] COMMIT
+---- error
+Timeout waiting for read transactions to leave the system before committing and checkpointing a write transaction. If you have an open read transaction close and try again.
+-STATEMENT [conn_read] MATCH (a:person) WHERE a.ID=0 RETURN a.age;
+---- 1
+35
+
+```
+
+In the example above:
+
+`-CREATE CONNECTION conn.*` initiates a connection to the database. It's essential that the connection name matches the specified prefix `conn`, like `conn_write`, `conn_read`.   
+`-STATEMENT` is followed by a connection name that was defined in the `-CREATE CONNECTION` statement. If a connection name is not explicitly mentioned in a statement, the testing framework will default to using the default connection.
+
+### Batch statements
+We can use `-BATCH_STATEMENTS` to test a batch of query statments from a file:
+
+```
+-BATCH_STATEMENTS <FILE:>small_list_becomes_large_list_after_insertion.cypher
+---- ok
+```
+
+In the example above:
+
+`-BATCH_STATEMENTS` is followed by `<FILE>:` , indicating that you're specifying a file to be used. The file must be created inside `test/statements/<name-of-the-file.cypher>`. By doing so, the testing framework reads the query statements from the file and execute each query statement.
 
 ## Examples
 
@@ -309,6 +353,7 @@ Full example with comments.
 -GROUP Create
 -TEST CreateRelTest
 -BUFFER_POOL_SIZE 64000000
+-CHECKPOINT_WAIT_TIMEOUT 10000
 -DATASET PARQUET CSV_TO_PARQUET(tinysnb)
 
 --
