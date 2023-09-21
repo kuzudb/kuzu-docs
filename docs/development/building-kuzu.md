@@ -137,7 +137,7 @@ pip3 install -r tools/python_api/requirements_dev.txt
 #### Run Python tests
 
 ```bash
-make pythontest NUM_THREADS=X
+make pytest NUM_THREADS=X
 ```
 
 ### Increase `ulimit` for running tests
