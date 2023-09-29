@@ -1,6 +1,6 @@
 ---
 title: Database Configuration
-sidebar_position: 4
+sidebar_position: 10
 ---
 
 # Database Configuration

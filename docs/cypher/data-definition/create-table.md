@@ -1,13 +1,14 @@
 ---
-title: Data Definition
-sidebar_position: 2
+title: Create
+sidebar_position: 0
+description: Create tables
 ---
 
-# Defining A Graph Schema: Data Definition Language
+# Create
 
 As a first step to creating your database, you need to define your node and directed relationships. In the property graph model, nodes and relationships have labels. In Kùzu, every node or relationship can have 1 label. The node and relationships and the predefined properties on them are defined through `CREATE NODE TABLE` and `CREATE REL TABLE` commands. The choice of using the term "table" over "label" is intentional and explained below[^1].
 
-## Defining Node Tables
+## Create Node Tables
 For example, the following statement defines a table of User nodes. 
 ```
 CREATE NODE TABLE User(name STRING, age INT64, reg_date DATE, PRIMARY KEY (name))
@@ -16,7 +17,7 @@ This adds a User table to the catalog of the system with 3 predefined properties
 
 Kùzu requires a primary key column for node table which can be either a `STRING` or `INT64` property of the node. Kùzu will generate an index to do quick lookups on the primary key (e.g., name in the above example). Alternativly, you can use [`SERIAL` data type](./data-types/serial.md) to generate an auto-increment column as primary key.
 
-## Defining Relationship Tables
+## Create Relationship Tables
 Here are some examples of defining tables of relationships.
 
 ### Basic Usage
@@ -50,84 +51,6 @@ CREATE REL TABLE Likes(FROM Pet TO User, ONE_MANY)
 The above ddl indicates that Likes has 1-to-n multiplicity. This ddl command puts the constraint: that each User node v might be Liked by one Pet node. It does not put any constraint in the forward direction, i.e., each Pet node might know multiple Users.
 
 In general in a relationship E's multiplicity, if the "source side" is "ONE", then for each node v that can be the destination of E relationships, v can have at most 1 backward edge. If the "destination side" is ONE, then each node v that can be the source of E relationships, v can have at most 1 forward edge. 
-
-## DROP TABLE
-You can drop tables from the database with the `DROP TABLE` command.<br />
-Two important notes:
-  1. To drop a node table X, you need to first drop all of the relationship tables 
-     that refer to X in its FROM or TO first.
-  2. You can drop any relationship table at any time.
-
-For example if you have a database with User and Follows tables defined as above and you
-tried to drop User without dropping Follows first, Kùzu will error:
-
-```
-DROP TABLE User
-Error: Binder exception: Cannot delete a node table with edges. It is on the edges of rel: Follows.
-```
-But you can first delete Follows and the User as follows:
-```
-DROP TABLE Follows
----------------------------------------
-| RelTable: Follows has been dropped. |
----------------------------------------
-DROP TABLE User
--------------------------------------
-| NodeTable: User has been dropped. |
--------------------------------------
-```
-
-## ALTER TABLE
-You can change the schema of a table using the `ALTER TABLE` command.<br />
-
-### 1. Add a column:
-`ADD COLUMN` allows you to add a new column to a node/rel table.
-By default, if you don't specify a default value, the newly added column is filled with NULLs.
-
-Note: column names must be unique within a node/rel table. If the column name has already been used in the table, `ADD COLUMN` command will fail.<br />
-For example: the following query will fail since the age column already exists in the User table.
-```
-ALTER TABLE User ADD age INT64;
-```
-Will throw the error:
-```
-"Binder exception: Property: age already exists."
-```
-Examples:
-```
-ALTER TABLE User ADD grade INT64;
-```
-This adds a new column with the default value NULL to the User table.
-
-The user can also define the default value of the new column.
-```
-ALTER TABLE User ADD grade INT64 DEFAULT 40;
-```
-This adds a new column grade with default value 40 to the User table.
-
-### 2. Drop a column:
-`DROP COLUMN` allows you to remove a column from a node/rel table.<br />
-```
-ALTER TABLE User DROP age;
-```
-This drops the age column from the User table.
-
-### 3. Rename a node/rel table:
-`RENAME TABLE` allows the user to rename a table.<br />
-Note: table name must be unique. 
-```
-ALTER TABLE User RENAME TO Student;
-```
-This renames the table User to Student.
-
-### 4. Rename a column of a node/rel table:
-`RENAME COLUMN` allows the user to rename a column of a table.<br />
-Note: column name must be unique within a node/rel table. Different node/rel tables can have columns with the same name.
-```
-ALTER TABLE User RENAME age TO grade;
-```
-This renames the age column to grade.
-
 
 [^1]: We prefer the term "table" instead of "label" because Kùzu, as well as other GDBMSs are ultimately relational systems in the sense that they store and process sets of tuples, i.e., tables or relations. A good way to understand the property graph model is as tagging your tables as "node" and "relationship tables" depending on their roles in your application data. Nodes are generally suitable to represent entities in your applications, while relationships represent the relationships/connections. Relationships are the primary means to join nodes with each other to find paths and patterns in your graph database. So when you define a node label and a set of nodes/relationships, this is equivalent to defining a table or records as nodes or relationships. During querying you can bind node records in syntax like (a:Person), while relationships in syntax like (..)-[e:Knows]->(...). Similar to table definitions in SQL, node and relationship tables have primary keys, a term that is defined in the context of tables: node tables explicitly define primary keys as one of their properties, while the primary keys of relationship tables are implicitly defined by the primary keys of their FROM and TO node records. Further observe that similar to relational systems, properties can be thought equivalently as columns of a table, justifying our choice of using the term table in these definitions.
 

@@ -1,7 +1,7 @@
 ---
 title: Load From
 sidebar_position: 12
-description: Load
+description: Direct scan over file
 ---
 
 # LOAD FROM
