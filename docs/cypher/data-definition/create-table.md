@@ -4,12 +4,12 @@ sidebar_position: 0
 description: Create tables
 ---
 
-# Create
+# CREATE
 
 As a first step to creating your database, you need to define your node and directed relationships. In the property graph model, nodes and relationships have labels. In Kùzu, every node or relationship can have 1 label. The node and relationships and the predefined properties on them are defined through `CREATE NODE TABLE` and `CREATE REL TABLE` commands. The choice of using the term "table" over "label" is intentional and explained below[^1].
 
-## Create Node Tables
-For example, the following statement defines a table of User nodes. 
+## CREATE NODE TABLE
+The following statement defines a table of User nodes. 
 ```
 CREATE NODE TABLE User(name STRING, age INT64, reg_date DATE, PRIMARY KEY (name))
 ```
@@ -17,16 +17,13 @@ This adds a User table to the catalog of the system with 3 predefined properties
 
 Kùzu requires a primary key column for node table which can be either a `STRING` or `INT64` property of the node. Kùzu will generate an index to do quick lookups on the primary key (e.g., name in the above example). Alternativly, you can use [`SERIAL` data type](./data-types/serial.md) to generate an auto-increment column as primary key.
 
-## Create Relationship Tables
-Here are some examples of defining tables of relationships.
-
-### Basic Usage
-The following adds to the catalog a Follows relationship table between User and User nodes with one date property. 
+## CREATE REL TABLE
+The following statement adds to the catalog a Follows relationship table between User and User with one date property. 
 ```
 CREATE REL TABLE Follows(FROM User TO User, since DATE)
 ```
-There are several things to note:
-- Note that there is no comma between the FROM and TO clauses. 
+Notes:
+- There is no comma between the FROM and TO clauses. 
 - Relationship directions: Each relationship has a direction following the property graph model. So when Follows relationship records are added, each one has a specific source/from node and a specific destination/to node[^2].
 - Relationship primary keys: You cannot define a primary key for relationship records. Each relationship gets a unique system-level edge ID, which are internally generated. You can check if two edges are the same, i.e., have the same edge ID, using the "=" and "!=" operator between "ID()" function on two variables that bind to relationships. For example, you can query `MATCH (n1:User)-[r1:Follows]->(n2:User)<-[r2:Follows]-(n3:User) WHERE ID(r1) != ID(r2) RETURN *` to ensure that the same relationship does not bind to both r1 and r2.
 - Relationship can only be defined as being from one node table/label to one node table/label.
@@ -51,6 +48,9 @@ CREATE REL TABLE Likes(FROM Pet TO User, ONE_MANY)
 The above ddl indicates that Likes has 1-to-n multiplicity. This ddl command puts the constraint: that each User node v might be Liked by one Pet node. It does not put any constraint in the forward direction, i.e., each Pet node might know multiple Users.
 
 In general in a relationship E's multiplicity, if the "source side" is "ONE", then for each node v that can be the destination of E relationships, v can have at most 1 backward edge. If the "destination side" is ONE, then each node v that can be the source of E relationships, v can have at most 1 forward edge. 
+
+## CREATE REL TABLE GROUP
+
 
 [^1]: We prefer the term "table" instead of "label" because Kùzu, as well as other GDBMSs are ultimately relational systems in the sense that they store and process sets of tuples, i.e., tables or relations. A good way to understand the property graph model is as tagging your tables as "node" and "relationship tables" depending on their roles in your application data. Nodes are generally suitable to represent entities in your applications, while relationships represent the relationships/connections. Relationships are the primary means to join nodes with each other to find paths and patterns in your graph database. So when you define a node label and a set of nodes/relationships, this is equivalent to defining a table or records as nodes or relationships. During querying you can bind node records in syntax like (a:Person), while relationships in syntax like (..)-[e:Knows]->(...). Similar to table definitions in SQL, node and relationship tables have primary keys, a term that is defined in the context of tables: node tables explicitly define primary keys as one of their properties, while the primary keys of relationship tables are implicitly defined by the primary keys of their FROM and TO node records. Further observe that similar to relational systems, properties can be thought equivalently as columns of a table, justifying our choice of using the term table in these definitions.
 
