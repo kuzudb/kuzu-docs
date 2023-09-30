@@ -49,3 +49,5 @@ The following query renames the age column to grade.
 ```
 ALTER TABLE User RENAME age TO grade;
 ```
+
+### COMMENT ON

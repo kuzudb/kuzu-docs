@@ -49,9 +49,38 @@ The above ddl indicates that Likes has 1-to-n multiplicity. This ddl command put
 
 In general in a relationship E's multiplicity, if the "source side" is "ONE", then for each node v that can be the destination of E relationships, v can have at most 1 backward edge. If the "destination side" is ONE, then each node v that can be the source of E relationships, v can have at most 1 forward edge. 
 
-## CREATE REL TABLE GROUP
+## CREATE REL TABLE GROUP[^3]
+
+Kùzu limits relationship tables to be defined over a pair of node tables for a simple storage design. This, however, limits the flexiblity of data modelling. To define a relationship table with multiple node table pairs, you can use `CREATE REL TABLE GROUP` statement in a similar syntax as `CREATE REL TABLE` but with multiple `FROM ... TO ...`. This statement will create a relationship table for each `FROM ... TO ...` internally. User can use rel table group name as the union of all rel tables under the group in the query.
+
+#### Notes
+- Currently, Kùzu does not allow `COPY FROM` or `CREATE` using rel table group. You need explicitly specify a rel table.
+
+```
+CREATE REL TABLE GROUP Knows (FROM User To User, FROM User to City, year INT64);
+```
+The statement above creates a Knows_User_User rel table and a Knows_User_City rel table. 
+```
+CALL SHOW_TABLES() RETURN *;
+----------------------------------------------
+| TableName       | TableType | TableComment |
+----------------------------------------------
+| Knows           | REL_GROUP |              |
+----------------------------------------------
+| Knows_User_City | REL       |              |
+----------------------------------------------
+| Knows_User_User | REL       |              |
+----------------------------------------------
+| User            | NODE      |              |
+----------------------------------------------
+| City            | NODE      |              |
+----------------------------------------------
+```
+
 
 
 [^1]: We prefer the term "table" instead of "label" because Kùzu, as well as other GDBMSs are ultimately relational systems in the sense that they store and process sets of tuples, i.e., tables or relations. A good way to understand the property graph model is as tagging your tables as "node" and "relationship tables" depending on their roles in your application data. Nodes are generally suitable to represent entities in your applications, while relationships represent the relationships/connections. Relationships are the primary means to join nodes with each other to find paths and patterns in your graph database. So when you define a node label and a set of nodes/relationships, this is equivalent to defining a table or records as nodes or relationships. During querying you can bind node records in syntax like (a:Person), while relationships in syntax like (..)-[e:Knows]->(...). Similar to table definitions in SQL, node and relationship tables have primary keys, a term that is defined in the context of tables: node tables explicitly define primary keys as one of their properties, while the primary keys of relationship tables are implicitly defined by the primary keys of their FROM and TO node records. Further observe that similar to relational systems, properties can be thought equivalently as columns of a table, justifying our choice of using the term table in these definitions.
 
 [^2]: We have currently not decided if Kùzu will support undirected edges or support it in a way similar to Neo4j, which always forces directed edges but allow querying in an undirected way. See [examples here](https://neo4j.com/docs/cypher-manual/current/introduction/uniqueness/) for the details how Neo4j supports "undirected querying", which matches edges from both directions.
+
+[^3]: This is an experimental feature and might be changed in the future.
