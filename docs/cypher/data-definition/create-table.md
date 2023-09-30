@@ -51,7 +51,7 @@ In general in a relationship E's multiplicity, if the "source side" is "ONE", th
 
 ## CREATE REL TABLE GROUP[^3]
 
-Kùzu limits relationship tables to be defined over a pair of node tables for a simple storage design. This, however, limits the flexiblity of data modelling. To define a relationship table with multiple node table pairs, you can use `CREATE REL TABLE GROUP` statement in a similar syntax as `CREATE REL TABLE` but with multiple `FROM ... TO ...`. This statement will create a relationship table for each `FROM ... TO ...` internally. User can use rel table group name as the union of all rel tables under the group in the query.
+Kùzu limits relationship tables to be defined over a pair of node tables for a simple storage design. This, however, limits the flexiblity of data modelling. To define a relationship table with multiple node table pairs, you can use `CREATE REL TABLE GROUP` statement in a similar syntax as `CREATE REL TABLE` but with multiple `FROM ... TO ...`. This statement will create a relationship table for each `FROM ... TO ...` internally. User can query with rel table group as the union of all rel tables in the group.
 
 #### Notes
 - Currently, Kùzu does not allow `COPY FROM` or `CREATE` using rel table group. You need explicitly specify a rel table.
@@ -59,7 +59,7 @@ Kùzu limits relationship tables to be defined over a pair of node tables for a 
 ```
 CREATE REL TABLE GROUP Knows (FROM User To User, FROM User to City, year INT64);
 ```
-The statement above creates a Knows_User_User rel table and a Knows_User_City rel table. 
+The statement above creates a Knows_User_User rel table and a Knows_User_City rel table. And a Knows rel table group refering these two rel tables. 
 ```
 CALL SHOW_TABLES() RETURN *;
 ----------------------------------------------
@@ -76,7 +76,14 @@ CALL SHOW_TABLES() RETURN *;
 | City            | NODE      |              |
 ----------------------------------------------
 ```
-
+Rel table group can be used as a regular rel table when querying. Kùzu will compile rel table group as the union of all rel tables under the group.
+```
+MATCH (a:User)-[:Knows]->(b) RETURN *;
+```
+The query above is equivalent to 
+```
+MATCH (a:User)-[:Knows_User_User|:Knows_User_city]->(b) RETURN *;
+```
 
 
 [^1]: We prefer the term "table" instead of "label" because Kùzu, as well as other GDBMSs are ultimately relational systems in the sense that they store and process sets of tuples, i.e., tables or relations. A good way to understand the property graph model is as tagging your tables as "node" and "relationship tables" depending on their roles in your application data. Nodes are generally suitable to represent entities in your applications, while relationships represent the relationships/connections. Relationships are the primary means to join nodes with each other to find paths and patterns in your graph database. So when you define a node label and a set of nodes/relationships, this is equivalent to defining a table or records as nodes or relationships. During querying you can bind node records in syntax like (a:Person), while relationships in syntax like (..)-[e:Knows]->(...). Similar to table definitions in SQL, node and relationship tables have primary keys, a term that is defined in the context of tables: node tables explicitly define primary keys as one of their properties, while the primary keys of relationship tables are implicitly defined by the primary keys of their FROM and TO node records. Further observe that similar to relational systems, properties can be thought equivalently as columns of a table, justifying our choice of using the term table in these definitions.

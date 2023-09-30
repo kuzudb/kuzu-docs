@@ -51,3 +51,20 @@ ALTER TABLE User RENAME age TO grade;
 ```
 
 ### COMMENT ON
+`COMMENT ON` allows you to add comments to a table.
+
+The following query adds a comment to `User` table.
+```
+COMMENT ON TABLE User IS 'User information';
+```
+Comments can be extracted through `SHOW_TABLES()` function. See [CALL](../query-clauses/call.md) for more information.
+```
+CALL SHOW_TABLES() RETURN *;
+--------------------------------------------
+| TableName | TableType | TableComment     |
+--------------------------------------------
+| User      | NODE      | User information |
+--------------------------------------------
+| City      | NODE      |                  |
+--------------------------------------------
+```
