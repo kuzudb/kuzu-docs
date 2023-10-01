@@ -17,21 +17,21 @@ or (ii) auto-committing. These are reviewed below.
 
 ### Transaction Statement
 Kùzu supports the following transaction statements.
-- `BEGIN READ TRANSACTION`: starts a read-only transaction.
-- `BEGIN WRITE TRANSACTION`: starts a read-write transaction.
+- `BEGIN TRANSACTION`: starts a read-write transaction. 
+- `BEGIN TRANSACTION READ ONLY`: starts a read-only transaction.
 - `COMMIT`: commit change in current transaction.
 - `ROLLBACK`: rollback change in current transaction.
 
 ### Manual Transaction
 ```
-BEGIN WRITE TRANSACTION;
+BEGIN TRANSACTION;
 CREATE (a:User {name: 'Alice', age: 72});
 MATCH (a:User) RETURN *;
 COMMIT;
 ```
-The above statements start a manual write transaction, add a new node, and within the same transaction also read all of the tuples in User table. Finally, commit the transaction.
+The above statements start a manual read-write transaction, add a new node, and within the same transaction also read all of the tuples in User table. Finally, commit the transaction.
 
-You can also start a read-only transaction with `BEGIN READ TRANSACTION`. Read only transactions are not allowed to write to the database. You should start a read-only transaction for two main reasons: (i) if you want to run multiple read queries ensuring that the database does not change in-between those transactions; and/or (ii) you don't want to block a write transaction from writing to the database in parallel (recall that at any point in time Kùzu allows 1 write transaction in the system).
+You can also start a read-only transaction with `BEGIN TRANSACTION READ ONLY`. Read only transactions are not allowed to write to the database. You should start a read-only transaction for two main reasons: (i) if you want to run multiple read queries ensuring that the database does not change in-between those transactions; and/or (ii) you don't want to block a write transaction from writing to the database in parallel (recall that at any point in time Kùzu allows 1 write transaction in the system).
 
 If you replace `COMMIT` with `ROLLBACK`, the added ('Alice', 72) node record will not persist in the database.
 
