@@ -13,6 +13,7 @@ description: CALL clause is a reading clause used for executing schema functions
 | TABLE_INFO('tableName') | returns metadata information of the given table |
 | CURRENT_SETTING('setting') | returns the value of the given setting |
 | DB_VERSION() | returns the version of Kùzu |
+| SHOW_TABLES() | returns the name, type, comment of all tables in the database |
 
 
 ### TABLE_INFO
@@ -77,4 +78,34 @@ Output:
 ----------------
 | v0.4.0       |
 ----------------
+```
+
+### SHOW_TABLES
+
+SHOW_TABLES returns the name, type and comment of all tables in the database.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| name | name of the table | STRING |
+| type | type of the table | STRING |
+| comment | comment of the table | STRING |
+
+```
+CALL show_tables() RETURN *;
+```
+Output:
+```
+--------------------------------------------
+| name        | type | comment             |
+--------------------------------------------
+| gf          | RDF  |                     |
+--------------------------------------------
+| gf_TRIPLES  | REL  |                     |
+--------------------------------------------
+| gf_RESOURCE | NODE |                     |
+--------------------------------------------
+| person      | NODE | person info         |
+--------------------------------------------
+| knows       | REL  | person knows person |
+--------------------------------------------
 ```
