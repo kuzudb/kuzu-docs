@@ -18,23 +18,7 @@ MATCH is the clause where you define a "graph pattern", i.e., a join of node or 
 to find in the database.[^1]. There are several different ways to match patterns and we go through them
 below. MATCH is often accompanied by [WHERE](where.md) (equivalent to SQL's WHERE clause) to define more predicates on the patterns that are matched.
 
-- [Match Nodes](#match-nodes)
-  - [Match Nodes With a Single Label](#match-nodes-with-a-single-label)
-  - [Match Nodes With Multiple Labels](#match-nodes-with-multiple-labels)
-  - [Match Nodes With Any Label](#match-nodes-with-any-label)
-- [Match Relationships](#match-relationships)
-  - [Match Directed Relationships With a Label](#match-directed-relationships-with-a-label)
-  - [Match Relationships With Multi Labels](#match-relationships-with-multi-labels)
-  - [Match Relationships With Any Label](#match-relationships-with-any-label)
-  - [Match Undirected Relationships](#match-undirected-relationships)
-  - [Omit Binding Variables to Nodes or Relationships](#omit-binding-variables-to-nodes-or-relationships)
-  - [Match Multiple Patterns](#match-multiple-patterns)
-  - [Equality Predicates on Node/Rel Properties](#equality-predicates-on-noderel-properties)
-  - [Match Variable Length Relationships](#match-variable-length-relationships)
-  - [Returning Variable Length Relationships](#returning-variable-length-relationships)
-  - [Single Shortest Path](#single-shortest-path)
-
-## Important Notes: 
+#### Notes: 
 - Similar to other high-level database query languages, nodes and relationships in the patterns 
 are bound to variables, which can be referenced in other clauses (e.g., WHERE or RETURN) of the query.
 openCypher allows you to omit these variables, if you do not need to reference them.
@@ -365,7 +349,8 @@ Output:
 - Kitchener is found through `Noura <- User -> Kitchener`
 
 ### Returning Variable Length Relationships
-Current implmentation binds variable length relationships as a `LIST` of `INTERNAL_ID` where entries 0,2,4,... represent node IDs and entries 1,3,5,... represent relationship IDs.
+
+A varible length relationship is a `STURCT{LIST[NODE], LIST[REL]}`. Returning a variable length relationship will return all properties 
 ```
 MATCH (a:User)-[e:Follows*1..2]->(b:User) 
 WHERE a.name = 'Adam'
@@ -387,8 +372,47 @@ Output:
 ```
 
 **Further notes on variable length relationships**
-- Returning properties of variable length relationships is not yet supported.
 - The maximum length of variable length relationships is capped at 30. 
+
+### Filter Variable Length Relationships
+We also support running predicates on recursive patterns to constrain the relationship being traversed.
+
+The following query finds name of users that are followed between 1 - 2 hops by Adam before 2022.
+```
+MATCH p = (a:User)-[:Follows*1..2 (r, _ | WHERE r.since < 2022) ]->(b:User)
+WHERE a.name = 'Adam' 
+RETURN DISTINCT b.name;
+```
+Output:
+```
+-----------
+| b.name  |
+-----------
+| Karissa |
+-----------
+| Zhang   |
+-----------
+```
+Our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents intermedaite relationships and the second one represents intermediate nodes. Filtering on node property is not supported currently.
+
+### Project Intermediate Nodes and Rels
+You can project a subset of properties for intermeidate nodes and rels using a list-comprehension-like syntax extended from the grammar above. Projecting properties of intermedaite nodes and rels can improve both performance and memory footprint.
+
+```
+MATCH (a:User)-[e:Follows*1..2 (r, n | WHERE r.since > 2020 | {r.since}, {n.name})]->(b:User) 
+RETURN nodes(e), rels(e);
+------------------------------------------------------------------------------------------------------------------------------
+| NODES(e)                                | RELS(e)                                                                          |
+------------------------------------------------------------------------------------------------------------------------------
+| []                                      | [(0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2)]                          |
+------------------------------------------------------------------------------------------------------------------------------
+| [{_ID: 0:2, _LABEL: User, name: Zhang}] | [(0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2),(0:2)-{_LABEL: Follows... |
+------------------------------------------------------------------------------------------------------------------------------
+| []                                      | [(0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3)]                          |
+------------------------------------------------------------------------------------------------------------------------------
+```
+The query above finds all 1 to 2 hops Follows path since 2020. The project `since` property of intermediate rels and `name` property of intermediate nodes along the path.
+
 
 ### Single Shortest Path
 On top of variable length relationships, users can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST 1..max]`.
@@ -433,27 +457,6 @@ Output:
 We force the lower bound of shortest path to be 1 to avoid ambiguity. There are two interpretations when the lower bound is greater than 1, 
 - Compute shortest path and then return the path whose length is greater than the lower bound.
 - Compute the path with length greater than lower bound and then return the shortest path.
-
-### Filter Variable Length Relationships
-We also support running predicates on recursive patterns to constrain the relationship being traversed.
-
-The following query finds name of users that are followed between 1 - 2 hops by Adam before 2022.
-```
-MATCH p = (a:User)-[:Follows*1..2 (r, _ | WHERE r.since < 2022) ]->(b:User)
-WHERE a.name = 'Adam' 
-RETURN DISTINCT b.name;
-```
-Output:
-```
------------
-| b.name  |
------------
-| Karissa |
------------
-| Zhang   |
------------
-```
-Note that our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents recursive relationship. Since we currently don't allow filter on recursive node, the second variable must be `_`.
 
 ## Named Path
 Kùzu treats paths as a first-class citizen, so users can assign a named variable to a path (i.e. connected graph ) and use it later on.
