@@ -537,4 +537,4 @@ Output:
 More path functions can be found [here](../expressions/path_functions.md).
 
 [^1]: MATCH is similar to the FROM clause of SQL, where the list of tables that need to be joined are specified. 
-[^2]: openCypher also supports variable-length patterns where either or both of min and max bounds can be missing. Kùzu does not yet support this and users need to explicitly indicate both bounds.
+[^2]: Max number of hop will be set to 30 if omitted. You can change the configuration through `SET` statement.
