@@ -22,51 +22,9 @@ kuzu_value is used to represent a value with any kuzu internal dataType.
 ---
 
 
-```c
-void kuzu_node_val_add_property (kuzu_node_val * node_val, const char * name, kuzu_value * property)
-```
-Adds the property with name to the given node value. 
 
-**Parameters**
-- `node_val` The node value to add to. 
-- `name` The name of the property. 
-- `property` The property(in value format) to add. 
-
----
-
-```c
-kuzu_node_val* kuzu_node_val_clone (kuzu_node_val * node_val)
-```
-Creates a new node value from the given node value. 
-
-**Parameters**
-- `node_val` The node value to clone. 
-
----
-
-```c
-kuzu_node_val* kuzu_node_val_create (kuzu_internal_id_t id, char * label)
-```
-Creates a new node value. 
-
-**Parameters**
-- `id` The internal id of the node. 
-- `label` The label of the node. 
-
----
-
-```c
-void kuzu_node_val_destroy (kuzu_node_val * node_val)
-```
-Destroys the given node value. 
-
-**Parameters**
-- `node_val` The node value to destroy. 
-
----
-
-```c
-kuzu_internal_id_t kuzu_node_val_get_id (kuzu_node_val * node_val)
+```c++
+KUZU_C_API kuzu_internal_id_t kuzu_node_val_get_id (kuzu_value * node_val)
 ```
 Returns the internal id value of the given node value as internal_id. 
 
@@ -75,8 +33,8 @@ Returns the internal id value of the given node value as internal_id.
 
 ---
 
-```c
-kuzu_value* kuzu_node_val_get_id_val (kuzu_node_val * node_val)
+```c++
+KUZU_C_API kuzu_value* kuzu_node_val_get_id_val (kuzu_value * node_val)
 ```
 Returns the internal id value of the given node value as a kuzu value. 
 
@@ -85,8 +43,8 @@ Returns the internal id value of the given node value as a kuzu value.
 
 ---
 
-```c
-char* kuzu_node_val_get_label_name (kuzu_node_val * node_val)
+```c++
+KUZU_C_API char* kuzu_node_val_get_label_name (kuzu_value * node_val)
 ```
 Returns the label value of the given node value as string. 
 
@@ -95,8 +53,8 @@ Returns the label value of the given node value as string.
 
 ---
 
-```c
-kuzu_value* kuzu_node_val_get_label_val (kuzu_node_val * node_val)
+```c++
+KUZU_C_API kuzu_value* kuzu_node_val_get_label_val (kuzu_value * node_val)
 ```
 Returns the label value of the given node value as a label value. 
 
@@ -105,8 +63,8 @@ Returns the label value of the given node value as a label value.
 
 ---
 
-```c
-char* kuzu_node_val_get_property_name_at (kuzu_node_val * node_val, uint64_t index)
+```c++
+KUZU_C_API char* kuzu_node_val_get_property_name_at (kuzu_value * node_val, uint64_t index)
 ```
 Returns the property name of the given node value at the given index. 
 
@@ -116,8 +74,8 @@ Returns the property name of the given node value at the given index.
 
 ---
 
-```c
-uint64_t kuzu_node_val_get_property_size (kuzu_node_val * node_val)
+```c++
+KUZU_C_API uint64_t kuzu_node_val_get_property_size (kuzu_value * node_val)
 ```
 Returns the number of properties of the given node value. 
 
@@ -126,8 +84,8 @@ Returns the number of properties of the given node value.
 
 ---
 
-```c
-kuzu_value* kuzu_node_val_get_property_value_at (kuzu_node_val * node_val, uint64_t index)
+```c++
+KUZU_C_API kuzu_value* kuzu_node_val_get_property_value_at (kuzu_value * node_val, uint64_t index)
 ```
 Returns the property value of the given node value at the given index. 
 
@@ -137,8 +95,8 @@ Returns the property value of the given node value at the given index.
 
 ---
 
-```c
-char* kuzu_node_val_to_string (kuzu_node_val * node_val)
+```c++
+KUZU_C_API char* kuzu_node_val_to_string (kuzu_value * node_val)
 ```
 Converts the given node value to string. 
 
@@ -147,53 +105,8 @@ Converts the given node value to string.
 
 ---
 
-
-```c
-void kuzu_rel_val_add_property (kuzu_rel_val * rel_val, char * name, kuzu_value * property)
-```
-Adds the property with name to the given rel value. 
-
-**Parameters**
-- `rel_val` The rel value to add to. 
-- `name` The name of the property. 
-- `property` The property(in value format) to add. 
-
----
-
-```c
-kuzu_rel_val* kuzu_rel_val_clone (kuzu_rel_val * rel_val)
-```
-Creates a new rel value from the given rel value. 
-
-**Parameters**
-- `rel_val` The rel value to clone. 
-
----
-
-```c
-kuzu_rel_val* kuzu_rel_val_create (kuzu_internal_id_t src_id, kuzu_internal_id_t dst_id, char * label)
-```
-Creates a new rel value. Caller is responsible for destroying the rel value. 
-
-**Parameters**
-- `src_id` The internal id of the source node. 
-- `dst_id` The internal id of the destination node. 
-- `label` The label of the rel. 
-
----
-
-```c
-void kuzu_rel_val_destroy (kuzu_rel_val * rel_val)
-```
-Destroys the given rel value. 
-
-**Parameters**
-- `rel_val` The rel value to destroy. 
-
----
-
-```c
-kuzu_internal_id_t kuzu_rel_val_get_dst_id (kuzu_rel_val * rel_val)
+```c++
+KUZU_C_API kuzu_internal_id_t kuzu_rel_val_get_dst_id (kuzu_value * rel_val)
 ```
 Returns the internal id value of the destination node of the given rel value. 
 
@@ -202,8 +115,8 @@ Returns the internal id value of the destination node of the given rel value.
 
 ---
 
-```c
-kuzu_value* kuzu_rel_val_get_dst_id_val (kuzu_rel_val * rel_val)
+```c++
+KUZU_C_API kuzu_value* kuzu_rel_val_get_dst_id_val (kuzu_value * rel_val)
 ```
 Returns the internal id value of the destination node of the given rel value as a kuzu value. 
 
@@ -212,8 +125,8 @@ Returns the internal id value of the destination node of the given rel value as 
 
 ---
 
-```c
-char* kuzu_rel_val_get_label_name (kuzu_rel_val * rel_val)
+```c++
+KUZU_C_API char* kuzu_rel_val_get_label_name (kuzu_value * rel_val)
 ```
 Returns the label of the given rel value. 
 
@@ -222,8 +135,8 @@ Returns the label of the given rel value.
 
 ---
 
-```c
-char* kuzu_rel_val_get_property_name_at (kuzu_rel_val * rel_val, uint64_t index)
+```c++
+KUZU_C_API char* kuzu_rel_val_get_property_name_at (kuzu_value * rel_val, uint64_t index)
 ```
 Returns the property name of the given rel value at the given index. 
 
@@ -233,8 +146,8 @@ Returns the property name of the given rel value at the given index.
 
 ---
 
-```c
-uint64_t kuzu_rel_val_get_property_size (kuzu_rel_val * rel_val)
+```c++
+KUZU_C_API uint64_t kuzu_rel_val_get_property_size (kuzu_value * rel_val)
 ```
 Returns the number of properties of the given rel value. 
 
@@ -243,8 +156,8 @@ Returns the number of properties of the given rel value.
 
 ---
 
-```c
-kuzu_value* kuzu_rel_val_get_property_value_at (kuzu_rel_val * rel_val, uint64_t index)
+```c++
+KUZU_C_API kuzu_value* kuzu_rel_val_get_property_value_at (kuzu_value * rel_val, uint64_t index)
 ```
 Returns the property of the given rel value at the given index as kuzu value. 
 
@@ -254,8 +167,8 @@ Returns the property of the given rel value at the given index as kuzu value.
 
 ---
 
-```c
-kuzu_internal_id_t kuzu_rel_val_get_src_id (kuzu_rel_val * rel_val)
+```c++
+KUZU_C_API kuzu_internal_id_t kuzu_rel_val_get_src_id (kuzu_value * rel_val)
 ```
 Returns the internal id value of the source node of the given rel value. 
 
@@ -264,8 +177,8 @@ Returns the internal id value of the source node of the given rel value.
 
 ---
 
-```c
-kuzu_value* kuzu_rel_val_get_src_id_val (kuzu_rel_val * rel_val)
+```c++
+KUZU_C_API kuzu_value* kuzu_rel_val_get_src_id_val (kuzu_value * rel_val)
 ```
 Returns the internal id value of the source node of the given rel value as a kuzu value. 
 
@@ -274,8 +187,8 @@ Returns the internal id value of the source node of the given rel value as a kuz
 
 ---
 
-```c
-char* kuzu_rel_val_to_string (kuzu_rel_val * rel_val)
+```c++
+KUZU_C_API char* kuzu_rel_val_to_string (kuzu_value * rel_val)
 ```
 Converts the given rel value to string. 
 
@@ -284,8 +197,8 @@ Converts the given rel value to string.
 
 ---
 
-```c
-kuzu_value* kuzu_value_clone (kuzu_value * value)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_clone (kuzu_value * value)
 ```
 Creates a new value based on the given value. Caller is responsible for destroying the returned value. 
 
@@ -294,8 +207,8 @@ Creates a new value based on the given value. Caller is responsible for destroyi
 
 ---
 
-```c
-void kuzu_value_copy (kuzu_value * value, kuzu_value * other)
+```c++
+KUZU_C_API void kuzu_value_copy (kuzu_value * value, kuzu_value * other)
 ```
 Copies the other value to the value. 
 
@@ -305,8 +218,8 @@ Copies the other value to the value.
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_bool (bool val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_bool (bool val_)
 ```
 Creates a value with boolean type and the given bool value. Caller is responsible for destroying the returned value. 
 
@@ -315,8 +228,8 @@ Creates a value with boolean type and the given bool value. Caller is responsibl
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_date (kuzu_date_t val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_date (kuzu_date_t val_)
 ```
 Creates a value with date type and the given date value. Caller is responsible for destroying the returned value. 
 
@@ -325,8 +238,8 @@ Creates a value with date type and the given date value. Caller is responsible f
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_default (kuzu_logical_type * data_type)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_default (kuzu_logical_type * data_type)
 ```
 Creates a value of the given data type with default non-NULL value. Caller is responsible for destroying the returned value. 
 
@@ -335,8 +248,8 @@ Creates a value of the given data type with default non-NULL value. Caller is re
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_double (double val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_double (double val_)
 ```
 Creates a value with double type and the given double value. Caller is responsible for destroying the returned value. 
 
@@ -345,8 +258,8 @@ Creates a value with double type and the given double value. Caller is responsib
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_float (float val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_float (float val_)
 ```
 Creates a value with float type and the given float value. Caller is responsible for destroying the returned value. 
 
@@ -355,8 +268,8 @@ Creates a value with float type and the given float value. Caller is responsible
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_int16 (int16_t val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_int16 (int16_t val_)
 ```
 Creates a value with int16 type and the given int16 value. Caller is responsible for destroying the returned value. 
 
@@ -365,8 +278,8 @@ Creates a value with int16 type and the given int16 value. Caller is responsible
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_int32 (int32_t val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_int32 (int32_t val_)
 ```
 Creates a value with int32 type and the given int32 value. Caller is responsible for destroying the returned value. 
 
@@ -375,8 +288,8 @@ Creates a value with int32 type and the given int32 value. Caller is responsible
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_int64 (int64_t val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_int64 (int64_t val_)
 ```
 Creates a value with int64 type and the given int64 value. Caller is responsible for destroying the returned value. 
 
@@ -385,8 +298,18 @@ Creates a value with int64 type and the given int64 value. Caller is responsible
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_internal_id (kuzu_internal_id_t val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_int8 (int8_t val_)
+```
+Creates a value with int8 type and the given int8 value. Caller is responsible for destroying the returned value. 
+
+**Parameters**
+- `val_` The int8 value of the value to create. 
+
+---
+
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_internal_id (kuzu_internal_id_t val_)
 ```
 Creates a value with internal_id type and the given internal_id value. Caller is responsible for destroying the returned value. 
 
@@ -395,8 +318,8 @@ Creates a value with internal_id type and the given internal_id value. Caller is
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_interval (kuzu_interval_t val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_interval (kuzu_interval_t val_)
 ```
 Creates a value with interval type and the given interval value. Caller is responsible for destroying the returned value. 
 
@@ -405,25 +328,8 @@ Creates a value with interval type and the given interval value. Caller is respo
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_node_val (kuzu_node_val * val_)
-```
-Creates a value with nodeVal type and the given nodeVal value. Caller is responsible for destroying the returned value. 
-
-**Parameters**
-- `val_` The nodeVal value of the value to create. 
-
----
-
-```c
-kuzu_value* kuzu_value_create_null ()
-```
-Creates a NULL value of ANY type. Caller is responsible for destroying the returned value. 
-
----
-
-```c
-kuzu_value* kuzu_value_create_null_with_data_type (kuzu_logical_type * data_type)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_null_with_data_type (kuzu_logical_type * data_type)
 ```
 Creates a value of the given data type. Caller is responsible for destroying the returned value. 
 
@@ -432,18 +338,8 @@ Creates a value of the given data type. Caller is responsible for destroying the
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_rel_val (kuzu_rel_val * val_)
-```
-Creates a value with relVal type and the given relVal value. Caller is responsible for destroying the returned value. 
-
-**Parameters**
-- `val_` The relVal value of the value to create. 
-
----
-
-```c
-kuzu_value* kuzu_value_create_string (char * val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_string (const char * val_)
 ```
 Creates a value with string type and the given string value. Caller is responsible for destroying the returned value. 
 
@@ -452,8 +348,8 @@ Creates a value with string type and the given string value. Caller is responsib
 
 ---
 
-```c
-kuzu_value* kuzu_value_create_timestamp (kuzu_timestamp_t val_)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_timestamp (kuzu_timestamp_t val_)
 ```
 Creates a value with timestamp type and the given timestamp value. Caller is responsible for destroying the returned value. 
 
@@ -462,8 +358,48 @@ Creates a value with timestamp type and the given timestamp value. Caller is res
 
 ---
 
-```c
-void kuzu_value_destroy (kuzu_value * value)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_uint16 (uint16_t val_)
+```
+Creates a value with uint16 type and the given uint16 value. Caller is responsible for destroying the returned value. 
+
+**Parameters**
+- `val_` The uint16 value of the value to create. 
+
+---
+
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_uint32 (uint32_t val_)
+```
+Creates a value with uint32 type and the given uint32 value. Caller is responsible for destroying the returned value. 
+
+**Parameters**
+- `val_` The uint32 value of the value to create. 
+
+---
+
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_uint64 (uint64_t val_)
+```
+Creates a value with uint64 type and the given uint64 value. Caller is responsible for destroying the returned value. 
+
+**Parameters**
+- `val_` The uint64 value of the value to create. 
+
+---
+
+```c++
+KUZU_C_API kuzu_value* kuzu_value_create_uint8 (uint8_t val_)
+```
+Creates a value with uint8 type and the given uint8 value. Caller is responsible for destroying the returned value. 
+
+**Parameters**
+- `val_` The uint8 value of the value to create. 
+
+---
+
+```c++
+KUZU_C_API void kuzu_value_destroy (kuzu_value * value)
 ```
 Destroys the value. 
 
@@ -472,8 +408,18 @@ Destroys the value.
 
 ---
 
-```c
-bool kuzu_value_get_bool (kuzu_value * value)
+```c++
+KUZU_C_API uint8_t* kuzu_value_get_blob (kuzu_value * value)
+```
+Returns the blob value of the given value. The returned buffer is null-terminated similar to a string. The value must be of type BLOB. 
+
+**Parameters**
+- `value` The value to return. 
+
+---
+
+```c++
+KUZU_C_API bool kuzu_value_get_bool (kuzu_value * value)
 ```
 Returns the boolean value of the given value. The value must be of type BOOL. 
 
@@ -482,8 +428,8 @@ Returns the boolean value of the given value. The value must be of type BOOL.
 
 ---
 
-```c
-kuzu_logical_type* kuzu_value_get_data_type (kuzu_value * value)
+```c++
+KUZU_C_API kuzu_logical_type* kuzu_value_get_data_type (kuzu_value * value)
 ```
 Returns internal type of the given value. 
 
@@ -492,8 +438,8 @@ Returns internal type of the given value.
 
 ---
 
-```c
-kuzu_date_t kuzu_value_get_date (kuzu_value * value)
+```c++
+KUZU_C_API kuzu_date_t kuzu_value_get_date (kuzu_value * value)
 ```
 Returns the date value of the given value. The value must be of type DATE. 
 
@@ -502,8 +448,8 @@ Returns the date value of the given value. The value must be of type DATE.
 
 ---
 
-```c
-double kuzu_value_get_double (kuzu_value * value)
+```c++
+KUZU_C_API double kuzu_value_get_double (kuzu_value * value)
 ```
 Returns the double value of the given value. The value must be of type DOUBLE. 
 
@@ -512,8 +458,8 @@ Returns the double value of the given value. The value must be of type DOUBLE.
 
 ---
 
-```c
-float kuzu_value_get_float (kuzu_value * value)
+```c++
+KUZU_C_API float kuzu_value_get_float (kuzu_value * value)
 ```
 Returns the float value of the given value. The value must be of type FLOAT. 
 
@@ -522,8 +468,8 @@ Returns the float value of the given value. The value must be of type FLOAT.
 
 ---
 
-```c
-int16_t kuzu_value_get_int16 (kuzu_value * value)
+```c++
+KUZU_C_API int16_t kuzu_value_get_int16 (kuzu_value * value)
 ```
 Returns the int16 value of the given value. The value must be of type INT16. 
 
@@ -532,8 +478,8 @@ Returns the int16 value of the given value. The value must be of type INT16.
 
 ---
 
-```c
-int32_t kuzu_value_get_int32 (kuzu_value * value)
+```c++
+KUZU_C_API int32_t kuzu_value_get_int32 (kuzu_value * value)
 ```
 Returns the int32 value of the given value. The value must be of type INT32. 
 
@@ -542,18 +488,28 @@ Returns the int32 value of the given value. The value must be of type INT32.
 
 ---
 
-```c
-int64_t kuzu_value_get_int64 (kuzu_value * value)
+```c++
+KUZU_C_API int64_t kuzu_value_get_int64 (kuzu_value * value)
 ```
-Returns the int64 value of the given value. The value must be of type INT64. 
+Returns the int64 value of the given value. The value must be of type INT64 or SERIAL. 
 
 **Parameters**
 - `value` The value to return. 
 
 ---
 
-```c
-kuzu_internal_id_t kuzu_value_get_internal_id (kuzu_value * value)
+```c++
+KUZU_C_API int8_t kuzu_value_get_int8 (kuzu_value * value)
+```
+Returns the int8 value of the given value. The value must be of type INT8. 
+
+**Parameters**
+- `value` The value to return. 
+
+---
+
+```c++
+KUZU_C_API kuzu_internal_id_t kuzu_value_get_internal_id (kuzu_value * value)
 ```
 Returns the internal id value of the given value. The value must be of type INTERNAL_ID. 
 
@@ -562,8 +518,8 @@ Returns the internal id value of the given value. The value must be of type INTE
 
 ---
 
-```c
-kuzu_interval_t kuzu_value_get_interval (kuzu_value * value)
+```c++
+KUZU_C_API kuzu_interval_t kuzu_value_get_interval (kuzu_value * value)
 ```
 Returns the interval value of the given value. The value must be of type INTERVAL. 
 
@@ -572,8 +528,8 @@ Returns the interval value of the given value. The value must be of type INTERVA
 
 ---
 
-```c
-kuzu_value* kuzu_value_get_list_element (kuzu_value * value, uint64_t index)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_get_list_element (kuzu_value * value, uint64_t index)
 ```
 Returns the element at index of the given value. The value must be of type VAR_LIST. 
 
@@ -583,8 +539,8 @@ Returns the element at index of the given value. The value must be of type VAR_L
 
 ---
 
-```c
-uint64_t kuzu_value_get_list_size (kuzu_value * value)
+```c++
+KUZU_C_API uint64_t kuzu_value_get_list_size (kuzu_value * value)
 ```
 Returns the number of elements per list of the given value. The value must be of type FIXED_LIST. 
 
@@ -593,28 +549,8 @@ Returns the number of elements per list of the given value. The value must be of
 
 ---
 
-```c
-kuzu_node_val* kuzu_value_get_node_val (kuzu_value * value)
-```
-Returns the node value of the given value. The value must be of type NODE. 
-
-**Parameters**
-- `value` The value to return. 
-
----
-
-```c
-kuzu_rel_val* kuzu_value_get_rel_val (kuzu_value * value)
-```
-Returns the rel value of the given value. The value must be of type REL. 
-
-**Parameters**
-- `value` The value to return. 
-
----
-
-```c
-char* kuzu_value_get_string (kuzu_value * value)
+```c++
+KUZU_C_API char* kuzu_value_get_string (kuzu_value * value)
 ```
 Returns the string value of the given value. The value must be of type STRING. 
 
@@ -623,10 +559,10 @@ Returns the string value of the given value. The value must be of type STRING.
 
 ---
 
-```c
-char* kuzu_value_get_struct_field_name (kuzu_value * value, uint64_t index)
+```c++
+KUZU_C_API char* kuzu_value_get_struct_field_name (kuzu_value * value, uint64_t index)
 ```
-Returns the field name at index of the given struct value. The value must be of type STRUCT. 
+Returns the field name at index of the given struct value. The value must be of physical type STRUCT (STRUCT, NODE, REL, RECURSIVE_REL, UNION). 
 
 **Parameters**
 - `value` The STRUCT value to get field name. 
@@ -634,10 +570,10 @@ Returns the field name at index of the given struct value. The value must be of 
 
 ---
 
-```c
-kuzu_value* kuzu_value_get_struct_field_value (kuzu_value * value, uint64_t index)
+```c++
+KUZU_C_API kuzu_value* kuzu_value_get_struct_field_value (kuzu_value * value, uint64_t index)
 ```
-Returns the field value at index of the given struct value. The value must be of type STRUCT. 
+Returns the field value at index of the given struct value. The value must be of physical type STRUCT (STRUCT, NODE, REL, RECURSIVE_REL, UNION). 
 
 **Parameters**
 - `value` The STRUCT value to get field value. 
@@ -645,8 +581,8 @@ Returns the field value at index of the given struct value. The value must be of
 
 ---
 
-```c
-uint64_t kuzu_value_get_struct_num_fields (kuzu_value * value)
+```c++
+KUZU_C_API uint64_t kuzu_value_get_struct_num_fields (kuzu_value * value)
 ```
 Returns the number of fields of the given struct value. The value must be of type STRUCT. 
 
@@ -655,8 +591,8 @@ Returns the number of fields of the given struct value. The value must be of typ
 
 ---
 
-```c
-kuzu_timestamp_t kuzu_value_get_timestamp (kuzu_value * value)
+```c++
+KUZU_C_API kuzu_timestamp_t kuzu_value_get_timestamp (kuzu_value * value)
 ```
 Returns the timestamp value of the given value. The value must be of type TIMESTAMP. 
 
@@ -665,8 +601,48 @@ Returns the timestamp value of the given value. The value must be of type TIMEST
 
 ---
 
-```c
-bool kuzu_value_is_null (kuzu_value * value)
+```c++
+KUZU_C_API uint16_t kuzu_value_get_uint16 (kuzu_value * value)
+```
+Returns the uint16 value of the given value. The value must be of type UINT16. 
+
+**Parameters**
+- `value` The value to return. 
+
+---
+
+```c++
+KUZU_C_API uint32_t kuzu_value_get_uint32 (kuzu_value * value)
+```
+Returns the uint32 value of the given value. The value must be of type UINT32. 
+
+**Parameters**
+- `value` The value to return. 
+
+---
+
+```c++
+KUZU_C_API uint64_t kuzu_value_get_uint64 (kuzu_value * value)
+```
+Returns the uint64 value of the given value. The value must be of type UINT64. 
+
+**Parameters**
+- `value` The value to return. 
+
+---
+
+```c++
+KUZU_C_API uint8_t kuzu_value_get_uint8 (kuzu_value * value)
+```
+Returns the uint8 value of the given value. The value must be of type UINT8. 
+
+**Parameters**
+- `value` The value to return. 
+
+---
+
+```c++
+KUZU_C_API bool kuzu_value_is_null (kuzu_value * value)
 ```
 Returns true if the given value is NULL, false otherwise. 
 
@@ -675,8 +651,8 @@ Returns true if the given value is NULL, false otherwise.
 
 ---
 
-```c
-void kuzu_value_set_null (kuzu_value * value, bool is_null)
+```c++
+KUZU_C_API void kuzu_value_set_null (kuzu_value * value, bool is_null)
 ```
 Sets the given value to NULL or not. 
 
@@ -686,8 +662,8 @@ Sets the given value to NULL or not.
 
 ---
 
-```c
-char* kuzu_value_to_string (kuzu_value * value)
+```c++
+KUZU_C_API char* kuzu_value_to_string (kuzu_value * value)
 ```
 Converts the given value to string. 
 
