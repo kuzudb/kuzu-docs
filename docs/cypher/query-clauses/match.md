@@ -396,7 +396,7 @@ Output:
 Our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents intermedaite relationships and the second one represents intermediate nodes. Filtering on node property is not supported currently.
 
 ### Project Intermediate Nodes and Rels
-You can project a subset of properties for intermeidate nodes and rels using a list-comprehension-like syntax extended from the grammar above. Projecting properties of intermedaite nodes and rels can improve both performance and memory footprint.
+You can project a subset of properties for intermeidate nodes and rels using a list-comprehension-like syntax extended from the grammar above. User can define projection list of intermediate nodes and rels with `{}` respectively. Currently, Kùzu only supports projection of properties. Projecting properties of intermedaite nodes and rels can improve both performance and memory footprint.
 
 ```
 MATCH (a:User)-[e:Follows*1..2 (r, n | WHERE r.since > 2020 | {r.since}, {n.name})]->(b:User) 
