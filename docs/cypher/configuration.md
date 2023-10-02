@@ -1,6 +1,6 @@
 ---
 title: Database Configuration
-sidebar_position: 4
+sidebar_position: 10
 ---
 
 # Database Configuration
@@ -12,6 +12,7 @@ The configuration of Kùzu can be changed through standalone `Call` statement. D
 | THREADS | number of threads used by execution |
 | TIMEOUT | timeout of query execution in ms | 
 | VAR_LENGTH_EXTEND_MAX_DEPTH | maximum depth of var length extend |
+| ENABLE_SEMI_MASK | eenables the semi mask optimization |
 
 ### Change Number of Threads for Execution
 
@@ -51,4 +52,17 @@ CALL current_setting('var_length_extend_max_depth') RETURN *;
 -------------------------------
 | 10                          |
 -------------------------------
+```
+
+### Disable semi mask optimization
+
+```
+CALL enable_semi_mask=false;
+CALL current_setting('enable_semi_mask') RETURN *;
+
+--------------------
+| enable_semi_mask |
+--------------------
+| false            |
+--------------------
 ```

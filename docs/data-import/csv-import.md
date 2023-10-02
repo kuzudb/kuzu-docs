@@ -19,6 +19,7 @@ the `COPY FROM` command. The following table specifies the parameters and their 
 | QUOTE | Character to start a string quote. | `"` |
 | ESCAPE | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
 | LIST_BEGIN/LIST_END | For the [list data type](../cypher/data-types/list.md), the delimiters to specify <br/> list begin and list end characters | `[`, `]`|
+| PARALLEL | Read csv files in parallel or not | true |
 
 Here are examples of specifying that there is a header file and changing the delimiter from `,` to `|`:
 ```

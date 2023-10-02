@@ -11,9 +11,14 @@ Kùzu supports a set of primitive and nested data types both for node and relati
 | DOUBLE | 8 bytes | double precision floating-point number | |
 | FIXED-LIST | fixed | a fixed-size sequence of values of the same numerical type | |
 | FLOAT | 4 bytes | single precision floating-point number | |
+| INT8 | 1 bytes | signed one-byte integer | |
 | INT16 | 2 bytes | signed two-byte integer | |
 | INT32 | 4 bytes | signed four-byte integer | INT |
 | INT64 | 8 bytes | signed eight-byte integer | SERIAL |
+| UINT8 | 1 bytes | unsigned one-byte integer | |
+| UINT16 | 2 bytes | unsigned two-byte integer | |
+| UINT32 | 4 bytes | unsigned four-byte integer | |
+| UINT64 | 8 bytes | unsigned eight-byte integer | |
 | INTERVAL | 4 bytes | date/time difference | | 
 | NODE | fixed | represents a node in graph | |
 | PATH | fixed | represents a path in graph | |

@@ -33,11 +33,12 @@ description: List functions are used to create and manipulate lists.
 | list_sort(list) | sorts the elements of the list. More configurations available [here](#list_sort-function) | list_sort([3,10,4]) | [3,4,10] |
 | list_reverse_sort(list) | alias of list_sort(list, 'DESC') | list_reverse_sort([3,10,4]) | [10,4,3] |
 | list_sum(list) | sums the elements of the list. | list_sum(1,2,3) | 6 |
+| list_product(list) | multiply elements of the list. | list_product([1, 2, 3]) | 6 |
 | list_distinct(list) | removes NULLs and duplicate values from the list. | list_distinct(3,3,3,NULL) | [3] |
 | list_unique(list) | counts number of unique elements of the list. NULLs are ignored. | list_unique(3,3,3,NULL) | 1 |
 | list_any_value(list) | returns the first non-NULL value of the list | list_any_value(NULL, 'a', NULL) | 'a' |
 
-## LIST_SORT Function
+## LIST_SORT
 LIST_SORT function takes can be configured to sort in ascending or descending order as well as whether `NULL` values should be put at the beginning or at the end of the list. By default, LIST_SORT will sort in ascending order and put NULL values at first. User can change sort order with `ASC` or `DESC` key word as the 
 second argument and change `NULL` values position with `NULLS FIRST` or `NULLS LAST` as the third argument.
 
@@ -64,4 +65,26 @@ Output:
 -------------
 | [10,4,3,] |
 -------------
+```
+
+## RANGE
+- `range(start, stop)`: returns a list of value from start to stop. Both ends are inclusive.
+
+```
+RETURN range(1,3);
+--------------
+| RANGE(1,3) |
+--------------
+| [1,2,3]    |
+--------------
+```
+
+- `range(start, stop, step)`
+```
+RETURN range(1,10,2);
+-----------------
+| RANGE(1,10,2) |
+-----------------
+| [1,3,5,7,9]   |
+-----------------
 ```
