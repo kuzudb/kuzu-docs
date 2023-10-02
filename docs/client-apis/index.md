@@ -4,7 +4,7 @@ import DocCardList from '@theme/DocCardList';
 You can interact with Kùzu through the CLI and client APIs in C, C++, Python, Node.js, Rust, and Java.
 
 Each query to Kùzu through its CLI or client APIs are transactional, satisfying serializability, atomicity and durability.
-More details on this part are given in the [transactions](transactions.md) section.
+More details on this part are given in the [transactions](../cypher/transaction.md) section.
 
 ## Note on Connecting to the Same Database Directory From Multiple `Database` Instances
 Each way ultimately creates a `Database` instance in C++ (Kùzu's CLI is written in C++, so is a C++

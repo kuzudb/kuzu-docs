@@ -6,8 +6,7 @@ sidebar_position: 1
 # Connection
 
 To issue a query, you need to create a `Connection` using a pointer to 
-a [Database](database.md) instance. You can use connections
-to execute queries, ddl statements, begin/commit/rollback [transactions](../transactions.md).
+a [Database](database.md) instance. You can use connections to execute statements.
 You can construct multiple connections that connect to the same `Database` instance and issue parallel queries through these connections concurrently.
 
 You can also use a `Connection` to prepare `PreparedStatement`, which
