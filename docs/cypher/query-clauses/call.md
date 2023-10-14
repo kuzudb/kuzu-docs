@@ -109,3 +109,39 @@ Output:
 | knows       | REL  | person knows person |
 --------------------------------------------
 ```
+
+### SHOW_CONNECTION
+
+SHOW_CONNECTION returns the source/destination nodes for a rel/relgroup in the database.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| source table name | name of the source node | STRING |
+| destionation table name | name of the destionation node | STRING |
+
+Show connection on a rel table:
+```
+CALL show_connection('knows') RETURN *;
+```
+Output:
+```
+----------------------------------------------
+| source table name | destination table name |
+----------------------------------------------
+| person            | person                 |
+----------------------------------------------
+```
+Show connection on a rel group:
+```
+CALL show_connection('knows') RETURN *;
+```
+Output:
+```
+----------------------------------------------
+| source table name | destination table name |
+----------------------------------------------
+| user              | person                 |
+----------------------------------------------
+| person            | person                 |
+----------------------------------------------
+```
