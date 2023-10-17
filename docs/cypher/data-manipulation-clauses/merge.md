@@ -17,8 +17,8 @@ Similar to `INSERT ON CONFLICT` in sql, `MERGE` clause comes with `ON CREATE` an
 
 ## Merge Nodes
 
-### Merge Exiting Nodes
-The following query tries to merge a user with name "Adam". Since user "Adam" exists in the database, the match is found no user is created.
+### Merge Existing Nodes
+The following query tries to merge a user with name "Adam". Since user "Adam" exists in the database, no user is created.
 ```
 MERGE (n:User {name : 'Adam'}) RETURN n.*;
 ------------------
