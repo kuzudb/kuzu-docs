@@ -17,12 +17,12 @@ import TabItem from '@theme/TabItem';
 
 - Intel
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.10/kuzu_cli-osx-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.0.11/kuzu_cli-osx-x86_64.zip
  ```
 
 - Apple Silicon
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.10/kuzu_cli-osx-arm64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.0.11/kuzu_cli-osx-arm64.zip
 ```
 
 </TabItem>
@@ -30,7 +30,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.0.10/kuzu_cli-osx-arm64.zip
 <TabItem value="linux">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.10/kuzu_cli-linux-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.0.11/kuzu_cli-linux-x86_64.zip
  ```
 
 </TabItem>
@@ -38,7 +38,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.0.10/kuzu_cli-linux-x86_64.z
 <TabItem value="win">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.10/kuzu_cli-windows-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.0.11/kuzu_cli-windows-x86_64.zip
  ```
 
 </TabItem>
@@ -92,12 +92,12 @@ pip install kuzu
 
 - Intel
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.10/libkuzu-osx-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.0.11/libkuzu-osx-x86_64.zip
  ```
 
 - Apple Silicon
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.10/libkuzu-osx-arm64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.0.11/libkuzu-osx-arm64.zip
 ```
 
 </TabItem>
@@ -105,7 +105,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.0.10/libkuzu-osx-arm64.zip
 <TabItem value="linux">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.10/libkuzu-linux-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.0.11/libkuzu-linux-x86_64.zip
  ```
 
 </TabItem>
@@ -113,7 +113,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.0.10/libkuzu-linux-x86_64.zi
 <TabItem value="win">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.10/libkuzu-windows-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.0.11/libkuzu-windows-x86_64.zip
  ```
 
 </TabItem>
@@ -203,7 +203,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.0.9</version>
+    <version>0.0.11</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -217,7 +217,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.0.9</version>
+    <version>0.0.11</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -231,7 +231,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.0.9</version>
+    <version>0.0.11</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
