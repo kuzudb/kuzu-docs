@@ -1,3 +1,6 @@
+import DatasetsPanel from 'datasets-panel.png';
+
+
 # Launching KùzuExplorer
 KùzuExplorer is a web application that is launched from a deployed Docker image. 
 Ensure that you have Docker installed before proceeding.
@@ -26,8 +29,12 @@ with `-v`,  the server will be started with an empty database.
 ```bash
 docker run -p 8000:8000 --rm kuzudb/kuzu-ui:latest
 ```
-Click on the `Datasets` tab on the top right corner and you can then load one of the bundled dataset 
-of your choice into Kùzu and use KùzuExplorer to explore it.
+Click on the `Datasets` tab on the top right corner and then: (i) you can select  one of the bundled dataset 
+of your choice from the drow-down menu; (ii) load it into Kùzu by clicking the "Load Dataset" button; and (iii)
+finally use KùzuExplorer to explore it. 
+
+<img src={DatasetsPanel} style={{width: 600}} />
+
 
 ### Option 3: Empty database with custom data
 
