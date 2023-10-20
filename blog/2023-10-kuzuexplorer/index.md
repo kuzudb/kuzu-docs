@@ -6,7 +6,7 @@ tags: [internals]
 
 import SchemaPanelImage from './schema-panel.png';
 
-# KùzuExplorer: Visualizing Query Results and Schemas Interactively
+# KùzuExplorer: Visualizing Query Results and Schemas
 
 ## Overview
 
