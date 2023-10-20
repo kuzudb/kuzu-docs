@@ -1,10 +1,30 @@
-# KuzuViz: Visualizing Query Results and Schemas Interactively
+---
+slug: kuzuexplorer
+authors: [chang]
+tags: [internals]
+---
 
-## KuzuViz Overview
+import SchemaPanelImage from './schema-panel.png';
 
-Today, we are happy to release KuzuViz. Many graph DBMSs in the market provide a browser or desktop-based 
-tool to interactively visualize and explore database schemas and query results in the form of a graph. 
-KuzuViz is Kzu
+# KùzuExplorer: Visualizing Query Results and Schemas Interactively
 
-nodes and links a 
-our browser-based interactive interface to visualize database schemas and q and visualize their r
+## Overview
+
+Today, we are happy to release KùzuExplorer, which is Kùzu's browser-based frontend to
+visualize and explore database schemas and query results in the form of a graph and/or tables.
+This is a very useful tool for exploring databases and debugging applications during prototyping
+phase. This post describes a brief overview of the main features of KùzuExplorer with pointers to 
+[KuzuExplorer documentation](./../kuzuexplorer) for details.
+
+## Launching KùzuExplorer
+
+## Schema Exploring and Editing
+
+<div class="img-center">
+<img src={SchemaPanelImage} width="600"/>
+</div>
+
+## Query Result Visualization
+
+
+
