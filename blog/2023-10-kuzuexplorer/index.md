@@ -13,7 +13,7 @@ import ShellPanelImage from './query-result-node-link-view.png';
 ## Overview
 
 Today, we are happy to release KùzuExplorer, which is Kùzu's browser-based frontend to
-visualize and explore database schemas and query results in the form of a graph, tables, or json.
+visualize and explore database schemas and query results in the form of a graph, table, or in json.
 This is a very useful tool for exploring databases and debugging applications during prototyping
 phase. This post describes a brief overview of the main features of KùzuExplorer with pointers to 
 [KùzuExplorer documentation](./../kuzuexplorer) for details.
