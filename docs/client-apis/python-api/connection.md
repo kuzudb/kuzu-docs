@@ -56,7 +56,7 @@ Set the maximum number of threads for executing queries.
 **execute**
 
 ```python
-def execute(query, parameters=[])
+def execute(query, parameters={})
 ```
 
 Execute a query.
@@ -64,10 +64,10 @@ Execute a query.
 **Parameters**
 - `query : str` Query to execute.
 
-- `parameters : list[tuple(str, any)]` Parameters for the query.
+- `parameters : dict[str, Any]` Parameters for the query.
 
 **Returns**
 - `QueryResult` Query result.
 
 **Example**
-- `conn.execute("MATCH (a:person) WHERE a.isStudent = $1 AND a.fName = $k RETURN COUNT(*)", [("1", False), ("k", 'Alice')])`
+- `conn.execute("MATCH (a:person) WHERE a.isStudent = $1 AND a.fName = $k RETURN COUNT(*)", {"1": False, "k": "Alice"})`
