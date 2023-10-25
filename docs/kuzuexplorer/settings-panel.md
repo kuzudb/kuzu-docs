@@ -1,6 +1,11 @@
-import SettingsPanel from 'settings-panel.png';
+---
+title: Settings Panel
+sidebar_position: 3
+---
 
-# Settings 
+import SettingsPanel from './settings-panel.png';
+
+# Settings Panel
 
 The Settings Panel, which you can go to by clicking `Settings` on the top right corner,
 contains several knobs to configure your schema and query result visualizations. Below is 
