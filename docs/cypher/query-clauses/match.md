@@ -395,8 +395,14 @@ Output:
 ```
 Our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents intermedaite relationships and the second one represents intermediate nodes. Filtering on node property is not supported currently.
 
-### Project Intermediate Nodes and Rels
-You can project a subset of properties for intermeidate nodes and rels using a list-comprehension-like syntax extended from the grammar above. User can define projection list of intermediate nodes and rels with `{}` respectively. Currently, Kùzu only supports projection of properties. Projecting properties of intermedaite nodes and rels can improve both performance and memory footprint.
+### Projecting Properties of Intermediate Nodes and Relationships in Variable Length Relationships
+You can project a subset of properties for the intermediate nodes and relationships that will bound to a variable length
+relationship. You can define the projection list of intermediate nodes and rels within two curly brackets `{}` `{}` at 
+the end of the variable length pattern. The first `{}` is used for projecting relationship properties and the second `{}` for 
+node properties. Currently, Kùzu only supports directly projecting properties and not of expresions using
+the properties. Projecting properties of intermedaite nodes and rels can improve both performance and memory footprint.
+Here is an example that projects only the `since` property of the intermediate relationship and the `name` property of the 
+intermediate nodes that will bind to the variable length relationship pattern of `e`.
 
 ```
 MATCH (a:User)-[e:Follows*1..2 (r, n | WHERE r.since > 2020 | {r.since}, {n.name})]->(b:User) 
@@ -411,7 +417,8 @@ RETURN nodes(e), rels(e);
 | []                                      | [(0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3)]                          |
 ------------------------------------------------------------------------------------------------------------------------------
 ```
-The query above finds all 1 to 2 hops Follows path since 2020. The project `since` property of intermediate rels and `name` property of intermediate nodes along the path.
+As can be seen in the output, the nodes that bind to `e` contain only the `name` property and the relationships that
+bind to `e` contain only the `since` property.
 
 
 ### Single Shortest Path
