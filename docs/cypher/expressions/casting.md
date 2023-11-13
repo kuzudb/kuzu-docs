@@ -21,5 +21,6 @@ Kùzu supports casting  through explicit casting functions. An exception will be
 | to_uint16 | cast numerical types to UINT16 | to_uint16(5) | 5 |
 | to_uint32 | cast numerical types to UINT32 | to_uint32(5) | 5 |
 | to_uint64 | cast numerical types to UINT64 | to_uint64(5) | 5 |
+| to_int128 | cast numerical types to INT128 | to_int128(5) | 5 |
 | to_float | cast numerical types to FLOAT | to_float(5) | 5.000000 |
 | to_double | cast numerical types to DOUBLE | to_double(5) | 5.000000 |
