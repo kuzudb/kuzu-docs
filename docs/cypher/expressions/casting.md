@@ -5,7 +5,24 @@ description: Casting functions are used to cast values from one type to another.
 
 # Casting Functions
 
-Kùzu supports casting  through explicit casting functions. An exception will be thrown if the casting fails.
+Kùzu supports casting through explicit casting functions `CAST(source, type)`.
+```
+RETURN CAST("[1,2,3]", "INT[]") AS l;
+-----------
+| l       |
+-----------
+| [1,2,3] |
+-----------
+RETURN CAST(2.3, "INT8") AS l;
+-----
+| l |
+-----
+| 2 |
+-----
+``` 
+
+Not all casts are defined. For example, `INT[]` can not be casted to `INT`. Even if a cast is defined, it could still fail and throw a runtime exception. For example, cast `STRING` to `INT` is defined, but cast `abc` to `INT` will throw an exception.
+
 
 | Functions | Description | Example | Result |
 | ----------- | ----------- |  ----------- |  ----------- |
