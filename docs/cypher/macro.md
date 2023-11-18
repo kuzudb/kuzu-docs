@@ -1,6 +1,6 @@
 ---
 title: Macro
-sidebar_position: 11
+sidebar_position: 16
 ---
 # Create Macro
 Kùzu allows user to create a macro in catalog using the `create macro` statement. The process of creating macros involves using the `CREATE MACRO` keyword followed by the macro's name. Users can optionally include parameters with optional default value within parentheses after the name. The "AS" keyword comes next, followed by the actual cypher expression of the macro. It's important to note that a scalar macro is limited to returning only a single value.

@@ -21,8 +21,10 @@ RETURN CAST(2.3, "INT8") AS l;
 -----
 ``` 
 
-Not all casts are defined. For example, `INT[]` can not be casted to `INT`. Even if a cast is defined, it could still fail and throw a runtime exception. For example, cast `STRING` to `INT` is defined, but cast `abc` to `INT` will throw an exception.
+Not all casts are defined. For example, `INT[]` can not be casted to `INT`. Even if a cast is defined, it could still fail and throw a runtime exception. For example, cast `STRING` to `INT` is defined, but cast `"abc"` to `INT` will throw an exception.
 
+
+**The follow cast functions are deprecated. We recommend to use `CAST(source, type)`.**
 
 | Functions | Description | Example | Result |
 | ----------- | ----------- |  ----------- |  ----------- |
