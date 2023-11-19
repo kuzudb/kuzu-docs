@@ -19,7 +19,7 @@ Noura,25
 
 Nested datatypes like lists and structs will be represented as text inside their respective columns.
 
-Zero or more copy options can be provided as part of the copy-to clause:
+Available options are:
 
 | Option                   | Default Value           | Description                                          |
 |--------------------------|-------------------------|------------------------------------------------------|

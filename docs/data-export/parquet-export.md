@@ -24,7 +24,7 @@ Query: load from 'user.parquet' return *;
 -------------------
 ```
 
-Note: 
-1. Export fixedList to parquet is not supported yet.
-2. Union will be exported as struct which is the internal representation of union datatype.
-3. Only snappy compression is currently supported.
+**Note** 
+- Export fixedList to parquet is not supported yet.
+- Union will be exported as struct which is the internal representation of union datatype.
+- Only snappy compression is currently supported.

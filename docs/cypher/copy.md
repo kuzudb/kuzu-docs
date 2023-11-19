@@ -30,3 +30,13 @@ Kùzu supports `COPY FROM` different file formats. Details can be found at
 - [NPY](../data-import/npy-import.md)
 
 ## Copy To
+`COPY TO` exports data to external files. You can export query result to external files with customized configutation.
+
+The following query write all columns of User table into "user.csv" with header.
+```
+COPY (MATCH (u:User) RETURN u.*) TO 'user.csv' (header=true);
+```
+
+Kùzu supports `COPY TO` different file formats. Details can be found at
+- [CSV](../data-export/csv-export.md)
+- [Parquet](../data-export/parquet-export.md)
