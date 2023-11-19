@@ -1,6 +1,7 @@
 ---
 title: Delete
 description: Delete node records from your tables.
+sidebar_position: 3
 ---
 
 import RunningExample from '../running-example.png';
@@ -16,71 +17,72 @@ You can import this database by copying pasting the commands on that page.
 `DELETE` clause delete node or relationship records from the table.
 
 ## Delete Nodes
-We currently only support deleting singleton node records, i.e., those that don't have have any incoming or outgoing relationships. Deleting of nodes with edges are not yet supported.
 
 ### Delete Single Label Nodes
-The following query first creates a User (Alice, 40) node record, without inserting any relationships to that node record, and then deletes the record
+The following statements first create a User (Alice, 35) node record, without inserting any relationships to that node record, and then deletes the record
 
 ```
 CREATE (u:User {name: 'Alice', age: 35});
-MATCH (:User) RETURN COUNT(*);
-----------------
-| COUNT_STAR() |
-----------------
-| 5            |
-----------------
-MATCH (u:User) WHERE u.name = 'Alice' DELETE u;
-MATCH (:User) RETURN COUNT(*);
-----------------
-| COUNT_STAR() |
-----------------
-| 4            |
-----------------
+MATCH (u:User) WHERE u.name = 'Alice' DELETE u RETURN u.*;
+------------------
+| u.name | u.age |
+------------------
+| Alice  | 35    |
+------------------
 ```
 
 ### Delete Multi Label Nodes
-The following query first creates a user node and a city node both with name "A" and then delete them. 
+The following statements first create a user node and a city node both with name "A" and then delete them. 
 ```
 CREATE (:User {name: 'A'}), (:City {name: 'A'});
-MATCH () RETURN COUNT(*);
-----------------
-| COUNT_STAR() |
-----------------
-| 9            |
-----------------
-MATCH (u) WHERE u.name = 'A' DELETE u;
-MATCH () RETURN COUNT(*);
-----------------
-| COUNT_STAR() |
-----------------
-| 7            |
-----------------
+MATCH (u) WHERE u.name = 'A' DELETE u RETURN u.*;
+-------------------------------------
+| u                                 |
+-------------------------------------
+| {_ID: 1:3, _LABEL: City, name: A} |
+-------------------------------------
+| {_ID: 0:4, _LABEL: User, name: A} |
+-------------------------------------
 ```
 
-# Delete Relationships
+## Detach Delete
+`DELETE` can only delete node that does not have any relationship. To delete a node and all its relationships, use `DETACH DELETE`.
+
+```
+MATCH ()-[e]->() RETURN COUNT(e) AS num_rels;
+------------
+| num_rels |
+------------
+| 8        |
+------------
+MATCH (u:User) WHERE u.name = 'Adam' DETACH DELETE u;
+MATCH ()-[]->() RETURN COUNT(*) AS num_rels;
+------------
+| num_rels |
+------------
+| 5        |
+------------
+```
+
+To delete every records in the database.
+```
+MATCH (n) DETACH DELETE n;
+```
+
+## Delete Relationships
 
 ### Delete Single Label Relationships
 The following query deletes the `Follows` relationship between `Adam` and `Karissa`:
 ```
 MATCH (u:User)-[f:Follows]->(u1:User)
 WHERE u.name = 'Adam' AND u1.name = 'Karissa'
-RETURN COUNT(*);
-----------------
-| COUNT_STAR() |
-----------------
-| 1            |
-----------------
-MATCH (u:User)-[f:Follows]->(u1:User)
-WHERE u.name = 'Adam' AND u1.name = 'Karissa'
-DELETE f;
-MATCH (u:User)-[f:Follows]->(u1:User)
-WHERE u.name = 'Adam' AND u1.name = 'Karissa'
-RETURN COUNT(*);
-----------------
-| COUNT_STAR() |
-----------------
-| 0            |
-----------------
+DELETE f
+RETURN f;
+---------------------------------------------------------
+| f                                                     |
+---------------------------------------------------------
+| (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) |
+---------------------------------------------------------
 ```
 
 

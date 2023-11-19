@@ -1,6 +1,7 @@
 ---
 title: Set
 description: Update properties of node or relationship records to new values.
+sidebar_position: 2
 ---
 
 import RunningExample from '../running-example.png';

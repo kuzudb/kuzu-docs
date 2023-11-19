@@ -6,7 +6,7 @@ sidebar_position: 12
 `COPY` statement moves data between external files and database internal.
 
 ## Copy From
-`COPY FROM` imports data from external files into tables. `COPY FROM` can only be used when the tables are empty. Columns from file should match columns defined in the table. If columns from file is a subset or in a different order compared to columns from the table. You could specify the order through column names after table name in `Copy FROM` statement.
+`COPY FROM` imports data from external files into tables. `COPY FROM` can only be used when the tables are empty and in initial state. Columns from file should match columns defined in the table. If columns from file is a subset or in a different order compared to columns from the table. You could specify the order through column names after table name in `Copy FROM` statement.
 
 Consider table
 ```
