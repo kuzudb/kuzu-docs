@@ -4,13 +4,13 @@ title: PARQUET
 
 # Data Export to Parquet
 
-`COPY TO` clause can export query result into a PARQUET file. 
+`COPY TO` clause can export query results into a Parquet file. 
 ```
-copy (match (u:User) return u.*) to 'user.parquet';
+COPY (MATCH (u:User) return u.*) TO 'user.parquet';
 ```
-The parquet file can then be validated by using the load from clause:
+As an example, you can see the contents of the exported Parquet file with a `LOAD FROM` clause:
 ```
-Query: load from 'user.parquet' return *;
+Query: LOAD FROM 'user.parquet' RETURN *;
 -------------------
 | u.name  | u.age |
 -------------------
@@ -24,7 +24,7 @@ Query: load from 'user.parquet' return *;
 -------------------
 ```
 
-**Note** 
-- Export fixedList to parquet is not supported yet.
-- Union will be exported as struct which is the internal representation of union datatype.
-- Only snappy compression is currently supported.
+**Notes**
+- Exporting [Fixed List](../cypher/data-types/list.md) data type to Parquet is not supported yet.
+- The [Union](../cypher/data-types/union.md) data type is exported as a struct, which is the internal representation of Union datatype.
+- Currently, only snappy compression is supported.
