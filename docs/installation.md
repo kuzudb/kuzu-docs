@@ -240,3 +240,14 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 </TabItem>
 
 </Tabs>
+
+## Nightly Build
+We have setup a nightly build pipeline for those who want to access latest feature set. To use the latest nightly version of Kùzu, follow the instructions below:
+
+For Python API, the latest nightly version can be installed with `pip install --pre kuzu`.
+
+For Node.js API, the latest nightly version can be installed with `npm i kuzu@next`.
+
+For Rust API, the latest nightly version can be found at [crates.io](https://crates.io/crates/kuzu/versions).
+
+For CLI, C and C++ shared library, and Java JAR, the latest nightly version can be downloaded from the latest run of [this GitHub Actions pipeline](https://github.com/kuzudb/kuzu/actions/workflows/build-and-deploy.yml).
