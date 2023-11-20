@@ -68,9 +68,8 @@ View example in [Colab](https://colab.research.google.com/drive/1NcR-xL4Rb7nprgb
 
 ## Count Subquery
 
-Count subquery checks the number of matches for given pattern in the graph.
-
-The following query counts number of followers for each user.
+Count subquery checks the number of matches for given pattern in the graph. The output of this counting can be bound to a variable with aliasing.
+For example, the following query counts number of followers for each user.
 ```
 MATCH (a:User) RETURN a.name, COUNT { MATCH (a)<-[:Follows]-(b:User) } AS num_follower ORDER BY num_follower;
 ```
@@ -78,7 +77,7 @@ Output:
 ```
 
 ```
-Count subquery can also be used in `WHERE` clause as an expression that returns an integer value.
+A count subquery can also be used in a `WHERE` clause as an expression that returns an integer value.
 
 ```
 MATCH (a:User) 
