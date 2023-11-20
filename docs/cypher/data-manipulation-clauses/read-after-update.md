@@ -42,5 +42,14 @@ DETACH DELETE u RETURN u.*;
 
 ## Read After Update
 
-Instead of returning modified record, it is also possible to continue querying based on modified record.
+Instead of returning modified record, it is also possible to continue querying based on modified record. Data available to reading clauses follow the same rule as return clause.
 
+Read after update can be particularly useful when trying to create dependent records.
+```
+MATCH (a:User {name:'Adam'})
+WITH a
+MATCH (b:User {name:'Karissa'}) CREATE (a)<-[e1:Follows {since:2023}]-(b)
+WITH a
+MATCH (c:User {name:'Zhang'}) CREATE (a)<-[e2:Follows {since:2024}]-(c)
+```
+The query above tries to create two followers for "Adam". The second creation will only be executed if "Karissa-Follows->Adam" is successfully created.
