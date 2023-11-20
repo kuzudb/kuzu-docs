@@ -1,6 +1,6 @@
 ---
 title: Python
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 You can easily install the latest Kùzu Python API using pip: `pip install kuzu`. 

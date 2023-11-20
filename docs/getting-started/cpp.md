@@ -1,6 +1,6 @@
 ---
 title: C++
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 The Kùzu C++ API is distributed as so/dylib/dll+lib library files along with a header file (`kuzu.hpp`). 
