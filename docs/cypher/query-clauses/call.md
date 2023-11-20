@@ -14,7 +14,7 @@ description: CALL clause is a reading clause used for executing schema functions
 | CURRENT_SETTING('setting') | returns the value of the given setting |
 | DB_VERSION() | returns the version of Kùzu |
 | SHOW_TABLES() | returns the name, type, comment of all tables in the database |
-| READ_PANDAS(pd) | scans the panda dataframe and returns all columns and rows |
+| READ_PANDAS(pd) | scans pandas dataframe |
 
 ### TABLE_INFO
 
@@ -148,10 +148,9 @@ Output:
 
 ### READ_PANDAS
 
-READ_PANDAS returns all rows and columns inside the given panda dataframe. 
-Note: this function can only be used in the python API.
+`READ_PANDAS` can be used to scan a pandas dataframe object. 
 
-Assume we have a pandas dataframe person:
+Consider the following pandas dataframe "person"
 ```
 id = np.array([0, 2, 3, 5, 7, 11, 13], dtype=np.int64)
 age = np.array([42, 23, 33, 57, 67, 39, 11], dtype=np.uint16)
@@ -159,9 +158,9 @@ height_in_cm = np.array([167, 172, 183, 199, 149, 154, 165], dtype=np.uint32)
 is_student = np.array([False, True, False, False, False, False, True], dtype=bool)
 person = pd.DataFrame({'id': id, 'age': age, 'height': height_in_cm, 'is_student': is_student})
 ```
-Then we can scan from the pandas dataframe in kuzu:
+You can scan "person" as a regular table through `READ_PANDAS` function
 ```
-result = conn.execute('CALL READ_PANDAS("person") with age as age, height / 2.54 as height_in_inch RETURN age, height_in_inch').get_as_df()
+result = conn.execute('CALL READ_PANDAS("person") RETURN age as age, height / 2.54 as height_in_inch').get_as_df()
 print(result)
 ```
 Output:

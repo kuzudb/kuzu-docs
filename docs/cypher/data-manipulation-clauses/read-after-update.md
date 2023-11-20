@@ -43,3 +43,4 @@ DETACH DELETE u RETURN u.*;
 ## Read After Update
 
 Instead of returning modified record, it is also possible to continue querying based on modified record.
+
