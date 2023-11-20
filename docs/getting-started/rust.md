@@ -1,6 +1,6 @@
 ---
 title: Rust
-sidebar_position: 6
+sidebar_position: 5
 ---
 
 The rust API can be used by adding the kuzu crate to your dependencies in `Cargo.toml`:

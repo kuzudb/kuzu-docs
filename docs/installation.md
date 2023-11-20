@@ -241,7 +241,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 
 </Tabs>
 
-## Nightly Build
+## Nightly Builds
 We have setup a nightly build pipeline for those who want to access latest feature set. To use the latest nightly version of Kùzu, follow the instructions below:
 
 For Python API, the latest nightly version can be installed with `pip install --pre kuzu`.
