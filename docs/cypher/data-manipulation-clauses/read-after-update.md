@@ -5,10 +5,10 @@ sidebar_position: 10
 
 
 ## Return Modified Records
+`RETURN` statements following an update clause has access to the variables that are used
+in the immediately preceding update clause.
 
-To obtain modified record, you can append a `RETURN` clause after any update clause.
-
-For `CREATE`, the data available to `RETURN` is the newly inserted node/relationship.
+For `CREATE`, the data available to the immediately following `RETURN` is the newly inserted node/relationship.
 ```
 CREATE (u:User {name: 'Alice', age: 35}) RETURN u.*;
 ------------------
@@ -21,15 +21,15 @@ CREATE (u:User {name: 'Alice', age: 35}) RETURN u.*;
 For `SET`, the data available to `RETURN` is the updated value.
 ```
 MATCH (u:User) WHERE u.name = "Adam"
-SET u.name = "New" RETURN u.*;
+SET u.name = "Aisha" RETURN u.*;
 ------------------
 | u.name | u.age |
 ------------------
-| New    | 30    |
+| Aisha    | 30    |
 ------------------
 ```
 
-For `DELETE`, the data available to `RETURN` is the deleted node/relationship.
+For `DELETE`, the data available to `RETURN` is the deleted node/relationship record.
 ```
 MATCH (u:User) WHERE u.name = 'Adam' 
 DETACH DELETE u RETURN u.*;
@@ -42,9 +42,14 @@ DETACH DELETE u RETURN u.*;
 
 ## Read After Update
 
-Instead of returning modified record, it is also possible to continue querying based on modified record. Data available to reading clauses follow the same rule as return clause.
+You can also have other reading clauses after update clauses. 
+The node or relationship variables that were used in the update clauses will be available to the
+following reading clauses.  For example, the following query tries to create two `Follows` relationships from Adam, 
+one to Karissa and other to Zhang. Note that the part of the query that creates the 
+`Adam-[Follows]->Zhang` relationship happens after an update and has a reading MATCH clause. 
+Specifically, it follows the creation of the `Adam-[Follows]->Karissa` relationship, which is an update, and the query 
+has a reading `MATCH (c:User {name:'Zhang'})` clause in it.
 
-Read after update can be particularly useful when trying to create dependent records.
 ```
 MATCH (a:User {name:'Adam'})
 WITH a
@@ -52,4 +57,5 @@ MATCH (b:User {name:'Karissa'}) CREATE (a)<-[e1:Follows {since:2023}]-(b)
 WITH a
 MATCH (c:User {name:'Zhang'}) CREATE (a)<-[e2:Follows {since:2024}]-(c)
 ```
-The query above tries to create two followers for "Adam". The second creation will only be executed if "Karissa-Follows->Adam" is successfully created.
+Note that the second `Adam-[Follows]->Zhang` relationship will be created only if
+the first `Adam-[Follows]->Karissa` relationship is successfully created.
