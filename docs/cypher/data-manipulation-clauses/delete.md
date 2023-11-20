@@ -14,7 +14,7 @@ We will use the database, whose schema and data import commands are given [here]
 You can import this database by copying pasting the commands on that page. 
 
 # DELETE
-`DELETE` clause delete node or relationship records from the table.
+`DELETE` clause deletes node or relationship records from the table.
 
 ## Delete Nodes
 
@@ -46,7 +46,8 @@ MATCH (u) WHERE u.name = 'A' DELETE u RETURN u.*;
 ```
 
 ## Detach Delete
-`DELETE` can only delete node that does not have any relationship. To delete a node and all its relationships, use `DETACH DELETE`.
+`DELETE` can only delete nodes that do not have any relationships. To delete a node and all of its relationships with
+a single clause, use `DETACH DELETE`.
 
 ```
 MATCH ()-[e]->() RETURN COUNT(e) AS num_rels;
@@ -64,7 +65,7 @@ MATCH ()-[]->() RETURN COUNT(*) AS num_rels;
 ------------
 ```
 
-To delete every records in the database.
+For example, to delete every record in the database, you can do the following:
 ```
 MATCH (n) DETACH DELETE n;
 ```
