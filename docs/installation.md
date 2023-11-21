@@ -17,12 +17,12 @@ import TabItem from '@theme/TabItem';
 
 - Intel
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.12/kuzu_cli-osx-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-osx-x86_64.zip
  ```
 
 - Apple Silicon
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.12/kuzu_cli-osx-arm64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-osx-arm64.zip
 ```
 
 </TabItem>
@@ -30,7 +30,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.0.12/kuzu_cli-osx-arm64.zip
 <TabItem value="linux">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.12/kuzu_cli-linux-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-linux-x86_64.zip
  ```
 
 </TabItem>
@@ -38,7 +38,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.0.12/kuzu_cli-linux-x86_64.z
 <TabItem value="win">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.12/kuzu_cli-windows-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-windows-x86_64.zip
  ```
 
 </TabItem>
@@ -92,12 +92,12 @@ pip install kuzu
 
 - Intel
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.12/libkuzu-osx-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-osx-x86_64.zip
  ```
 
 - Apple Silicon
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.12/libkuzu-osx-arm64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-osx-arm64.zip
 ```
 
 </TabItem>
@@ -105,7 +105,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.0.12/libkuzu-osx-arm64.zip
 <TabItem value="linux">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.12/libkuzu-linux-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-linux-x86_64.zip
  ```
 
 </TabItem>
@@ -113,7 +113,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.0.12/libkuzu-linux-x86_64.zi
 <TabItem value="win">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.0.12/libkuzu-windows-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-windows-x86_64.zip
  ```
 
 </TabItem>
@@ -203,7 +203,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.0.12</version>
+    <version>0.1.0</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -217,7 +217,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.0.12</version>
+    <version>0.1.0</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -231,7 +231,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.0.12</version>
+    <version>0.1.0</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -240,3 +240,14 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 </TabItem>
 
 </Tabs>
+
+## Nightly Builds
+We have setup a nightly build pipeline for those who want to access latest feature set. To use the latest nightly version of Kùzu, follow the instructions below:
+
+For Python API, the latest nightly version can be installed with `pip install --pre kuzu`.
+
+For Node.js API, the latest nightly version can be installed with `npm i kuzu@next`.
+
+For Rust API, the latest nightly version can be found at [crates.io](https://crates.io/crates/kuzu/versions).
+
+For CLI, C and C++ shared library, and Java JAR, the latest nightly version can be downloaded from the latest run of [this GitHub Actions pipeline](https://github.com/kuzudb/kuzu/actions/workflows/build-and-deploy.yml).

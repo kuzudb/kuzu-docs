@@ -1,13 +1,13 @@
 ---
 title: Python
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 You can easily install the latest Kùzu Python API using pip: `pip install kuzu`. 
 
 Once the Python API is installed, you'll be able to import it in Python and execute Cypher queries. 
 Below is a brief demonstration on getting started. 
-You can find detailed information on the Python API [here](../client-apis/python-api).
+You can find detailed information on the Python API [here](https://kuzudb.com/api-docs/python).
 
 - Import library:
 

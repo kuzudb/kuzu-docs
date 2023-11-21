@@ -1,6 +1,6 @@
 ---
 title: Command Line
-sidebar_position: 1
+sidebar_position: 0
 ---
 
 The Kùzu Command Line Interface (CLI) is a unified, dependency-free executable, precompiled for Mac, Linux and Windows systems.

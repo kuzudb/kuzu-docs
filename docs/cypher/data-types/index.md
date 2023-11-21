@@ -19,6 +19,7 @@ Kùzu supports a set of primitive and nested data types both for node and relati
 | UINT16 | 2 bytes | unsigned two-byte integer | |
 | UINT32 | 4 bytes | unsigned four-byte integer | |
 | UINT64 | 8 bytes | unsigned eight-byte integer | |
+| INT128 | 16 bytes | signed sixteen-byte integer | |
 | INTERVAL | 4 bytes | date/time difference | | 
 | NODE | fixed | represents a node in graph | |
 | PATH | fixed | represents a path in graph | |

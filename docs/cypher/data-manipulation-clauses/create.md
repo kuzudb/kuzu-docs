@@ -1,6 +1,7 @@
 ---
 title: Create
 description: Insert records into your node and relationship tables.
+sidebar_position: 1
 ---
 
 import RunningExample from '../running-example.png';

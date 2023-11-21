@@ -1,6 +1,6 @@
 ---
 title: Operating System Compatibility
-sidebar_position: 10
+sidebar_position: 20
 ---
 
 ## CLI, C and C++

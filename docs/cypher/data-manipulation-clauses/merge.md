@@ -1,6 +1,7 @@
 ---
 title: Merge
 description: Match existing pattern or, if not present, create the pattern.
+sidebar_position: 4
 ---
 
 import RunningExample from '../running-example.png';

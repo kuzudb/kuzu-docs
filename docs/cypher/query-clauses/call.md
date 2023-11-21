@@ -14,7 +14,7 @@ description: CALL clause is a reading clause used for executing schema functions
 | CURRENT_SETTING('setting') | returns the value of the given setting |
 | DB_VERSION() | returns the version of Kùzu |
 | SHOW_TABLES() | returns the name, type, comment of all tables in the database |
-
+| READ_PANDAS(pd) | scans pandas dataframe |
 
 ### TABLE_INFO
 
@@ -144,4 +144,33 @@ Output:
 ----------------------------------------------
 | person            | person                 |
 ----------------------------------------------
+```
+
+### READ_PANDAS
+
+`READ_PANDAS` can be used to scan a pandas dataframe object. 
+
+Consider the following pandas dataframe "person"
+```
+id = np.array([0, 2, 3, 5, 7, 11, 13], dtype=np.int64)
+age = np.array([42, 23, 33, 57, 67, 39, 11], dtype=np.uint16)
+height_in_cm = np.array([167, 172, 183, 199, 149, 154, 165], dtype=np.uint32)
+is_student = np.array([False, True, False, False, False, False, True], dtype=bool)
+person = pd.DataFrame({'id': id, 'age': age, 'height': height_in_cm, 'is_student': is_student})
+```
+You can scan "person" as a regular table through `READ_PANDAS` function
+```
+result = conn.execute('CALL READ_PANDAS("person") RETURN age as age, height / 2.54 as height_in_inch').get_as_df()
+print(result)
+```
+Output:
+```
+    age   height_in_inch
+0   42       65.748031
+1   23       67.716535
+2   33       72.047244
+3   57       78.346457
+4   67       58.661417
+5   39       60.629921
+6   11       64.960630
 ```

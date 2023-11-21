@@ -4,4 +4,4 @@ sidebar_position: 5
 description: ""
 ---
 
-The Rust API can be found at https://docs.rs/kuzu/latest/kuzu/
+The Rust API docs can be [found here](https://docs.rs/kuzu/latest/kuzu/).

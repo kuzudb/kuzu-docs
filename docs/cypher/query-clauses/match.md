@@ -377,23 +377,25 @@ Output:
 ### Filter Variable Length Relationships
 We also support running predicates on recursive patterns to constrain the relationship being traversed.
 
-The following query finds name of users that are followed between 1 - 2 hops by Adam before 2022.
+The following query finds name of users and the number of path that are followed between 1 - 2 hops from Adam by person with age more than 45 and before 2022.
 ```
-MATCH p = (a:User)-[:Follows*1..2 (r, _ | WHERE r.since < 2022) ]->(b:User)
+MATCH p = (a:User)-[:Follows*1..2 (r, n | WHERE r.since < 2022 AND n.age > 45) ]->(b:User)
 WHERE a.name = 'Adam' 
-RETURN DISTINCT b.name;
+RETURN b.name, COUNT(*);
 ```
 Output:
 ```
------------
-| b.name  |
------------
-| Karissa |
------------
-| Zhang   |
------------
+--------------------------
+| b.name  | COUNT_STAR() |
+--------------------------
+| Karissa | 1            |
+--------------------------
+| Zhang   | 1            |
+--------------------------
 ```
-Our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents intermedaite relationships and the second one represents intermediate nodes. Filtering on node property is not supported currently.
+Similarl
+
+Our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents intermedaite relationships and the second one represents intermediate nodes. 
 
 ### Projecting Properties of Intermediate Nodes and Relationships in Variable Length Relationships
 You can project a subset of properties for the intermediate nodes and relationships that bind within a variable length

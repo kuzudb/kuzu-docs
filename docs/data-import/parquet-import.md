@@ -9,7 +9,6 @@ Apache Parquet is an open source, column-oriented data file format designed for 
 Similar to importing from CSV files, there are several rules about importing from parquet files.
 - **Starting with empty tables** 
 - **Copying nodes before rels**
-- **Extra columns in csv files**
 
 See [notes in CSV import](csv-import.md#several-notes) for details.
 
@@ -31,7 +30,7 @@ COPY User FROM "user.parquet";
 ```
 
 ## `COPY FROM` a Parquet File to a Rel Table
-Similar to copy from a csv file to a rel table. The order of columns should the "from" column, the "to" column and the predefined properties on the rel table as defined in `CREATE REL TABLE` command.
+Similar to copy from a CSV file to a rel table. The first two columns should the "from" column and the "to" column.
 
 Example parquet file for "follows.parquet". The output is obtained from `print(pyarrow.Table)`.
 ```
