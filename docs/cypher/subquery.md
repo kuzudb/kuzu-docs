@@ -75,7 +75,17 @@ MATCH (a:User) RETURN a.name, COUNT { MATCH (a)<-[:Follows]-(b:User) } AS num_fo
 ```
 Output:
 ```
-
+--------------------------
+| a.name  | num_follower |
+--------------------------
+| Adam    | 0            |
+--------------------------
+| Karissa | 1            |
+--------------------------
+| Noura   | 1            |
+--------------------------
+| Zhang   | 2            |
+--------------------------
 ```
 A count subquery can also be used in a `WHERE` clause as an expression that returns an integer value.
 
