@@ -124,22 +124,6 @@ make test NUM_THREADS=X
 
 For additional information regarding the tests, please refer to the documentation for [Testing Framework](./testing-framework.md).
 
-### Python tests
-
-#### Install dependencies
-
-While the Python bindings are built by default, additional dependencies are required to run the Python tests. To install the dependencies, please run the following command.
-
-```bash
-pip3 install -r tools/python_api/requirements_dev.txt
-```
-
-#### Run Python tests
-
-```bash
-make pytest NUM_THREADS=X
-```
-
 ### Increase `ulimit` for running tests
 
 For some platforms, such as macOS, the default limit for the number of open files is too low for running tests, which may cause some tests to fail. To increase the limit, please run the following command before running tests.
@@ -150,7 +134,29 @@ ulimit -n 10000
 
 ## Build Language Bindings
 
-By default, only C and C++ libraries, CLI, and Python bindings are built. To build other language bindings, please follow the instructions below.
+By default, only C and C++ libraries and the CLI are built. To build other language bindings, please follow the instructions below.
+
+### Python
+
+#### Prerequisites
+
+To install the dependencies, please run the following command.
+
+```bash
+pip3 install -r tools/python_api/requirements_dev.txt
+```
+
+#### Build Python bindings
+
+```bash
+make python NUM_THREADS=X
+```
+
+#### Run Python tests
+
+```bash
+make pytest NUM_THREADS=X
+```
 
 ### Node.js
 
