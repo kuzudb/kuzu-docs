@@ -29,8 +29,10 @@ In this example, we assume that the so/dylib, the header file, the CSV files, an
 
 int main()
 {
+    // Create kuzu system config with 512MB buffer pool size and 2 threads.
+    kuzu_system_config config = {.buffer_pool_size = 512 * 1024 * 1024, .max_num_threads = 2, .enable_compression = true, .read_only = false};
     // Create an empty database.
-    kuzu_database *db = kuzu_database_init("test", 0);
+    kuzu_database *db = kuzu_database_init("test", config);
 
     // Connect to the database.
     kuzu_connection *conn = kuzu_connection_init(db);
