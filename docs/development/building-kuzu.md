@@ -7,7 +7,7 @@ sidebar_position: 1
 
 ** Note: This documentation is intended for developers who want to build Kùzu from source code. If you are a user who wants to use Kùzu, please refer to the [installation section](../installation.md) for downloading pre-built binaries for your platform. **
 
-To build from source code, Kùzu requires Cmake(>=3.11), Python(>=3.7), and a compiler that supports C++20. Note that the header files of Python 3 are also required. The minimum supported version of C++ compilers is GCC 10, Clang 11, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but they are not tested.
+To build from source code, Kùzu requires CMake(>=3.15), Python(>=3.9), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 10, Clang 11, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
 
 Below are the instructions for building Kùzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. These instructions should also work for other similar platforms:
 
@@ -25,7 +25,7 @@ Below are the instructions for building Kùzu on Ubuntu 22.04 LTS, AlmaLinux 9.2
 
 ```bash
 apt update
-apt install -y build-essential cmake gcc g++ python3 python3-dev
+apt install -y build-essential cmake gcc g++ python3
 ```
 
 #### Build Kùzu
@@ -40,7 +40,7 @@ make release NUM_THREADS=$(nproc)
 
 ```bash
 dnf update
-dnf install -y cmake gcc gcc-c++ python3 python3-devel
+dnf install -y cmake gcc gcc-c++ python3
 ```
 
 #### Build Kùzu
@@ -145,6 +145,8 @@ To install the dependencies, please run the following command.
 ```bash
 pip3 install -r tools/python_api/requirements_dev.txt
 ```
+
+In addition, the python development headers are required. For example, on Ubuntu, the `python3-dev` package should be installed.
 
 #### Build Python bindings
 
