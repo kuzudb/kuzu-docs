@@ -47,7 +47,7 @@ Output:
 This query returns an empty result because in example database, only "Adam" has a 3-hop Follows path and the destination "b" node of that path is "Noura". However, "Noura" does not have an outgoing Follows relationship. 
 
 If we instead specified that the destination b node has an incoming edge, by swapping the direction
-of the relationship in the inner `(b)-[:Follows]->(c:User)` pattern to (b)<-[:Follows]-(c:User)`, we would get the
+of the relationship in the inner `(b)-[:Follows]->(c:User)` pattern to `(b)<-[:Follows]-(c:User)`, we would get the
 `(Adam, 30)` tuple back because Noura has incoming Follows relationships.
 
 ```
