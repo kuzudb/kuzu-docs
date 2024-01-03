@@ -67,7 +67,9 @@ records stored in relational or graph DBMSs.
 2. RAG using unstructured data: Uses text files, pdfs, or other unstructured documents, such as html pages.
 3. RAG using a mix of structured and unstructured data.
 
-This post covers RAG using structured data. I will cover RAG using unstructured data in a follow-up post, where
+This post covers RAG using structured data. Admittedly, the more interesting parts of this post is primarily about
+the generating SQL using LLMs and indeed the first immediate future work I highlight is to do more work
+in the space of generating Cypher and SPARQL. Then, in a follow up post, I will cover RAG using unstructured data, where
 I will also mention a few ways people are building RAG-based Q&A systems that use both structured and unstructured data.
 
 ## RAG Using Structured Data: Text-to-High-level Query
