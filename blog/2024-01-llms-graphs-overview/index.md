@@ -18,51 +18,55 @@ If so, you're exactly my target audiece for this new blog post series I am start
 My goals are twofolds: 
 1. *Overview the area*: I want to present what I learned with a simple and consistent terminology and at
 a more technical depth than you might find in other blog posts. I am aiming a depth similar to what I aim when preparing
-a lecture.
+a lecture. I will link to many quality and technically satisfying content (mainly papers since the area is very researchy).
 2. *Overview important future work*: I want to cover several important future work in the space. I don't
 necessarily mean work for research contributions but also simple approaches to experiment with if you are
 building question answering (Q&A) applications using LLMs and graph technology.
 
-<!---Killer App: RAG for Question Answering Using Enterprise Data--->
+## Let's Review the Killer App: Retrieval Augmented Generation
 
 The killer application of LLMs that is keeping the database community busy
 is Q&A over private enterprise data. Think of a chatbot to which you 
 can ask natural language questions ($Q_{NL}$), such as: "Who is our top paying customer from Waterloo?",
 or "What are data privacy regulations in Canada we need to comply with?"
 and get back natural language answers ($A_{NL}$).
-LLMs, out of the box, cannot answer these questions, e.g.,
-they never had any access to your sales records. 
+LLMs, out of the box, cannot answer these questions because it has a *knowledge gaph*.
+For example, LLMs never had any access to your sales records when they were trained. 
 Therefore, they need to retrieve or be provided with 
 extra information from private data sources of the enterprise.
-The high-level view of these systems look like this: 
 
-<div class="img-center">
-<img src={QAOverEnterpriseData} width="600"/>
-</div>
-
+**A note on a term you heard a lot -- Retrieval Augmented Generation:** 
 There is a term that is used for systems that combines traditional 
 information retrieval component, e.g., one that looks up some documents from
 an index, with a natural language generator component, such as an LLM: 
 *retrieval augmented generation* (RAG).
 The term is coined in [this paper](https://arxiv.org/pdf/2005.11401.pdf) to refer
-to the method of fine-tuning an LLM with additional information. The term was used
+to the method of fine-tuning an LLM with additional information, i.e.,
+using this additional data to train a new variant of the LLM. 
+The term was used
 in the original paper as "RAG models". Nowadays it is used in a variety of ways, 
 such as, "RAG system", "RAG-based system", "RAG does X", or 
-"Building RAG with Y". Even systems that simply use an LLM to convert a 
-$Q_{NL}$ to SQL or Cypher are called "RAG systems" in some documentations. So the term
-has a broader meaning now that encapsulates many Q&A approaches that use an LLM in conjunction with
-private data sources.
+"Building RAG with Y". RAG no longer seems to refer to fine-tuning LLMs. Instead, it 
+refers to providing LLMs with private data along with the question to fix the knowledge gap.
+Even systems that simply use an LLM to convert a 
+$Q_{NL}$ to SQL or Cypher query and simply return the results of the query
+are called "RAG systems" in some documentations. I'll use it in this broader sense.
 
 You can build RAG-based Q&A systems by using structured and/or unstructured
-data. In this blog post series I will cover 3 RAG approaches:
+data. The high-level view of these systems look like this: 
+
+<div class="img-center">
+<img src={QAOverEnterpriseData} width="600"/>
+</div>
+
+In this blog post series I will cover the following approaches:
 1. RAG using structured data: Uses structured records in the enterprise, e.g.,
 records stored in relational or graph DBMSs. 
 2. RAG using unstructured data: Uses text files, pdfs, or other unstructured documents, such as html pages.
 3. RAG using a mix of structured and unstructured data.
 
-This post covers RAG using structured data. I will cover RAG using unstructured data in a follow-up post. Finally, I will not
-have much to say about mixing structured and unstructured data. Instead, I will mention a few tools
-you can use to develop such "hybrid" RAG applications.
+This post covers RAG using structured data. I will cover RAG using unstructured data in a follow-up post, where
+I will also mention a few ways people are building RAG-based Q&A systems that use both structured and unstructured data.
 
 ## RAG Using Structured Data: Text-to-High-level Query
 
@@ -75,32 +79,37 @@ The figure below describes the overall approach:
 <img src={RAGUsingStructuredData} width="600"/>
 </div>
 
-$Q_{NL}$ along with the schema of a database is given
-to the LLM. Depending on the underlying database, the schema many contain
-columnsof relational tables and their descriptions, or labels of nodes and edges
-of a graph database. Using $Q_{NL}$ and the database schema, he LLM generates 
+$Q_{NL}$, the schema of a database, and optionally
+some example natural language question and high-level query examples, are given
+to the LLM as a prompt. 
+The terms no shot, one shot, or few shot refers to the number of examples provided
+in the prompt. Depending on the underlying database, the schema may contain
+columns of relational tables and their descriptions, or labels of nodes and edges
+of a graph database. Using $Q_{NL}$, the database schema, and optionally
+some examples, the LLM generates 
 a database query, such as SQL or Cypher. The system runs this query against the
 DBMS and returns back the query result or using the LLM again, converts 
-the query result back to a natural language answer $A_{NL}$.
+the query result back to a natural language answer $A_{NL}$. 
 
-Let me pause here to appreciate one thing. For many decades, the database community has studied the problem
+Let us pause here to appreciate one thing. For many decades, the database community has studied the problem
 of converting $Q_{NL}$ to SQL (aka "text-to-SQL"). Here is a good recent [survey paper](https://link.springer.com/article/10.1007/s00778-022-00776-8)
-that covers only the deep network-based approaches and [a more extensive survey](https://www.nowpublishers.com/article/Details/DBS-078)
+that covers only the deep network-based approaches and [a more extensive survey/book](https://www.nowpublishers.com/article/Details/DBS-078)
 on the broader topic of natural language interfaces to databases.
-Neither of these surveys cover any work that that directly use LLMs such as chatGPT, 
+Neither of these surveys cover any work that directly uses LLMs such as GPT models, 
 which are quite recent developments. Take any of the work covered in these surveys and 
 you'll find an approach that requires significant engineering to build the pipeline shown in the above figure. 
 For example, most of the pre-LLM approaches that use deep learning requires
 hard work *to teach a model how to "speak" SQL* using large 
 corpuses of tables, such as [WikiSQL](https://arxiv.org/abs/1709.00103) or [Spider](https://github.com/taoyds/spider).
 Post-LLM approaches
-requires none of this effort because LLMs already speak SQL, Cypher, or SPARQL out of the box.
-Instead the hard work now is for developers *to learn how to prompt LLMs* so that 
-LLMs generate correct queries. In contrast, building the above pipeline requires much less effort.
+requires none of this effort because LLMs already speak SQL, Cypher, or SPARQL out of the box. Same datasets
+are now being used not for training models but simply for evaluating LLMs in many recent papers.
+Instead the hard problem now is for developers *to learn how to prompt LLMs* so that 
+LLMs generate correct queries. I'll say more about this problem. In contrast, building the above pipeline requires much less effort as
+I'll review next.
 
 ###  LangChain and LlamaIndex Frameworks: Simplicity of Developing RAG Systems
-Let me get more concrete and present how developer build RAG Systems. 
-If you have been following the area, you will not be surprised to hear that people build 
+If you have been following the area, you will not be surprised to hear that nowadays people build 
 Q&A systems that convert $Q_{NL}$ to a high-level query language using two common tools:
 (i) [LangChain](https://www.langchain.com/); and (ii) [LlamaIndex](https://www.llamaindex.ai/).
 To give you one concrete example of using these tools, 
@@ -137,7 +146,7 @@ Full Context:
 ```
 The "chain" first generated a Cypher query using $Q_{NL}$. 
 Behind the curtain, i.e., inside the KuzuQAChain code, 
-chatGPT was given the following prompt:
+a GPT model was given the following prompt:
 ```
 Generate Cypher statement to query a graph database.
 Instructions:
@@ -157,19 +166,18 @@ The question is:
 Who played in The Godfather: Part II?
 ```
 Indeed if you copy this prompt and paste it in [chatGPT's browser interface](https://chat.openai.com/), 
-you will get the same or very similar Cypher query. The important point is, that's all
-the coding you have to do to build a pipeline that can query your database with
-a natural language. You ultimately construct a string prompt that contains $Q_{NL}$, some
+you will get the same or very similar Cypher query. The important point is: that's all
+the coding you have to do to build a natural language interface that can query your database. 
+You ultimately construct a string prompt that contains $Q_{NL}$, some
 instructions, and schema of the database, and the LLM will generate a query for you. 
 The `KuzuGraph` and `KuzuQAChain`, along with many other similar interfaces, are simple wrappers to do just that.
-If you want to play around with how well this works on other databases,
+If you want to play around with how well this works on other datasets,
 we have this pipeline implemented in Kùzu's browser frontend [KùzuExplorer](https://kuzudb.com/docusaurus/kuzuexplorer/). 
 That is, for any database you have in Kùzu, you get a natural language interface over it in
 KùzuExplorer. Checkout the "robot icon" on the left (you need to provide your GPT API Key in the Settings tab). 
-You can develop similar pipelines with many
-other GDBMSs using similar interfaces.
+You can develop similar pipelines with other GDBMSs using similar interfaces.
 If you instead want to build Q&A systems over your RDBMSs, you can use
-LangChain's [SQLDatabaseChain]([https://python.langchain.com/docs/use_cases/qa_structured/sql](https://python.langchain.com/docs/use_cases/qa_structured/sql#quickstart)) and 
+LangChain's [SQLDatabaseChain](https://python.langchain.com/docs/use_cases/qa_structured/sql#case-2-text-to-sql-query-and-execution) and 
 [SQLAgent](https://python.langchain.com/docs/use_cases/qa_structured/sql#case-3-sql-agents) or
 LlamaIndex's [NLSQLTableQueryEngine](https://docs.llamaindex.ai/en/stable/examples/index_structs/struct_indices/SQLIndexDemo.html#part-1-text-to-sql-query-engine). The level of simplicity is similar to the example I presented.
 
@@ -187,31 +195,30 @@ decide which tables' schema should be read by giving $Q_{NL}$ and the names of t
 in the database (output of the 
 'show tables' in SQL). The LLM then gives back a query to read a subset of the tables' schemas.
 (ii) Then, using the schema information of the set of tables, the LLM now generates a 
-SQL query to answer $Q_{NL}$.[^2] These are good interfaces to use to develop more realistic Q&A systems
+SQL query to answer $Q_{NL}$. These are good interfaces to use to develop more realistic Q&A systems
 and I will briefly revisit these in the next blog post.
-
-[^2]: I could not find a similar LangChain Agent for GDBMSs, all integrations I saw so far give the schema
-explicitly in the prompt. Someone should probably build a few more advanced Agents and similar 
 
 ###  How Good Are LLMs in Generating High-Level Queries
 Again, if you want 
 to appreciate the simplicity of solving text-to-high-level query problem with LLMs, 
-I urge you to take a peek at the literature people would develop
-for the same functionality in pre-LLM text-to-SQL systems like [ATHENA](https://www.vldb.org/pvldb/vol9/p1209-saha.pdf)
-or [BELA](https://download.hrz.tu-darmstadt.de/pub/FB20/Dekanat/Publikationen/UKP/76500354.pdf). People
+I urge you to take a peek at the literature and check out how people would develop
+the same functionality in pre-LLM text-to-SQL systems (e.g., [ATHENA](https://www.vldb.org/pvldb/vol9/p1209-saha.pdf)
+or [BELA](https://download.hrz.tu-darmstadt.de/pub/FB20/Dekanat/Publikationen/UKP/76500354.pdf)). People
 had to solve many other technical problems for the same functionality, such as parsing the question,
-entity detection, synonym finding, string similarity. Yet, simplicity does not mean quality.
-Indeed the two most immediate questions people are studying are thes (they are related questions): 
+entity detection, synonym finding, string similarity, among others. Yet, simplicity does not mean quality.
+Indeed people are now studying the following two (related) questions: 
 
 1. *How accurate are the high-level queries that LLMs generate?*
 2. *How, e.g., through what types of prompts or data modeling, can we increase the accuracy of the
 queries generated by LLMs?*
 
-Here are three papers that I can suggest reading on this:
-1. Evaluating the Text-to-SQL Capabilities of Large Language Models: 
-[1](https://arxiv.org/pdf/2204.00498.pdf); and [2](https://arxiv.org/pdf/2311.07509.pdf). 
-They have different approaches. The for
-2. *Text-to-SQL Empowered by Large Language Models: A Benchmark Evaluation*: 
+Here are several papers that I can suggest reading on this:
+1. *[Evaluating the Text-to-SQL Capabilities of Large Language Models](https://arxiv.org/pdf/2204.00498.pdf)* from researchers from Cambridge and universties and institutes from Montréal.
+2. *[Text-to-SQL Empowered by Large Language Models: A Benchmark Evaluation](https://arxiv.org/pdf/2308.15363.pdf)* from Alibaba Group.
+3. *[Enhancing Few-shot Text-to-SQL Capabilities of Large Language Models: A Study on Prompt Design Strategies](https://arxiv.org/pdf/2305.12586.pdf)* from Yale, Columbia, and Allen Institute for AI.
+4. *[How to Prompt LLMs for Text-to-SQL: A Study in Zero-shot, Single-domain, and Cross-domain Settings](https://arxiv.org/pdf/2305.11853.pdf)* from Ohio State
+5. *[A Benchmark to Understand the Role of Knowledge Graphs on LLM's Accuracy for Q&A on Enterprise SQL Databases](https://arxiv.org/pdf/2311.07509.pdf)* from data.world.
+
 In the remainder of the post I want to review one interesting paper that 
 aims to answer very easy to read
 and raises a few questions about the importance of modeling choices 
