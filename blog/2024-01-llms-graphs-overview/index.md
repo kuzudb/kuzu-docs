@@ -23,11 +23,6 @@ a lecture.
 necessarily mean work for research contributions but also simple approaches to experiment with if you are
 building question answering (Q&A) applications using LLMs and graph technology.
 
-<!---
-That said, most content that I read
-are researchy even if they are published by engineers of commercial companies. This is inevitable since the area is so new.
---->
-
 <!---Killer App: RAG for Question Answering Using Enterprise Data--->
 
 The killer application of LLMs that is keeping the database community busy
@@ -37,7 +32,7 @@ or "What are data privacy regulations in Canada we need to comply with?"
 and get back natural language answers ($A_{NL}$).
 LLMs, out of the box, cannot answer these questions, e.g.,
 they never had any access to your sales records. 
-Therefore, they need to retrieve or along $Q_{NL}$ be given 
+Therefore, they need to retrieve or be provided with 
 extra information from private data sources of the enterprise.
 The high-level view of these systems look like this: 
 
@@ -70,6 +65,8 @@ have much to say about mixing structured and unstructured data. Instead, I will 
 you can use to develop such "hybrid" RAG applications.
 
 ## RAG Using Structured Data: Text-to-High-level Query
+
+### Overview
 Many blog posts and several papers concern Q&A systems that simply convert
 $Q_{NL}$ to a high-level query languge, such as SQL, Cypher, or SPARQL, using an LLM.
 The figure below describes the overall approach:
@@ -92,22 +89,25 @@ that covers only the deep network-based approaches and [a more extensive survey]
 on the broader topic of natural language interfaces to databases.
 Neither of these surveys cover any work that that directly use LLMs such as chatGPT, 
 which are quite recent developments. Take any of the work covered in these surveys and 
-you'll find an approach that requires significant engineering to build the pipline shown in the above figure. 
+you'll find an approach that requires significant engineering to build the pipeline shown in the above figure. 
 For example, most of the pre-LLM approaches that use deep learning requires
 hard work *to teach a model how to "speak" SQL* using large 
 corpuses of tables, such as [WikiSQL](https://arxiv.org/abs/1709.00103) or [Spider](https://github.com/taoyds/spider).
 Post-LLM approaches
 requires none of this effort because LLMs already speak SQL, Cypher, or SPARQL out of the box.
-Instead the hard work now is for developers *to learn how to use the LLM* so that 
-LLMs generate correct queries. Instead, building the above pipeline requires much less effort.
+Instead the hard work now is for developers *to learn how to prompt LLMs* so that 
+LLMs generate correct queries. In contrast, building the above pipeline requires much less effort.
 
-Let me be more concrete. If you have been following the area, you will not be surprised to hear that people build 
+###  LangChain and LlamaIndex Frameworks: Simplicity of Developing RAG Systems
+Let me get more concrete and present how developer build RAG Systems. 
+If you have been following the area, you will not be surprised to hear that people build 
 Q&A systems that convert $Q_{NL}$ to a high-level query language using two common tools:
-(i) [Langchain](https://www.langchain.com/); and (ii) [LlamaIndex](https://www.llamaindex.ai/).
-To give you a concrete example of how to build the pipeline above especially with these tools, 
-let me review the [Kùzu-Langchain integration](https://python.langchain.com/docs/use_cases/graph/graph_kuzu_qa)
+(i) [LangChain](https://www.langchain.com/); and (ii) [LlamaIndex](https://www.llamaindex.ai/).
+To give you one concrete example of using these tools, 
+let me review the [Kùzu-LangChain integration](https://python.langchain.com/docs/use_cases/graph/graph_kuzu_qa)
 (other GDBMSs have identical integrations). You as a programmer have very little to do: you prepare your Kùzu
-database `db`, wrap it around a `KuzuGraph`, which implements the commong Graph  a `KuzuQAChain` object in Python:
+database `db`, wrap it around a `KuzuGraph` and `KuzuQAChain` objects in Python and you have
+a text-to-Cypher pipeline:
 
 ```
 import kuzu
@@ -121,7 +121,8 @@ graph = KuzuGraph(db)
 chain = KuzuQAChain.from_llm(ChatOpenAI(temperature=0), graph=graph, verbose=True)
 chain.run("Who played in The Godfather: Part II?")
 ```
-I am following the example application here, which uses a movide database. 
+I am following the example application in this [documentation](https://python.langchain.com/docs/use_cases/graph/graph_kuzu_qa), 
+which uses a database of movies, actors, and directors. 
 ```
 Output:
 > Entering new  chain...
@@ -134,25 +135,101 @@ Full Context:
 
 'Al Pacino and Robert De Niro both played in The Godfather: Part II.'
 ```
-My goal is merely to show how easy it is to build the pipelines with existing technology.
-That should indeed by highly appreciated. You can develop similar pipelines with many
-other GDBMSs. A minor plug here is that Kùzu is embeddable and requires no server set ups
-or usernames and password configurations, so if you want to develop variants of these systems 
+The "chain" first generated a Cypher query using $Q_{NL}$. 
+Behind the curtain, i.e., inside the KuzuQAChain code, 
+chatGPT was given the following prompt:
+```
+Generate Cypher statement to query a graph database.
+Instructions:
+Use only the provided relationship types and properties in the schema.
+Do not use any other relationship types or properties that are not provided.
+
+Schema:
+Node properties: [{'properties': [('name', 'STRING')], 'label': 'Movie'}, {'properties': [('name', 'STRING'), ('birthDate', 'STRING')], 'label': 'Person'}]
+Relationships properties: [{'properties': [], 'label': 'ActedIn'}]
+Relationships: ['(:Person)-[:ActedIn]->(:Movie)']
+
+Note: Do not include any explanations or apologies in your responses.
+Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
+Do not include any text except the generated Cypher statement.
+
+The question is:
+Who played in The Godfather: Part II?
+```
+Indeed if you copy this prompt and paste it in [chatGPT's browser interface](https://chat.openai.com/), 
+you will get the same or very similar Cypher query. The important point is, that's all
+the coding you have to do to build a pipeline that can query your database with
+a natural language. You ultimately construct a string prompt that contains $Q_{NL}$, some
+instructions, and schema of the database, and the LLM will generate a query for you. 
+The `KuzuGraph` and `KuzuQAChain`, along with many other similar interfaces, are simple wrappers to do just that.
+If you want to play around with how well this works on other databases,
+we have this pipeline implemented in Kùzu's browser frontend [KùzuExplorer](https://kuzudb.com/docusaurus/kuzuexplorer/). 
+That is, for any database you have in Kùzu, you get a natural language interface over it in
+KùzuExplorer. Checkout the "robot icon" on the left (you need to provide your GPT API Key in the Settings tab). 
+You can develop similar pipelines with many
+other GDBMSs using similar interfaces.
+If you instead want to build Q&A systems over your RDBMSs, you can use
+LangChain's [SQLDatabaseChain]([https://python.langchain.com/docs/use_cases/qa_structured/sql](https://python.langchain.com/docs/use_cases/qa_structured/sql#quickstart)) and 
+[SQLAgent](https://python.langchain.com/docs/use_cases/qa_structured/sql#case-3-sql-agents) or
+LlamaIndex's [NLSQLTableQueryEngine](https://docs.llamaindex.ai/en/stable/examples/index_structs/struct_indices/SQLIndexDemo.html#part-1-text-to-sql-query-engine). The level of simplicity is similar to the example I presented.
+
+###  LangChain and LlamaIndex Agents: More Advanced RAG Systems
+
+In practice, it is unlikely that your chatbot or search engine will be as simple
+as the above example where the application interacts with the LLM only once. If you want
+to interact with the LLM multiple times and conditionally take one action over another action etc.,
+LangChain and LlamaIndex also provide ways to do that through their `Agents' (see [LangChain Agents](https://docs.llamaindex.ai/en/v0.8.25/core_modules/agent_modules/agents/root.html) and [Llama Index Agents](https://docs.llamaindex.ai/en/stable/use_cases/agents.html).
+You can use these interfaces to develop manual "Agents" but there are also existing Agents that can be used
+out-of-the box. For example, the
+[LangChain SQLAgent](https://python.langchain.com/docs/use_cases/qa_structured/sql#case-3-sql-agents), 
+takes only the $Q_{NL}$ and uses the LLM 2 times (I'm simplifying a bit): (i) First, the LLM is prompted to
+decide which tables' schema should be read by giving $Q_{NL}$ and the names of the tables
+in the database (output of the 
+'show tables' in SQL). The LLM then gives back a query to read a subset of the tables' schemas.
+(ii) Then, using the schema information of the set of tables, the LLM now generates a 
+SQL query to answer $Q_{NL}$.[^2] These are good interfaces to use to develop more realistic Q&A systems
+and I will briefly revisit these in the next blog post.
+
+[^2]: I could not find a similar LangChain Agent for GDBMSs, all integrations I saw so far give the schema
+explicitly in the prompt. Someone should probably build a few more advanced Agents and similar 
+
+###  How Good Are LLMs in Generating High-Level Queries
+Again, if you want 
+to appreciate the simplicity of solving text-to-high-level query problem with LLMs, 
+I urge you to take a peek at the literature people would develop
+for the same functionality in pre-LLM text-to-SQL systems like [ATHENA](https://www.vldb.org/pvldb/vol9/p1209-saha.pdf)
+or [BELA](https://download.hrz.tu-darmstadt.de/pub/FB20/Dekanat/Publikationen/UKP/76500354.pdf). People
+had to solve many other technical problems for the same functionality, such as parsing the question,
+entity detection, synonym finding, string similarity. Yet, simplicity does not mean quality.
+Indeed the two most immediate questions people are studying are thes (they are related questions): 
+
+1. *How accurate are the high-level queries that LLMs generate?*
+2. *How, e.g., through what types of prompts or data modeling, can we increase the accuracy of the
+queries generated by LLMs?*
+
+Here are three papers that I can suggest reading on this:
+1. Evaluating the Text-to-SQL Capabilities of Large Language Models: 
+[1](https://arxiv.org/pdf/2204.00498.pdf); and [2](https://arxiv.org/pdf/2311.07509.pdf). 
+They have different approaches. The for
+2. *Text-to-SQL Empowered by Large Language Models: A Benchmark Evaluation*: 
+In the remainder of the post I want to review one interesting paper that 
+aims to answer very easy to read
+and raises a few questions about the importance of modeling choices 
+
+
 
 That however does not mean that LLMs as used
 in these pipelines are generating correct queries. Indeed, that is the main question
-people are trying to evaluate nowadays. I will 
+people are trying to evaluate nowadays. 
 
-If you want to develop similar pipelines with RDBMSs, you can use one of these
-LangChain's [SQLDatabaseChain]([https://python.langchain.com/docs/use_cases/qa_structured/sql](https://python.langchain.com/docs/use_cases/qa_structured/sql#quickstart)),
-LangChain's [SQLAgent](https://python.langchain.com/docs/use_cases/qa_structured/sql#case-3-sql-agents),
-LlamaIndex's [NLSQLTableQueryEngine](https://docs.llamaindex.ai/en/stable/examples/index_structs/struct_indices/SQLIndexDemo.html#part-1-text-to-sql-query-engine). In some of these applications, for example, in SQLAgent, you don't necessarily have to provide
-your prompth with the schema information. For example, Langchain's SQLAgent will query the database schema by issuing a 'show tables'
-query underneath as one of its first actions once it gets a query. Then based on the names of tables, will 
-query for the schemas of some of the tables. Finally, based the schemas it read, it will make a decision to generate a SQLQuery.
-I could not yet find a similar LangChain agent for GDBMSs, all integrations so far give the schema
-explicitly in the prompt but you as the user usually don't if you're using a GDBMSs' integration with 
-LangChain or LlamaIndex.
+
+<---
+[^3]: A  plug here is that Kùzu is embeddable and requires no server set ups
+or usernames and password configurations. If you want to develop variants of these systems,
+it is the easiest system to use to get going. Indeed one of our primary goals is to make Kùzu 
+the easiest to use GDBMS available for developers.
+--->
+
 
 These are common tools to develop many different LLM-based systems including RAG-based ones.
 Instead of covering example applications in detail, I will just refer you to a few documentation pages.
@@ -164,7 +241,7 @@ I will not cover these in detail but for example,
 
 
 As a result, the several post-LLM work I read  
-are evaluation-only papers ([1](https://arxiv.org/pdf/2204.00498.pdf), [2](https://arxiv.org/pdf/2311.07509.pdf))
+are evaluation-only papers 
 that experiment with LLMs on suites of queries and publish their observations.
 In constrast, these papers require much less effort to 
 engineer the pipeline in the above figure so there is not much to write about that.
