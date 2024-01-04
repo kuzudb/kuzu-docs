@@ -230,50 +230,51 @@ Here are several papers that I suggest reading on this:
 6. *[A Benchmark to Understand the Role of Knowledge Graphs on LLM's Accuracy for Q&A on Enterprise SQL Databases](https://arxiv.org/pdf/2311.07509.pdf)* from data.world.
 
 These papers are either entirelly or almost entirely evaluation-only papers that experiment with very detailed approaches of prompting LLMs
-to generate SQL queries. Except for the last one, they have all "repurposed" Spider or WikiSQL dataset
-to evaluate LLMs with different prompting approaches. First let me say that the general message many of these
+to generate SQL queries. First, let me say that the general message these
 papers give (maybe except the last one) is that LLMs are pretty good. With right prompting (or even with basic prompting)
 they do well on these benchmarks. That should be impressive to many.
-Second, the set of techniques are too detailed to cover here but briefly include
-many heuristics for: the syntax used for providing the schema 
-(apparently putting `the pound sign “#” to differentiate prompt from response in examples yields impressive performance gains` 😀 go figure) or
-the number and selection of example (question, SQL) pairs, e.g., apparently most work finds there is a sweet spot in the number
-of examples to provide or even the effects of standardizing the text in the prompt, e.g., indenting and using all lower case letters consistently
-(apparently has minor but effect). Yes, as interesting and important it is to learn how to use LLMs better, I still 
-of the following thought before going to bed: somewhere out there, some advisor might be torturing some graduate student
-to check if this magical box produces better SQL if we put pound sign vs double slashes in LLM prompts!
+Second, the set of techniques are too detailed to cover here but some example heuristics 
+these papers experiment with include the following: (i) the syntax used for providing the schema 
+(apparently putting "the pound sign “#” to differentiate prompt from response in examples yields impressive performance gains" 😀 go figure); (ii)
+the number and selection of example (question, SQL) pairs, e.g., apparently there is a sweet spot in the number
+of examples to provide; or (iii) the effects of standardizing the text in the prompt, e.g., indenting and using all lower case letters consistently
+(apparently has minor but some effect). Yes, as interesting and important it is to learn how to use LLMs better, I still 
+can't escape the following thought before going to bed: somewhere out there, some advisor might be torturing some graduate student
+to check if this magical box produces better SQL if we put a pound sign vs double slashes in LLM prompts!
 
 Most work I found is on generating SQL.
 In contrast, I found no papers that do similar prompting study for query languages
 of GDBMS though I ran into two papers that are providing benchmarks for query languages of GDBMSs: 
 (i) [SPARQL](https://arxiv.org/abs/2309.16248); and (ii) [Cypher](https://dl.acm.org/doi/pdf/10.1145/3511808.3557703)).
-So a low-hanging fruit future work is:
+So a low-hanging fruit future work is the following:
 
-*Important Future Work 1: Similar prompting studies for query languages of graph DBMSs with a focus on recursive and unions of joins queries.*: 
-Given the new benchmarks
-people are providing for SPARQL and Cypher, the infrastructure for this type of evaluation may be available.
+*Important Future Work 1--Similar prompting studies for query languages of graph DBMSs with a focus on recursive and unions of joins queries.*: 
 In contrast to SQL queries, here one should study various recursive queries that the query languages of GDBMSs are particularly good
-at and queries that omit labels, which would yield to  For example if you want to ask all connections between
+at and union-of-join queries which are asked by omitting labels in the query languages of GDBMSs. 
+For example if you want to ask all connections between
 your `User` nodes and User can have many relationships, such as `Follows`, `SentMoneyTo`, or `SameFamily`,
-you would have to write 3 possible join queries in SQL but can write with a very simple syntax such as 
-`MATCH (a:User)-[e]->(b:User)` in Cypher, where the omissions of the label on relationship `e` indicates searching over
-all possible joins. 
+you would have to write 3 possible join queries in SQL and union them. Instead, you can write this query
+with a very simple syntax in Cypher as 
+`MATCH (a:User)-[e]->(b:User)`, where the omissions of the label on the relationship `e` indicates searching over
+all possible joins.[^1] 
+
+[^1]: SPARQL syntax is different but a similar advantage exists by omitting type constraints.
 
 As a side note: In the context of any query language, including SQL, questions that require sub-queries are of particular 
 interest as they are generally harder to write. Some of the papers I read had sections analyzing the performance of
 LLMs on nested queries but the focus was not on these. In prior literature there are papers written solely on text-to-SQL generation for
 nested queries (e.g., see [the ATHENA++ paper](https://www.vldb.org/pvldb/vol13/p2747-sen.pdf)). I am certain someone
-somewhere is already focusing solely into nested queries.
+somewhere is already focusing solely on nested queries and that's a good idea.
 
-## [data.world Paper](https://arxiv.org/pdf/2311.07509.pdf) and Some Interesting Questions
-In the remainder of the post I want to review the paper from data.world. Similar to the other papers there,
+## data.world Paper and Some Interesting Questions
+In the remainder of the post I want to review [the paper](https://arxiv.org/pdf/2311.07509.pdf) from data.world. 
+Similar to the other papers there,
 this paper is a text-to-SQL using LLMs but is closely related to GDBMSs. Unlike other papers which 
-study the effects of different prompting heuristics, this paper studies the *effects of data modeling of the 
-same set of records on the accuracy of SQL queries generated by LLMs*. As explained momentarily, one modeling
-choice experimented with uses a graph model (called "knowledge graph" in the paper). 
+study the effects of different prompting heuristics, this paper studies the *effects of data modeling 
+on the accuracy of SQL queries generated by LLMs*. 
 
 Specifically, this paper is an evaluation of the performance of GPT-4 in generating SQL using no examples, i.e., zero-shot,
-with basic prompting over a reference and standardized insurance database schema 
+with basic prompting over a standardized insurance database schema 
 called The [OMG Property and Casualty Data Model](https://www.omg.org/spec/PC/1.0/About-PC). 
 See Figure 1 in the paper (omitted here) for the conceptual schema, which consists of classes such as 
 Policy, Account, Claims, Insurable Object, among others, and their relatinships.
