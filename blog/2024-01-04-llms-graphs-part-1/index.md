@@ -214,7 +214,7 @@ LangChain's [SQLDatabaseChain](https://python.langchain.com/docs/use_cases/qa_st
 LlamaIndex's [NLSQLTableQueryEngine](https://docs.llamaindex.ai/en/stable/examples/index_structs/struct_indices/SQLIndexDemo.html#part-1-text-to-sql-query-engine). The level of simplicity is similar to the example I presented. In practice, it is unlikely that your chatbot or search engine will be as simple
 as the above example where the application interacts with the LLM only once. If you want
 to interact with the LLM multiple times and conditionally take one action over another action etc.,
-LangChain and LlamaIndex also provide ways to do that through their "Agents" (see [LangChain Agents](https://docs.llamaindex.ai/en/v0.8.25/core_modules/agent_modules/agents/root.html) and [Llama Index Agents](https://docs.llamaindex.ai/en/stable/use_cases/agents.html)).
+LangChain and LlamaIndex also provide ways to do that through their "Agents" (see [LangChain Agents](https://python.langchain.com/docs/modules/agents/) and [Llama Index Agents](https://docs.llamaindex.ai/en/stable/use_cases/agents.html)).
 
 
 ###  How Good Are LLMs in Generating High-Level Queries?
