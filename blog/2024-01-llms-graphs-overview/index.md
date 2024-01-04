@@ -10,7 +10,7 @@ import RAGUsingStructuredData from './rag-using-structured-data.png';
 import TwoSQLGenerationApproaches from './two-sql-generation-approaches.png';
 
 
-# RAG Using Structured Data: Overview and Important Questions
+# RAG Using Structured Data: Overview & Important Questions
 
 During the holiday season, I did some reading on
 LLMs and specifically on the techniques that use LLMs together with graph databases and knowledge graphs.
