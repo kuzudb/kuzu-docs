@@ -25,9 +25,9 @@ a lecture. I will link to many quality and technically satisfying pieces of cont
 necessarily mean work for research contributions but also simple approaches to experiment with if you are
 building question answering (Q&A) applications using LLMs and graph technology.
 
-## Let's Review the Killer App: Retrieval Augmented Generation
+## Killer App: Retrieval Augmented Generation
 
-The killer application of LLMs that is capturing the attention of database researchers and practitioners
+Let's review the killer application of LLMs. The main application that is keeping researchers and practitioners busy
 is Q&A over private enterprise data. Think of a chatbot to which you 
 can ask natural language questions ($Q_{NL}$), such as: "Who is our top paying customer from Waterloo?",
 or "What are data privacy regulations in Canada we need to comply with?"
