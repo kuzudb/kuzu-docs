@@ -427,7 +427,7 @@ has a class `Agent` and `Policy` objects are `in:soldByAgent` by some Agent obje
 see corresponding relations or columns in the [relational schema](https://github.com/datadotworld/cwd-benchmark-data/blob/main/ACME_Insurance/DDL/ACME_small.ddl). Unless I am missing something about how the prompts were given, 
 these are also likely to have important effects on the results and someone should fix and reproduce these results.
 
-*Important Future Work 2: What are rules of thumbs in data modeling that make LLM-generated queries more accurate?*: 
+*Important Future Work 2: Rules of thumbs in data modeling to make LLM-generated queries more accurate.* 
 I think the higher-level question of studying the effects of data modeling in more depth is a very good direction. 
 As LLMs get smarter, I would expect that the presence/absence of a pound sign or the style of English 
 should matter less. These look more syntactic differences that can be automatically solved over time. 
@@ -446,9 +446,28 @@ get to a well known form, such as Boyce-Codd Normal Form? Do we consistently get
 and simpler modeling of your records. Similar to a $Q_{NL}$-[LLM]->$Q_{SPARQL}$-[Direct Mapping]->$Q_{SQL}$ pipeline,
 one can test the effectiveness of $Q_{NL}$-[LLM]->$Q_{SQL-over-Views}$-[Direct Mapping]->$Q_{SQL}$.
 
-*Important Future Work 3: Use of Cypher as intermediate query language.* One reason to experiment with Cypher is quite similar to SQL but has several difference.: (1) joins have a different syntax, where similar to SPARQL,
-the join conditions are implicit in the `()-[]->()` node-arrow notation and common recursive joins have special syntax, e.g.,
-the Kleene star syntax.
-In some sense, Cypher does minor changes to SQL's syntax to 
-One advantage of 
+*Important Future Work 3: Use of Cypher as intermediate query language to translate to SQL.* One reason to experiment with Cypher 
+in addition to SPARQL is that Cypher is, arguably, more similar to SQL than SPARQL but has the advantage that (common) join
+conditions are implicit in the `(a)-[e]->(b)` node-arrow syntax. Yet Cypher does not have the verbosity of the SPARQL projections 
+I mentioned above (so you project properties the same way you project columns in SQL). In my world, all languages
+look very similar to SQL, so eventually when LLMs are smart enough or even now, I think these language differences 
+should have minor effects. However, graph query languages should continue to have major advantages to write
+recursive queries as they have specialized syntax (e.g., Cypher has the Kleene star syntax). For those queries,
+expressing first in Cypher and then mapping to SQL could lead to an advantage. 
 
+## Final Words
+Needless to say that the field will be flooded in the next few years with work on how to 
+make LLMs solve the text-to-high-level-query problem. Many rules of thumbs will emerge
+about how to prompt them correctly. I can speculate about a lot but I think it's plausible that 
+many of these rules of thumbs, specifically the syntactic
+differences in prompting, can automatically become
+obsolete very quickly as newer and more advanced LLMs that know high-level database languages better emerge.
+For example, it's plausible that people will stop showing LLMs example (question, query) pairs each time they ask them to generate
+SQL once they know SQL enough. However the harder question of how to model the data so that its meaning is clear and the
+queries that need to be written are simpler is more likely to remain a challenge for a longer time. I would not be too optimistic
+that there can emerge very clear answers to how to model your data best as anyone who has modeled records knows this is
+part art part science. Yet, some studiable questions, such as effects of normalization, use of views, generating Cypher,
+can yield some important rules of thumbs that can be beneficial in practice.
+
+In the next post, I will cover what I learned about RAG over unstructured data, where graphs and knowledge graphs are playing
+a more important role. Until then, happy new year to all!
