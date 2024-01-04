@@ -244,10 +244,21 @@ of GDBMS though I ran into two papers that are providing benchmarks for query la
 (i) [SPARQL](https://arxiv.org/abs/2309.16248); and (ii) [Cypher](https://dl.acm.org/doi/pdf/10.1145/3511808.3557703)).
 So a low-hanging fruit future work is:
 
-*Important Future Work 1: Perform similar prompting studies for query languages of graph DBMSs.*: Given the new benchmarks
+*Important Future Work 1: Similar prompting studies for query languages of graph DBMSs with a focus on recursive and unions of joins queries.*: 
+Given the new benchmarks
 people are providing for SPARQL and Cypher, the infrastructure for this type of evaluation may be available.
 In contrast to SQL queries, here one should study various recursive queries that the query languages of GDBMSs are particularly good
-at and queries that omit 
+at and queries that omit labels, which would yield to  For example if you want to ask all connections between
+your `User` nodes and User can have many relationships, such as `Follows`, `SentMoneyTo`, or `SameFamily`,
+you would have to write 3 possible join queries in SQL but can write with a very simple syntax such as 
+`MATCH (a:User)-[e]->(b:User)` in Cypher, where the omissions of the label on relationship `e` indicates searching over
+all possible joins. 
+
+As a side note: In the context of any query language, including SQL, questions that require sub-queries are of particular 
+interest as they are generally harder to write. Some of the papers I read had sections analyzing the performance of
+LLMs on nested queries but the focus was not on these. In prior literature there are papers written solely on text-to-SQL generation for
+nested queries (e.g., see [the ATHENA++ paper](https://www.vldb.org/pvldb/vol13/p2747-sen.pdf)). I am certain someone
+somewhere is already focusing solely into nested queries.
 
 ## [data.world Paper](https://arxiv.org/pdf/2311.07509.pdf) and Some Interesting Questions
 In the remainder of the post I want to review the paper from data.world. Similar to the other papers there,
@@ -292,7 +303,7 @@ The below figure shows an overview of these approaches for reference:
    Here’s the question:
    <INSERT QUESTION>
    ```
-3. Indirect SQL Generation via Graph Modeling/SPARQL: In this approach, instead of the relatianal schema of the database, the same
+2. Indirect SQL Generation via Graph Modeling/SPARQL: In this approach, instead of the relatianal schema of the database, the same
    database is modeled as an *OWL ontology* (OWL is short for Web Ontology Language).
    Ontology is another term for schema when modeling data as graph as classes and relationships between them. OWL is a W3C standard,
    and part of the RDF technology stack so OWL ontologies are a set RDF triples, such as:
@@ -326,7 +337,11 @@ The below figure shows an overview of these approaches for reference:
    ```
    As a last step, the authors have a direct mapping one can easily have from $Q_{SPARQL}$ to a SQL query $Q_{SQL}$.
 
-Interesting comparison. Results are even more interesting. The authors categories their 43 questions into
+Interesting comparison. There is some intuition for why one would be interested in the effectiveness of 
+query generation through an ontology because one of the well-known 
+pre-LLM text-to-SQL papers [ATHENA](https://www.vldb.org/pvldb/vol9/p1209-saha.pdf) did something similar.
+Instead of SPARQL they had another query language over an ontology called Ontology Query Language, which
+was then mapped to SQL. Results are even more interesting. The authors categories their 43 questions into
 4 quadrants based on 2 dimensions: 
 - Low vs high question complexity: questions that require only simple projections
 are low complexity, vs those that require aggregations or math functions are high complexity.
@@ -412,12 +427,28 @@ has a class `Agent` and `Policy` objects are `in:soldByAgent` by some Agent obje
 see corresponding relations or columns in the [relational schema](https://github.com/datadotworld/cwd-benchmark-data/blob/main/ACME_Insurance/DDL/ACME_small.ddl). Unless I am missing something about how the prompts were given, 
 these are also likely to have important effects on the results and someone should fix and reproduce these results.
 
-*Important Future Work 2*: Overall, I think the higher-level question raised in this paper is very interesting. As LLMs get smarter,
-I would expect that the presence/absence of a pound sign or the style of English should matter less. Yet, I would
-expect that the modeling choices are more fundamental and could have effects even with smarter models, so 
-understanding the effects and identifying some rules of thumbs here is promising. 
-the  of effects of modeling is very intriuging and interesting and it would not be surprising that 
-this is a major factor. 
+*Important Future Work 2: What are rules of thumbs in data modeling that make LLM-generated queries more accurate?*: 
+I think the higher-level question of studying the effects of data modeling in more depth is a very good direction. 
+As LLMs get smarter, I would expect that the presence/absence of a pound sign or the style of English 
+should matter less. These look more syntactic differences that can be automatically solved over time. 
+Modeling choices are more fundamental and relate to the clarity of the application data that will be queried. 
+So identifying some rules of thumbs here looks promising. Let me list a few immediate questions one can study:
 
-that I 
-The papers that are being published right now raise more question
+*Important Future Work 2.1: Effects of normalization/denormalization.* If the shortcoming of GPT-4 is 
+generating queries with many joins, one way to solve this is to denormalize the relations into fewer
+tables and study its effects. Again, I'm thinking of same records just modeled differently with fewer
+tables. What happens if we reduce all data into a single table with dozens of columns and many value repetitions? 
+Now all possible joins would have been performed so we'd force the LLM to write a join-less query with
+filters, distincts, and aggregations. What happens if we normalize the tables step by step until we 
+get to a well known form, such as Boyce-Codd Normal Form? Do we consistently get better accuracy?
+
+*Important Future Work 2.2: Use of views.* In relational modeling, views are an effective way to have higher 
+and simpler modeling of your records. Similar to a $Q_{NL}$-[LLM]->$Q_{SPARQL}$-[Direct Mapping]->$Q_{SQL}$ pipeline,
+one can test the effectiveness of $Q_{NL}$-[LLM]->$Q_{SQL-over-Views}$-[Direct Mapping]->$Q_{SQL}$.
+
+*Important Future Work 3: Use of Cypher as intermediate query language.* One reason to experiment with Cypher is quite similar to SQL but has several difference.: (1) joins have a different syntax, where similar to SPARQL,
+the join conditions are implicit in the `()-[]->()` node-arrow notation and common recursive joins have special syntax, e.g.,
+the Kleene star syntax.
+In some sense, Cypher does minor changes to SQL's syntax to 
+One advantage of 
+
