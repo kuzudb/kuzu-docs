@@ -246,7 +246,7 @@ the number and selection of example (question, SQL) pairs, e.g., apparently ther
 of examples to provide; or (iii) the effects of standardizing the text in the prompt, e.g., indenting and using all lower case letters consistently
 (apparently has minor but some effect). Yes, as interesting and important it is to learn how to use LLMs better, I still 
 can't escape the following thought before going to bed: somewhere out there, some advisor might be torturing some graduate student
-to check if this magical box produces better SQL if we put a pound sign vs double slashes in LLM prompts!
+to check if the magical box produces better SQL with a pound sign vs double slashes!
 
 Most work I found is on generating SQL.
 In contrast, I found no papers that do similar prompting study for query languages
