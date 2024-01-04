@@ -232,7 +232,8 @@ Here are several papers that I suggest reading on this:
 These papers are either entirelly or almost entirely evaluation-only papers that experiment with very detailed approaches of prompting LLMs
 to generate SQL queries. First, let me say that the general message these
 papers give (maybe except the last one) is that LLMs are pretty good. With right prompting (or even with basic prompting)
-they do well on these benchmarks. That should be impressive to many.
+they do very well on these benchmarks. I see accuracy rates over 85% on Spider benchmark in several papers. These are apparently
+better rates than pre-LLM state-of-the-art systems achieved. That should be impressive to many.
 Second, the set of techniques are too detailed to cover here but some example heuristics 
 these papers experiment with include the following: (i) the syntax used for providing the schema 
 (apparently putting "the pound sign “#” to differentiate prompt from response in examples yields impressive performance gains" 😀 go figure); (ii)
@@ -310,9 +311,9 @@ The below figure shows an overview of these approaches for reference:
    <INSERT QUESTION>
    ```
 2. Indirect SQL Generation via Graph Modeling/SPARQL: In this approach, instead of the relatianal schema of the database, the same
-   database is modeled as an *OWL ontology* (OWL is short for Web Ontology Language).
-   Ontology is another term for schema when modeling data as graph as classes and relationships between them. OWL is a W3C standard,
-   and part of the RDF technology stack so OWL ontologies are a set RDF triples, such as:
+   database is modeled as an *[OWL ontology](https://www.w3.org/OWL/)* (OWL is short for Web Ontology Language).
+   Ontology is another term for schema when modeling data as graph as classes and relationships between them. OWL is a W3C standard
+   and part of the RDF technology stack so OWL ontologies are expressed as a set RDF triples, such as:
    ```
    ...
    in:Claim rdf:type owl:Class ;
@@ -331,32 +332,34 @@ The below figure shows an overview of these approaches for reference:
    ...
    ```
    The full ontology can be found [here](https://github.com/datadotworld/cwd-benchmark-data/blob/main/ACME_Insurance/ontology/insurance.ttl).
-   GPT-4 is then asked to generate a SPARQL query $Q_{SPARQL}$, instead of SQL, query to answer $Q_{NL}$. The full prompt, again copy-pasted
-   from the paper, looks like this:
+   GPT-4 is then asked to generate a SPARQL query $Q_{SPARQL}$, instead of SQL, for the same $Q_{NL}$. The full prompt, again copy-pasted
+   from the paper with some simplifications, looks like this:
    ```
    Given the OWL model described in the following TTL file:
    <INSERT OWL ontology as triples>
-   Write a SPARQL query that answers the question. The data for your query is available in a SERVICE identified by
-   <mapped>. Do not explain the query. return just the query, so it can be run verbatim from your response.
+   Write a SPARQL query that answers the question. Do not explain the query. return just the query, so it can be run verbatim from your response.
    Here’s the question:
    <INSERT QUESTION>
    ```
-   As a last step, the authors have a direct mapping one can easily have from $Q_{SPARQL}$ to a SQL query $Q_{SQL}$.
+   As a last step, the authors have a direct mapping from $Q_{SPARQL}$ to a SQL query $Q_{SQL}$. This is a quite straigh-forward step
+   as the modeling as an ontology vs relational schema have direct translations from classes and properties to tables and columns.
 
 Interesting comparison. There is some intuition for why one would be interested in the effectiveness of 
 query generation through an ontology because one of the well-known 
 pre-LLM text-to-SQL papers [ATHENA](https://www.vldb.org/pvldb/vol9/p1209-saha.pdf) did something similar.
 Instead of SPARQL they had another query language over an ontology called Ontology Query Language, which
-was then mapped to SQL. Results are even more interesting. The authors categories their 43 questions into
+was then mapped to SQL. 
+
+Results are even more interesting. The authors categorize their 43 questions into
 4 quadrants based on 2 dimensions: 
-- Low vs high question complexity: questions that require only simple projections
-are low complexity, vs those that require aggregations or math functions are high complexity.
-- Low vs high schema complexity: questions whose SQL queries require up to 4 tables are low schema complexity. Those that
+- Low vs high question complexity: Questions that require only simple projections
+are low complexity. Those that require aggregations or math functions are high complexity.
+- Low vs high schema complexity: Questions whose SQL queries require up to 4 tables are low schema complexity. Those that
   require 5 or more joins are high schema complexity. 
 
 Here are the accuracy results. Accuracy here is "execution accuracy" meaning that  only the answers of the queries
 are checked against the ground truth answer. That is even if the SQL query GPT-4 generated was actually not correct 
-but by luck it computed the correct answers, apparently happens very rarely in this study, the paper takes it as correct.
+but by luck it computed the correct answers the paper takes it as correct (apparently happens very rarely in this study).
 
 | Overall: 16.7% vs 54.2%| Low Schema Complexity | High Schema Complexity |
 | -------- | --------     | -------- |
@@ -366,13 +369,13 @@ but by luck it computed the correct answers, apparently happens very rarely in t
 So overall the indirect SQL generation method through SPARQL is much more effective in this zero-shot setting.
 Not surprisingly questions that require 5 or more joins are harder regardless of the 
 method used and direct SQL cannot get any of those questions right. These are interesting
-results for an initial study into this interesting problem on the choice of modeling. These should 
-give many researchers and practitioners ideas about how to replicate
+results for an initial study on the effects of data modeling on LLMs' accuracy on generating database queries. 
+These results should give many researchers and practitioners ideas about how to replicate
 and validate/invalidate similar results under different settings, e.g., with few-shot
 examples and under different databases.
 
-That said one should ask why? In fact, we should all be suspicious that merely modeling the
-same set of records with a different abstraction should have visible effects. After all by modeling
+**That said one should ask why?** In fact, we should all be suspicious that merely modeling the
+same set of records with a different abstraction should have any visible effects. After all by modeling
 the same records differently, one does not obtain or lose information. So if and when LLMs are smart enough,
 they shouldn't care how the data was modeled. But for now, if a pound sign can make a difference,
 we should not be surprised modeling choices can have large impacts. But it is healthy to be suspicious
@@ -396,18 +399,20 @@ asked to generate a SPARQL query. I can hypothesize about a few possible reasons
         Claim.Claim_Identifier = Claim1
   ```
   Note that the `Claim.Claim_Identifier = Claim1` equality condition is implicit in the `<in:Claim1> in:hasCatastrophe ?catastrophe` triple
-  and the `Claim.Catastrophe_Identifier = Catastrophe.Catastrophe_Identifier` condition is implicit in the fact that ?catastrophe
+  and the `Claim.Catastrophe_Identifier = Catastrophe.Catastrophe_Identifier` condition is implicit in the fact that `?catastrophe` appears
   both in the first and second triples in the SPARQL query. Such implicit equality conditions are common in the languages of
   graph query languages especially when expressing joins. For example in Cypher you omit all join conditions in WHERE clause as long
-  as those joins have been pre-defined to the system as relationships.
-  
-  On the flip side, SPARQL can be more verbose when doing some projections. For example, if you wanted to return number, open and close
+  as those joins have been pre-defined to the system as relationships. Instead you join records through the `(a)-[e]->(b)` syntax.
+  Not sure how much this could matter but it is an immediate advantage of SPARQL that can explain why complex join queries are easier to generate
+  in SPARQL than SQL.  
+
+  Asa side note: On the flip side, SPARQL can be more verbose in projections. For example, if you wanted to return the number, open and close
   dates of every claim, you'd write the following SQL query:
   ```
   SELECT Claim_Number, Claim_Open_Date, Claim_Close_Date
   FROM Claim
   ```
-  In constrast in SPARQL, you'd have to write both the names of the property you want to project and give it an additional variable as follows:
+  In SPARQL, you'd have to write both the names of the property you want to project and give it an additional variable as follows:
   ```
   SELECT ?number, ?open_date, ?close_date
   WHERE { ?claim in:claimNumber ?number,
@@ -415,14 +420,15 @@ asked to generate a SPARQL query. I can hypothesize about a few possible reasons
           ?claim in:claimCloseDate ?close_date
   ```
 2.  *Graph modeling gives explicit names to foreign keys:* There is a reason we teach database modeling to
-    in datagase courses using graph-based models, such as Entity-Relationship or UML models. First, humans think of the world
-    as objects/entities and their relationships. In some sense, these are higher-level models where we notions such as foreign keys
-    to express constraints are made explicit and given explicit names. For example, the implicit connection between Claims and
+    in database courses using graph-based models, such as Entity-Relationship or UML models. First, humans think of the world
+    as objects/entities and their relationships. In some sense, these are higher-level models where relationships
+    between objects are denoted explicitly with explicit names (instead of as less explicit foreign key constraints).
+    For example, the implicit connection between Claims and
     Catastrophes through the `FOREIGN KEY (Catastrophe_Identifier) REFERENCES Catastrophe(Catastrophe_Identifier)`
     constraint was given an explicit English name: `hasCatastrophe` in the ontology. This explicitness may make
     it easier for LLMs to understand the schema and generate SPARQL queries.
 
-I will raise several high-level questions that I think are important. Before that there is however a more immediate
+Before these two hypotheses to check, there is however a more immediate
 reason the authors of this paper may have obtained such major differences between the two approaches they tried.
 Intentionally or unintentionally, their ontology is simplified significantly compared to the relational schema they have.
 For example, the Claim relation has `Claim_Reopen_Date` and `Claim_Status_Code` properties which are removed from ontology.
@@ -431,13 +437,16 @@ There are also several differences between the ontology and the relational schem
 the [ontology](https://github.com/datadotworld/cwd-benchmark-data/blob/main/ACME_Insurance/ontology/insurance.ttl) 
 has a class `Agent` and `Policy` objects are `in:soldByAgent` by some Agent objects (see lines 20 and 92). I cannot
 see corresponding relations or columns in the [relational schema](https://github.com/datadotworld/cwd-benchmark-data/blob/main/ACME_Insurance/DDL/ACME_small.ddl). Unless I am missing something about how the prompts were given, 
-these are also likely to have important effects on the results and someone should fix and reproduce these results.
+these are also likely to have important effects on the results and someone should fix and obtain new results
+in a more fair comparison.
+
+Let me next raise several high-level questions that I think are important:
 
 *Important Future Work 2: Rules of thumbs in data modeling to make LLM-generated queries more accurate.* 
 I think the higher-level question of studying the effects of data modeling in more depth is a very good direction. 
 As LLMs get smarter, I would expect that the presence/absence of a pound sign or the style of English 
 should matter less. These look more syntactic differences that can be automatically solved over time. 
-Modeling choices are more fundamental and relate to the clarity of the application data that will be queried. 
+Modeling choices are more fundamental and relate to the clarity and understandibility of the records that will be queried by the LLM. 
 So identifying some rules of thumbs here looks promising. Let me list a few immediate questions one can study:
 
 *Important Future Work 2.1: Effects of normalization/denormalization.* If the shortcoming of GPT-4 is 
@@ -446,11 +455,11 @@ tables and study its effects. Again, I'm thinking of same records just modeled d
 tables. What happens if we reduce all data into a single table with dozens of columns and many value repetitions? 
 Now all possible joins would have been performed so we'd force the LLM to write a join-less query with
 filters, distincts, and aggregations. What happens if we normalize the tables step by step until we 
-get to a well known form, such as Boyce-Codd Normal Form? Do we consistently get better accuracy?
+get to a well known form, such as Boyce-Codd Normal Form? Do we consistently get better or worse accuracy?
 
 *Important Future Work 2.2: Use of views.* In relational modeling, views are an effective way to have higher 
-and simpler modeling of your records. Similar to a $Q_{NL}$-[LLM]->$Q_{SPARQL}$-[Direct Mapping]->$Q_{SQL}$ pipeline,
-one can test the effectiveness of $Q_{NL}$-[LLM]->$Q_{SQL-over-Views}$-[Direct Mapping]->$Q_{SQL}$.
+and simpler modeling of your records. Similar to a $Q_{NL}$ -[LLM]-> $Q_{SPARQL}$ -[Direct Mapping]-> $Q_{SQL}$ pipeline,
+one can test the effectiveness of $Q_{NL}$ -[LLM]-> $Q_{SQL-over-Views}$ -[Direct Mapping]-> $Q_{SQL}$ pipeline.
 
 *Important Future Work 3: Use of Cypher as intermediate query language to translate to SQL.* One reason to experiment with Cypher 
 in addition to SPARQL is that Cypher is, arguably, more similar to SQL than SPARQL but has the advantage that (common) join
@@ -463,18 +472,18 @@ expressing first in Cypher and then mapping to SQL could lead to an advantage.
 
 ## Final Words
 Needless to say that the field will be flooded in the next few years with work on how to 
-make LLMs solve the text-to-high-level-query problem. Many rules of thumbs will emerge
+use LLMs to solve the text-to-high-level-query problem. Many rules of thumbs will emerge
 about how to prompt them correctly. The questions one can ask in this space is endless.
 I can speculate about a lot but I think it's plausible that 
 many of these rules of thumbs, specifically the syntactic
 differences in prompting, can become
-obsolete very quickly as newer and more advanced LLMs that know high-level database languages better emerge.
+obsolete very quickly as newer and more advanced LLMs that are better at speaking high-level database languages emerge.
 For example, it's plausible that people will stop showing LLMs example (question, query) pairs each time they ask them to generate
-SQL once they know SQL enough. However the harder question of how to model the data so that its meaning is clear and the
+SQL once LLMs are better at speaking SQL. However, the harder question of how to model the data so that its meaning is clear and the
 queries that need to be written are simpler is more likely to remain a challenge for a longer time. I would not be too optimistic
-that there can emerge very clear answers to how to model your data best as anyone who has modeled records knows this is
-part art part science. Yet, some studiable questions, such as effects of normalization, use of views, generating Cypher,
+that there can emerge very clear answers to this question. How to model your data is part art part science. 
+Yet, some studiable questions, such as effects of normalization, use of views, generating Cypher for recursive queries,
 can yield some important rules of thumbs that can be beneficial in practice.
 
-In the next post, I will cover what I learned about RAG over unstructured data, where graphs and knowledge graphs are playing
-a more important role. Until then, happy new year to all!
+In the next post, I will cover what I learned about RAG over unstructured data. Graphs and knowledge graphs are playing
+a more interesting role in that space. Until then, happy new year to all!
