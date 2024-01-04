@@ -37,7 +37,7 @@ For example, LLMs never had any access to your sales records when they were trai
 Therefore, they need to retrieve or be provided with 
 extra information from private data sources of the enterprise.
 
-### A note on a term you hear a lot: RAG
+### A note on the term RAG
 There seems to be tremendous interest in building systems that combine a traditional 
 information retrieval component, e.g., one that looks up some documents from
 an index, with a natural language generator component, such as an LLM. The term for such systems is 
