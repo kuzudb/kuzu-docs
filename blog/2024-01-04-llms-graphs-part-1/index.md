@@ -458,7 +458,7 @@ tables and study its effects. Again, I'm thinking of same records just modeled d
 tables. What happens if we reduce all data into a single table with dozens of columns and many value repetitions? 
 Now all possible joins would have been performed so we'd force the LLM to write a join-less query with
 filters, distincts, and aggregations. What happens if we normalize the tables step-by-step until we 
-get to a well known form, such as [Boyce-Codd](https://en.wikipedia.org/wiki/Boyce%E2%80%93Codd_normal_form) Normal Form? Do we consistently get better or worse accuracy?
+get to a well known form, such as [Boyce-Codd Normal Form](https://en.wikipedia.org/wiki/Boyce%E2%80%93Codd_normal_form)? Do we consistently get better or worse accuracy?
 
 *Important Future Work 2.2: Use of views.* In relational modeling, views are an effective way to have higher 
 and simpler modeling of your records. Similar to a $Q_{NL}$ -[LLM]-> $Q_{SPARQL}$ -[Direct Mapping]-> $Q_{SQL}$ pipeline,
