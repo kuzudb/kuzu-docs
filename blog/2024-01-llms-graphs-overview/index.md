@@ -10,7 +10,7 @@ import RAGUsingStructuredData from './rag-using-structured-data.png';
 import TwoSQLGenerationApproaches from './two-sql-generation-approaches.png';
 
 
-# LLMs and Graphs Part 1: RAG Using Structured Data
+# RAG Using Structured Data: Overview, Role of Graphs, and Important Questions
 
 During the holiday season, I did some reading on
 LLMs and specifically on the techniques that use LLMs together with graph databases and knowledge graphs.
@@ -32,27 +32,26 @@ is Q&A over private enterprise data. Think of a chatbot to which you
 can ask natural language questions ($Q_{NL}$), such as: "Who is our top paying customer from Waterloo?",
 or "What are data privacy regulations in Canada we need to comply with?"
 and get back natural language answers ($A_{NL}$).
-LLMs, out of the box, cannot answer these questions because it has a *knowledge gaph*.
+LLMs, out of the box, cannot answer these questions because they have a *knowledge gap*.
 For example, LLMs never had any access to your sales records when they were trained. 
 Therefore, they need to retrieve or be provided with 
 extra information from private data sources of the enterprise.
 
 **A note on a term you heard a lot -- Retrieval Augmented Generation:** 
-There is a term that is used for systems that combines traditional 
+There is a term that is used for systems that combine a traditional 
 information retrieval component, e.g., one that looks up some documents from
-an index, with a natural language generator component, such as an LLM: 
+an index, with a natural language generator component, such as an LLM. The term is 
 *retrieval augmented generation* (RAG).
 The term is coined in [this paper](https://arxiv.org/pdf/2005.11401.pdf) to refer
 to the method of fine-tuning an LLM with additional information, i.e.,
 using this additional data to train a new variant of the LLM. 
-The term was used
-in the original paper as "RAG models". Nowadays it is used in a variety of ways, 
+The original usage form in the paper is "RAG models". Nowadays it is used in a variety of ways, 
 such as, "RAG system", "RAG-based system", "RAG does X", or 
-"Building RAG with Y". RAG no longer seems to refer to fine-tuning LLMs. Instead, it 
+"Building RAG with Y". RAG often does not refer to fine-tuning LLMs any more. Instead, it 
 refers to providing LLMs with private data along with the question to fix the knowledge gap.
 Even systems that simply use an LLM to convert a 
 $Q_{NL}$ to SQL or Cypher query and simply return the results of the query
-are called "RAG systems" in some documentations. I'll use it in this broader sense.
+are called "RAG systems" in some documentations. I will use the term in this broader sense.
 
 You can build RAG-based Q&A systems by using structured and/or unstructured
 data. The high-level view of these systems look like this: 
@@ -71,6 +70,24 @@ This post covers RAG using structured data. Admittedly, the more interesting par
 the generating SQL using LLMs and indeed the first immediate future work I highlight is to do more work
 in the space of generating Cypher and SPARQL. Then, in a follow up post, I will cover RAG using unstructured data, where
 I will also mention a few ways people are building RAG-based Q&A systems that use both structured and unstructured data.
+
+:::tip Tldr: The key takeaways from this post are:
+- **RAG overview**: RAG is a technique to fill the knowledge gap of LLMs using private data. RAG systems
+  use  private structured records stored in a database and/or unstructured data in text files. 
+- **Impressive simplicity and effectiveness of developing a natural language interface over your database using LLMs**: The engineering efforts
+  to develop a pipeline that delivered a natural language interface over your data in pre-LLM era was immense
+  compared to giving the same functionality (good or bad) using LLMs. This simplicity is worth appreciating. Further
+  at least for SQL generation, there is evidence that LLMs, if prompted correctly, will generate many queries with impressive
+  accuracy.
+- **Lack of work that studies LLMs' ability to generate Cypher or SPARLQ:** Most technically-deep work on understanding
+  LLMs' ability to generate accurate high-level-query-languages for natural langauge questions is on SQL. We need more
+  work understanding the behavior of LLMs on the query languages of GDBMSs.
+- **Studying the effects of data modeling on LLMs' ability to generate high-level queries is an important venue of work:**
+  Many people are studying heuristics for prompting LLMs to increase their efficiency. In contrast, an important an under-studied
+  problem is the effects of data modeling choices. I point to one paper in this space and raise several questions related to
+  normalizations and use of views in relational modeling and comparisons with graph modeling approaches that are important to increase
+  the accuracy of LLMs. 
+:::
 
 ## RAG Using Structured Data: Text-to-High-level Query
 
