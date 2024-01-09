@@ -171,7 +171,7 @@ In the example above:
 
 `-CASE` is the name of the test case, analogous to `TEST_F(Test, MyTest)` in C++.  
 `-LOG` is optional and will be only used for display purposes when running in verbose mode.  
-`-STATEMENT` is followed by 4 dashes `----` alongside the expected result (error, success or the number of the tuples).   
+`-STATEMENT` is followed by 4 dashes `----` alongside the expected result (error, success, hash, or the number of the tuples).   
 
 When specifying a number after the dashes, it's necessary to add the same number of tuples in the
 next following lines.  
@@ -187,13 +187,16 @@ There are three ways to specify the expected result:
 |---|---|
 | `---- error` | The following lines must be the expected error message. |
 | `---- ok` | does not require any additional information below the line.  |
+| `---- hash` | A single line must follow containing the number of values in the query results and the md5 hash value of the query result. |
 | `---- [number of expected tuples]` | The following lines must be exactly the query results. |
 
 > **_Note:_** By default, the expected result tuples can be written in any
 > order. The framework will sort the actual &amp; expected results before
 > comparing. If you need the results not to be sorted, you can set it by adding
 > `-CHECK_ORDER` before the statement.
-
+> However, the hash of the query result is the hash of a string of the result. As a consequence,
+> the order of the tuples in the output must match the order of the tuples in 
+> the expected result when using hash. More detail on hashing is included in its own section.
 
 ```
 # Expects error message 
@@ -211,7 +214,18 @@ Alice
 Bob
 Carol
 Dan
+
+# Using hash with a query equivalent to the above
+-STATEMENT MATCH (a:person) RETURN a.fName LIMIT 4
+-CHECK_ORDER # order matters with hashes
+---- hash
+4 c921eb680e6d000e4b65556ae02361d2
 ```
+
+> **_Note:_** Any number of tokens may be in between the number of expected
+> values and the md5 hash. As such,
+> `4 values hashing to c921eb680e6d000e4b65556ae02361d2`
+> is an equivalent line
 
 Query results can also be stored in a file. By using `<FILE>:`, the testing
 framework reads the results from the file and compare to the actual query
@@ -222,6 +236,13 @@ result. The file must be created inside `test/answers/<name-of-the-file.txt>`.
 ---- 5001
 <FILE>:file_with_answers.txt
 ```
+
+### Hash Details
+
+When hashing an expected output, it's best to add the `-CHECK_ORDER` flag.
+If you don't want to check the order of the expected output, then you have to
+sort the expected output by line (with string comparison) before creating
+the hash
 
 ### Additional properties 
 
