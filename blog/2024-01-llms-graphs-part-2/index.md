@@ -306,12 +306,12 @@ immediately were addressing how to develop tools/languages over these systems to
 control flows. Agents seem like initial answers to the question of "how do you program advanced LLM applications?"
 
 ## Final Words
-I want to conclude with two further points. First, there are many other applications that can
-use LLMs and KGs beyond Q&A. I don't have space to cove
-them but here is a [survey paper](https://arxiv.org/pdf/2306.08302.pdf) that attempts to organize
-publications in this space. The topics include how KGs can be used to train better LLMs to
+I want to conclude with two final points. First, there are many other applications that can
+use LLMs and KGs beyond Q&A. I don't have space to cover
+them here. Here is a [survey paper](https://arxiv.org/pdf/2306.08302.pdf) that attempts to organize
+the work in this space. The topics vary from how KGs can be used to train better LLMs to
 how LLMs can be used to construct KGs to how one could embed both text and KG triples together as vectors
-in some applications.
+to better train LLMs.
 
 
 Second, I listed 3 possible answers for the "what additional data"
@@ -320,9 +320,9 @@ graph-based heuristics to extract chunks (or triples) once you can link the info
 documents to each other through a KG. Many combinations of these design decisions and many other graph heuristics
 are not yet explored. So there is quite a lot to explore in this space. The overall impression I was left
 with was that we need more technically deep material in the space, which will only come through rigorous evaluations
-of these RAG systems on standard benchmarks, as done in SIGIR or ACL type publications.
+of these RAG systems on standard benchmarks, as done in SIGIR or ACL publications.
 I went through SIGIR 2023 publications and did not find work on a Q&A system that uses LLMs + KGs
-similar to the appraoches I covered here. I hope we can see such papers in 2024!
+similar to the approaches I covered here. I hope to see such papers in 2024.
 
 
 
