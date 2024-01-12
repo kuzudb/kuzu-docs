@@ -282,8 +282,20 @@ so what type of questions you want to answer in your RAG system, and based on th
 and triples and train a model. 
 I know, not very exciting, but you're likely to extract much higher quality triples and much more cheaply.
 
-## Final Words
+## Note on Developing RAG Systems That Use Both Structured & Unstructured Data
+In my last post and this one, I covered RAG systems using structured and unstructured data.
+There are several tools you can use to develop RAG systems that retrieve data from both
+structured records or conditionally from one or the other. [LangChain Agents](https://python.langchain.com/docs/modules/agents/)
+and [LlamaIndex Agents](https://docs.llamaindex.ai/en/stable/use_cases/agents.html)
+make it easy to produce such pipelines. You can for example instruct the "Agent" things like: 
+"if the question is about abc retrieve fact from the GDBMS by converting the question to a Cypher query
+and otherwise follow the RAG-U pipeline to retrieve chunks from documents." These are essentially
+tools to develop a control logic over your LLM applications. It reminds me of my PhD days when
+there was a crazy hype around MapReduce-like "big data systems" and several initial works
+immediately were attacking how to develop tools/languages over these systems to have advanced
+control flows. These are all initial answers to "how do you program advanced LLM applications."
 
+## Final Words
 I want to conclude with two further points. First, there are many other applications that can
 use LLMs and KGs beyond Q&A. I don't have space to cove
 them but here is a [survey paper](https://arxiv.org/pdf/2306.08302.pdf) that attempts to organize
