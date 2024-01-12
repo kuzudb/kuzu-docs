@@ -86,7 +86,7 @@ developing RAG-U systems.
 
 Standard RAG-U is what you will read about in most places. Its design is as follows: (i) we split the text in the
 documents into (possibly overlapping) "chunks"; (ii) we embed these chunks into vectors, i.e., high dimensional points, using
-a text embedding model (many off-the-shelf open-source models exist from OpenAI, Cohere, and Hugging Face);
+a text embedding model (many off-the-shelf open-source models exist from [OpenAI](https://platform.openai.com/docs/guides/embeddings), [Cohere](https://docs.cohere.com/reference/embed), and [Hugging Face](https://huggingface.co/blog/getting-started-with-embeddings));
 and (iii) we store these vectors in a vector index. For example, see LangChain main documentation 
 on "[Q&A with RAG](https://python.langchain.com/docs/use_cases/question_answering/)" or LlamaIndex's 
 "[Building a RAG from Scratch](https://docs.llamaindex.ai/en/stable/examples/low_level/oss_ingestion_retrieval.html)" documentation.
@@ -97,20 +97,20 @@ The below figure shows the pre-processing and indexing steps of standard RAG-U:
 
 **First a note on vector indices:** A vector index is an index that indexes a
 set of d-dimensional vectors and given a query vector w can answer several queries:
-(i) *pure search*: does w exist in the index; (ii) *k nearest neighbors*: return
+(i) *pure search*: does w exist in the index?; (ii) *k nearest neighbors*: return
 the k vectors closest to w; or (iii) *range queries*: return vectors that are within
-a radius r of w. There has been decades of work on this topic. 
-If $d$ is very small, say 3 or 4, there are "exact spatial indices" like [quad trees](https://en.wikipedia.org/wiki/Quadtree) (for 2D only), [r-trees](https://en.wikipedia.org/wiki/R-tree), or [k-d trees](https://en.wikipedia.org/wiki/K-d_tree).
-These indices have good construction and query times when $d$ is small but their performance degrades
-fast when $d$ increases and they quickly become impractical.
+a radius r of w. There have been decades of work on this topic. 
+If d is very small, say 3 or 4, there are "exact spatial indices" like [quad trees](https://en.wikipedia.org/wiki/Quadtree) (for 2D only), [r-trees](https://en.wikipedia.org/wiki/R-tree), or [k-d trees](https://en.wikipedia.org/wiki/K-d_tree).
+These indices have good construction and query times when d is small but their performance degrades
+fast when d increases and they quickly become impractical.
 There have been some good work to index high-dimensinal vectors as well. 
 [SA-trees](https://dl.acm.org/doi/10.1007/s007780200060) by Navarro is the core
 technique that underlies the nowadays popular indices, such as [hieararchical navigable small-world graph (HNSW) indices](https://arxiv.org/abs/1603.09320), which are extensions of [navigable small world (NSW)
 indices](https://www.sciencedirect.com/science/article/abs/pii/S0306437913001300).
 Navarro's SA-tree index returns exact results as well[^2] but does not have good query times.
 In Navarro's experiments, even for
-relatively small dimensions such as 10-20, sa-tree can scan 30-70% of all vectors in the index
-for queries that return less than 1% of the vectors.
+relatively small dimensions such as 10-20, sa-tree can scan 10-100% of all vectors in the index
+for queries that need to return less than 1% of the vectors. 
 SNW and HSNW instead are not exact indices. They are called approximate indices but they are not
 even approximate in the sense of having any approximation guarantees in their query results.
 They are heuristic-based fast indices both in their construction and their query times
