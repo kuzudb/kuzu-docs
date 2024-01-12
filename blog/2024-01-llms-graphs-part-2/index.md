@@ -156,36 +156,39 @@ topic and I have even seen some off-the-shelf tools, e.g., the [RAGatouille pack
 standard RAG-U figure above with matrices. Tons of good future work is possible in this space from improving the accuracy
 and efficiency of the vector/matrix indices to the evaluation of RAG-U systems that use these vectors.
 
-## First Role of Knowledge Graphs in RAG-U: Explicitly Linking Chunks
+## First Envisioned Role of Knowledge Graphs in RAG-U: Explicitly Linking Chunks
 
 One limitation of standard RAG-U is that the chunks are treated as isolated pieces of text. To address this problem,
 several posts
-that I read ([1](https://medium.com/neo4j/implementing-advanced-retrieval-rag-strategies-with-neo4j-c968a002c513), [2](https://medium.com/neo4j/using-a-knowledge-graph-to-implement-a-devops-rag-application-b6ba24831b16)) envision linking these chunks to each other using a knowledge graph (or another form of graph). Compared to standard RAG-U,
+that I read ([1](https://medium.com/neo4j/implementing-advanced-retrieval-rag-strategies-with-neo4j-c968a002c513), [2](https://medium.com/neo4j/using-a-knowledge-graph-to-implement-a-devops-rag-application-b6ba24831b16)) envision linking these chunks to each other using a KG (or another form of graph). Compared to standard RAG-U,
 the design choice for "what additional data" is still document chunks but "how to fetch" is different
-and it is a mix of Vector Index and a Knowledge Graph stored in a GDBMS.   
-This seems to be a relatively under-explored
-approach and I will comment on this. The preprocessing over standard RAG-U (see the preprocessing figure above)
+and it is a mix of vector index + a KG stored in a GDBMS. 
+The preprocessing over standard RAG-U (see the preprocessing figure above)
 would be enhanced with an additional step as follows:
 
 <div class="img-center">
 <img src={KGEnhancedRAGPreprocessing} width="600"/>
 </div>
 
-That is, using some entity extraction mechanism, the chunks would be connected to the entities that
-they mention and are explicitly linked to the KG. You can think of this linking done as the adding
-new edges to the KG that relate entities to some chunkIDs that identify the chunks in the vector index. 
-Then, the RAG system looks as follows:
+That is, using some entity extraction mechanism, the chunks would be linked to the entities that
+they mention in the KG (assuming the KG contains these entities as nodes). You can think of this linking 
+as the adding new edges to the KG that relate entities to some chunkIDs that identify the chunks in the vector index. 
+After the preprocessing step, the standard RAG-U system would be enhanced as follows:
 
 <div class="img-center">
 <img src={KGEnhancedRAGOverview} width="600"/>
 </div>
 
-Similar to the previous system we have a vector index and additionally a KG, say stored in a GDBMS.
-Then upon finding the k-nearest chunks to $Q_{NL}$, we extract additional chunks based on some graph
-traversal heuristic. A simple heuristic is to traverse from the top-k chunks to all entities,
-say {$e_1$, $e_2$, ..., $e_m$}, they mention. Then optionally explore the neighborhood of these entities
-further to extract other entities, say {$e_1$, ..., $e_m$, $e_{m+1}$, ..., $e_n$}, where $e_{m+1}$ to $e_n$
-are the new entitites extracted. Then further find other chunks that mention these entities. Now through
+Similar to standard RAG-U, we have a vector index and additionally a KG, say stored in a GDBMS.
+As before $Q_{NL}$ is embedded into a vector $v_Q$, whose k nearest neighbors
+$w_1, w_2, ..., w_k$ and their corresponding chunks $C_1, C_2, ..., C_k$
+are found in the vector index.
+Then, the system extracts additional chunks based on some graph
+traversal heuristic. A simple heuristic is to traverse from the $C_1, C_2, ..., C_k$ to all entities,
+say {$e_1$, $e_2$, ..., $e_m$}, that are mentioned in $C_1, C_2, ..., C_k$. 
+Then, we can optionally explore the neighborhood of these entities
+to extract other entities, say {$e_1$, ..., $e_m$, $e_{m+1}$, ..., $e_n$}, where $e_{m+1}$ to $e_n$
+are the new entitites extracted. Then, we further find other chunks that mention these entities. Now through
 another ranking, we can obtain another top-k chunks amongst this new set of chunks and put them into the prompt.
 
 This vision is interesting and several prior papers also hint at similar related use of
@@ -215,7 +218,7 @@ in these chunks. These variants need to be systematically evaluated to optimize 
 and rigorous evaluations, this approach so far appears only in blog posts which don't present an in-depth study. This approach
 needs to be subjected to a rigorous evaluation on Q&A benchmarks.
 
-## Second role of Knowledge Graphs in RAG-U: Extracting Triples Out of Chunks
+## Second Envisioned Role of Knowledge Graphs in RAG-U: Extracting Triples Out of Chunks
 In the [LlamaIndex KnowledgeGraphIndex](https://docs.llamaindex.ai/en/stable/examples/index_structs/knowledge_graph/KnowledgeGraphDemo.html) package, there is one more usage of KGs in RAG-U applications.
 In this approach, the answer to the "what additional data" question is "triples extracted from the unstructured documents".
 The answer to the "how to fetch" question is to do a retrieval of these triples from a GDBMS (at least in its basic form). 
