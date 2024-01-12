@@ -123,8 +123,8 @@ makes a very clear contribution and is explained in a very clean technical langu
 
 [^2]: The term sa-tree stands for "spatial approximation", which refers to the following fact. 
 Exact spatial indices like kd-trees are balanced and divide a d-dimensional space into "equal" sub-spaces (not in volume but
-in the number of vectors sub-spaces contain). Instead sa-trees divide the space approximately and are not
-necessarily balanced but as-trees return exact answers. 
+in the number of vectors that are contained in the sub-spaces). Instead, sa-trees divide the space approximately and are not
+necessarily balanced but sa-trees return exact answers. 
 
 Back to RAG-U. After the preprocessing step, the vector index that contains the chunks of documents is used
 in a RAG-U system as follows:
