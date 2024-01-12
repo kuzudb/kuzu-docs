@@ -56,7 +56,7 @@ The picture of RAG systems that use unstructured data looks as follows:
 
 An enterprise has a corpus of unstructured data, i.e., some documents with text.
 As a preprocessing step (omitted from the figure), the information in these documents are indexed and 
-stored in some storage system. There are 4 overall steps in a RAG-U system:
+stored in some storage system. The figure labels the 4 overall steps in a RAG-U system:
 1. A natural language query $Q_{NL}$ comes into the RAG-U system.
 2. Parts of the corpus of unstructured data that is expected to be helpful in answering $Q_{NL}$
    is fetched from some storage system.
@@ -66,12 +66,12 @@ stored in some storage system. There are 4 overall steps in a RAG-U system:
 Any system built along these 4 high-level steps needs to make two design choices:
 
 **Design Choice 1: What is the additional data?** Among the posts, documentation, and demonstations 
-I have read, I have seen three possibilities for this:
+I have read, I have seen three designs:
   - Chunks of documents
   - Entire documents
   - Triples extracted from documents
 
-**Design Choice 2: How to store and fetch the additional data?** Here, I have seen the following possibilities:
+**Design Choice 2: How to store and fetch the additional data?** Here, I have seen the following designs:
   - Vector Index
   - Vector Index + Knowledge Graph (stored in a GDBMS)
   - GDBMS (for storing triples)
@@ -79,12 +79,13 @@ I have read, I have seen three possibilities for this:
 Many combinations of these two choices are possible and can be tried. Each choice
 can effectively be understood as a *retrieval heuristic* to fetch quality content that can
 help LLMs answer $Q_{NL}$ more accurately. 
-I will cover a few of the ones that I have seen but a broader exploration of this heuristic space.
+I will cover a few of the ones that I have seen but others are certainly possible and should be tried by people
+developing RAG-U systems.
 
 ## Standard RAG-U: Chunks of Documents Stored in a Vector Index
 
-Standard RAG-U that you will read about in most places goes as follows: (i) we split the text in the
-documents into "chunks"; (ii) we embed these chunks into vectors, i.e., high dimensional points, using
+Standard RAG-U is what you will read about in most places. Its design is as follows: (i) we split the text in the
+documents into (possibly overlapping) "chunks"; (ii) we embed these chunks into vectors, i.e., high dimensional points, using
 a text embedding model (many off-the-shelf open-source models exist from OpenAI, Cohere, and Hugging Face);
 and (iii) we store these vectors in a vector index. For example, see LangChain main documentation 
 on "[Q&A with RAG](https://python.langchain.com/docs/use_cases/question_answering/)" or LlamaIndex's 
