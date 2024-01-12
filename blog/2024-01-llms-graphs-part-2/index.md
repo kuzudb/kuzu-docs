@@ -194,12 +194,11 @@ another ranking, we can obtain another top-k chunks amongst this new set of chun
 This vision is interesting and several prior papers also hint at similar related use of
 KGs in Q&A applications. The most interesting paper I read that's related to this approach was this [ACL 2019 paper](https://aclanthology.org/P19-1598.pdf). This paper pre-dates the current LLMs and is not about RAG. Instead, it
 maps the entities mentioned in a question to entitites in a KG, and then extracts the subgraph of relations between these
-entities from the KG. Then, the rest of the relations and entities that are extracted in the KG are used as possible
-answers to the question (specifially to change the probabilities of the LLM to produce output text). It's close to
-what we would call RAG. It does not connect the chunks but connects the entities in the question. The envisioned
-use of KG I'm covering here is similar to this, except the KG is now used to connect the chunks through the entitites that
-they mention. Overall, I think the idea of linking chunks through the entities that they mention is promising
-and I want to identify three important future work here to push this idea to its limits.
+entities from the KG. Then, the relations and entities in this subgraph are used as possible
+answers to the question (in some sense, this is also a form of RAG). 
+The paper's approach does not connect the chunks but connects the entities in the question using a KG. 
+Overall, I think the idea of linking chunks through the entities that they mention is promising
+and I want to identify three important future work here that can push this approach forward.
 
 **Important Future Work 2:* The biggest question here is that this approach assumes that the enterprise already
 has a knowledge graph. Although I am strong believer that enterprises
