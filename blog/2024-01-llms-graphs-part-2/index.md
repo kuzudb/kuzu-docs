@@ -1,7 +1,7 @@
 ---
 slug: what-every-gdbms-should-do-and-vision
 authors: [semih]
-tags: [vision]
+tags: [llms]
 ---
 
 import RAGUsingUnstructuredData from './rag-unstructured-overview.png';
@@ -113,9 +113,10 @@ relatively small dimensions such as 10-20, sa-tree can scan 10-100% of all vecto
 for queries that need to return less than 1% of the vectors. 
 SNW and HSNW instead are not exact indices. They are called approximate indices but they are not
 even approximate in the sense of having any approximation guarantees in their query results.
-They are heuristic-based fast indices both in their construction and their query times
-that can index very high-dimensional vectors. Further, empirically their results are shown to be quite accurate.
-HNSW indices are nowadays used by vector database companies like [Pinecone](https://www.pinecone.io/learn/series/faiss/hnsw/).
+They are heuristic-based indices that can index very high-dimensional vector and are fast 
+both in their construction and their query times. Further, their query results are shown to be quite accurate empirically.
+HNSW indices are nowadays used by vector database companies like [Pinecone](https://www.pinecone.io/learn/series/faiss/hnsw/)
+and [Weaviate](https://weaviate.io/developers/weaviate/concepts/vector-index) or enterprise search systems, such as [Lucene](https://lucene.apache.org/core/9_1_0/core/org/apache/lucene/util/hnsw/HnswGraph.html) in their vector indices.
 To understand these indices, I highly suggest first reading the Navarro paper
 paper, which is the foundation. It's also a great example of a well-written database paper: one that
 makes a very clear contribution and is explained in a very clean technical language.
@@ -134,7 +135,7 @@ in a RAG-U system as follows:
 
 The step are as follows: (i) The question $Q_{NL}$ is first embedded into
 the same d-dimensional vector space as the chunks were. Let's call this vector $v_{Q}$;
-(ii) k-nearest neighbors $w_1, w_2, ..., w_k$ of $v_{Q}$ are searched in the vector index; and (iii) the chunks
+(ii) k nearest neighbors $w_1, w_2, ..., w_k$ of $v_{Q}$ are searched in the vector index (for some value of k) ; and (iii) the chunks
 $C_1, C_2, ..., C_k$ that correspond to $w_1, w_2, ..., w_k$ are retrieved and put into the LLM prompt along with $Q_{NL}$. The
 hope is that the chunks whose vector representation were close to $v_{Q}$ contain
 useful information for the LLM to answer $Q_{NL}$. In practice there could be more steps to rank those $k$ chunks
