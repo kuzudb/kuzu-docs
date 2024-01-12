@@ -266,38 +266,44 @@ extract knowledge graphs from unstructured documents.
 This is a fascinating topic and is a never ending quest in research. Here is
 an [extensive survey](https://arxiv.org/pdf/2302.05019.pdf) with 358 citations that scared me so I decided to
 skip it. But my point is that this has been a never ending research topic. The most recent
-work I see here is on using LLMs for this task. I read a few of these papers
-and can recommend these two: [1](https://arxiv.org/abs/2208.11057) and [2](https://arxiv.org/pdf/2308.10168.pdf).
-General conclusions so far are that LLMs are not yet competitive one extracting subjects, objects, and predicates,
-with specialized ones. We'll see how far they will go but an important question for which I could not find
-much material is this:
+work I see here is on using LLMs for this task. I can recommend these two papers here: [1](https://arxiv.org/abs/2208.11057) and [2](https://arxiv.org/pdf/2308.10168.pdf).
+General conclusions so far are that LLMs are not yet competitive with specialized models 
+on extracting high quality triples. We'll see how far they will go. Surprisingly, a very important question 
+for which I could not find much to read on is this:
 
 *Important Future Work 6:* How economical would be the use of LLMs to extract KGs at scale (when they're competitive with
 specialized methods)? 
 
-So could we ever dream of using LLMs to extract billions of triples from large unstructured corpuses? Probably not
-if you're using OpenAI APIs or even if you're running your own model. So I am a bit pessimistic here. My instinct
+So could we ever dream of using LLMs to extract billions of triples from a large corpus of unstructured documents? Probably not
+if you're using OpenAI APIs, as it should be painfully expensive, or even if you're running 
+your own model, as it should be excruciatingly slow. So I am a bit pessimistic here. My instinct
 is that you might be able to generate KGs from unstructured documents using the slightly older
 techniques like designing your own models or using extractor-based approaches like
-[DeepDive](http://deepdive.stanford.edu/). In DeepDive, you would write extractors for the type
+[DeepDive](http://deepdive.stanford.edu/).[^3] I know it's not exciting to not use LLMs, 
+but you're likely to extract much higher quality triples and much more cheaply with specialized models. 
+So I don't know who really
+thinks it could one day be a good idea to use LLMs to extract triples from large corpuses.
+
+[^3]: In DeepDive, you would write extractors for the type
 of triples you wanted to extract manually and DeepDive would use them in combination as part of a model
 to extract high quality triples. Or you can just default to thinking hard about what you want to extract,
 so what type of questions you want to answer in your RAG system, and based on those give example documents
-and triples and train a model. 
-I know, not very exciting, but you're likely to extract much higher quality triples and much more cheaply.
+and triples and train a specialized model. 
+
 
 ## Agents: Developing RAG Systems That Use Both Structured & Unstructured Data
-In my last post and this one, I covered RAG systems using structured and unstructured data.
+Let me now start wrapping up. In my last post and this one, I covered RAG systems using structured and unstructured data.
 There are several tools you can use to develop RAG systems that retrieve data from both
-structured records or conditionally from one or the other. [LangChain Agents](https://python.langchain.com/docs/modules/agents/)
+structured records or one that conditionally retrieves from one or the other. [LangChain Agents](https://python.langchain.com/docs/modules/agents/)
 and [LlamaIndex Agents](https://docs.llamaindex.ai/en/stable/use_cases/agents.html)
-make it easy to produce such pipelines. You can for example instruct the "Agent" things like: 
-"if the question is about abc retrieve fact from the GDBMS by converting the question to a Cypher query
-and otherwise follow the RAG-U pipeline to retrieve chunks from documents." These are essentially
-tools to develop a control logic over your LLM applications. It reminds me of my PhD days when
+make it easy to develop such pipelines. You can for example instruct the "Agent" to take one of two actions
+conditionally as follows: 
+"if the question is about foo retrieve fact from the GDBMS by converting $Q_{NL}$ to a Cypher query;
+otherwise follow the RAG-U pipeline to retrieve chunks from documents." These are essentially
+tools to develop a control logic over your LLM applications. It reminds me of the good old days when
 there was a crazy hype around MapReduce-like "big data systems" and several initial works
-immediately were attacking how to develop tools/languages over these systems to have advanced
-control flows. These are all initial answers to "how do you program advanced LLM applications."
+immediately were addressing how to develop tools/languages over these systems to implement
+control flows. Agents seem like initial answers to the question of "how do you program advanced LLM applications?"
 
 ## Final Words
 I want to conclude with two further points. First, there are many other applications that can
