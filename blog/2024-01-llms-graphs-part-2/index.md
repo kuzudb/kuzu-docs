@@ -240,32 +240,33 @@ is implemented in the examples used in LlamaIndex's documentations using [LlamaI
 </div>
 
 The triples are stored in a GDBMS. You can use a [LlamaIndex GraphStore](https://docs.llamaindex.ai/en/stable/community/integrations/graph_stores.html) for this and Kùzu has an implementation; see the [KuzuGraphStore demo here](https://docs.llamaindex.ai/en/stable/examples/index_structs/knowledge_graph/KuzuGraphDemo.html). The system extract entities using $Q_{NL}$, using some
-entity or keyword extractor. In the LLamaIndex demos this is done by default using an LLM through the following `[DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE_TMPL]`(https://github.com/run-llama/llama_index/blob/ce82bd42329b56bca2a6a44e0f690ebedaf1f002/llama_index/prompts/default_prompts.py#L147) prompt: `A question is provided below. Given the question, extract up to {max_keywords}
+entity or keyword extractor. In the LLamaIndex demos, this is done by using an LLM. Speficially,
+LLM is prompted with the following [prompt](https://github.com/run-llama/llama_index/blob/ce82bd42329b56bca2a6a44e0f690ebedaf1f002/llama_index/prompts/default_prompts.py#L147): `A question is provided below. Given the question, extract up to {max_keywords}
 keywords from the text....` etc. These keywords are used
 to extract triples from the GDBMS by using them in the query sent to the GDBMS as shown in the above figure.
-Finally the returned triples are given to the the LLM prompt as additional data to help answer $Q_{NL}$.
+Finally the returned triples are given to the LLM prompt as additional data to help answer $Q_{NL}$.
 
 LlamaIndex offer other ways to extract these triples that are also readily available to use. For example,
 you can embed these triples into vectors and use a vector index to fetch them. So although the final
 additional data is still triples, how they're fetched is through a vector index and not a GDBMS. Other options
 are also possible.
 
-I want to make two points here. First, obseve that in this approach, ultimately the triples are extracted
-from unstructured documents during the preprocessing step. But over the standard RAG-U approach,
-extracting triples also provides a mean to link the text in the unstructured text, which was a
-shortcoming I had highlighted in standard RAG-U. By putting triples into prompts, you are also likely
-to save on the tokens you are using in your LLM applications, because triples are like summaries
-of the statements in the sentences in chunks. Second, the success of such RAG applications depends on the quality of the triples
+I want to make three points here. First, notice that extracting triples also 
+provides a means to link the text in the unstructured text, which was a
+shortcoming I had highlighted in standard RAG-U. Second, by putting triples into prompts instead of chunks, you are also probably
+saving the tokens you are using in your LLM applications. That's because triples are like summaries
+of the statements in more verbose sentences in chunks. 
+Third, the success of such RAG applications depends on the quality of the triples
 extracted in the pre-processing step, which is the next future work direction I want to highlight:
 
 *Important Future Work 5:* The success of RAG-U applications that use triples or the KG-enchanced stardard
-RAG-U applications I covered above depend on the availability of a technology that can automatically
+RAG-U applications depend on the availability of a technology that can automatically
 extract knowledge graphs from unstructured documents.
 
 This is a fascinating topic and is a never ending quest in research. Here is
 an [extensive survey](https://arxiv.org/pdf/2302.05019.pdf) with 358 citations that scared me so I decided to
-skip it. But my point is that this has been a great quest for research. The more recent
-work is on evaluating LLMs for this task. I read a few of these papers
+skip it. But my point is that this has been a never ending research topic. The most recent
+work I see here is on using LLMs for this task. I read a few of these papers
 and can recommend these two: [1](https://arxiv.org/abs/2208.11057) and [2](https://arxiv.org/pdf/2308.10168.pdf).
 General conclusions so far are that LLMs are not yet competitive one extracting subjects, objects, and predicates,
 with specialized ones. We'll see how far they will go but an important question for which I could not find
@@ -285,7 +286,7 @@ so what type of questions you want to answer in your RAG system, and based on th
 and triples and train a model. 
 I know, not very exciting, but you're likely to extract much higher quality triples and much more cheaply.
 
-## Note on Developing RAG Systems That Use Both Structured & Unstructured Data
+## Agents: Developing RAG Systems That Use Both Structured & Unstructured Data
 In my last post and this one, I covered RAG systems using structured and unstructured data.
 There are several tools you can use to develop RAG systems that retrieve data from both
 structured records or conditionally from one or the other. [LangChain Agents](https://python.langchain.com/docs/modules/agents/)
