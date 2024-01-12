@@ -7,6 +7,11 @@ tags: [vision]
 import RAGUsingUnstructuredData from './rag-unstructured-overview.png';
 import StandardRAGPreprocessing from './standard-rag-preprocessing.png';
 import StandardRAGOverview from './standard-rag-overview.png';
+import KGEnhancedRAGPreprocessing from './kg-enhanced-rag-preprocessing.pnt';
+import KGEnhancedRAGOverview from './kg-enhanced-rag-overview.png';
+import TriplesBasedRAGPreprocessing from './triples-based-rag-preprocessing.pnt';
+import TriplesBasedRAGOverview from './triples-based-rag-overview.png';
+
 # RAG Using Unstructured Data: Overview & Important Questions
 
 [In my previous post](https://kuzudb.com/docusaurus/blog/llms-graphs-part-1), 
@@ -68,9 +73,8 @@ I have read, I have seen three possibilities for this:
   - Entire documents
   - Triples extracted from documents
 
-**Design Choice 2: How to store and fetch the additional data?** Here, I have seen four possibilities for this:
+**Design Choice 2: How to store and fetch the additional data?** Here, I have seen the following possibilities:
   - Vector Index
-  - Vector Index + Document-Chunk Graph (stored in a GDBMS)
   - Vector Index + Knowledge Graph (stored in a GDBMS)
   - GDBMS (for storing triples)
 
@@ -81,9 +85,10 @@ I will cover a few of the ones that I have seen but a broader exploration of thi
 
 ## Standard RAG-U: Chunks of Documents Stored in a Vector Index
 
-Standard RAG-U that you will read about in most places splits the text in the
-documents into "chunks", embeds these chunks into vectors, i.e., high dimensional points, 
-and stores these vectors in a vector index. For example, see LangChain main documentation 
+Standard RAG-U that you will read about in most places goes as follows: (i) we split the text in the
+documents into "chunks"; (ii) we embed these chunks into vectors, i.e., high dimensional points, using
+a text embedding model (many off-the-shelf open-source models exist from OpenAI, Cohere, and Hugging Face);
+and (iii) we store these vectors in a vector index. For example, see LangChain main documentation 
 on "[Q&A with RAG](https://python.langchain.com/docs/use_cases/question_answering/)" or LlamaIndex's 
 "[Building a RAG from Scratch](https://docs.llamaindex.ai/en/stable/examples/low_level/oss_ingestion_retrieval.html)" documentation.
 The below figure shows the pre-processing and indexing steps of standard RAG-U:
@@ -121,9 +126,183 @@ Exact spatial indices like kd-trees are balanced and divide a d-dimensional spac
 in the number of vectors sub-spaces contain). Instead sa-trees divide the space approximately and are not
 necessarily balanced but as-trees return exact answers. 
 
+Back to RAG-U. After the preprocessing step, the vector index that contains the chunks of documents is used
+in a RAG-U system as follows:
 
 <div class="img-center">
 <img src={StandardRAGOverview} width="600"/>
 </div>
+
+The step are as follows: (i) The question $Q_{NL}$ is first embedded into
+the same d-dimensional vector space as the chunks were. Let's call this vector $v_{Q}$;
+(ii) k-nearest neighbors $w_1, w_2, ..., w_k$ of $v_{Q}$ are searched in the vector index; and (iii) the chunks
+$C_1, C_2, ..., C_k$ that correspond to $w_1, w_2, ..., w_k$ are retrieved and put into the LLM prompt along with $Q_{NL}$. The
+hope is that the chunks whose vector representation were close to $v_{Q}$ contain
+useful information for the LLM to answer $Q_{NL}$. In practice there could be more steps to rank those $k$ chunks
+and maybe select a fewer number of them to give to the LLM.
+
+Overall, my reading on standard RAG-U was quite technically deep as the success of these pipelines
+depend on two core and technically deep problems:
+1. How "good" are the embeddings that are inserted into the vector index, i.e., how well does it
+capture the relatedness of $Q_{NL}$ to the chunks. This is a core problem in the neural IR.
+2. How accurate is the vector index in finding top-k nearest neighbors to the vector embedding $v_{Q}$ of $Q_{NL}$.
+This is a core database problem.
+
+*Important Future Work 1*: I belive we should be seeing more exciting work coming up in this space. One
+topic I saw was the use of matrices instead of vectors to embed chunks and questions.
+This is done in the [ColBERT-style models](https://huggingface.co/colbert-ir/colbertv2.0) and are shown to
+work well on some Q&A benchmarks. However, instead of expensive matrix-to-matrix multiplications, the distance
+calculations here are based on faster computations. Indexing and retrieval of these matrices is an interesting
+topic and I have even started seeing some off-the-shelf tools, e.g., the [RAGatouille package of LlamaIndex](https://llamahub.ai/l/llama_packs-ragatouille_retriever?from=llama_packs), that allows developers to replace the vectors in the
+standard RAG-U figure above with matrices. Tons of good future work is possible in this space, improving the accuracy
+and efficiency of the vector/matrix indices and the evaluation of RAG-U systems that use these vectors.
+
+## First Role of Knowledge Graphs in RAG-U: Explicitly Linking Chunks
+
+One limitation of standard RAG-U is that the chunks are treated as isolated pieces of text. To address this problem,
+several posts
+that I read ([1](https://medium.com/neo4j/implementing-advanced-retrieval-rag-strategies-with-neo4j-c968a002c513), [2](https://medium.com/neo4j/using-a-knowledge-graph-to-implement-a-devops-rag-application-b6ba24831b16)) envision linking these chunks to each other using a knowledge graph (or another form of graph). Compared to standard RAG-U,
+the design choice for "what additional data" is still document chunks but "how to fetch" is different
+and it is a mix of Vector Index and a Knowledge Graph stored in a GDBMS.   
+This seems to be a relatively under-explored
+approach and I will comment on this. The preprocessing over standard RAG-U (see the preprocessing figure above)
+would be enhanced with an additional step as follows:
+
+<div class="img-center">
+<img src={KGEnhancedRAGPreprocessing} width="600"/>
+</div>
+
+That is, using some entity extraction mechanism, the chunks would be connected to the entities that
+they mention and are explicitly linked to the KG. You can think of this linking done as the adding
+new edges to the KG that relate entities to some chunkIDs that identify the chunks in the vector index. 
+Then, the RAG system looks as follows:
+
+<div class="img-center">
+<img src={KGEnhancedRAGOverview} width="600"/>
+</div>
+
+Similar to the previous system we have a vector index and additionally a KG, say stored in a GDBMS.
+Then upon finding the k-nearest chunks to $Q_{NL}$, we extract additional chunks based on some graph
+traversal heuristic. A simple heuristic is to traverse from the top-k chunks to all entities,
+say {$e_1$, $e_2$, ..., $e_m$}, they mention. Then optionally explore the neighborhood of these entities
+further to extract other entities, say {$e_1$, ..., $e_m$, $e_{m+1}$, ..., $e_n$}, where $e_{m+1}$ to $e_n$
+are the new entitites extracted. Then further find other chunks that mention these entities. Now through
+another ranking, we can obtain another top-k chunks amongst this new set of chunks and put them into the prompt.
+
+This vision is interesting and several prior papers also hint at similar related use of
+KGs in Q&A applications. The most interesting paper I read that's related to this approach was this [ACL 2019 paper](https://aclanthology.org/P19-1598.pdf). This paper pre-dates the current LLMs and is not about RAG. Instead, it
+maps the entities mentioned in a question to entitites in a KG, and then extracts the subgraph of relations between these
+entities from the KG. Then, the rest of the relations and entities that are extracted in the KG are used as possible
+answers to the question (specifially to change the probabilities of the LLM to produce output text). It's close to
+what we would call RAG. It does not connect the chunks but connects the entities in the question. The envisioned
+use of KG I'm covering here is similar to this, except the KG is now used to connect the chunks through the entitites that
+they mention. Overall, I think the idea of linking chunks through the entities that they mention is promising
+and I want to identify three important future work here to push this idea to its limits.
+
+**Important Future Work 2:* The biggest question here is that this approach assumes that the enterprise already
+has a knowledge graph. Although I am strong believer that enterprises
+should invest in the construction of clean enterprise-level KGs with
+well defined and consistent vocabularies that can integrate campany-wide structured information,
+in practice many enterprises do not have readily-available KGs. Therefore the use of this style
+of KG-enhanced RAG-U approaches rely on tools that can generate KGs. This is a never ending
+quest in academic circles and I'll say more about this [below](xxxx).
+
+*Important Future Work 3:* The heuristic to extract I mention is only one that can be explored amongst many others. 
+There are many other retrieval heuristics one can try. For example, one can map the entities in the question
+to entities in the KG, find shortest paths between them, and retrieve the chunks that mention the entities
+in these chunks. These variants need to be systematically evaluated to optimize this approach.
+
+*Important Future Work 4:* Although variants of this approach, such as  the ACL paper I mentioned have a lot of technical depth
+and rigorous evaluations, this approach so far appears only in blog posts which don't present an in-depth study. This approach
+needs to be subjected to a rigorous evaluation on Q&A benchmarks.
+
+## Second role of Knowledge Graphs in RAG-U: Extracting Triples Out of Chunks
+In the [LlamaIndex KnowledgeGraphIndex](https://docs.llamaindex.ai/en/stable/examples/index_structs/knowledge_graph/KnowledgeGraphDemo.html) package, there is one more usage of KGs in RAG-U applications.
+In this approach, the answer to the "what additional data" question is "triples extracted from the unstructured documents".
+The answer to the "how to fetch" question is to do a retrieval of these triples from a GDBMS (at least in its basic form). 
+Here is the preprocessing step:
+
+<div class="img-center">
+<img src={TriplesBasedRAGPreprocessing} width="600"/>
+</div>
+
+Using some triple extraction, the unstructured document is pre-processed to generate a KG. I will discuss
+this step further but overall you can use either a triple extraction model, such as [REBEL](https://huggingface.co/Babelscape/rebel-large) or another model, or an LLM directly. Both can be used off-the-shelf. Then, these triples, which form
+a KG, are stored in a GDBMS and used in RAG in some form. I'm giving one example approach below but others
+are possible. The approach I will show
+is implemented in the examples used in LlamaIndex's documentations using [LlamaIndex KnowledgeGraphIndex](https://docs.llamaindex.ai/en/stable/examples/index_structs/knowledge_graph/KnowledgeGraphDemo.html):
+
+<div class="img-center">
+<img src={TriplesBasedRAGOverview} width="600"/>
+</div>
+
+The triples are stored in a GDBMS. You can use a [LlamaIndex GraphStore](https://docs.llamaindex.ai/en/stable/community/integrations/graph_stores.html) for this and Kùzu has an implementation; see the [KuzuGraphStore demo here](https://docs.llamaindex.ai/en/stable/examples/index_structs/knowledge_graph/KuzuGraphDemo.html). The system extract entities using $Q_{NL}$, using some
+entity or keyword extractor. In the LLamaIndex demos this is done by default using an LLM through the following `[DEFAULT_QUERY_KEYWORD_EXTRACT_TEMPLATE_TMPL]`(https://github.com/run-llama/llama_index/blob/ce82bd42329b56bca2a6a44e0f690ebedaf1f002/llama_index/prompts/default_prompts.py#L147) prompt: `A question is provided below. Given the question, extract up to {max_keywords}
+keywords from the text....` etc. These keywords are used
+to extract triples from the GDBMS by using them in the query sent to the GDBMS as shown in the above figure.
+Finally the returned triples are given to the the LLM prompt as additional data to help answer $Q_{NL}$.
+
+LlamaIndex offer other ways to extract these triples that are also readily available to use. For example,
+you can embed these triples into vectors and use a vector index to fetch them. So although the final
+additional data is still triples, how they're fetched is through a vector index and not a GDBMS. Other options
+are also possible.
+
+I want to make two points here. First, obseve that in this approach, ultimately the triples are extracted
+from unstructured documents during the preprocessing step. But over the standard RAG-U approach,
+extracting triples also provides a mean to link the text in the unstructured text, which was a
+shortcoming I had highlighted in standard RAG-U. By putting triples into prompts, you are also likely
+to save on the tokens you are using in your LLM applications, because triples are like summaries
+of the statements in the sentences in chunks. Second, the success of such RAG applications depends on the quality of the triples
+extracted in the pre-processing step, which is the next future work direction I want to highlight:
+
+*Important Future Work 5:* The success of RAG-U applications that use triples or the KG-enchanced stardard
+RAG-U applications I covered above depend on the availability of a technology that can automatically
+extract knowledge graphs from unstructured documents.
+
+This is a fascinating topic and is a never ending quest in research. Here is
+an [extensive survey](https://arxiv.org/pdf/2302.05019.pdf) with 358 citations that scared me so I decided to
+skip it. But my point is that this has been a great quest for research. The more recent
+work is on evaluating LLMs for this task. I read a few of these papers
+and can recommend these two: [1](https://arxiv.org/abs/2208.11057) and [2](https://arxiv.org/pdf/2308.10168.pdf).
+General conclusions so far are that LLMs are not yet competitive one extracting subjects, objects, and predicates,
+with specialized ones. We'll see how far they will go but an important question for which I could not find
+much material is this:
+
+*Important Future Work 6:* How economical would be the use of LLMs to extract KGs at scale (when they're competitive with
+specialized methods)? 
+
+So could we ever dream of using LLMs to extract billions of triples from large unstructured corpuses? Probably not
+if you're using OpenAI APIs or even if you're running your own model. So I am a bit pessimistic here. My instinct
+is that you might be able to generate KGs from unstructured documents using the slightly older
+techniques like designing your own models or using extractor-based approaches like
+[DeepDive](http://deepdive.stanford.edu/). In DeepDive, you would write extractors for the type
+of triples you wanted to extract manually and DeepDive would use them in combination as part of a model
+to extract high quality triples. Or you can just default to thinking hard about what you want to extract,
+so what type of questions you want to answer in your RAG system, and based on those give example documents
+and triples and train a model. 
+I know, not very exciting, but you're likely to extract much higher quality triples and much more cheaply.
+
+## Final Words
+
+I want to conclude with two further points. First, there are many other applications that can
+use LLMs and KGs beyond Q&A. I don't have space to cove
+them but here is a [survey paper](https://arxiv.org/pdf/2306.08302.pdf) that attempts to organize
+publications in this space. The topics include how KGs can be used to train better LLMs to
+how LLMs can be used to construct KGs to how one could embed both text and KG triples together as vectors
+in some applications.
+
+
+Second, I listed 3 possible answers for the "what additional data"
+design decision and 3 possible answers for "how to fetch" design decision. I further mentioned different
+graph-based heuristics to extract chunks (or triples) once you can link the information in the unstructured
+documents to each other through a KG. Many combinations of these design decisions and many other graph heuristics
+are not yet explored. So there is quite a lot to explore in this space. The overall impression I was left
+with was that we need more technically deep material in the space, which will only come through rigorous evaluations
+of these RAG systems on standard benchmarks, as done in SIGIR or ACL type publications.
+I went through SIGIR 2023 publications and did not find work on a Q&A system that uses LLMs + KGs
+similar to the appraoches I covered here. I hope we can see such papers in 2024!
+
+
+
 
 
