@@ -136,7 +136,8 @@ in a RAG-U system as follows:
 The step are as follows: (i) The question $Q_{NL}$ is first embedded into
 the same d-dimensional vector space as the chunks were. Let's call this vector $v_{Q}$;
 (ii) k nearest neighbors $w_1, w_2, ..., w_k$ of $v_{Q}$ are searched in the vector index (for some value of k) ; and (iii) the chunks
-$C_1, C_2, ..., C_k$ that correspond to $w_1, w_2, ..., w_k$ are retrieved and put into the LLM prompt along with $Q_{NL}$. The
+$C_1, C_2, ..., C_k$ that correspond to $w_1, w_2, ..., w_k$ are retrieved (in the figure above, these
+are the chunks in red boxes) and put into the LLM prompt along with $Q_{NL}$. The
 hope is that the chunks whose vector representation were close to $v_{Q}$ contain
 useful information for the LLM to answer $Q_{NL}$. In practice there could be more steps to rank those $k$ chunks
 and maybe select a fewer number of them to give to the LLM.
@@ -188,7 +189,8 @@ traversal heuristic. A simple heuristic is to traverse from the $C_1, C_2, ..., 
 say {$e_1$, $e_2$, ..., $e_m$}, that are mentioned in $C_1, C_2, ..., C_k$. 
 Then, we can optionally explore the neighborhood of these entities
 to extract other entities, say {$e_1$, ..., $e_m$, $e_{m+1}$, ..., $e_n$}, where $e_{m+1}$ to $e_n$
-are the new entitites extracted. Then, we further find other chunks that mention these entities. Now through
+are the new entitites extracted. Then, we further find other chunks that mention these entities. In the figure
+above I'm simulating this by having a third red box that was not retrieved in the standard RAG-U figure. Now through
 another ranking, we can obtain another top-k chunks amongst this new set of chunks and put them into the prompt.
 
 This vision is interesting and several prior papers also hint at similar related use of
