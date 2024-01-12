@@ -141,21 +141,20 @@ hope is that the chunks whose vector representation were close to $v_{Q}$ contai
 useful information for the LLM to answer $Q_{NL}$. In practice there could be more steps to rank those $k$ chunks
 and maybe select a fewer number of them to give to the LLM.
 
-Overall, my reading on standard RAG-U was quite technically deep as the success of these pipelines
-depend on two core and technically deep problems:
+Overall, my reading on standard RAG-U was quite technically deep. That's not surprising since 
+the success of these pipelines depend on two core technical problems:
 1. How "good" are the embeddings that are inserted into the vector index, i.e., how well does it
 capture the relatedness of $Q_{NL}$ to the chunks. This is a core problem in the neural IR.
 2. How accurate is the vector index in finding top-k nearest neighbors to the vector embedding $v_{Q}$ of $Q_{NL}$.
 This is a core database problem.
 
 *Important Future Work 1*: I belive we should be seeing more exciting work coming up in this space. One
-topic I saw was the use of matrices instead of vectors to embed chunks and questions.
-This is done in the [ColBERT-style models](https://huggingface.co/colbert-ir/colbertv2.0) and are shown to
-work well on some Q&A benchmarks. However, instead of expensive matrix-to-matrix multiplications, the distance
-calculations here are based on faster computations. Indexing and retrieval of these matrices is an interesting
-topic and I have even started seeing some off-the-shelf tools, e.g., the [RAGatouille package of LlamaIndex](https://llamahub.ai/l/llama_packs-ragatouille_retriever?from=llama_packs), that allows developers to replace the vectors in the
-standard RAG-U figure above with matrices. Tons of good future work is possible in this space, improving the accuracy
-and efficiency of the vector/matrix indices and the evaluation of RAG-U systems that use these vectors.
+topic is the use of matrices instead of vectors to embed chunks and questions.
+This is done in the [ColBERT-style](https://huggingface.co/colbert-ir/colbertv2.0) "neural retrieval models"
+that are shown to work well on some Q&A benchmarks. Indexing and retrieval of these matrices is an interesting
+topic and I have even seen some off-the-shelf tools, e.g., the [RAGatouille package of LlamaIndex](https://llamahub.ai/l/llama_packs-ragatouille_retriever?from=llama_packs), that allows developers to replace the vectors in the
+standard RAG-U figure above with matrices. Tons of good future work is possible in this space from improving the accuracy
+and efficiency of the vector/matrix indices to the evaluation of RAG-U systems that use these vectors.
 
 ## First Role of Knowledge Graphs in RAG-U: Explicitly Linking Chunks
 
