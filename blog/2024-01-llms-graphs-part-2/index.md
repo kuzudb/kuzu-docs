@@ -91,31 +91,36 @@ The below figure shows the pre-processing and indexing steps of standard RAG-U:
 <img src={StandardRAGPreprocessing} width="600"/>
 </div>
 
-A vector index is an index that can answer k "nearest neighbor" queries., i.e.,
-given a vector $x$, find the vectors in the top-k index that are closest to $x$. 
-For a core database researcher like me, this is a very good topic and decades of work
-has gone into the space. First, if the vectors have very small number of dimensions, say 4 to 6,
-there are "spatial indices" like quad trees (for 2D only), r-trees, or [k-d trees](https://en.wikipedia.org/wiki/K-d_tree) that have different runtimes for finding 
-vectors within 
-that have the guarantee to return the exact top-k nearest neighbors and have fast search
-and construction time (I'll spare you the details). However, often the construction time
-and/or search times will degrade fast when the number of dimensions of the vectors increases.
-For higher dimensions, there has also been very good work. [SA-trees](https://dl.acm.org/doi/10.1007/s007780200060) by Navarro is a great read on this and the core
-technique that underlies the popular indices you hear nowadays, such as [hieararchical navigable small-world graph (HNSW) indices](https://arxiv.org/abs/1603.09320), which are extensions of [navigable small world
-graph indices](https://www.sciencedirect.com/science/article/abs/pii/S0306437913001300), which are used by 
-vector database companies like [Pinecone](https://www.pinecone.io/learn/series/faiss/hnsw/).
-To understand these indices, I highly suggest you read the papers in historical order starting with Navarro 
+**First a note on vector indices:** A vector index is an index that indexes a
+set of d-dimensional vectors and given a query vector w can answer several queries:
+(i) *pure search*: does w exist in the index; (ii) *k nearest neighbors*: return
+the k vectors closest to w; or (iii) *range queries*: return vectors that are within
+a radius r of w. There has been decades of work on this topic. 
+If $d$ is very small, say 3 or 4, there are "exact spatial indices" like [quad trees](https://en.wikipedia.org/wiki/Quadtree) (for 2D only), [r-trees](https://en.wikipedia.org/wiki/R-tree), or [k-d trees](https://en.wikipedia.org/wiki/K-d_tree).
+These indices have good construction and query times when $d$ is small but their performance degrades
+fast when $d$ increases and they quickly become impractical.
+There have been some good work to index high-dimensinal vectors as well. 
+[SA-trees](https://dl.acm.org/doi/10.1007/s007780200060) by Navarro is the core
+technique that underlies the nowadays popular indices, such as [hieararchical navigable small-world graph (HNSW) indices](https://arxiv.org/abs/1603.09320), which are extensions of [navigable small world (NSW)
+indices](https://www.sciencedirect.com/science/article/abs/pii/S0306437913001300).
+Navarro's SA-tree index returns exact results as well[^2] but does not have good query times.
+In Navarro's experiments, even for
+relatively small dimensions such as 10-20, sa-tree can scan 30-70% of all vectors in the index
+for queries that return less than 1% of the vectors.
+SNW and HSNW instead are not exact indices. They are called approximate indices but they are not
+even approximate in the sense of having any approximation guarantees in their query results.
+They are heuristic-based fast indices both in their construction and their query times
+that can index very high-dimensional vectors. Further, empirically their results are shown to be quite accurate.
+HNSW indices are nowadays used by vector database companies like [Pinecone](https://www.pinecone.io/learn/series/faiss/hnsw/).
+To understand these indices, I highly suggest first reading the Navarro paper
 paper, which is the foundation. It's also a great example of a well-written database paper: one that
-makes a very clear contribution and is explained in a very clean technical language. Navarro's 
-sa-tree example, To get back
-to my point, for high-dimensional vectors, the exact indices 
+makes a very clear contribution and is explained in a very clean technical language.
 
-degrades fast thogh when 
-I want to take 
-a break to tell you a bit more about this space. Probably the best paper in the field
-to understand the foundations of n
-If you want to do
-some good reading on this, I do recommend some of the seminal papers in this space
+[^2]: The term sa-tree stands for "spatial approximation", which refers to the following fact. 
+Exact spatial indices like kd-trees are balanced and divide a d-dimensional space into "equal" sub-spaces (not in volume but
+in the number of vectors sub-spaces contain). Instead sa-trees divide the space approximately and are not
+necessarily balanced but as-trees return exact answers. 
+
 
 <div class="img-center">
 <img src={StandardRAGOverview} width="600"/>
