@@ -200,18 +200,18 @@ The paper's approach does not connect the chunks but connects the entities in th
 Overall, I think the idea of linking chunks through the entities that they mention is promising
 and I want to identify three important future work here that can push this approach forward.
 
-**Important Future Work 2:* The biggest question here is that this approach assumes that the enterprise already
-has a knowledge graph. Although I am strong believer that enterprises
+**Important Future Work 2:* This approach assumes that the enterprise already
+has a knowledge graph. Although I am a strong believer that enterprises
 should invest in the construction of clean enterprise-level KGs with
-well defined and consistent vocabularies that can integrate campany-wide structured information,
+well defined and consistent vocabularies,
 in practice many enterprises do not have readily-available KGs. Therefore the use of this style
 of KG-enhanced RAG-U approaches rely on tools that can generate KGs. This is a never ending
-quest in academic circles and I'll say more about this [below](xxxx).
+quest in academic circles and I'll say more about this below (see "Important Future Work 5").
 
-*Important Future Work 3:* The heuristic to extract I mention is only one that can be explored amongst many others. 
-There are many other retrieval heuristics one can try. For example, one can map the entities in the question
-to entities in the KG, find shortest paths between them, and retrieve the chunks that mention the entities
-in these chunks. These variants need to be systematically evaluated to optimize this approach.
+*Important Future Work 3:* The graph heuristic I described above to extract further chunks 
+is only one that can be explored amongst many others. For example, one can map the entities in the question
+to nodes in the KG, find shortest paths between them, and retrieve the chunks that mention the nodes/entities
+on these paths. These variants need to be systematically evaluated to optimize this approach.
 
 *Important Future Work 4:* Although variants of this approach, such as  the ACL paper I mentioned have a lot of technical depth
 and rigorous evaluations, this approach so far appears only in blog posts which don't present an in-depth study. This approach
@@ -220,7 +220,7 @@ needs to be subjected to a rigorous evaluation on Q&A benchmarks.
 ## Second Envisioned Role of Knowledge Graphs in RAG-U: Extracting Triples Out of Chunks
 In the [LlamaIndex KnowledgeGraphIndex](https://docs.llamaindex.ai/en/stable/examples/index_structs/knowledge_graph/KnowledgeGraphDemo.html) package, there is one more usage of KGs in RAG-U applications.
 In this approach, the answer to the "what additional data" question is "triples extracted from the unstructured documents".
-The answer to the "how to fetch" question is to do a retrieval of these triples from a GDBMS (at least in its basic form). 
+The answer to the "how to fetch" question is to do a retrieval of these triples from a GDBMS. 
 Here is the preprocessing step:
 
 <div class="img-center">
