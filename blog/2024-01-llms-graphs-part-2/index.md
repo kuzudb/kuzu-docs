@@ -48,20 +48,20 @@ its potential benefits should be subjected to rigorously evaluation, e.g., as ma
 :::
 
 ## RAG-U Overview
-I will skip the overview of RAG systems, which I covered in the previous post.
+I will skip the overview of RAG systems, which I covered in [the previous post](https://kuzudb.com/docusaurus/blog/llms-graphs-part-1#a-note-on-the-term-rag).
 The picture of RAG systems that use unstructured data looks as follows:
 <div class="img-center">
 <img src={RAGUsingUnstructuredData} width="600"/>
 </div>
 
-An enterprise has a corpus of unstructured data. Let's refer to these simply as documents.
-We can assume this data is stored in some storage system in some form. 
-There are 4 overall steps labeled in the figure:
+An enterprise has a corpus of unstructured data, i.e., some documents with text.
+As a preprocessing step (omitted from the figure), the information in these documents are indexed and 
+stored in some storage system. There are 4 overall steps in a RAG-U system:
 1. A natural language query $Q_{NL}$ comes into the RAG-U system.
 2. Parts of the corpus of unstructured data that is expected to be helpful in answering $Q_{NL}$
    is fetched from some storage system.
 3. The fetched data along with $Q_{NL}$ given to an LLM.
-4. LLM  produces a natural language answer $A_{NL}$ for $Q_{NL}$.
+4. LLM produces a natural language answer $A_{NL}$ for $Q_{NL}$.
    
 Any system built along these 4 high-level steps needs to make two design choices:
 
