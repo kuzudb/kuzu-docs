@@ -1,32 +1,34 @@
 ---
-slug: what-every-gdbms-should-do-and-vision
-authors: [semih]
+slug: llms-graphs-part-2
+authors:
+  - semih
 tags: [llms]
 ---
 
 import RAGUsingUnstructuredData from './rag-unstructured-overview.png';
 import StandardRAGPreprocessing from './standard-rag-preprocessing.png';
 import StandardRAGOverview from './standard-rag-overview.png';
-import KGEnhancedRAGPreprocessing from './kg-enhanced-rag-preprocessing.pnt';
+import KGEnhancedRAGPreprocessing from './kg-enhanced-rag-preprocessing.png';
 import KGEnhancedRAGOverview from './kg-enhanced-rag-overview.png';
-import TriplesBasedRAGPreprocessing from './triples-based-rag-preprocessing.pnt';
+import TriplesBasedRAGPreprocessing from './triples-based-rag-preprocessing.png';
 import TriplesBasedRAGOverview from './triples-based-rag-overview.png';
+
 
 # RAG Using Unstructured Data: Overview & Important Questions
 
 [In my previous post](https://kuzudb.com/docusaurus/blog/llms-graphs-part-1), 
 I gave an overview of question answering (Q&A) systems that use LLMs
 over private enterprise data. I covered the architectures of these systems, the common tools
-developers use to build these systems when the enterpise data used is structured, 
+developers use to build these systems when the enterprise data used is structured, 
 i.e., data is records stored in some DBMS, relational or graph. I was referring to
 these systems as *RAG systems using structured data*. In this post, I cover *RAG systems 
 that use unstructured data*, such as text files,
 pdf documents, or internal html pages in an enterprise. I will refer to these as RAG-U systems
-or sometimes simpley as RAG-U (should have used the term RAG-S in the previous post!).
+or sometimes simply as RAG-U (should have used the term RAG-S in the previous post!).
 
 To remind readers, I decided to
 write these two posts after doing a lot of reading in the space to understand the role of
-knowlege graph (KGs) and graph DBMSs in LLM applications. My goals are (i) to overview the field to readers who want to get started
+knowledge graph (KGs) and graph DBMSs in LLM applications. My goals are (i) to overview the field to readers who want to get started
 but are intimidated by the area; and (ii) point to several future work directions that I find 
 important.[^1]
 
@@ -40,7 +42,7 @@ such approaches would fall under RAG using structured data, since KGs are struct
 
 :::tip TL;DR: The key takeaways from this post are:
 - **Two design decisions when preparing a RAG-U system are (i) "What additional data" to put in prompts; and (ii) "How to store and fetch" the additional data.**: Explored options for types of additional data include chunks of texts, full documents, or automatically extracted triples from documents. There are different ways to store and fetch this additional data, such as use of vector indices. Many combinations of this design space are not yet explored.
-- **Standard RAG-U**: A common design point, which I will call the standard RAG-U, is to add chunks of documents as additional data and store them in a vector index. I found some of the most technically deep and intersting future work directions in this space, e.g., extending vectors to matrices.
+- **Standard RAG-U**: A common design point, which I will call the standard RAG-U, is to add chunks of documents as additional data and store them in a vector index. I found some of the most technically deep and interesting future work directions in this space, e.g., extending vectors to matrices.
 - **An envisioned role for KGs in a RAG-U system is as a means to link chunks of text:** If chunks can be linked to entities in an existing KG, then one can connect chunks to each other through the relationships in KG.
 These connections can be exploited to retrieve more relevant chunks. This is a promising direction but
 its potential benefits should be subjected to rigorously evaluation, e.g., as major SIGIR publications evaluate a new retrieval technique. It won't pick up through commercial blog posts.
@@ -65,7 +67,7 @@ stored in some storage system. The figure labels the 4 overall steps in a RAG-U 
    
 Any system built along these 4 high-level steps needs to make two design choices:
 
-**Design Choice 1: What is the additional data?** Among the posts, documentation, and demonstations 
+**Design Choice 1: What is the additional data?** Among the posts, documentation, and demonstrations 
 I have read, I have seen three designs:
   - Chunks of documents
   - Entire documents
@@ -103,9 +105,9 @@ a radius r of w. There have been decades of work on this topic.
 If d is very small, say 3 or 4, there are "exact spatial indices" like [quad trees](https://en.wikipedia.org/wiki/Quadtree) (for 2D only), [r-trees](https://en.wikipedia.org/wiki/R-tree), or [k-d trees](https://en.wikipedia.org/wiki/K-d_tree).
 These indices have good construction and query times when d is small but their performance degrades
 fast when d increases and they quickly become impractical.
-There have been some good work to index high-dimensinal vectors as well. 
+There have been some good work to index high-dimensional vectors as well. 
 [SA-trees](https://dl.acm.org/doi/10.1007/s007780200060) by Navarro is the core
-technique that underlies the nowadays popular indices, such as [hieararchical navigable small-world graph (HNSW) indices](https://arxiv.org/abs/1603.09320), which are extensions of [navigable small world (NSW)
+technique that underlies the nowadays popular indices, such as [hierarchical navigable small-world graph (HNSW) indices](https://arxiv.org/abs/1603.09320), which are extensions of [navigable small world (NSW)
 indices](https://www.sciencedirect.com/science/article/abs/pii/S0306437913001300).
 Navarro's SA-tree index returns exact results as well[^2] but does not have good query times.
 In Navarro's experiments, even for
@@ -149,7 +151,7 @@ capture the relatedness of $Q_{NL}$ to the chunks. This is a core problem in the
 2. How accurate is the vector index in finding top-k nearest neighbors to the vector embedding $v_{Q}$ of $Q_{NL}$.
 This is a core database problem.
 
-*Important Future Work 1*: I belive we should be seeing more exciting work coming up in this space. One
+*Important Future Work 1*: I believe we should be seeing more exciting work coming up in this space. One
 topic is the use of matrices instead of vectors to embed chunks and questions.
 This is done in the [ColBERT-style](https://huggingface.co/colbert-ir/colbertv2.0) "neural retrieval models"
 that are shown to work well on some Q&A benchmarks. Indexing and retrieval of these matrices is an interesting
@@ -189,20 +191,20 @@ traversal heuristic. A simple heuristic is to traverse from the $C_1, C_2, ..., 
 say {$e_1$, $e_2$, ..., $e_m$}, that are mentioned in $C_1, C_2, ..., C_k$. 
 Then, we can optionally explore the neighborhood of these entities
 to extract other entities, say {$e_1$, ..., $e_m$, $e_{m+1}$, ..., $e_n$}, where $e_{m+1}$ to $e_n$
-are the new entitites extracted. Then, we further find other chunks that mention these entities. In the figure
+are the new entities extracted. Then, we further find other chunks that mention these entities. In the figure
 above I'm simulating this by having a third red box that was not retrieved in the standard RAG-U figure. Now through
 another ranking, we can obtain another top-k chunks amongst this new set of chunks and put them into the prompt.
 
 This vision is interesting and several prior papers also hint at similar related use of
 KGs in Q&A applications. The most interesting paper I read that's related to this approach was this [ACL 2019 paper](https://aclanthology.org/P19-1598.pdf). This paper pre-dates the current LLMs and is not about RAG. Instead, it
-maps the entities mentioned in a question to entitites in a KG, and then extracts the subgraph of relations between these
+maps the entities mentioned in a question to entities in a KG, and then extracts the subgraph of relations between these
 entities from the KG. Then, the relations and entities in this subgraph are used as possible
 answers to the question (in some sense, this is also a form of RAG). 
 The paper's approach does not connect the chunks but connects the entities in the question using a KG. 
 Overall, I think the idea of linking chunks through the entities that they mention is promising
 and I want to identify three important future work here that can push this approach forward.
 
-**Important Future Work 2:* This approach assumes that the enterprise already
+**Important Future Work 2:** This approach assumes that the enterprise already
 has a knowledge graph. Although I am a strong believer that enterprises
 should invest in the construction of clean enterprise-level KGs with
 well defined and consistent vocabularies,
@@ -240,7 +242,7 @@ is implemented in the examples used in LlamaIndex's documentations using [LlamaI
 </div>
 
 The triples are stored in a GDBMS. You can use a [LlamaIndex GraphStore](https://docs.llamaindex.ai/en/stable/community/integrations/graph_stores.html) for this and Kùzu has an implementation; see the [KuzuGraphStore demo here](https://docs.llamaindex.ai/en/stable/examples/index_structs/knowledge_graph/KuzuGraphDemo.html). The system extract entities using $Q_{NL}$, using some
-entity or keyword extractor. In the LLamaIndex demos, this is done by using an LLM. Speficially,
+entity or keyword extractor. In the LLamaIndex demos, this is done by using an LLM. Specifically,
 LLM is prompted with the following [prompt](https://github.com/run-llama/llama_index/blob/ce82bd42329b56bca2a6a44e0f690ebedaf1f002/llama_index/prompts/default_prompts.py#L147): `A question is provided below. Given the question, extract up to {max_keywords}
 keywords from the text....` etc. These keywords are used
 to extract triples from the GDBMS by using them in the query sent to the GDBMS as shown in the above figure.
@@ -259,7 +261,7 @@ of the statements in more verbose sentences in chunks.
 Third, the success of such RAG applications depends on the quality of the triples
 extracted in the pre-processing step, which is the next future work direction I want to highlight:
 
-*Important Future Work 5:* The success of RAG-U applications that use triples or the KG-enchanced stardard
+*Important Future Work 5:* The success of RAG-U applications that use triples or the KG-enhanced standard
 RAG-U applications depend on the availability of a technology that can automatically
 extract knowledge graphs from unstructured documents.
 
