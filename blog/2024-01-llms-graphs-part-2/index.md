@@ -302,7 +302,7 @@ structured records or one that conditionally retrieves from one or the other. [L
 and [LlamaIndex Agents](https://docs.llamaindex.ai/en/stable/use_cases/agents.html)
 make it easy to develop such pipelines. You can for example instruct the "Agent" to take one of two actions
 conditionally as follows: 
-"if the question is about foo retrieve fact from the GDBMS by converting $Q_{NL}$ to a Cypher query;
+"if the question is about counting or aggregations retrieve records from the GDBMS by converting $Q_{NL}$ to a Cypher query;
 otherwise follow the RAG-U pipeline to retrieve chunks from documents." These are essentially
 tools to develop a control logic over your LLM applications. It reminds me of the good old days when
 there was a crazy hype around MapReduce-like "big data systems" and several initial works
