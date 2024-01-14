@@ -20,7 +20,7 @@ import TriplesBasedRAGOverview from './triples-based-rag-overview.png';
 I gave an overview of question answering (Q&A) systems that use LLMs
 over private enterprise data. I covered the architectures of these systems, the common tools
 developers use to build these systems when the enterprise data used is structured, 
-i.e., data is records stored in some DBMS, relational or graph. I was referring to
+i.e., data exists as records stored in some DBMS, relational or graph. I was referring to
 these systems as *RAG systems using structured data*. In this post, I cover *RAG systems 
 that use unstructured data*, such as text files,
 pdf documents, or internal html pages in an enterprise. I will refer to these as RAG-U systems
@@ -97,7 +97,7 @@ The below figure shows the pre-processing and indexing steps of standard RAG-U:
 <img src={StandardRAGPreprocessing} width="600"/>
 </div>
 
-**First a note on vector indices:** A vector index is an index that indexes a
+**First a note on vector indices:** A vector index is one that indexes a
 set of d-dimensional vectors and given a query vector w can answer several queries:
 (i) *pure search*: does w exist in the index?; (ii) *k nearest neighbors*: return
 the k vectors closest to w; or (iii) *range queries*: return vectors that are within
@@ -117,8 +117,8 @@ SNW and HSNW instead are not exact indices. They are called approximate indices 
 even approximate in the sense of having any approximation guarantees in their query results.
 They are heuristic-based indices that can index very high-dimensional vector and are fast 
 both in their construction and their query times. Further, their query results are shown to be quite accurate empirically.
-HNSW indices are nowadays used by vector database companies like [Pinecone](https://www.pinecone.io/learn/series/faiss/hnsw/)
-and [Weaviate](https://weaviate.io/developers/weaviate/concepts/vector-index) or enterprise search systems, such as [Lucene](https://lucene.apache.org/core/9_1_0/core/org/apache/lucene/util/hnsw/HnswGraph.html) in their vector indices.
+HNSW indices are nowadays used by vector databases like [Pinecone](https://www.pinecone.io/learn/series/faiss/hnsw/)
+and [Weaviate](https://weaviate.io/developers/weaviate/concepts/vector-index) or search engine libraries such as [Lucene](https://lucene.apache.org/core/9_1_0/core/org/apache/lucene/util/hnsw/HnswGraph.html) in their vector indices.
 To understand these indices, I highly suggest first reading the Navarro paper
 paper, which is the foundation. It's also a great example of a well-written database paper: one that
 makes a very clear contribution and is explained in a very clean technical language.
@@ -242,7 +242,7 @@ is implemented in the examples used in LlamaIndex's documentations using [LlamaI
 </div>
 
 The triples are stored in a GDBMS. You can use a [LlamaIndex GraphStore](https://docs.llamaindex.ai/en/stable/community/integrations/graph_stores.html) for this and Kùzu has an implementation; see the [KuzuGraphStore demo here](https://docs.llamaindex.ai/en/stable/examples/index_structs/knowledge_graph/KuzuGraphDemo.html). The system extract entities using $Q_{NL}$, using some
-entity or keyword extractor. In the LLamaIndex demos, this is done by using an LLM. Specifically,
+entity or keyword extractor. In the LlamaIndex demos, this is done by using an LLM. Specifically,
 LLM is prompted with the following [prompt](https://github.com/run-llama/llama_index/blob/ce82bd42329b56bca2a6a44e0f690ebedaf1f002/llama_index/prompts/default_prompts.py#L147): `A question is provided below. Given the question, extract up to {max_keywords}
 keywords from the text....` etc. These keywords are used
 to extract triples from the GDBMS by using them in the query sent to the GDBMS as shown in the above figure.
@@ -277,11 +277,11 @@ for which I could not find much to read on is this:
 specialized methods)? 
 
 So could we ever dream of using LLMs to extract billions of triples from a large corpus of unstructured documents? Probably not
-if you're using OpenAI APIs, as it should be painfully expensive, or even if you're running 
-your own model, as it should be excruciatingly slow. So I am a bit pessimistic here. My instinct
+if you're using OpenAI APIs, as it would be painfully expensive, or even if you're running 
+your own model, as it would be excruciatingly slow. So I am a bit pessimistic here. My instinct
 is that you might be able to generate KGs from unstructured documents using the slightly older
 techniques like designing your own models or using extractor-based approaches like
-[DeepDive](http://deepdive.stanford.edu/).[^3] I know it's not exciting to not use LLMs, 
+[DeepDive](http://deepdive.stanford.edu/)[^3] and [SpanMarker](https://tomaarsen.github.io/SpanMarkerNER/)[^4]. I know it's not exciting to not use LLMs, 
 but you're likely to extract much higher quality triples and much more cheaply with specialized models. 
 So I don't know who really
 thinks it could one day be a good idea to use LLMs to extract triples from large corpuses.
@@ -291,6 +291,8 @@ of triples you wanted to extract manually and DeepDive would use them in combina
 to extract high quality triples. Or you can just default to thinking hard about what you want to extract,
 so what type of questions you want to answer in your RAG system, and based on those give example documents
 and triples and train a specialized model. 
+
+[^4]: SpanMarker is a recent approach for training powerful Named Entity Recognition models and is tightly implemented on top of the Transformers library by Hugging Face. It is based on the [PL-Marker paper](https://arxiv.org/pdf/2109.06067.pdf). The idea is to train a model that can detect NER entities from a large corpus of documents., label them with their types and map these types to the required triples as per your business domain.
 
 
 ## Agents: Developing RAG Systems That Use Both Structured & Unstructured Data
