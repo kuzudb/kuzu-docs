@@ -305,9 +305,10 @@ conditionally as follows:
 "if the question is about counting or aggregations retrieve records from the GDBMS by converting $Q_{NL}$ to a Cypher query;
 otherwise follow the RAG-U pipeline to retrieve chunks from documents." These are essentially
 tools to develop a control logic over your LLM applications. It reminds me of the good old days when
-there was a crazy hype around MapReduce-like "big data systems" and several initial works
-immediately were addressing how to develop tools/languages over these systems to implement
-control flows. Agents seem like initial answers to the question of "how do you program advanced LLM applications?"
+there was a crazy hype around MapReduce-like "big data systems" and several initial works, such as [Pig Latin](https://dl.acm.org/doi/abs/10.1145/1376616.1376726) 
+and [Ciel](https://www.usenix.org/legacy/event/nsdi11/tech/full_papers/Murray.pdf), immediately were addressing how to develop libraries/languages 
+over these systems to implement advanced control flows. Agents, or the recent [LangGraph](https://github.com/langchain-ai/langgraph), 
+seem like initial answers to the question of "how do you program advanced LLM applications?"
 
 ## Final Words
 I want to conclude with two final points. First, there are many other applications that can
@@ -316,7 +317,6 @@ them here. Here is a [survey paper](https://arxiv.org/pdf/2306.08302.pdf) that a
 the work in this space. The topics vary from how KGs can be used to train better LLMs to
 how LLMs can be used to construct KGs to how one could embed both text and KG triples together as vectors
 to better train LLMs.
-
 
 Second, I listed 3 possible answers for the "what additional data"
 design decision and 3 possible answers for "how to fetch" design decision. I further mentioned different
@@ -327,8 +327,3 @@ with was that we need more technically deep material in the space, which will on
 of these RAG systems on standard benchmarks, as done in SIGIR or ACL publications.
 I went through SIGIR 2023 publications and did not find work on a Q&A system that uses LLMs + KGs
 similar to the approaches I covered here. I hope to see such papers in 2024.
-
-
-
-
-
