@@ -14,7 +14,7 @@ import TriplesBasedRAGPreprocessing from './triples-based-rag-preprocessing.png'
 import TriplesBasedRAGOverview from './triples-based-rag-overview.png';
 
 
-# Role of Knowledge Graphs in RAG Using Unstructured Data 
+# RAG Using Unstructured Data & Role of Knowledge Graphs 
 
 [In my previous post](https://kuzudb.com/docusaurus/blog/llms-graphs-part-1), 
 I gave an overview of question answering (Q&A) systems that use LLMs
