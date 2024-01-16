@@ -99,8 +99,8 @@ const config = {
             type: "html",
             position: "right",
             value: `
-            <a href="https://join.slack.com/t/kuzudb/shared_invite/zt-1w0thj6s7-0bLaU8Sb~4fDMKJ~oejG_g" class="navbar__link navbar__link--social">
-              <i class="fa-brands fa-slack fa-xl"></i>
+            <a href="https://discord.gg/cnxYf3Yc" class="navbar__link navbar__link--social">
+              <i class="fa-brands fa-discord fa-xl"></i>
             </a>
             `,
           },
