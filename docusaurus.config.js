@@ -99,7 +99,7 @@ const config = {
             type: "html",
             position: "right",
             value: `
-            <a href="https://discord.gg/cnxYf3Yc" class="navbar__link navbar__link--social">
+            <a href="https://discord.gg/jw7xN2ZhJB" class="navbar__link navbar__link--social">
               <i class="fa-brands fa-discord fa-xl"></i>
             </a>
             `,
