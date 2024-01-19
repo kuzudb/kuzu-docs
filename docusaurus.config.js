@@ -17,7 +17,7 @@ const config = {
   url: "https://kuzudb.com",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/docusaurus/",
+  baseUrl: "/docs/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -99,7 +99,7 @@ const config = {
             type: "html",
             position: "right",
             value: `
-            <a href="https://discord.gg/jw7xN2ZhJB" class="navbar__link navbar__link--social">
+            <a href="https://discord.gg/CV7FVsPeVz" class="navbar__link navbar__link--social">
               <i class="fa-brands fa-discord fa-xl"></i>
             </a>
             `,
