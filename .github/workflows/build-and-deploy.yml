@@ -25,11 +25,13 @@ jobs:
           path: kuzudb.github.io
         
       - name: Remove old documentations
-        run: rm -rf kuzudb.github.io/docusaurus
+        run: |
+          rm -rf kuzudb.github.io/docusaurus
+          rm -rf kuzudb.github.io/docs
         
       - name: Move new documentations
         run: |
-          mv build kuzudb.github.io/docusaurus
+          mv build kuzudb.github.io/docs
           
         
       - name: Push changes
