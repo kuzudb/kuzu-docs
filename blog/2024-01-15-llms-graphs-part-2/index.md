@@ -16,7 +16,7 @@ import TriplesBasedRAGOverview from './triples-based-rag-overview.png';
 
 # RAG Using Unstructured Data & Role of Knowledge Graphs 
 
-[In my previous post](https://kuzudb.com/docusaurus/blog/llms-graphs-part-1), 
+[In my previous post](/docs/blog/llms-graphs-part-1), 
 I gave an overview of question answering (Q&A) systems that use LLMs
 over private enterprise data. I covered the architectures of these systems, the common tools
 developers use to build these systems when the enterprise data used is structured, 
@@ -50,7 +50,7 @@ its potential benefits should be subjected to rigorously evaluation, e.g., as ma
 :::
 
 ## RAG-U Overview
-I will skip the overview of RAG systems, which I covered in [the previous post](https://kuzudb.com/docusaurus/blog/llms-graphs-part-1#a-note-on-the-term-rag).
+I will skip the overview of RAG systems, which I covered in [the previous post](/docs/blog/llms-graphs-part-1#a-note-on-the-term-rag).
 The picture of RAG systems that use unstructured data looks as follows:
 <div class="img-center">
 <img src={RAGUsingUnstructuredData} width="600"/>
