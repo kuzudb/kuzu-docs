@@ -20,7 +20,7 @@ description: Text functions are used to manipulate text.
 | ends_with(string1, string2) | alias of suffix | ends_with("best student", "student") | true  |
 | lcase(string) | alias of lower | lcase("UPPER CASE") | "upper case" |
 | left(string, count) | returns the left most count number of characters from string | left("long string", 2) | "lo" |
-| length(string) | returns the number of characters in string | length("database") | 8 |
+| size(string) | returns the number of characters in string | size("database") | 8 |
 | list_element(string, index) | alias of array_extract | list_element("university", 3) | "i" | 
 | list_extract(string, index) | alias of array_extract | list_extract("waterloo", 2) | "a" |
 | lower(string) | returns the string in lower case | lower("WaterLoo") | "waterloo" |
