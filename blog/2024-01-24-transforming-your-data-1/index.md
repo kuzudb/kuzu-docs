@@ -242,7 +242,8 @@ We create a new CSV file `transacted_with.csv` with the headers `from`, `to`, `a
 `timestamp`. We can apply similar functions to create the `located_in.csv` and `has_instance.csv`
 files as well.
 
-This completes the transformation of the relational data model to a graph data model!
+This completes the transformation of the relational data model to a graph data model! See the full
+code to reproduce the above steps [here](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions).
 
 ## Building the graph
 
@@ -420,6 +421,11 @@ In the next post, we'll look at a larger dataset of a similar nature, to answer 
 questions about disputed transactions. In the meantime, give [Kùzu](https://github.com/kuzudb/kuzu)
 a try out on your own data, and begin thinking about whether knowledge graphs are a good fit for
 your use case!
+
+## Code
+
+All code for this post can be found in the
+[graphdb-demo](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions) repository.
 
 ## Further reading
 
