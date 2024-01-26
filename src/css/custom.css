@@ -34,6 +34,7 @@
   justify-content: center;
   width: 100%;
   padding-bottom: 1em;
+  background-color: #fff;
 }
 
 a.navbar__link.navbar__link--social{
