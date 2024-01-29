@@ -331,7 +331,7 @@ with IDs 7 and 11 belong to *Hilton Hotels & Resorts* and *Starbucks* respective
 merchant and transaction information require multi-edge traversals (i.e., multiple joins) to
 answer this question, and the resulting Cypher query is quite intuitive.
 
-The result for query 1 looks correct, if you inspect the raw data.
+The result for query 1 looks correct, if you inspect the [raw data](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions/data).
 
 id | name
 :---: | :---:
