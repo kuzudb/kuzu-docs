@@ -11,7 +11,7 @@ import EdgeTables from './edge_tables.png';
 import KuzuSchemaViz from './kuzu_schema_viz.png';
 import GraphDataViz from './graph_viz.png';
 
-# Transforming your data to graphs: ETL
+# Transforming your data to graphs - Part 1
 
 Ever since the birth of database management systems (DBMSs), tabular relations and graphs have been
 the core data structures used to model application data in two broad classes of systems:
@@ -19,8 +19,8 @@ relational DBMSs (RDBMS) and graph DBMSs (GDBMS).
 
 In this post, we'll look at how to transform data that might exist in a typical relational system
 to a graph and load it into a Kùzu database. The aim of this post and the next one is to showcase
-"graph thinking"[^1], where you explore existing connections in your data, and how it can potentially
-help uncover new insights.
+"graph thinking"[^1], where you explore connected information in your existing structured data and apply
+it to help uncover potentially new insights.
 
 :::info Code
 The full code to reproduce the workflow shown in this post can be found in the
@@ -145,45 +145,41 @@ following Cypher queries and run them via the Kùzu CLI, or the client SDK of yo
 
 ```sql
 // Client node table
-CREATE NODE TABLE
-    Client(
-        client_id INT64,
-        name STRING,
-        age INT64,
-        PRIMARY KEY (client_id)
-    )
+CREATE NODE TABLE Client(
+    client_id INT64,
+    name STRING,
+    age INT64,
+    PRIMARY KEY (client_id)
+)
 ```
 
 ```sql
 // City node table
-CREATE NODE TABLE
-    City(
-        city_id INT64,
-        city STRING,
-        PRIMARY KEY (city_id)
-    )
+CREATE NODE TABLE City(
+    city_id INT64,
+    city STRING,
+    PRIMARY KEY (city_id)
+)
 ```
 
 ```sql
 // Company node table
-CREATE NODE TABLE
-    Company(
-        company_id INT64,
-        type STRING,
-        company STRING,
-        PRIMARY KEY (company_id)
-    )
+CREATE NODE TABLE Company(
+    company_id INT64,
+    type STRING,
+    company STRING,
+    PRIMARY KEY (company_id)
+)
 ```
 
 ```sql
 // Merchant node table
-CREATE NODE TABLE
-    Merchant(
-        merchant_id INT64,
-        company_id INT64,
-        city_id INT64,
-        PRIMARY KEY (merchant_id)
-    )
+CREATE NODE TABLE Merchant(
+    merchant_id INT64,
+    company_id INT64,
+    city_id INT64,
+    PRIMARY KEY (merchant_id)
+)
 ```
 
 Note that `PRIMARY KEY` constraints are required on every node table in Kùzu, as they are used to
@@ -206,10 +202,10 @@ are the relationship type.
 ```sql
 // TransactedWith edge table
 CREATE REL TABLE TransactedWith(
-        FROM Client TO Merchant,
-        amount_usd FLOAT,
-        timestamp TIMESTAMP
-    )
+    FROM Client TO Merchant,
+    amount_usd FLOAT,
+    timestamp TIMESTAMP
+)
 ```
 
 ```sql
@@ -309,13 +305,13 @@ COPY LocatedIn FROM 'located_in.csv'
 ```
 
 The queries above that the empty tables were first created. The `COPY <edge_table> FROM <file>` statement
-writes the data into a Kùzu database. Running the `main` function via a file named `load_data.py`
-results in the graph being saved to a local directory named `transaction_db`.
+writes the data into a Kùzu database. Running the queries on an existing database connection
+results in the graph being saved to a local directory.
 
 ## Querying the graph
 
-We can now run some simple queries to test that the data was loaded correctly. Either create
-a standalone script `query.py`, or fire up a [Kùzu CLI](https://kuzudb.com/docusaurus/getting-started/cli)
+We then run some simple queries to test that the data was loaded correctly. Either create
+a standalone script using the client SDK of your choice, or fire up a [Kùzu CLI](https://kuzudb.com/docusaurus/getting-started/cli)
 shell and run some Cypher queries.
 
 The first query showcases specifically how Kùzu is beneficial in expressing query logic that
@@ -331,7 +327,7 @@ RETURN DISTINCT b.client_id AS id, b.name as name
 
 This is a useful query in the following situation: say a marketing analyst wants to know which clients
 transacted with merchants in a specific location in two different categories. In this case, merchants
-with IDs 7 and 11 belong to "Hilton Hotels & Resorts" and "Starbucks" respectively. The company,
+with IDs 7 and 11 belong to *Hilton Hotels & Resorts* and *Starbucks* respectively. The company,
 merchant and transaction information require multi-edge traversals (i.e., multiple joins) to
 answer this question, and the resulting Cypher query is quite intuitive.
 
@@ -339,7 +335,6 @@ The result for query 1 looks correct, if you inspect the raw data.
 
 id | name
 :---: | :---:
-id | name
 3 | Cecil
 4 | Diana
 5  | Eve
