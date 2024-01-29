@@ -5,45 +5,61 @@ authors:
 tags: [use-case]
 ---
 
-import RelationalSchema from './transforming_data_relational_schema.png';
-import GraphSchema from './transforming_data_graph_schema.png';
-import EdgeTables from './transforming_data_edge_tables.png';
-import GraphSchemaViz from './transforming_data_schema_viz.png';
-import GraphDataViz from './transforming_data_graph_viz.png';
+import RelationalSchema from './relational_schema.png';
+import GraphSchema from './graph_schema.png';
+import EdgeTables from './edge_tables.png';
+import KuzuSchemaViz from './kuzu_schema_viz.png';
+import GraphDataViz from './graph_viz.png';
 
 # Transforming your data to graphs: ETL
 
 Ever since the birth of database management systems (DBMSs), tabular relations and graphs have been
 the core data structures used to model application data in two broad classes of systems:
-Relational (RDBMS) and Graph (GDBMS).
+relational DBMSs (RDBMS) and graph DBMSs (GDBMS).
 
 In this post, we'll look at how to transform data that might exist in a typical relational system
 to a graph and load it into a Kùzu database. The aim of this post and the next one is to showcase
 "graph thinking"[^1], where you explore existing connections in your data, and how it can potentially
 help uncover new insights.
 
+:::info Code
+The full code to reproduce the workflow shown in this post can be found in the
+[graphdb-demo](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions) repository.
+It uses Kùzu's Python API, but you are welcome to use the client API [of your choice](https://kuzudb.com/docusaurus/client-apis).
+:::
+
 <!-- truncate -->
 
 ## When are graphs useful?
 
-A lot of existing enterprise data is in the form of relational tables. In RDBMSs, connections
+A lot of enterprise data exists in the form of relational tables. In an RDBMS, connections
 between entities are often implicitly defined by the schema of the tables via foreign key
-constraints.
+constraints. Graphs instead represent records in a more object-oriented manner by explicitly defining
+entities (or objects) and relationships (or edges) between these entities, offering several benefits:
 
-In many cases, graphs are the most natural data structures to represent structured data by defining
-*explicit* relationships between entities. While the relational data model requires strict
-schematization of the data, graph models provide more flexibility, especially when storing sparse
-data.
+1. A graph data model provides a more natural abstraction to represent indirect or recursive
+relationships between entities as paths.
+1. Graph models generally have better support for less-structured data, where objects can be of multiple
+types or connect to other objects in non-uniform ways. The relational data model requires strict
+schematization of the data and SQL requires joining records through explicitly named tables.
+1. Using a graph data model allows for more flexibility when storing sparse and heterogeneous data.
 
-SQL is suitable to express a variety of standard data analytics tasks, but it is arguably not as
+Query languages over graphs often provide the means to find relationships between nodes without
+explicitly naming them, e.g., in Cypher, the `(a:Person {name: "Alice})-[]->(b:Person {name:Bob})`
+pattern will find all possible relationships between nodes with names Alice and Bob. Although SQL is
+suitable to express a variety of standard data analytics tasks, it is arguably not as
 suitable when it comes to expressing queries with recursive or many-to-many joins. Graph queries
-in a well-designed GDBMS like Kùzu contain specialized syntaxes and operators for these types of
-query workloads.
+in a well-designed GDBMS like Kùzu contain [specialized syntaxes](https://en.wikipedia.org/wiki/Kleene_star)
+and operators for these types of query workloads.
+
+For a much more detailed description on the benefits of graph modeling and GDBMSs, see our earlier
+[blog post](../2023-01-12-what-every-gdbms-should-do/index.md).
 
 :::info Note
 It's important to understand that *data itself* doesn't exist as graphs, tables, arrays and so on.
 These are just different ways of representing and storing the data. It's completely up to the
-developer to choose the right data structure depending on the question being answered.
+developer to choose the right data structure depending on question being answered or the application
+being developed.
 :::
 
 ## Extract, Transform, Load (ETL)
@@ -84,19 +100,27 @@ representation of the data model that considers how the concepts are connected i
 <img src={GraphSchema}/>
 </div>
 
-In the above schema, we choose to model the transaction table as an edge rather than as a node,
-because it showcases the relationship between a client and a merchant. The transaction amount and
-time stamp is stored as a property on the edge.
+In the schema above, note how the implicit foreign keys defined in the relational
+schema, such as the one between `Merchant` and `City`, get *explicit* names, such as `LocatedIn`.
+Similarly, the two foreign keys in the `Transaction` relation between `Client` and `Merchant` get an
+explicit name `TransactedWith`. You have the flexibility to model the data in a way that makes
+sense for your use case, while also being informed by existing tabular relationships.
 
 ### Transforming relational data to graphs
 
-One of the key features of Kùzu is that it's a columnar, schema-based graph database, making it
+A key feature of Kùzu is that it's a schema-based graph database, making it
 highly convenient to read data that exists in relational systems. Like RDBMSs, Kùzu also relies
 on strongly-typed values in columns and uses primary key constraints on tables to model the data.
 The only difference is that Kùzu uses separate node and edge tables, which we'll show how to
 create below.
 
-For simplicity, we'll assume that the tables shown in the relational schema above are available
+:::info Note
+As such, Kùzu can be viewed as a relational system that provides object-oriented
+modeling capabilities over your tables, allowing you to express graph-based paths and patterns very
+efficiently in Cypher, the query language implemented by Kùzu.
+:::
+
+In this post, for simplicity, we'll assume that the tables we showed in the relational schema are available
 as CSV files in the `data` directory. The `load_data.py` script will transform and load the
 data into a Kùzu database, while the `query.py` file will run some simple queries to test that
 the load was successful.
@@ -107,70 +131,58 @@ the load was successful.
 │   ├── client.csv
 │   ├── city.csv
 │   ├── company.csv
-│   ├── disputed_transaction.csv
 │   ├── merchant.csv
 │   └── transaction.csv
 ├── load_data.py
 └── query.py
 ```
 
-### Node files
+### Node tables
 
 The data in the `client.csv`, `city.csv`, `company.csv` and `merchant.csv` files are already in the
-right tabular form for Kùzu to load them as node tables. We can create the tables as follows:
+right structure for Kùzu to load them as node tables. You can create the node tables using the
+following Cypher queries and run them via the Kùzu CLI, or the client SDK of your choice.
 
-```py
-import kuzu
-
-def create_client_node_table(conn: kuzu.Connection) -> None:
-    conn.execute(
-        """
-        CREATE NODE TABLE
-            Client(
-                client_id INT64,
-                name STRING,
-                age INT64,
-                PRIMARY KEY (client_id)
-            )
-        """
+```sql
+// Client node table
+CREATE NODE TABLE
+    Client(
+        client_id INT64,
+        name STRING,
+        age INT64,
+        PRIMARY KEY (client_id)
     )
+```
 
-def create_city_node_table(conn: kuzu.Connection) -> None:
-    conn.execute(
-        """
-        CREATE NODE TABLE
-            City(
-                city_id INT64,
-                city STRING,
-                PRIMARY KEY (city_id)
-            )
-        """
+```sql
+// City node table
+CREATE NODE TABLE
+    City(
+        city_id INT64,
+        city STRING,
+        PRIMARY KEY (city_id)
     )
+```
 
-def create_company_node_table(conn: kuzu.Connection) -> None:
-    conn.execute(
-        """
-        CREATE NODE TABLE
-            Company(
-                company_id INT64,
-                type STRING,
-                company STRING,
-                PRIMARY KEY (company_id)
-            )
-        """
+```sql
+// Company node table
+CREATE NODE TABLE
+    Company(
+        company_id INT64,
+        type STRING,
+        company STRING,
+        PRIMARY KEY (company_id)
     )
+```
 
-def create_merchant_node_table(conn: kuzu.Connection) -> None:
-    conn.execute(
-        """
-        CREATE NODE TABLE
-            Merchant(
-                merchant_id INT64,
-                company_id INT64,
-                city_id INT64,
-                PRIMARY KEY (merchant_id)
-            )
-        """
+```sql
+// Merchant node table
+CREATE NODE TABLE
+    Merchant(
+        merchant_id INT64,
+        company_id INT64,
+        city_id INT64,
+        PRIMARY KEY (merchant_id)
     )
 ```
 
@@ -178,122 +190,127 @@ Note that `PRIMARY KEY` constraints are required on every node table in Kùzu, a
 ensure that edges are always created on unique node pairs. In this case, we use the `client_id`,
 `city_id`, `company_id` and `merchant_id` columns as the primary keys for each respective table.
 
-### Edge files
+### Edge tables
 
-The graph schema we designed above requires us to add new CSV files that represent the edges in
-the graph. We'll create the following edge files:
+The graph schema we designed above requires us to transform some of the existing CSV files in order to
+represent the right columns as edge connections in the graph. We'll need to create the following files:
 
 - `transacted_with.csv`: connects a client to a merchant
-- `has_instance.csv`: connects a company to a merchant
+- `belongs_to.csv`: connects a merchant to its parent company
 - `located_in.csv`: connects a merchant to a city
 
 We first define the empty table schemas using the `FROM` and `TO` keywords that indicate the
-direction of the edge. The names of the tables: `TransactedWith`, `HasInstance` and `LocatedIn`
+direction of the edge. The names of the tables: `TransactedWith`, `BelongsTo` and `LocatedIn`
 are the relationship type.
 
-```py
-def create_edge_tables(conn: kuzu.Connection) -> None:
-    conn.execute(
-        """CREATE REL TABLE TransactedWith(
-                FROM Client TO Merchant,
-                amount_usd FLOAT,
-                timestamp TIMESTAMP
-            )
-        """)
-    conn.execute("CREATE REL TABLE LocatedIn(FROM Merchant TO City)")
-    conn.execute("CREATE REL TABLE HasInstance(FROM Company TO Merchant)")
+```sql
+// TransactedWith edge table
+CREATE REL TABLE TransactedWith(
+        FROM Client TO Merchant,
+        amount_usd FLOAT,
+        timestamp TIMESTAMP
+    )
+```
+
+```sql
+// BelongsTo edge table
+CREATE REL TABLE LocatedIn(FROM Merchant TO City)
+```
+
+```sql
+// LocatedIn edge table
+CREATE REL TABLE BelongsTo(FROM Merchant TO Company)
 ```
 
 In the above code, only `TransactedWith` edges have metadata associated with them, namely the
 transaction amount and the timestamp. The other two edges don't have metadata and are simply
 used to connect the nodes based on the values that match a primary key constraint.
 
-An example is shown below. Consider the node tables `client.csv` and `transaction.csv` as follows:
+The data for the edges require minor transformations to the existing CSV files in which the first
+and second columns respectively represent the `FROM` and `TO` nodes' primary keys. To help reduce
+the amount of custom code you have to write, Kùzu provides convenient APIs to
+scan/read from CSV files and to copy data from CSV files to a node or edge table. An example is
+shown below.
 
 <div class="img-center">
 <img src={EdgeTables}/>
 </div>
 
-A simple transformation function can convert the transaction table into the `TransactedWith` edge
-table as follows:
+The `transaction.csv` file contains the `client_id` and `merchant_id` columns, which are the `FROM`
+and `TO` nodes' primary keys respectively, but these are not present in the first and second columns
+as the edge table requires. To do this, `transaction.csv` file isn't loaded as-is, but is instead
+transformed into the `transacted_with.csv` file via the following query.
 
-```py
-def create_transaction_edge_file(data_path: str | Path) -> None:
-    """
-    Transform transaction.csv into transacted_with.csv edge file
-    with the correct headers.
-    """
-    data_path = format_path(data_path)
-    with open(data_path / "transaction.csv") as transaction:
-        transaction_reader = csv.reader(transaction)
-        next(transaction_reader, None)  # skip the headers
-        with open(data_path / "transacted_with.csv", "w") as transaction_edges:
-            
-            transaction_edges_writer = csv.writer(transaction_edges)
-            colnames = ["from", "to", "amount_usd", "timestamp"]
-            transaction_edges_writer.writerow(colnames)
-
-            for row in transaction_reader:
-                transaction_edges_writer.writerow(row[1:])
-    print(f"Created edge file '{data_path}/transacted_with.csv'")
+```sql
+-- Generate `transacted_with.csv` from `transaction.csv`
+COPY (
+    LOAD FROM 'transaction.csv' (header=true)
+    RETURN
+        client_id,
+        merchant_id,
+        amount_usd,
+        timestamp
+)
+TO 'transacted_with.csv';
 ```
 
-We create a new CSV file `transacted_with.csv` with the headers `from`, `to`, `amount_usd` and
-`timestamp`. We can apply similar functions to create the `located_in.csv` and `has_instance.csv`
-files as well.
+The command above consists of two subquery blocks: `LOAD` and `COPY`. The `LOAD` block is used to
+scan the CSV file, check for headers and data types and return the columns we need. The `COPY`
+block is used to write the results we obtained from the scan to a new file.
 
-This completes the transformation of the relational data model to a graph data model! See the full
-code to reproduce the above steps [here](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions).
+We can do the same for the other two edge tables as well.
 
-## Building the graph
+```sql
+// Generate `belongs_to.csv` from `merchant.csv`
+COPY (
+    LOAD FROM 'merchant.csv' (header=true)
+    RETURN
+        merchant_id,
+        company_id
+)
+TO 'belongs_to.csv';
+```
+
+```sql
+// Generate `located_in.csv` from `merchant.csv`
+COPY (
+    LOAD FROM 'merchant.csv' (header=true)
+    RETURN
+        merchant_id,
+        city_id
+)
+TO 'located_in.csv';
+```
+
+With all the input files in place, we can proceed to insert the data into Kùzu!
+
+## Insert data into Kùzu
 
 Collecting all the above functions, we can write a script that performs the following:
 
 1. Transform node/edge tables as needed
 1. Create the node tables
 1. Create edge tables
-2. Load the node tables into the database
-3. Load the edge tables into the database
+1. Load the node tables into the database
+1. Load the edge tables into the database
 
 In Python, it would look something like this:
 
-```py
-def main() -> None:
-    data_path = "./data"
-    conn = kuzu.connect("transaction_db")
-    # Create edge table files from existing data
-    create_transaction_edge_file(data_path)
-    create_merchant_instance_edge_file(data_path)
-    create_merchant_city_edge_file(data_path)
-
-    # Ingest nodes
-    create_node_tables(conn)
-    conn.execute(f"COPY Client FROM '{data_path}/client.csv' (header=true);")
-    conn.execute(f"COPY City FROM '{data_path}/city.csv' (header=true);")
-    conn.execute(f"COPY Company FROM '{data_path}/company.csv' (header=true);")
-    conn.execute(f"COPY Merchant FROM '{data_path}/merchant.csv' (header=true);")
-    print("Successfully loaded nodes into KùzuDB!")
-
-    # Ingest edges
-    create_edge_tables(conn)
-    conn.execute(f"COPY TransactedWith FROM '{data_path}/transacted_with.csv' (header=true);")
-    conn.execute(f"COPY LocatedIn FROM '{data_path}/located_in.csv' (header=true);")
-    conn.execute(f"COPY HasInstance FROM '{data_path}/has_instance.csv' (header=true);")
-    print("Successfully loaded edges into KùzuDB!")
+```sql
+// Copy from CSV to node tables
+COPY Client FROM 'client.csv' (header=true)
+COPY City FROM 'city.csv' (header=true)
+COPY Company FROM 'company.csv' (header=true)
+COPY Merchant FROM 'merchant.csv' (header=true)
+// Copy from CSV to edge tables
+COPY TransactedWith FROM 'transacted_with.csv' 
+COPY BelongsTo FROM 'belongs_to.csv'
+COPY LocatedIn FROM 'located_in.csv'
 ```
 
-The empty tables are first created, following which the `COPY <edge_table> FROM <file>` statement
-writes the data into Kùzu's storage layer. Running the `main` function via a file named `load_data.py`
+The queries above that the empty tables were first created. The `COPY <edge_table> FROM <file>` statement
+writes the data into a Kùzu database. Running the `main` function via a file named `load_data.py`
 results in the graph being saved to a local directory named `transaction_db`.
-
-```bash
-$ python load_data.py
-Created edge file 'data/transacted_with.csv'
-Created edge file 'data/has_instance.csv'
-Created edge file 'data/located_in.csv'
-Successfully loaded nodes into KùzuDB!
-Successfully loaded edges into KùzuDB!
-```
 
 ## Querying the graph
 
@@ -301,54 +318,76 @@ We can now run some simple queries to test that the data was loaded correctly. E
 a standalone script `query.py`, or fire up a [Kùzu CLI](https://kuzudb.com/docusaurus/getting-started/cli)
 shell and run some Cypher queries.
 
-We can run the following queries.
+The first query showcases specifically how Kùzu is beneficial in expressing query logic that
+requires traversing multiple edges. In this query, we find all clients that have transacted with
+at least one of the merchants with IDs 2 and 11.
 
 ```sql
---- Which cities have the most merchant transactions?
-MATCH (:Client)-[t:TransactedWith]->(m:Merchant)-[:LocatedIn]->(city:City)
-RETURN city.city as city, COUNT(t) AS numTransactions
-ORDER BY numTransactions DESC LIMIT 5;
+// Who are the clients that made transactions in at least one of the merchants with IDs 2 and 11?
+MATCH (m1:Merchant {merchant_id: 7})<-[:TransactedWith]-(a:Client)-[:TransactedWith]->(m2:Merchant {merchant_id: 11}),
+(b:Client)-[:TransactedWith]->(m3:Merchant)
+RETURN DISTINCT b.client_id AS id, b.name as name
 ```
 
-The result looks correct, if you inspect the raw data.
+This is a useful query in the following situation: say a marketing analyst wants to know which clients
+transacted with merchants in a specific location in two different categories. In this case, merchants
+with IDs 7 and 11 belong to "Hilton Hotels & Resorts" and "Starbucks" respectively. The company,
+merchant and transaction information require multi-edge traversals (i.e., multiple joins) to
+answer this question, and the resulting Cypher query is quite intuitive.
 
-city | numTransactions
+The result for query 1 looks correct, if you inspect the raw data.
+
+id | name
 :---: | :---:
-Boston | 3
-Miami | 1
+id | name
+3 | Cecil
+4 | Diana
+5  | Eve
 
-We can also aggregate on node properties to answer questions like the following:
+Query 2 traverses paths to obtain an aggregation count as follows.
 
 ```sql
---- Which company type does the merchant with the most transactions belong to?
-MATCH (:Client)-[t:TransactedWith]->(:Merchant)<-[:HasInstance]-(co:Company)
-RETURN co.type as companyType, COUNT(t) AS numTransactions
+// Which city has the most merchant transactions?
+MATCH (:Client)-[t:TransactedWith]->(m:Merchant)-[:LocatedIn]->(city:City)
+RETURN city.city as city, COUNT(t) AS numTransactions
 ORDER BY numTransactions DESC LIMIT 1;
 ```
 
-Restaurants are the most popular company type that people transact with in this small dataset.
-
-companyType | numTransactions
+city | numTransactions
 :---: | :---:
-restaurant | 3
+Boston | 4
 
-Finally, we can answer a question at the company/merchant level with the following query:
+We can answer questions at the company/merchant level:
 
 ```sql
---- Which companies have the most clients in Boston, and what is their average age?
-MATCH (ci:City)<-[:LocatedIn]-(m:Merchant)
-WHERE ci.city = "Boston"
-WITH ci, m
-MATCH (client:Client)-[:TransactedWith]-(m)<-[:HasInstance]-(co:Company)
-RETURN co.company as company, AVG(client.age) AS avgAge
-ORDER BY avgAge
+// Which company has the most merchants?
+MATCH (m:Merchant)-[:BelongsTo]->(co:Company)
+RETURN co.company AS company, COUNT(m) AS numMerchants
+ORDER BY numMerchants DESC LIMIT 1;
 ```
 
-company | avgAge
+company | numMerchants
 :---: | :---:
-Starbucks | 31.00
+Verizon Wireless | 3
 
 Looks good!
+
+We can also perform path traversal with a filter as follows:
+
+```sql
+// Which company has the most merchant transactions above 100 dollars?
+MATCH (:Client)-[t:TransactedWith]-(:Merchant)-[:BelongsTo]->(co:Company)
+WHERE t.amount_usd > 100
+RETURN co.company AS company, COUNT(t) AS numTransactions
+ORDER BY numTransactions DESC LIMIT 1;
+```
+
+company | numTransactions
+:---: | :---:
+Hilton Hotels & Resorts | 1
+
+As can be seen, you can express a variety of joins in Cypher with an intuitive syntax, in a way
+that's scalable and efficient for large graphs.
 
 ## Visualization
 
@@ -374,7 +413,7 @@ You can then see a query editor in your browser at `http://localhost:8000`.
 In the Kùzu explorer window on the browser, click on the `Schema` tab on the top right.
 
 <div class="img-center">
-<img src={GraphSchemaViz}/>
+<img src={KuzuSchemaViz}/>
 </div>
 
 The above schema is very similar to the one we designed earlier, which is a good sign!
