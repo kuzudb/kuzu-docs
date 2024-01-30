@@ -39,6 +39,13 @@ Supported options:
 | s3_uploader_max_filesize | [used for part size calculation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html) |
 | s3_uploader_threads_limit | maximum number of uploader threads |
 
+# Requirements on the S3 server API:
+| Feature | Required S3 API features |
+|----------|----------|
+| Public file reads | HTTP Range request |
+| Private file reads | secret key authentication|
+| File glob | ListObjectV2 |
+| File writes | Multipart upload |
 
 # Reading from S3:
 Reading from S3 is as simple as reading from regular files:
@@ -46,8 +53,25 @@ Reading from S3 is as simple as reading from regular files:
 load from 's3://kuzu-test/follows.parquet' return *;
 ```
 
+# Glob:
+Globbing is implemented using the ListObjectV2 api, and allows the user to glob files as local filesystem.
+```
+create node table tableOfTypes (id INT64, int64Column INT64, doubleColumn DOUBLE, booleanColumn BOOLEAN, dateColumn DATE, stringColumn STRING, listOfInt64 INT64[], listOfString STRING[], listOfListOfInt64 INT64[][], structColumn STRUCT(ID int64, name STRING), PRIMARY KEY (id));
+COPY tableOfTypes FROM "s3://kuzu-dataset-us/glob-test/types_50k_*.parquet"
+```
+
 # Uploading to S3:
 Writing to S3 uses the AWS (multipart upload API)[https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html]
 ```
 copy (match (p:Place) return p.*) to 's3://kuzu-dataset-us/output/place.parquet'
 ```
+
+# AWS credential management
+Users can set configuration parameters through environment variables:
+Supported environments are:
+| Setting | System environment variable |
+|----------|----------|
+| AWS S3 KEY ID | S3_ACCESS_KEY_ID |
+| AWS S3 SECRET KEY | S3_SECRET_ACCESS_KEY |
+| AWS S3 DEFAULT ENDPOINT | S3_ENDPOINT |
+| AWS S3 DEFAULT REGION | S3_REGION |
