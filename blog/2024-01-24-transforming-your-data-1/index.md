@@ -19,11 +19,11 @@ relational DBMSs (RDBMS) and graph DBMSs (GDBMS).
 
 In this post, we'll look at how to transform data that might exist in a typical relational system
 to a graph and load it into a Kùzu database. The aim of this post and the next one is to showcase
-"graph thinking"[^1], where you explore connected information in your existing structured data and apply
-it to help uncover potentially new insights.
+"graph thinking"[^1], where you explore connections in your existing structured data and apply
+it to potentially uncover new insights.
 
 :::info Code
-The full code to reproduce the workflow shown in this post can be found in the
+The code to reproduce the workflow shown in this post can be found in the
 [graphdb-demo](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions) repository.
 It uses Kùzu's Python API, but you are welcome to use the client API [of your choice](https://kuzudb.com/docusaurus/client-apis).
 :::
@@ -32,7 +32,7 @@ It uses Kùzu's Python API, but you are welcome to use the client API [of your c
 
 ## When are graphs useful?
 
-A lot of enterprise data exists in the form of relational tables. In an RDBMS, connections
+Enterprise data often exists in the form of relational tables. In an RDBMS, connections
 between entities are often implicitly defined by the schema of the tables via foreign key
 constraints. Graphs instead represent records in a more object-oriented manner by explicitly defining
 entities (or objects) and relationships (or edges) between these entities, offering several benefits:
@@ -89,12 +89,13 @@ While the relational schema is useful for rapidly storing transactional data and
 aggregate queries, it's not as useful when it comes to answering questions about the relationships
 in the data. Some such questions are listed below:
 
-1. What cities have the most merchant transactions?
-2. Which companies have the most merchants?
-3. Which company does the merchant with the most transactions belong to?
+1. Who are the clients that made transactions between common merchants?
+2. Which city has the most merchant transactions?
+3. Which company has the most merchants?
+4. Which company has the most merchant transactions above X dollars?
 
-With these in mind, we can proceed to sketch the following graph schema, which is a visual
-representation of the data model that considers how the concepts are connected in the real world.
+With these questions in mind, we can proceed to sketch the following graph schema, which is a visual
+representation of a data model that considers how the concepts are connected in the real world.
 
 <div class="img-center">
 <img src={GraphSchema}/>
@@ -103,13 +104,12 @@ representation of the data model that considers how the concepts are connected i
 In the schema above, note how the implicit foreign keys defined in the relational
 schema, such as the one between `Merchant` and `City`, get *explicit* names, such as `LocatedIn`.
 Similarly, the two foreign keys in the `Transaction` relation between `Client` and `Merchant` get an
-explicit name `TransactedWith`. You have the flexibility to model the data in a way that makes
-sense for your use case, while also being informed by existing tabular relationships.
+explicit name `TransactedWith`.
 
 ### Transforming relational data to graphs
 
-A key feature of Kùzu is that it's a schema-based graph database, making it
-highly convenient to read data that exists in relational systems. Like RDBMSs, Kùzu also relies
+A key feature of Kùzu is that it's a **schema-based** graph database, making it
+highly convenient to read data that already exists in relational systems. Like RDBMSs, Kùzu also relies
 on strongly-typed values in columns and uses primary key constraints on tables to model the data.
 The only difference is that Kùzu uses separate node and edge tables, which we'll show how to
 create below.
@@ -250,7 +250,7 @@ COPY (
 TO 'transacted_with.csv';
 ```
 
-The command above consists of two subquery blocks: `LOAD` and `COPY`. The `LOAD` block is used to
+The example above consists of two subquery blocks: `LOAD` and `COPY`. The `LOAD` block is used to
 scan the CSV file, check for headers and data types and return the columns we need. The `COPY`
 block is used to write the results we obtained from the scan to a new file.
 
@@ -278,7 +278,7 @@ COPY (
 TO 'located_in.csv';
 ```
 
-With all the input files in place, we can proceed to insert the data into Kùzu!
+With all the input files in place, we can now proceed to insert the data and build the graph!
 
 ## Insert data into Kùzu
 
@@ -298,19 +298,20 @@ COPY Client FROM 'client.csv' (header=true)
 COPY City FROM 'city.csv' (header=true)
 COPY Company FROM 'company.csv' (header=true)
 COPY Merchant FROM 'merchant.csv' (header=true)
+
 // Copy from CSV to edge tables
 COPY TransactedWith FROM 'transacted_with.csv' 
 COPY BelongsTo FROM 'belongs_to.csv'
 COPY LocatedIn FROM 'located_in.csv'
 ```
 
-The queries above that the empty tables were first created. The `COPY <edge_table> FROM <file>` statement
+The queries above require that the empty tables were created beforehand. The `COPY <edge_table> FROM <file>` statement
 writes the data into a Kùzu database. Running the queries on an existing database connection
 results in the graph being saved to a local directory.
 
 ## Querying the graph
 
-We then run some simple queries to test that the data was loaded correctly. Either create
+We then run some simple queries to test that the data was loaded correctly. We can either create
 a standalone script using the client SDK of your choice, or fire up a [Kùzu CLI](https://kuzudb.com/docusaurus/getting-started/cli)
 shell and run some Cypher queries.
 
@@ -326,7 +327,7 @@ RETURN DISTINCT b.client_id AS id, b.name as name
 ```
 
 This is a useful query in the following situation: say a marketing analyst wants to know which clients
-transacted with merchants in a specific location in two different categories. In this case, merchants
+transacted with merchants in a specific location in two different merchant categories. In this case, merchants
 with IDs 7 and 11 belong to *Hilton Hotels & Resorts* and *Starbucks* respectively. The company,
 merchant and transaction information require multi-edge traversals (i.e., multiple joins) to
 answer this question, and the resulting Cypher query is quite intuitive.
@@ -381,17 +382,17 @@ company | numTransactions
 :---: | :---:
 Hilton Hotels & Resorts | 1
 
-As can be seen, you can express a variety of joins in Cypher with an intuitive syntax, in a way
+As shown above, we can express a variety of joins in Cypher with an intuitive syntax, in a way
 that's scalable and efficient for large graphs.
 
 ## Visualization
 
-Running Cypher queries in a shell editor is great for testing, but on occasion, obtaining visual
-feedback is very useful in refining your data model. In a recent blog post, we introduced
+Running Cypher queries in a shell editor is great during initial testing, but on compeltion, obtaining visual
+feedback is very useful in refining the data model. In a recent blog post, we introduced
 [Kùzu Explorer](../2023-10-25-kuzuexplorer/index.md), a browser-based frontend that allows
-you to visualize your graph data and run queries interactively.
+users to visualize their graph data and run queries interactively.
 
-It's currently only accessible via Docker, but a standalone application is on the way. To visualize
+The explorer is currently only accessible via Docker, but a standalone application is on the way. To visualize
 the graph you just created, ensure you have Docker installed, and run the following command:
 
 ```bash
@@ -429,7 +430,7 @@ then renders the graph as follows.
 <img src={GraphDataViz}/>
 </div>
 
-You can customize the visual style of the graph by clicking on the `Settings` tab on the top right.
+It's possible to customize the visual style of the graph by clicking on the `Settings` tab on the top right.
 
 ## Conclusions
 
@@ -441,7 +442,7 @@ What's important to take away from this exercise is that using a graph database 
 kinds of queries we ran above makes a **lot** of sense. The raw transaction data that may have been
 sitting in an RDBMS system wasn't simple to reason about when it came to answering questions
 about connected entities. Doing so in SQL would have required multiple joins and subqueries, whereas
-the Cypher queries we wrote were more intuitive and easier to read. That being said, not all queries
+the Cypher queries we wrote were more intuitive and easier to read. That being said, not *all* kinds of queries
 benefit from a graph data model, and there are many cases where SQL and RDBMS are right tools for the job.
 
 Another key takeaway is that designing a graph data model is an
