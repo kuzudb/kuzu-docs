@@ -39,16 +39,17 @@ entities (or objects) and relationships (or edges) between these entities, offer
 
 1. A graph data model provides a more natural abstraction to represent indirect or recursive
 relationships between entities as paths.
-1. Graph models generally have better support for less-structured data, where objects can be of multiple
-types or connect to other objects in non-uniform ways. The relational data model requires strict
-schematization of the data and SQL requires joining records through explicitly named tables.
-1. Using a graph data model allows for more flexibility when storing sparse and heterogeneous data.
+1. Graph models generally have better support for less-structured or heterogenous data,
+where objects can be of multiple types or connect to other objects in non-uniform ways.
+The relational data model on the other hand, requires strict schematization of the data and SQL
+requires joining records through explicitly named tables.
 
 Query languages over graphs often provide the means to find relationships between nodes without
 explicitly naming them, e.g., in Cypher, the `(a:Person {name: "Alice})-[]->(b:Person {name:Bob})`
 pattern will find all possible relationships between nodes with names Alice and Bob. Although SQL is
-suitable to express a variety of standard data analytics tasks, it is arguably not as
-suitable when it comes to expressing queries with recursive or many-to-many joins. Graph queries
+suitable to express queries for a variety of standard data analytics tasks, it is arguably not as
+suitable when it comes to expressing queries with recursive joins or those that describe complex
+patterns — they are expressed more naturally as paths or graph patterns. Graph queries
 in a well-designed GDBMS like Kùzu contain [specialized syntaxes](https://en.wikipedia.org/wiki/Kleene_star)
 and operators for these types of query workloads.
 
@@ -89,10 +90,11 @@ While the relational schema is useful for rapidly storing transactional data and
 aggregate queries, it's not as useful when it comes to answering questions about the relationships
 in the data. Some such questions are listed below:
 
-1. Who are the clients that made transactions between common merchants?
-2. Which city has the most merchant transactions?
-3. Which company has the most merchants?
-4. Which company has the most merchant transactions above X dollars?
+1. Who are the clients of Company X, i.e., clients who transacted with the merchants of Company X?
+1. Who are the clients who transacted with at least 2 separate merchants operating in City A?
+1. Which companies have merchants in City X, City Y **and** City Z (i.e., in all 3 cities)?
+1. What connections exist between Client A and Client B (maybe they transacted with the same
+merchant, or with merchants in the same city, or with merchants belonging to the same company)?
 
 With these questions in mind, we can proceed to sketch the following graph schema, which is a visual
 representation of a data model that considers how the concepts are connected in the real world.
@@ -115,7 +117,7 @@ The only difference is that Kùzu uses separate node and edge tables, which we'l
 create below.
 
 :::info Note
-As such, Kùzu can be viewed as a relational system that provides object-oriented
+As such, Kùzu can be viewed as a relational system that provides graph
 modeling capabilities over your tables, allowing you to express graph-based paths and patterns very
 efficiently in Cypher, the query language implemented by Kùzu.
 :::
@@ -218,8 +220,8 @@ CREATE REL TABLE LocatedIn(FROM Merchant TO City)
 CREATE REL TABLE BelongsTo(FROM Merchant TO Company)
 ```
 
-In the above code, only `TransactedWith` edges have metadata associated with them, namely the
-transaction amount and the timestamp. The other two edges don't have metadata and are simply
+In the above code, only `TransactedWith` edges have properties associated with them, namely the
+transaction amount and the timestamp. The other two edges don't have properties and are simply
 used to connect the nodes based on the values that match a primary key constraint.
 
 The data for the edges require minor transformations to the existing CSV files in which the first
@@ -315,79 +317,76 @@ We then run some simple queries to test that the data was loaded correctly. We c
 a standalone script using the client SDK of your choice, or fire up a [Kùzu CLI](https://kuzudb.com/docusaurus/getting-started/cli)
 shell and run some Cypher queries.
 
-The first query showcases specifically how Kùzu is beneficial in expressing query logic that
-requires traversing multiple edges. In this query, we find all clients that have transacted with
-at least one of the merchants with IDs 2 and 11.
+The first query finds all the clients who transacted with the merchants of "Starbucks".
 
 ```sql
-// Who are the clients that made transactions in at least one of the merchants with IDs 2 and 11?
-MATCH (m1:Merchant {merchant_id: 7})<-[:TransactedWith]-(a:Client)-[:TransactedWith]->(m2:Merchant {merchant_id: 11}),
-(b:Client)-[:TransactedWith]->(m3:Merchant)
-RETURN DISTINCT b.client_id AS id, b.name as name
+// Q1. Who are the clients that transacted with the merchants of "Starbucks"?
+MATCH (c:Client)-[:TransactedWith]->(:Merchant)-[:BelongsTo]->(co:Company)
+WHERE co.company = "Starbucks"
+RETURN DISTINCT c.client_id AS id, c.name AS name;
 ```
 
-This is a useful query in the following situation: say a marketing analyst wants to know which clients
-transacted with merchants in a specific location in two different merchant categories. In this case, merchants
-with IDs 7 and 11 belong to *Hilton Hotels & Resorts* and *Starbucks* respectively. The company,
-merchant and transaction information require multi-edge traversals (i.e., multiple joins) to
-answer this question, and the resulting Cypher query is quite intuitive.
+id | name
+:---: | :---:
+2 | Boris
+4 | Diana
+5  | Eve
 
-The result for query 1 looks correct, if you inspect the [raw data](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions/data).
+Query 2 traverses multiple paths to find clients who transacted with at least 2 separate merchants.
+
+```sql
+// Q2. Who are the clients who transacted with at least 2 separate merchants operating in Los Angeles?
+MATCH (c:Client)-[:TransactedWith]->(m1:Merchant)-[:LocatedIn]->(ci:City),
+      (c)-[:TransactedWith]->(m2:Merchant)-[:LocatedIn]->(ci)
+WHERE ci.city = "Los Angeles" AND m1.merchant_id <> m2.merchant_id
+RETURN DISTINCT c.client_id AS id, c.name as name;
+```
 
 id | name
 :---: | :---:
 3 | Cecil
-4 | Diana
-5  | Eve
 
-Query 2 traverses paths to obtain an aggregation count as follows.
+We can study multiple paths involving m-n joins as follows.
 
 ```sql
-// Which city has the most merchant transactions?
-MATCH (:Client)-[t:TransactedWith]->(m:Merchant)-[:LocatedIn]->(city:City)
-RETURN city.city as city, COUNT(t) AS numTransactions
-ORDER BY numTransactions DESC LIMIT 1;
+// Q3. Which companies have merchants in New York City, Boston **and** Los Angeles?
+MATCH (:City {city: "New York City"})<-[]-(m1:Merchant)-[]->(co:Company),
+      (:City {city: "Boston"})<-[]-(m2)-[]->(co),
+      (:City {city: "Los Angeles"})<-[]-(m3)-[]->(co)
+RETURN co.company AS company
 ```
 
-city | numTransactions
-:---: | :---:
-Boston | 4
+company |
+:---: |
+Verizon Wireless |
 
-We can answer questions at the company/merchant level:
+We can also perform recursive path traversal to see how many common connections exist between
+two clients.
 
 ```sql
-// Which company has the most merchants?
-MATCH (m:Merchant)-[:BelongsTo]->(co:Company)
-RETURN co.company AS company, COUNT(m) AS numMerchants
-ORDER BY numMerchants DESC LIMIT 1;
+// Q4. How many common connections (cities, merchants, companies) exist between Client IDs 4 and 5?
+MATCH (c1:Client)-[*1..2]->(common)<-[*1..2]-(c2:Client)
+WHERE c1.client_id = 4 AND c2.client_id = 5
+RETURN label(common) AS connectionType, COUNT(label(common)) AS count;
 ```
 
-company | numMerchants
+connectionType | count
 :---: | :---:
-Verizon Wireless | 3
+Merchant | 2
+City | 2
+Company | 2
 
-Looks good!
+The result above looks correct, if you inspect the
+[raw data](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions/data).
+Clients 4 and 5 (Diana and Eve) have both transacted in 2 cities, with 2 merchants belonging to
+2 companies.
 
-We can also perform path traversal with a filter as follows:
-
-```sql
-// Which company has the most merchant transactions above 100 dollars?
-MATCH (:Client)-[t:TransactedWith]-(:Merchant)-[:BelongsTo]->(co:Company)
-WHERE t.amount_usd > 100
-RETURN co.company AS company, COUNT(t) AS numTransactions
-ORDER BY numTransactions DESC LIMIT 1;
-```
-
-company | numTransactions
-:---: | :---:
-Hilton Hotels & Resorts | 1
-
-As shown above, we can express a variety of joins in Cypher with an intuitive syntax, in a way
-that's scalable and efficient for large graphs.
+As can be seen through these examples, we can express both recursive and many-to-many joins in
+Cypher with an intuitive syntax, in a way that's scalable and efficient for large graphs.
 
 ## Visualization
 
-Running Cypher queries in a shell editor is great during initial testing, but on compeltion, obtaining visual
+Running Cypher queries in a shell editor is great during initial testing, but on completion, obtaining visual
 feedback is very useful in refining the data model. In a recent blog post, we introduced
 [Kùzu Explorer](../2023-10-25-kuzuexplorer/index.md), a browser-based frontend that allows
 users to visualize their graph data and run queries interactively.
@@ -434,8 +433,8 @@ It's possible to customize the visual style of the graph by clicking on the `Set
 
 ## Conclusions
 
-The aim of this blog post was to show how to transform data that might exist in a typical relational
-system to a graph and load it into a Kùzu database. We also showed how to visualize the graph and
+The aim of this blog post is to show how to transform data that might exist in a typical relational
+system to a graph and load it into a Kùzu database. We also show how to visualize the graph and
 run some simple queries to test our data model.
 
 What's important to take away from this exercise is that using a graph database like Kùzu for the
