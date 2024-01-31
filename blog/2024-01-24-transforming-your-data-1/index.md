@@ -346,14 +346,14 @@ id | name
 :---: | :---:
 3 | Cecil
 
-We can study multiple paths involving m-n joins as follows.
+We can ask questions that involve finding multiple paths between nodes as follows.
 
 ```sql
 // Q3. Which companies have merchants in New York City, Boston **and** Los Angeles?
 MATCH (:City {city: "New York City"})<-[]-(m1:Merchant)-[]->(co:Company),
       (:City {city: "Boston"})<-[]-(m2)-[]->(co),
       (:City {city: "Los Angeles"})<-[]-(m3)-[]->(co)
-RETURN co.company AS company
+RETURN DISTINCT co.company AS company
 ```
 
 company |
@@ -376,13 +376,13 @@ Merchant | 2
 City | 2
 Company | 2
 
-The result above looks correct, if you inspect the
+You can verify that the results above are correct by inspecting the
 [raw data](https://github.com/kuzudb/graphdb-demo/tree/main/src/python/transactions/data).
 Clients 4 and 5 (Diana and Eve) have both transacted in 2 cities, with 2 merchants belonging to
 2 companies.
 
-As can be seen through these examples, we can express both recursive and many-to-many joins in
-Cypher with an intuitive syntax, in a way that's scalable and efficient for large graphs.
+As can be seen through these examples, we can express queries in Cypher that are naturally expressed
+as patterns and paths (possibly recursive ones), with an intuitive syntax.
 
 ## Visualization
 
