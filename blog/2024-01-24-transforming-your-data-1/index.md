@@ -346,7 +346,7 @@ id | name
 :---: | :---:
 3 | Cecil
 
-We can ask questions that involve finding multiple paths between nodes as follows.
+We can ask more such questions that involve finding multiple paths between nodes as follows.
 
 ```sql
 // Q3. Which companies have merchants in New York City, Boston **and** Los Angeles?
