@@ -1,6 +1,6 @@
 semih:
   name: Semih Salihoğlu
-  title: CEO of Kùzu Inc & Associate Prof. at UWaterloo
+  title: CEO of Kùzu Inc. & Associate Prof. at UWaterloo
   url: https://cs.uwaterloo.ca/~ssalihog/
   image_url: https://kuzudb.com/img/blog/team.jpg
 
@@ -23,6 +23,12 @@ ziyi:
   name: Ziyi Chen
   url: https://github.com/acquamarin
   image_url: https://kuzudb.com/img/blog/ziyi.jpg
+
+prashanth:
+  name: Prashanth Rao
+  title: AI Engineer at Kùzu Inc.
+  url: https://github.com/prrao87
+  image_url: https://kuzudb.com/img/blog/prashanth.png
 
 team:
   name: Kùzu Team
