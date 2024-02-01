@@ -33,6 +33,8 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  margin-bottom: 1em;
+  background-color: #fff;
 }
 
 a.navbar__link.navbar__link--social{

@@ -71,6 +71,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
+      image: "https://kuzudb.com/img/logo-u-with-orange-tick.jpg",
       navbar: {
         logo: {
           alt: "Kùzu",
@@ -99,8 +100,8 @@ const config = {
             type: "html",
             position: "right",
             value: `
-            <a href="https://join.slack.com/t/kuzudb/shared_invite/zt-1w0thj6s7-0bLaU8Sb~4fDMKJ~oejG_g" class="navbar__link navbar__link--social">
-              <i class="fa-brands fa-slack fa-xl"></i>
+            <a href="https://discord.gg/jw7xN2ZhJB" class="navbar__link navbar__link--social">
+              <i class="fa-brands fa-discord fa-xl"></i>
             </a>
             `,
           },

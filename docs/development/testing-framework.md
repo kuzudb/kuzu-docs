@@ -4,7 +4,6 @@ sidebar_position: 2
 ---
 
 # Testing Framework
-![](https://codecov.io/github/kuzudb/kuzu/branch/master/graph/badge.svg?token=N1AT6H79LM")  
 
 ## Introduction
 
