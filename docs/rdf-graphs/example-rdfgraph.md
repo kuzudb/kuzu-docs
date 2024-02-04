@@ -26,9 +26,8 @@ CREATE RDFGraph UniKG;
 We will use the following 14 triples stored in an `uni.ttl` Turtle file:
 ```
 @prefix kz: <http://kuzu.io/rdf-ex#> .
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 kz:Waterloo a kz:City ;
 	    kz:name "Waterloo" ;

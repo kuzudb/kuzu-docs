@@ -349,23 +349,31 @@ Here is an example of how you can create a new triple in the UniKG_rt relationsh
 ```
 WITH "http://kuzu.io/rdf-ex#" as kz, "http://www.w3.org/1999/02/22-rdf-syntax-ns#" as rdf
 MATCH (s:UniKG_r {iri: kz+"Nour"})
-CREATE (s)-[p:UniKG_rt {iri: rdf + "type"}]->(o:UniKG_r {iri: kz + "student"});
-RETURN s.iri, p.iri, o.iri;
+CREATE (s)-[p1:UniKG_rt {iri: rdf + "type"}]->(o1:UniKG_r {iri: kz + "student"})
+CREATE (s)-[p2:UniKG_lt {iri: kz + "lastName"}]->(o2:UniKG_l {val: "Salah"});
 
+WITH "http://kuzu.io/rdf-ex#" as kz 
+MATCH (s:UniKG_r {iri: kz+"Nour"})-[p:UniKG]->(o) 
+RETURN s.iri, p.iri, o.iri, o.val;
 Output:
-----------------------------------------------------------------------------------------------------------------
-| s.iri                      | p.iri                                           | o.iri                         |
-----------------------------------------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#Nour | http://www.w3.org/1999/02/22-rdf-syntax-ns#type | http://kuzu.io/rdf-ex#student |
-----------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+| s.iri                      | p.iri                                           | o.iri                         | o.val |
+------------------------------------------------------------------------------------------------------------------------
+| http://kuzu.io/rdf-ex#Nour | http://kuzu.io/rdf-ex#lastName                  |                               | Salah |
+------------------------------------------------------------------------------------------------------------------------
+| http://kuzu.io/rdf-ex#Nour | http://www.w3.org/1999/02/22-rdf-syntax-ns#type | http://kuzu.io/rdf-ex#student |       |
+------------------------------------------------------------------------------------------------------------------------
 ```
+Note that the second CREATE statement creates a new `UniKG_r` resource node with IRI `http://kuzu.io/rdf-ex#lastName`,
+which was not present in the RDFGraph before. Recall that every unique IRI that appears in an RDFGraph, whether as a subject,
+predicate or object, gets a corresponding node in the `UniKG_r` node table.
 
 Here is an example of how you can modify the value of a literal record in the UniKG_l node table:
 ```
 MATCH (r:UniKG_r {iri:"http://kuzu.io/rdf-ex#Waterloo"})-[p:UniKG_lt]->(o) 
 WHERE p.iri = "http://kuzu.io/rdf-ex#population" 
 SET o.val=cast(60000, "int64") 
-RETURN r.iri, p.iri, o.val
+RETURN r.iri, p.iri, o.val;
 
 Output:
 -----------------------------------------------------------------------------

@@ -56,6 +56,27 @@ Please refer to the [COPY FROM MULTIPLE CSV Files](https://kuzudb.com/docusaurus
 #### Full IRIs, Prefixes, and Relative IRIs
 TODO(Semih): Complete this section.
 
+#### Malformed Triples
+If your Turtle file contains malformed triples, e.g., if the subject, predicate, or object is not a valid IRI,
+Kùzu will skip the rest of "chunk" of triples after the first malformed triple. For example:
+```
+@prefix ex: <http://example.org/#> .
+@prefix rel: <http://www.perceive.net/schemas/relationship/> .
+
+ex:spiderman
+    rel:enemyOf ex:green-goblin ;
+    <foo<bar> _:batman ;
+    <foobar> ex:superman .
+    
+ex:green-goblin
+    rel:enemyOf ex:spiderman .
+```
+In this example the `<foo<bar>` is an invalid IRI, so Kùzu's Turtle parser will 
+parse the first triple <`ex:spiderman`, `rel:enemyOf`, `ex:green-goblin`> that comes before it 
+but skips the rest of the chunk of triples about `ex:spiderman`. 
+The second chunk, which contains the single triple <`ex:green-goblin`, `rel:enemyOf`, `ex:spiderman`> 
+will also be inserted. 
+
 ### Blank Nodes
 Blank nodes in Turtle files appear in the file with the `_:` prefix. For example,
 the above example contains 2 blank nodes: "_:super-character-1" and "_:super-character-2". When
