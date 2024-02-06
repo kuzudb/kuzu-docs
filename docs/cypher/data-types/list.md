@@ -4,19 +4,30 @@ sidebar_position: 4
 ---
 
 # LIST
-Kùzu supports two `LIST` data types: variable-size list `VAR-LIST` and fixed-size `FIXED-LIST`.
+Kùzu supports two LIST data types: variable-size list `VAR-LIST` and fixed-size `FIXED-LIST.`
+`LIST` data types include values of a single data type. The data type of values within a `LIST` is declared before a set of brackets in DDL.
+For example, `STRING[]` declares a `(VAR-)LIST` of STRING values.
 
-A `VAR-LIST` type can contain arbitrary number of values with the same type.
+A `VAR-LIST` type can contain arbitrary number of values with the same type. VAR-LISTS can be of any
+type Kùzu supports including nested and complex type. For example, `STRING[][]` is
+`VAR-LIST` of `VAR-LIST` of STRING values. Similarly, `MAP(STRING, STRING)[]`
+is a `VAR-LIST` of `MAP(STRING, STRING)` values.
 
-A `FIXED-LIST` type can contain fixed number of values with the same numerical type.
+A `FIXED-LIST` type can contain fixed number of values with the same numeric type. For example,
+`INT64[5]` is a `FIXED-LIST` of 5 INT64 values.  FIXED-LIST is an **experimental** feature designed
+for Kùzu's [Pytorch Geometric integration](https://kuzudb.com/docusaurus/getting-started/python/#colab-notebooks). 
+Kùzu only supports bulk loading `FIXED-LIST` data through `COPY` statements from files (e.g., CSV), 
+reading FIXED_LIST data type, and casting values, e.g., strings, to `FIXED-LIST` type.
 
 
-| Data Type | DDL definition
+The below table summarizes VAR-LIST and FIXED-LIST data types and how to define them in DDL     statements.
+
+| Data Type | DDL Definition
 | --- | --- | 
 | VAR-LIST | INT64[] |
 | FIXED-LIST | INT64[5] |
 
-**Note**: FIXED-LIST is an **experimental** feature. Kùzu only supports bulk loading (i.e. `COPY` statement) and reading for FIXED_LIST data type.
+Below are several examples of functions and operations on `VAR-LIST` data type:
 
 ### `VAR-LIST` creation
 ```
@@ -44,7 +55,7 @@ Output:
 -------------
 ```
 
-### Unwind `VAR-LIST`
+### UNWIND'ing `VAR-LIST`
 ```
 UNWIND [[1,2], [3], [4, 5]] AS x 
 UNWIND x as y 
