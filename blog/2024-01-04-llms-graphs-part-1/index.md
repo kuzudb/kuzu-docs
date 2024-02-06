@@ -30,6 +30,8 @@ This post covers the topic of retrieval augmented generation (RAG) using structu
 I will cover RAG using unstructured data, where
 I will also mention a few ways people are building RAG-based Q&A systems that use both structured and unstructured data.
 
+<!-- truncate -->
+
 :::tip TL;DR: The key takeaways from this post are:
 - **RAG overview**: RAG is a technique to fill the knowledge gap of LLMs using private data. RAG systems
   use  private structured records stored in a database and/or unstructured data in text files. 
