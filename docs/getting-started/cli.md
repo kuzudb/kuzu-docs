@@ -16,6 +16,8 @@ If you input `test` as your `<db_path>`, you should see the following prompt:
 kuzu> 
 ```
 
+To exit the shell, you can type `:quit` and press enter. All commands can be found by typing `:help` and pressing enter.
+
 :::info For Mac OS users
 In MacOS, when you download the CLI and try to run it the first time, you'll likely see the following error message:
 

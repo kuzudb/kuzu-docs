@@ -11,12 +11,8 @@ description: Through CLI, you can issue Cypher queries or call shell commands.
     - [`:clear`](#clear)
     - [`:quit`](#quit)
     - [`:thread [num_thread]`](#thread-num_thread)
-    - [`:loggin_level [logging_level]`](#loggin_level-logging_level)
+    - [`:logging_level [logging_level]`](#logging_level-logging_level)
     - [`:timeout`](#timeout)
-    - [`:list_nodes`](#list_nodes)
-    - [`:list_rels`](#list_rels)
-    - [`:show_node [node_name]`](#show_node-node_name)
-    - [`:show_rel [rel_name]`](#show_rel-rel_name)
     - [Interrupt](#interrupt)
     - [Non-interactive usage](#non-interactive-usage)
   
@@ -41,62 +37,22 @@ kuzu> :help
 ```
 
 ### `:clear`
-Clear shell.
+Clear shell. Alternatively, you can use `Ctrl + L` to clear the shell.
 
 ### `:quit`
-Exit from shell.
+Exit from shell. Alternatively, you can use `Ctrl + D` to exit the shell.
 
 ### `:thread [num_thread]`
 Set maximum number of threads to execute query in current connection.
 
-### `:loggin_level [logging_level]`
+### `:logging_level [logging_level]`
 Set logging level, available options: debug, info, err
 
 ### `:timeout`
 Set query timeout in ms.
 
-### `:list_nodes`
-List all node tables.
-
-```
-kuzu> :list_nodes
-Node tables:
-	City
-	User
-```
-
-### `:list_rels`
-List all rel tables.
-
-```
-kuzu> :list_rels
-Rel tables:
-	Follows
-	LivesIn
-```
-
-### `:show_node [node_name]` 
-Show node schema for [node_name]
-
-```
-kuzu> :show_node User
-User properties:
-	name STRING(PRIMARY KEY)
-	age INT64
-```
-
-### `:show_rel [rel_name]` 
-Show rel schema for [rel_name]
-
-```
-kuzu> :show_rel Follows
-Follows src node: User
-Follows dst node: User
-Follows properties:
-	since INT64
-```
 ### Interrupt
-To interrupt a running query, use `ctrl + C` in CLI. Note: currently we don't support interrupting `COPY` statement.
+To interrupt a running query, use `Ctrl + C` in CLI. Note: We currently don't support interrupting `COPY` statement.
 
 ### Non-interactive usage
 To read and process a file in non-interactive mode, pipe the file content to CLI.
