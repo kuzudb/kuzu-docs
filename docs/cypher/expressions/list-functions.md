@@ -7,7 +7,7 @@ description: List functions are used to create and manipulate lists.
 | Function | Description | Example | Result |
 | ----------- | --------------- | ----------- | ----------- |
 | list_creation(arg1, arg2, arg3..) | creates a LIST containing the argument values | list_creation(1,2,3,4,5,56,2) | [1,2,3,4,5,56,2] |
-| len(list) | returns the length of the list | len([1,2,3]) | 3 |
+| size(list) | returns the size of the list | size([1,2,3]) | 3 |
 | list_extract(list, index) | extracts the indexth (1-based) value from the list | list_extract([1,2,3], 2) | 2 |
 | list_element(list, index) | alias of list_extract | list_element([7,234,3], 1) | 7 |
 | list_concat(list1, list2) | concatenates two lists | list_concat([7,234,3], [1,3]) | [7,234,3,1,3] |

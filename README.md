@@ -1,18 +1,19 @@
 # Kùzu Documentations
 
 This documentation is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+The commands below for installation, local development, and build should be run
+from the `kuzu-docs` directory after cloning.
+
 
 ### Requirements
 Node.js 16.14 or above.
 
 ### Installation
-
 ```
 $ npm i
 ```
 
 ### Local Development
-
 ```
 $ npm start
 ```
@@ -20,7 +21,6 @@ $ npm start
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
 ### Build
-
 ```
 $ npm build
 ```
