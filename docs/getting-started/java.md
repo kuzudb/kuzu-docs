@@ -2,9 +2,11 @@
 title: Java
 sidebar_position: 6
 ---
+[Detailed Java API documentation can be found here](https://kuzudb.com/api-docs/java). This page is a brief guide
+on how to get started with the Kùzu Java API.
 
 The Kùzu Java API is packaged and distributed as a jar file. 
-You can manually download the latest version [here](https://github.com/kuzudb/kuzu/releases/latest). The detailed docs for Java API can be [found here](https://kuzudb.com/api-docs/java).
+You can manually download the latest version [here](https://github.com/kuzudb/kuzu/releases/latest).
 After the jar file is downloaded and placed into the project directory, it can be referenced in classpath manually with the `-cp` option.
 
 - Setup: In this example, we assume the jar file and the Java code reside in the following directory structure:
@@ -19,7 +21,7 @@ After the jar file is downloaded and placed into the project directory, it can b
 |   |-- resources/kuzu_java.jar
 ```
 
-- Below is a Main example class demonstrating typical usage:
+Below is a Main example class demonstrating typical usage:
 ```java
 package org.example;
 import com.kuzudb.*;

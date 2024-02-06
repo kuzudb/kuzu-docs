@@ -3,11 +3,14 @@ title: C++
 sidebar_position: 2
 ---
 
+[Detailed C++ API documentation can be found here](https://kuzudb.com/api-docs/cpp/annotated.html). This page is a brief guide 
+on how to get started with the Kùzu C++ API.
+
 The Kùzu C++ API is distributed as so/dylib/dll+lib library files along with a header file (`kuzu.hpp`). 
 The C++ API can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest). 
 Once you've downloaded and extracted the C++ API into a directory, it's ready to use without any additional installation. Just need to specify the library search path for the linker.
 Below is a brief guide on how to get started.
-Details of the C++ API is [here](https://kuzudb.com/api-docs/cpp/annotated.html).
+
 - Setup:
 In this example, we assume that the so/dylib/dll+lib, the header file, the CSV files, and the cpp code file is under the same directory:
 

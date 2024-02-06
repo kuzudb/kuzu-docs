@@ -3,14 +3,17 @@ title: Rust
 sidebar_position: 5
 ---
 
+[Detailed Rust API documentation can be found here](https://docs.rs/kuzu/latest/kuzu/). This page is a brief guide
+on how to get started with the Kùzu Rust API.
+
 The rust API can be used by adding the kuzu crate to your dependencies in `Cargo.toml`:
 ```toml
 [dependencies]
 kuzu = "0.0.9"
 ```
-Below is an example to get you started. Full documentation can be found [here](https://docs.rs/kuzu/latest/kuzu/).
 
 The kuzu crate will by default build and statically link kuzu's C++ library from source. You can also link against the dynamic release libraries (see [the docs](https://docs.rs/kuzu/latest/kuzu/#building) for details).
+Here is an example:
 
 ```rust
 use kuzu::{Database, Connection, Error, SystemConfig};
