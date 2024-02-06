@@ -4,4 +4,4 @@ sidebar_position: 6
 description: ""
 ---
 
-The Java API docs can be [found here](https://kuzudb.com/api-docs/java).
+[Detailed Java API documentation can be found here](https://kuzudb.com/api-docs/java).

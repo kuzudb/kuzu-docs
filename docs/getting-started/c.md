@@ -2,9 +2,11 @@
 title: C
 sidebar_position: 3
 ---
+[Detailed C API documentation can be found here](https://kuzudb.com/api-docs/c/kuzu_8h.html). This page is a brief guide
+on how to get started with the Kùzu C API.
 
-The Kùzu C API shares the same so/dylib/dll+lib library files with the C++ API and can be used by including the C header file (`kuzu.h`). The C API can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest). The detailed docs for C API can be [found here](https://kuzudb.com/api-docs/c/kuzu_8h.html).
-Here is a brief guide on how to get started.
+The Kùzu C API shares the same so/dylib/dll+lib library files with the C++ API and can be used by including the C header file (`kuzu.h`). The C API can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest).
+
 - Setup:
 In this example, we assume that the so/dylib, the header file, the CSV files, and the C code file is under the same directory:
 

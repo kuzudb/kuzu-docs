@@ -12,7 +12,7 @@ set of triples about students and faculty at universities, which we call `UniKG`
 <img src={RDFRunningExample1} style={{width: 800}} />
 
 The DDL statements to define the RDFGraph, the [Turtle (ttl) file](https://www.w3.org/TR/turtle/) 
-containing the triples and the data import (`COPY FROM`) commands
+containing the triples, and the data import (`COPY FROM`) commands
 are given below. You can copy-paste and type these commands in the [Kùzu command line interface](https://kuzudb.com/docusaurus/getting-started/cli) 
 or [KùzuExplorer](https://kuzudb.com/docusaurus/kuzuexplorer/) to replicate
 the examples in this documentation locally.
@@ -23,7 +23,7 @@ the examples in this documentation locally.
 CREATE RDFGraph UniKG;
 ```
 
-We will use the following 14 triples stored in an `uni.ttl` Turtle file:
+We will use the following 14 triples stored in a `uni.ttl` Turtle file:
 ```
 @prefix kz: <http://kuzu.io/rdf-ex#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
