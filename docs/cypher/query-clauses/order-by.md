@@ -6,18 +6,13 @@ description: ORDER BY is the clause where you define the order in which you want
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copy pasting the commands on that page. 
-
 # ORDER BY
 Order by is the clause where you define the order in which you want the query results to be displayed 
 or sort a set of tuples you computed up to a point in your query.  Kùzu currently supports two 
 sorting orders: `ASC`, `DESC`. By default if no sorting order is specified, Kùzu sorts 
 rows in ascending order and NULLs are placed first. 
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 ## Basic Example
 The following query returns the user's name and age ordered by user's age using the default ordering(asc order):

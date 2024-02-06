@@ -7,14 +7,11 @@ sidebar_position: 2
 import RunningExample from '../running-example.png';
 
 # Database
-We will use the database, whose schema and data import commands are given [here](../query-clauses/example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copy pasting the commands on that page. 
 
 # SET 
-`SET` is similar to SQL's SET clause, and allows updating properties of node or relationship records to new values (possibly NULL).
+`SET` is similar to that in SQL. It allows updating properties of node or relationship records (possibly NULL).
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 ## Set Node Properties
 

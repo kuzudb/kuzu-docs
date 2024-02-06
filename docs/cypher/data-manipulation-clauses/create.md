@@ -6,14 +6,11 @@ sidebar_position: 1
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](../query-clauses/example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
 # CREATE
 `CREATE` is similar to the `INSERT` clause of SQL and lets you insert records into your node and relationship tables. We describe the generic semantics of the 
-`CREATE` clause momentarily [below](#generic-semantics). We first start with some simple examples. 
+`CREATE` clause momentarily [below](#generic-semantics). We first start with some simple examples.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 ## Insert Nodes
 The following query inserts a single (Alice, 35) node record into the User node table:

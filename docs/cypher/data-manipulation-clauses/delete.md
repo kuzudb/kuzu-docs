@@ -6,15 +6,10 @@ sidebar_position: 3
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](../query-clauses/example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copying pasting the commands on that page. 
-
 # DELETE
 `DELETE` clause deletes node or relationship records from the table.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 ## Delete Nodes
 

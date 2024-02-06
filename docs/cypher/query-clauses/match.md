@@ -6,13 +6,6 @@ description: MATCH is the clause where you define a graph pattern", i.e., a join
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copy pasting the commands on that page. 
-
 # MATCH
 MATCH is the clause where you define a "graph pattern", i.e., a join of node or relationship records,
 to find in the database.[^1]. There are several different ways to match patterns and we go through them
@@ -24,6 +17,8 @@ are bound to variables, which can be referenced in other clauses (e.g., WHERE or
 openCypher allows you to omit these variables, if you do not need to reference them.
 - Node/Rel table names in Kùzu are case sensitive. So you need to specify the labels of nodes/rels
 using the same letter cases you used in your node/rel table schema definitions. 
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 ## Match Nodes
 
@@ -393,7 +388,6 @@ Output:
 | Zhang   | 1            |
 --------------------------
 ```
-Similarl
 
 Our filter grammar follows [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms) using list comprehension. The first variable represents intermedaite relationships and the second one represents intermediate nodes. 
 
@@ -403,13 +397,17 @@ relationship. You can define the projection list of intermediate nodes and rels 
 the end of the variable length pattern. The first `{}` is used for projecting relationship properties and the second `{}` for 
 node properties. Currently, Kùzu only supports directly projecting properties and not of expresions using
 the properties. Projecting properties of intermedaite nodes and relashionships can improve both performance and memory footprint.
-Here is an example that projects only the `since` property of the intermediate relationship and the `name` property of the 
+
+Below is an example that projects only the `since` property of the intermediate relationship and the `name` property of the 
 intermediate nodes that will bind to the variable length relationship pattern of `e`. Readers can assume
 that there are other properties than `since` on the `Follow` relationship table for our purposes (in our running example, the `User` nodes already have a second property `age`, which will be removed from the output as shown below).
 
 ```
 MATCH (a:User)-[e:Follows*1..2 (r, n | WHERE r.since > 2020 | {r.since}, {n.name})]->(b:User) 
 RETURN nodes(e), rels(e);
+```
+Returns:
+```
 ------------------------------------------------------------------------------------------------------------------------------
 | NODES(e)                                | RELS(e)                                                                          |
 ------------------------------------------------------------------------------------------------------------------------------

@@ -6,16 +6,13 @@ sidebar_position: 4
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](../query-clauses/example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
 # MERGE
 `MERGE` clause tries to match the query pattern in database or, if not present, create the pattern in database. `MERGE <pattern>` can be interrepted as `If MATCH <pattern> then RETURN <pattern> ELSE CREATE <pattern>`. Note that there is no notion of partially matching of the pattern
 and creating the remaining parts. That is, either the whole pattern is matched or the whole pattern is created.
 
 Similar to `INSERT ON CONFLICT` in SQL, `MERGE` clause comes with `ON CREATE` and `ON MATCH` set operation allowing users to specify additional update logic if the pattern is (not) found.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 ## Merge Nodes
 
