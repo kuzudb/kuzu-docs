@@ -16,18 +16,16 @@ is a `VAR-LIST` of `MAP(STRING, STRING)` values.
 A `FIXED-LIST` type can contain fixed number of values with the same numeric type. For example,
 `INT64[5]` is a `FIXED-LIST` of 5 INT64 values.  FIXED-LIST is an **experimental** feature designed
 for Kùzu's [Pytorch Geometric integration](https://kuzudb.com/docusaurus/getting-started/python/#colab-notebooks). 
-Kùzu only supports bulk loading `FIXED-LIST` data through `COPY` statements from files (e.g., CSV), 
-reading FIXED_LIST data type, and casting values, e.g., strings, to `FIXED-LIST` type.
 
+The below table summarizes VAR-LIST and FIXED-LIST data types and how to define them in DDL statements.
 
-The below table summarizes VAR-LIST and FIXED-LIST data types and how to define them in DDL     statements.
-
-| Data Type | DDL Definition
+| Data Type | DDL Definition |
 | --- | --- | 
 | VAR-LIST | INT64[] |
 | FIXED-LIST | INT64[5] |
 
-Below are several examples of functions and operations on `VAR-LIST` data type:
+Kùzu does not support operations on `FIXED-LIST` values (except casting values to `FIXED-LIST`).
+Instead, Kùzu support several operations on VAR-LIST, which we cover below through several examples:
 
 ### `VAR-LIST` creation
 ```
