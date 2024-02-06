@@ -2,7 +2,7 @@
 slug: llms-graphs-part-1
 authors: 
   - semih
-tags: [use-case]
+tags: [llms]
 ---
 
 import QAOverEnterpriseData from './qa-over-enterprise-data.png';
