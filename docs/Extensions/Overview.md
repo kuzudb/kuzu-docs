@@ -1,3 +1,8 @@
+---
+title: Overview
+sidebar_position: 0
+---
+
 # Overview
 Kùzu provides a flexible and robust extension framework designed to allow user extend database functionalities(e.g. datatypes, functions and filesystem) by dynamically loading extensions.
 
