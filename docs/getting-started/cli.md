@@ -8,7 +8,7 @@ The Kùzu Command Line Interface (CLI) is a unified, dependency-free executable,
 The CLI can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest) (search for `Assets` on the page and download the correct `kuzu_cli-xxx.zip` file for your platform). After the CLI is downloaded and extracted into a directory, you can navigate the directory via your terminal, and set it to have execute permissions with `chmod +x kuzu`.
 
 ## Running the CLI
-You are now ready to run the executable using `./kuzu <db_path>`, where `<db_path>` is the directory for the database files. This path can either point to an existing database or a yet-to-be-created directory, in which case Kùzu will automatically create the directory and initialize an empty database for you.
+You are now ready to run the executable using `./kuzu <db_path>`, where `<db_path>` is the directory for the database files. This path can point to an existing database or a yet-to-be-created directory, in which case Kùzu will automatically create the directory and initialize an empty database for you.
 If you input `test` as your `<db_path>`, you should see the following prompt:
 
 ```
@@ -16,7 +16,7 @@ If you input `test` as your `<db_path>`, you should see the following prompt:
 kuzu> 
 ```
 
-To exit the shell, you can type `:quit` and press enter. All commands can be found by typing `:help` and pressing enter.
+To exit the shell, you can type `:quit` and press enter. A list of available shell commands can be found by typing `:help` and pressing enter.
 
 :::info For Mac OS users
 In MacOS, when you download the CLI and try to run it the first time, you'll likely see the following error message:
@@ -26,7 +26,7 @@ In MacOS, when you download the CLI and try to run it the first time, you'll lik
 macOS cannot verify that this app is free from malware.
 ```
 
-To fix this, you need to give explicit permissions to Mac OS to run the CLI binary.
+To fix this, you need to give explicit permissions to MacOS to run the CLI binary.
 Navigate to **System Settings > Privacy & Security**. Next, depending on your MacOS version, you have to either go 
 to the **General** or the **Security** section and you will see a warning: `"kuzu" was blocked from use because it is not from an
 identified developer`. Next to this warning will be an **Allow Anyway** button. Click this button to allow the CLI binary to run.
@@ -35,9 +35,10 @@ identified developer`. Next to this warning will be an **Allow Anyway** button. 
 
 
 Upon launching the CLI, you can enter a Cypher query and press enter to execute it. The instructions below outline how to load nodes and rels from CSV files and how to run a Cypher query:
-- Create the schema:
 
-```
+## Create a schema
+
+```sql
 kuzu> CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name));
 
 -------------------------------------
@@ -51,9 +52,11 @@ kuzu> CREATE REL TABLE Follows(FROM User TO User, since INT64);
 ---------------------------------------
 ```
 
-- Load data (be sure to replace `"user.csv"` with the full path to your csv file and use quotation marks around the path):
+## Load data
 
-```
+Be sure enclose the path to your input file with quotation marks to avoid errors.
+
+```bash
 kuzu> COPY User FROM "user.csv";
 
 ---------------------------------------------------------
@@ -67,10 +70,19 @@ kuzu> COPY Follows FROM "follows.csv";
 ----------------------------------------------------------
 ```
 
-- Execute a simple query:
+## Execute Cypher query
+
+Multi-line queries are allowed in the CLI shell. Kùzu will continue parsing the query until it
+encounters the semicolon `;` that denotes the end of the query.
+
+```sql
+kuzu> MATCH (a:User)-[f:Follows]->(b:User)
+      RETURN a.name, b.name, f.since;
+```
+
+Executing the query returns a table of results in the shell that looks something like this:
 
 ```
-kuzu> MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, b.name, f.since;
 >> Number of output tuples: 4
 
 -------------------------------
