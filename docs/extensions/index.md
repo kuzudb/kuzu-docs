@@ -13,7 +13,7 @@ indices.
 Extensions expose several internal interfaces of Kùzu, such as FileSystem, that can have multiple implementations.
 Extensions are implementations of these interfaces that can be loaded dynamically at runtime.
 *Official extensions* are implementations by the Kùzu team. These are hosted in our [official
-extensiosn repo](https://github.com/kuzudb/extension).
+extensions repo](https://github.com/kuzudb/extension).
 Third-party developers can also develop their own extensions. However, we do not recommend this yet
 until we have more stable APIs. That is why are currently not providing detailed documentation on how to develop
 your own extensions. For now, please contact us directly over email or in Discord if you want to develop your own extension.
