@@ -5,26 +5,27 @@ sidebar_position: 1
 
 # httpfs Extension
 
-The `httpfs` extension extends Kùzu filesystem by allowing reading from/writing to files hosted on
-remote file systems. It only supports reading files over plain HTTP(S), but when using object storage
-via the S3 API, the extension supports reading, writing and globbing files.
+The `httpfs` extension extends Kùzu file system by allowing reading from/writing to files hosted on
+remote file systems. Over plain HTTP(S) the extension only supports reading files.
+When using object storage via the S3 API, the extension supports reading, writing and globbing files.
 
 # Usage
 
 `httpfs` is an official extension developed and maintained by Kùzu.
 It can be installed and loaded using the following commands:
 
-```sql
+```
 INSTALL httpfs;
 LOAD httpfs;
 ```
 
-## HTTP(S) filesystem
+## HTTP(S) file system
 `httpfs` allows users to read from a file hosted on a http(s) server in the same way as from a local file.
 Example:
 
 ```
-LOAD FROM "https://raw.githubusercontent.com/kuzudb/extension/main/dataset/test/city.csv" return *;
+LOAD FROM "https://raw.githubusercontent.com/kuzudb/extension/main/dataset/test/city.csv" 
+RETURN *;
 ```
 
 Result:
@@ -35,10 +36,10 @@ Kitchener|200000
 Guelph|75000
 ```
 
-## S3 filesystem
+## S3 file system
 The extension also allows users to read/write/glob files hosted on object storage servers using the S3 API.
 
-## Configuration
+### S3 file system configuration
 Before reading and writing from S3, users have to configure using the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
 
 Supported options:
@@ -66,7 +67,8 @@ Supported options:
 ## Reading from S3:
 Reading from S3 is as simple as reading from regular files:
 ```
-load from 's3://kuzu-test/follows.parquet' return *;
+LOAD FROM 's3://kuzu-test/follows.parquet'
+RETURN *;
 ```
 
 ## Glob
@@ -74,7 +76,7 @@ load from 's3://kuzu-test/follows.parquet' return *;
 Globbing is implemented using the [ListObjectV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html)
 API, and allows the user to glob files as they would in their local filesystem.
 
-```sql
+```
 CREATE NODE TABLE tableOfTypes (
     id INT64,
     int64Column INT64,
@@ -94,7 +96,7 @@ COPY tableOfTypes FROM "s3://kuzu-dataset-us/glob-test/types_50k_*.parquet"
 
 Writing to S3 uses the AWS [multipart upload API](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html).
 
-```sql
+```
 COPY (
     MATCH (p:Location) RETURN p.*
 ) TO 's3://kuzu-dataset-us/output/location.parquet'
