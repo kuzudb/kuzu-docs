@@ -7,7 +7,9 @@ import RDFRunningExample1 from './rdf-running-example.png';
 
 The examples on this page use the below database, whose schema and data import commands are given [here](example-rdfgraph):
 
+<div class="img-center">
 <img src={RDFRunningExample1} style={{width: 800}} />
+</div>
 
 # RDFGraphs: Creating, Dropping, and Importing Data 
 
@@ -35,28 +37,28 @@ Note that you cannot alter RDFGraphs. You can only create or drop them.
 
 ## RDFGraphs Mapping of Triples to Property Graph Tables
 
-Once you have imported your triples, you can query the triples with Kùzu's query language Cypher. 
-Cypher however is not a query language for RDF. It assumes an underlying property graph data model. 
+Once you have imported your triples, you can query the triples with Cypher, Kùzu's query language. 
+However, Cypher is not a query language that was designed for RDF. It assumes an underlying property graph data model. 
 When you create an RDFGraph, Kùzu internally creates 2 node and 2 relationship tables.
-When you then ingest your triples using `COPY FROM` command, Kùzu maps the data in these triples into these
+When you then ingest your triples using the `COPY FROM` command, Kùzu maps the data in these triples into these
 4 tables. That is, RDFGraphs are a virtual layer that wraps and gives a common name to these 4 tables.
 To query your triples with Cypher, it is important to first understand this mapping.
 The specifics of the mapping are as follows:
-1. **Resources Node Table** — *UniKG_r(iri STRING, PRIMARY KEY (iri))*: Stores the [Resources](rdf-basics#resources-and-iris) (hence the `_r` suffix) in the triples. 
+1. **Resources Node Table** — `UniKG_r(iri STRING, PRIMARY KEY (iri))`: Stores the [Resources](rdf-basics#resources-and-iris) (hence the `_r` suffix) in the triples. 
    Each unique IRI that appears in the subject, predicate, or object of triples is mapped to a separate `UniKG_r` node. 
    Note that even IRIs that appear only as predicates and never as objects or subjects in any triple are mapped to a `UniKG_r` resource node (e.g., 
    `rdf:type` in the example database). Resource nodes have a 
    single property, `iri`, which stores the IRI of the resource as a string.
 
-2. **Literals Node Table** — *UniKG_l(id SERIAL, val VARIANT, PRIMARY KEY (id))*: Stores the [Literals](rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples. 
+2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, PRIMARY KEY (id))`: Stores the [Literals](rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples. 
    Each unique literal that appears in the triples is mapped to a separate `UniKG_l` node. Literals have a 
    single property, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant)
    There is a second `id` property of type [SERIAL](../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table. 
 
-3. **Resource-to-Resource Triples Relationship Table** — *UniKG_rt(FROM UniKG_r, TO UniKG_r, iri STRING)*: Stores the triples between UniKG_r resources and 
+3. **Resource-to-Resource Triples Relationship Table** — `UniKG_rt(FROM UniKG_r, TO UniKG_r, iri STRING)`: Stores the triples between UniKG_r resources and 
    UniKG_r resources. `_rt` suffix stands for "**r**esource **t**riples", i.e., triples whose objects are resources. 
    The `FROM` and `TO` columns store the subject and object resources in the triple. The `iri` property stores the IRI of the predicate of the triple.
-4. **Resource-to-Literal Triples Relationship Table** — *UniKG_lt(FROM UniKG_r, TO UniKG_l, iri STRING)*: Stores the triples between UniKG_r resources and
+4. **Resource-to-Literal Triples Relationship Table** — `UniKG_lt(FROM UniKG_r, TO UniKG_l, iri STRING)`: Stores the triples between UniKG_r resources and
    UniKG_l literals. `_lt` suffix stands for "**l**iteral **t**riples", i.e., triples whose objects are literals.
    The `FROM` and `TO` columns store the subject resource and the object literal in the triple. The `iri` property stores the IRI of the predicate of the triple.
 
@@ -121,13 +123,14 @@ The contents of these mapped tables are shown below:
 </td>
 
 </tr> </table>
-For example, the (0, rdf:type, 2) tuple in the UniKG_rt table corresponds to the (kz:Waterloo, rdf:type, kz:city) triple,
-while the (0, kz:population, 1) tuple in the UniKG_lt table corresponds to the (kz:Waterloo, kz:population, 150000) triple.
+
+For example, the (0, rdf:type, 2) tuple in the `UniKG_rt` table corresponds to the (kz:Waterloo, rdf:type, kz:city) triple,
+while the (0, kz:population, 1) tuple in the `UniKG_lt` table corresponds to the (kz:Waterloo, kz:population, 150000) triple.
 
 
 ### Altering the Schemas of the Base Tables of RDFGraphs
 You cannot alter the schemas of any of the node and relationship tables of RDFGraphs.
-So the schemas of UniKG_r, UniKG_l, UniKG_rt, and UniKG_lt tables are immutable. However,
+So the schemas of `UniKG_r`, `UniKG_l`, `UniKG_rt`, and `UniKG_lt` tables are immutable. However,
 as [discussed below](#modifying-rdfgraphs-using-create-set-merge-and-delete) you can add or delete the records in these tables as if they are
 regular tables with several restrictions.
 
@@ -135,13 +138,13 @@ regular tables with several restrictions.
 Storing RDF Literals as separate "Literal nodes" may rightly look unintuitive at first. The other natural alternative would be to store literals as node
 properties of the resources they are associated with. However, storing them as separate nodes has the advantage that
 you can query both types of triples, those between resources and resources as well as between resources and literals
-homogeneously with a relationship pattern. As discussed momentarily, you can for example use the
+homogeneously with a relationship pattern. As will be discussed momentarily, you can for example use the
 `MATCH (s)-[p:UniKG]-(o)` pattern to match all triples. If you were to store literals as node properties, you would
 need to use the previous pattern for triples between resources and resources and a different pattern `MATCH (s:UniKG_r)`
 and inspect the properties of the mapped resources to match triples between resources and literals.
 
 ### Physical Storage of UniKG_rt and UniKG_lt Relationship Tables
-If you inspect  the schema of UniKG_rt or UniKG_rl tables, you will get the following Output:
+If you inspect  the schema of `UniKG_rt` or `UniKG_rl` tables, you will get the following Output:
 
 ```
 CALL table_info("UniKG_rt") RETURN *;
@@ -159,12 +162,12 @@ the subject or object of a triple, such as "rdf:type" in our example. Consider
 a triple where rdf:type appears as a predicate, such as "<kz:Waterloo, rdf:type, kz:city>". 
 This will be stored in the UniKG_rt relationship table as three integers: (0, 1, 2), where 0, 1, and 2, are 
 respectively the system-level internal ids of resources kz:Waterloo, rdf:type, and kz:city. However,
-you can still query a "virtual" iri property of the UniKG_rt relationship table, e.g., `MATCH (s)-[p:UniKG_rt]->(o) RETURN p.iri` will
+you can still query a "virtual" iri property of the `UniKG_rt` relationship table, e.g., `MATCH (s)-[p:UniKG_rt]->(o) RETURN p.iri` will
 return among other tuples, the `http://www.w3.org/1999/02/22-rdf-syntax-ns#type` tuple. `
 
 ## Querying Triples in RDFGraphs
 Given the mapping of RDF triples into node and relationship tables, these tables can be queried using Cypher just like any other node and relationship
-table in Kùzu. For example, you can query all the triples between resources and resources using
+table in Kùzu. For example, you can query all the triples between one resource and another using
 the following query:
 
 ```
@@ -192,11 +195,11 @@ Output:
 ```
 
 ### Using RDFGraph Name to Query Both Relationship Tables
-We have also added a syntactic sugar to make it simpler to query the triples. Specifically, the RDFGraph name,
+We have also added syntactic sugar to make it easier to query the triples. Specifically, the RDFGraph name,
 which is the prefix of all of the 4 tables, can be used to refer to both relationship table names.
 That is, the RDFGraph name acts as a [rel table group](../cypher/data-definition/create-table#create-rel-table-group),
-which are syntactic sugars to use a common name to refer to multiple possible relationship tables. In our example,
-the RDFGraph's name is UniKG, and instead of using UniKG_rt and UniKG_rl, you can use UniKG as a relationship name
+which are syntactic sugars that use a common name to refer to multiple possible relationship tables. In our example,
+the RDFGraph's name is UniKG, and instead of using `UniKG_rt` and `UniKG_rl`, you can use UniKG as a relationship name
 to query both relationship tables as follows:
 ```
 MATCH (s)-[p:UniKG]->(o) 
@@ -220,8 +223,8 @@ Output:
 |          ...                   |                        ...                      |             ...                |    ...   |
 --------------------------------------------------------------------------------------------------------------------------------
 ```
-Note that for the triples whose objects are literals, the o.iri field is null and o.val is non-null. Similarly,
-for the triples whose objects are resources, the o.val is null and o.iri is non-null.
+Note that for the triples whose objects are literals, the `o.iri` field is null and `o.val` is non-null. Similarly,
+for the triples whose objects are resources, the `o.val` is null and `o.iri` is non-null.
 `[p:UniKG]` is simply a syntactic sugar for the [multi-label relationship pattern](https://kuzudb.com/docusaurus/cypher/query-clauses/match/#match-relationships-with-multi-labels) of `[p:UniKG_rt|UniKG_lt]`. 
 That is, the above query is equivalent to the following query:
 ```
@@ -229,7 +232,7 @@ MATCH (s)-[p:UniKG_rt|UniKG_lt]->(o)
 RETURN s.iri, p.iri, o.iri, o.val;
 ```
 
-We do not have a syntactic sugar for querying both the resource and literal node tables. However, you can simply
+We do not have a syntactic sugar option for querying both the resource and literal node tables. However, you can simply
 omit the label of the nodes as done in the above query. In the above query, variable `o` does not have a label,
 and Kùzu resolves it to the  2 labels `(o:UniKG_r:UniKG_l)`, which is the syntax for representing multi label
 node variables in Cypher. 
@@ -302,9 +305,9 @@ Output:
 | 123456789 | http://kuzu.io/rdf-ex#Adam | http://www.w3.org/1999/02/22-rdf-syntax-ns#type |       | http://kuzu.io/rdf-ex#student  |
 -------------------------------------------------------------------------------------------------------------------------------------
 ```
-Above, a is a node table record from the Student node table, s is a resource node from the UniKG_r node table, 
-p is either a relationship record from the UniKG_rt or UniKG_lt relationship tables, and o is either a reource or literal
-record from the UniKG_r or UniKG_l node tables.
+Above, a is a node table record from the Student node table, s is a resource node from the `UniKG_r` node table, 
+`p` is either a relationship record from the `UniKG_rt` or `UniKG_lt` relationship tables, and `o` is either a resource or literal
+record from the `UniKG_r` or `UniKG_l` node tables.
 
 ## Modifying RDFGraphs Using `CREATE`, `SET`, `MERGE` and `DELETE` 
 
@@ -318,12 +321,12 @@ statements of Cypher with some restrictions:
 the `val` property of a Literal node.
 - **Restriction 2:** `DELETE` operations on Resource node tables are not allowed.
 
-In short we support inserting and deleting of records from the relationship tables, inserting records into Resource node tables,
+In short, we support inserting and deleting of records from the relationship tables, inserting records into Resource node tables,
 and inserting and deleting Literal node tables. We provide a few examples below and discuss some of the restrictions. 
 For details please see the documentation of the respective clauses.
 
 
-Here is an example of how you can create a new resource node in the UniKG_r node table.
+Here is an example of how you can create a new resource node in the `UniKG_r` node table.
 ```
 WITH "http://kuzu.io/rdf-ex#" as kz 
 CREATE (r:UniKG_r {iri: kz+"Nour"}) 

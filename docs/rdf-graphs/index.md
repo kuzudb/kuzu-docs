@@ -24,7 +24,10 @@ tables, you can create RDFGraphs and ingest triples into RDFGraphs as a unit.
 two node and two relationship tables that acts as a new object in Kùzu's data model. 
 
 For example, you can `CREATE/DROP RDFGraph  <rdfgraph-name>` to create or drop an RDFGraph, which will 
-create or drop **four** underlying tables. Importantly, you can then query these underlying tables with Cypher. 
+create or drop **four** underlying tables
+(see [this section](./rdfgraphs-overview#rdfgraphs-mapping-of-triples-to-property-graph-tables)
+for more details on what these tables are).
+Importantly, you can then query these underlying tables with Cypher. 
 RDFGraphs are therefore a specific mapping of your triples into 
 Kùzu's native property graph data model, so you can query
 them with Cypher, Kùzu's native query language. This way, you can benefit from Kùzu's easy, scalable and
