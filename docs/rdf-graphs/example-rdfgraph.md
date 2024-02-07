@@ -9,9 +9,11 @@ import RDFRunningExample1 from './rdf-running-example.png';
 Throughout the documentation on Kùzu's RDFGraph feature, we will use the following 
 set of triples about students and faculty at universities, which we call `UniKG`.
 
+<div class="img-center">
 <img src={RDFRunningExample1} style={{width: 800}} />
+</div>
 
-The DDL statements to define the RDFGraph, the [Turtle (ttl) file](https://www.w3.org/TR/turtle/) 
+The DDL statements to define the RDFGraph, the [Turtle (.ttl) file](https://www.w3.org/TR/turtle/) 
 containing the triples, and the data import (`COPY FROM`) commands
 are given below. You can copy-paste and type these commands in the [Kùzu command line interface](https://kuzudb.com/docusaurus/getting-started/cli) 
 or [KùzuExplorer](https://kuzudb.com/docusaurus/kuzuexplorer/) to replicate
@@ -50,7 +52,7 @@ kz:Zhang a kz:faculty ;
 kz:faculty rdfs:subClassOf kz:person .
 ```
 
-Data import. We assume ${PATH-TO-DIR} is the directory containing `uni.ttl` file:
+Data import. We assume `${PATH-TO-DIR}` is the directory containing `uni.ttl` file:
 ```
 COPY UniKG FROM "${PATH-TO-DIR}/uni.ttl";
 ```

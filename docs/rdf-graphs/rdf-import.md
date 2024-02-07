@@ -46,7 +46,7 @@ This file, copy-pasted from the original [Turtle specification](https://www.w3.o
 
 Please see [official Turtle specification](https://www.w3.org/TR/turtle/) for more details on the format of Turtle files.
 
-You can bulk-insert Turtle files using the COPY FROM command. Assuming the above file is stored in "${PATH-TO-DIR}/turtle-ex.ttl" file
+You can bulk-insert Turtle files using the COPY FROM command. Assuming the above file is stored in `${PATH-TO-DIR}/turtle-ex.ttl` file
 and your RDFGraph is called TurtleEx, you can call:
 ```
 COPY TurtleEx FROM "${PATH-TO-DIR}/turtle-ex.ttl" (IN_MEMORY=true);
@@ -124,20 +124,20 @@ will also be inserted.
 ### Blank Nodes
 Blank nodes in Turtle files can appear in one of two formats:
 
-- Labeled Blank Nodes: appear in the file with the "_:" prefix. For example,
+- Labeled Blank Nodes: appear in the file with the `_:` prefix. For example,
 the example in the beginning of this page contains 2 blank nodes: `_:super-character-1` and `_:super-character-2`.
-Kùzu assigns blank nodes in Turtle files an IRI of the form: "_:ibj", where i and j are two integers, 
-such as "_:0b1" or "_:3b17". If you have blank nodes in
+Kùzu assigns blank nodes in Turtle files an IRI of the form: `_:ibj`, where i and j are two integers, 
+such as `_:0b1` or `_:3b17`. If you have blank nodes in
 your triples, you will see such generated IRIs, which may not exist in the original Turtle files, when you query your triples.
-- Unlabeled Blank Nodes: appear in the file with the "[]" syntax. For example, the following example (copy-pasted from the original Turtle specification) 
-contains two unlabeled blank nodes "_:0b1" and "_:0b2":
+- Unlabeled Blank Nodes: appear in the file with the `[]` syntax. For example, the following example (copy-pasted from the original Turtle specification) 
+contains two unlabeled blank nodes `_:0b1` and `_:0b2`:
 ```
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
 # Someone knows someone else, who has the name "Bob".
 [] foaf:knows [ foaf:name "Bob" ] .
 ```
-"_:0b2" is the nested blank node's IRI with triple`<_:0b2, foaf:name, "Bob">` and "_:0b1" is the IRI of 
+`_:0b2` is the nested blank node's IRI with triple`<_:0b2, foaf:name, "Bob">` and `_:0b1` is the IRI of 
 the blank node that knows `_:0b2`:`<_:0b1, foaf:knows, _:0b2>`.
 
 *You cannot use blank nodes as predicates in Turtle files. If you do, Kùzu will skip the triple.*

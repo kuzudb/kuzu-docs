@@ -25,7 +25,7 @@ for data modeling compared to property graphs.
 
 ## Resources and IRIs
 
-The basic element of data in RDF are "Resources", 
+The basic elements of data in RDF are "Resources", 
 which are identified by
 unique *internationalized resource identifiers* (IRIs). IRIs are similar to URLs
 and are strings of the form: `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`,
@@ -99,7 +99,9 @@ above RDF graph that consists of 4 triples pictorially. In the figure, each trip
 is an edge, each resource is a node, and each literal appears simply as a value without
 an ellipse around it.
 
+<div class="img-center">
 <img src={RDFBasicsExample} style={{width: 800}} />
+</div>
 
 ## RDF Schema and OWL
 
@@ -110,14 +112,14 @@ standardized vocabulary to describe schemas of RDF graphs. For example,
 `rdfs:subClassOf`, which is used to form class hierarchies,
 or `owl:sameAs`[^1],  which is used to
 identify that two resources are the same resource, 
-are additional common vocabulary you might see across many datasets. 
-These vocabulary have very well-defined clear semantics and enables
+are additional common vocabularies you might see across many datasets. 
+These vocabularies have well-defined, clear semantics and enables
 information systems to be developed that can do automatic inference/reasoning.
 For example, even in our small example, a system that understands
-the meanings of these vocabulary can return `kz:Adam` if a query
-asks for all `kz:person` resources (b/c `kz:Adam` is a `kz:student`,
-which is an `rdfs:subClassOf` `kz:person`). The goal of Kùzu RDFGraphs,
-for now, is not to provide automatic inference capabilities over RDF triples.
+the meanings of these vocabularies can return `kz:Adam` if a query
+asks for all `kz:person` resources (because `kz:Adam` is a `kz:student`,
+which is an `rdfs:subClassOf` `kz:person`). For now, the goal of Kùzu RDFGraphs
+is not to provide automatic inference capabilities over RDF triples.
 Therefore, when you query Kùzu RDFGraphs, you will not get the system
 to do automatic inference.
 Instead, they aim to provide a means to query RDF triples
@@ -126,17 +128,17 @@ natively in Kùzu using Cypher.
 [^1]: `owl` is the abbreviation for `http://www.w3.org/2002/07/owl` namespace.
 ## When to Use RDF vs Property Graphs
 
-Questions about the choice of data models are at some level a user choice. 
-A rough rule of thumb is that if you have sufficient structure over your 
+Questions about the choice of data models are at some level, a user decision. 
+A rule of thumb is that if you have sufficient structure over your 
 records and want to model them as a graph (e.g., to find paths, patterns, ask for 
 recursive and/or arbitrary connections between records), you should
 structure them as property graphs. 
 The general principle is that DBMSs provide fast query performance over 
-large sets of records by exploiting structure. Instead, some common
+large sets of records by exploiting structure. Outside of this, some common
 scenarios for using RDF are the following:
 1. When your data is very heterogeneous and hard to tabulate.
 2. You want to homogeneously represent and query both your data and metadata/schema information
-   in the same format of triples. For example, above, we 
+   in the same format of triples. For the example above, we 
    represented both data and schema information homogeneously as triples.
 3. You need some automatic reasoning/inference capabilities.[^2]
 
@@ -144,10 +146,10 @@ scenarios for using RDF are the following:
 
 
 ## Reification
-One of the major differences as graph models between RDF and property graphs is that in property
+One of the major differences between RDF and property graph models is that in property
 graphs you can add properties on edges (as well as nodes). This is not possible in RDF.
 Suppose you had a database with information about a person Karissa and a person Zhang
-and you wanted to model that Karissa follows (e.g., on Twitter) Zhang since 01-01-2021. In a property graph, you could
+and you wanted to model that Karissa follows Zhang (e.g., on Twitter) since 01-01-2021. In a property graph, you could
 do this by having a Person node table with, say a name property, and a Follows relationship table 
 from Person to Person with a `since` property. Your tables would look as follows:
 
@@ -186,16 +188,17 @@ Then we have the following triples about `kz:KfollowsZ`:
 
 So you have at least 4 triples, one with predicate `rdf:type`, the other 3 with predicates
 `rdf:subject`, `rdf:predicate`, `rdf:object`, and then additional triples, one for each property you want
-to attach to the reified statement. In the above example, we attached the kz:since property to the reified statement.
+to attach to the reified statement. In the above example, we attached the `kz:since` property to the reified statement.
 The following figure shows these triples pictorially.
 
+<div class="img-center">
 <img src={ReificationExample} style={{width: 800}} />
+</div>
 
-
-Note that this is similar to a strategy that users of property graph model
-use to represent non-binary relationships. In property graph model,
-relationships can be between two nodes. To represent non-binary relationships,
-say an "Enrollment" relationship in a university database 
+Note that this is similar to a strategy that property graph model
+users apply to represent n-ary relationships. In a property graph model,
+relationships can only be between two nodes. To represent a ternary relationship,
+for example, an "Enrollment" relationship in a university database 
 between a student, class, and a section of the class, 
 a standard technique is to have a new placeholder node of type "Enrollment" and 
 from each Enrollment node connect to a Student node, a Class node, and a Section node.
