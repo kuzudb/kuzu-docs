@@ -5,11 +5,13 @@ sidebar_position: 1
 
 # httpfs Extension
 
-The `httpfs` extension extends Kùzu filesystem by allowing reading from/writing to files hosted on remote file systems. For file hosted on HTTP(s) filesystem, only reading is supported. For object storage using the S3 API, the `httpfs` extension supports both reading/writing/globbing files.
+The `httpfs` extension extends Kùzu filesystem by allowing reading from/writing to files hosted on
+remote file systems. It only supports reading files over plain HTTP(S), but when using object storage
+via the S3 API, the extension supports reading, writing and globbing files.
 
 # Usage
 
-`httpfs` is an official extension developed and maintained by Kùzu Inc.
+`httpfs` is an official extension developed and maintained by Kùzu.
 It can be installed and loaded using the following commands:
 
 ```sql

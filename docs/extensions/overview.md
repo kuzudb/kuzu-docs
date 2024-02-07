@@ -4,8 +4,11 @@ sidebar_position: 0
 ---
 
 # Overview
-Kùzu provides a flexible and robust extension framework designed to allow users to extend database
-functionalities (e.g. data types, functions and file system) by dynamically loading extensions.
+
+Kùzu has an extension framework designed to extend Kùzu's capabilities. Currently our only extension
+supports reading data  from a file hosted on a http(s) server and can be used to read from Amazon
+S3. We plan to implement additional extensions, such as to support new data types, functions and
+indices.
 
 # Official extensions
 
@@ -18,10 +21,12 @@ The available extensions for each OS are hosted in the `kuzudb/extension` [repo]
 # Using extensions in Kùzu
 
 ## Install extension
+
 Kùzu requires the user to install the extension before loading and using it. We support selected
-extensions, but users can also load their own extensions (or those developed by third-parties).
+extensions, but users can develop and load their own extensions (or use those developed by third-parties).
 
 ### 1. Install an official extension
+
 Official extensions can be simply installed by running the install command:
 
 ```
