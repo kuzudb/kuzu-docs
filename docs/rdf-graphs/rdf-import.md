@@ -40,7 +40,7 @@ ex:spiderman
 ```
 This file, copy-pasted from the original [Turtle specification](https://www.w3.org/TR/turtle/) contains 7 triples, 5 with `ex:green-goblin` as the subject and 
 5 with `ex:spiderman` as the subject. It also demonstrates a few features of RDF and Turtle files:
-- `a` predicate is shorthand for `rdf:type`.
+- The predicate `a` is shorthand for `rdf:type`.
 - The use of `;` to separate triples with the same subject (e.g., the 4 triples of `ex:green-goblin` are separated with `;`).
 - The use of `,` to separate multiple objects for the same predicate (the last two triples are <`ex:spiderman`, `foaf:name`, `"Spiderman"`> and <`ex:spiderman`, `foaf:name`, `"Человек-паук"@ru`>.
 
@@ -68,7 +68,7 @@ If you are ingesting a large Turtle file and you are running into memory issues,
 
 ###  Importing Multiple Turtle Files
 Similar to importing multiple CSV or Parquet files, you can also import multiple Turtle files by specifying a glob pattern. 
-For example, you can import all the Turtle files in the "${PATH-TO-DIR}" directory as follows:
+For example, you can import all the Turtle files in the `${PATH-TO-DIR}` directory as follows:
 ```
 COPY TurtleEx FROM "${PATH-TO-DIR}/*.ttl";
 ```
@@ -76,7 +76,7 @@ Please refer to the [COPY FROM MULTIPLE CSV Files](https://kuzudb.com/docusaurus
 
 ### Full IRIs, Prefixes, and Relative IRIs
 IRIs in Turtle files can be specified in one of 3 ways:
-- Full IRIs: are enclosed between angle brackets "<" and ">": e.g., `<http:://fullIRI/#ex>`
+- Full IRIs: are enclosed between angle brackets `<` and `>`: e.g., `<http:://fullIRI/#ex>`
 - Relative IRIs: are also enclosed between angle brackets but start with "#" e.g., `<#baseIRIEx>`. These will resolve to `${baseIRI}#baseIRI`,
 where ${baseIRI} is the base IRI specified in the Turtle file with BASE or @base directives.
 - Prefixed names: are not enclosed between angle brackets and are in the form of prefixlabel:localname, e.g., `kz:prefixIRIEx`, 
