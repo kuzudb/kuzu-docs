@@ -75,8 +75,12 @@ Some properties of resources are not other resources but primitive values.
 For example the age of the student Adam, identified by `kz:Adam`, is 30.
 This is not modeled as a resource but as a literal. Similarly, the name
 of `kz:Adam` is the string "Adam". These are called literals and literals
-do not have IRIs.
-
+do not have IRIs. String literals can have an optional language tag indicated 
+with the "@" symbol at their ends. For example, consider two triples with strings
+literal values about the Resource `ex:spiderman`: 
+(`ex:spiderman`, `foaf:name`, `"Spiderman"@en`), (`ex:spiderman`, `foaf:name`, `"Человек-паук"@ru`).
+The first triple has tag `@en` to indicate that the string is in English, and the second
+one has tag `@ru` to indicate that the string is in Russian.
 
 ## RDF Blank Nodes
 [Blank nodes](https://www.w3.org/TR/rdf11-concepts/#section-blank-nodes) are RDF resources

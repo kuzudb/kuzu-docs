@@ -55,16 +55,22 @@ COPY TurtleEx FROM "${PATH-TO-DIR}/turtle-ex.ttl" (IN_MEMORY=true);
 ### Turtle Configuration
 
 Similar to CSV configuration, Turtle import configuration can be manually changed by specifying them inside `( )` at the end of the the `COPY FROM` command. 
-Currently we support one option.
+Currently we support these options:
 
 | Parameter           | Description                                                        | Default Value |
 |:--------------------|:-------------------------------------------------------------------|:-----|
-| IN_MEMORY           | Whether the entire file should be cached in memory during loading  | false |
+| IN_MEMORY           | Whether the entire file should be cached in memory during loading  | false|
+| STRICT              | Whether malformed lines should be ignored                          | false| 
 
 Setting `IN_MEMORY` to true makes loading faster because we currently go over the triples multiple times
 during bulk loading. If you have enough memory to load all of the Turtle file into memory plus 
 the additional memory that Kùzu will use during loading, you should set this option to true.
-If you are ingesting a large Turtle file and you are running into memory issues, you can set `IN_MEMORY=false`.
+If you are ingesting a large Turtle file and you are running into memory issues, you can set `IN_MEMORY=false` or
+leave it out of the `COPY FROM` command.
+
+
+By default, Kùzu will ignore malformed lines during loading. Setting `STRICT=true` will make the system throw a runtime exception 
+when a malformed line is encountered and stop loading.
 
 ###  Importing Multiple Turtle Files
 Similar to importing multiple CSV or Parquet files, you can also import multiple Turtle files by specifying a glob pattern. 
@@ -78,7 +84,7 @@ Please refer to the [COPY FROM MULTIPLE CSV Files](https://kuzudb.com/docusaurus
 IRIs in Turtle files can be specified in one of 3 ways:
 - Full IRIs: are enclosed between angle brackets `<` and `>`: e.g., `<http:://fullIRI/#ex>`
 - Relative IRIs: are also enclosed between angle brackets but start with "#" e.g., `<#baseIRIEx>`. These will resolve to `${baseIRI}#baseIRI`,
-where ${baseIRI} is the base IRI specified in the Turtle file with BASE or @base directives.
+where `${baseIRI}` is the base IRI specified in the Turtle file with BASE or @base directives.
 - Prefixed names: are not enclosed between angle brackets and are in the form of prefixlabel:localname, e.g., `kz:prefixIRIEx`, 
 where the prefixlabel is prefixed with a prefix defined in the Turtle file with the PREFIX or @prefix directives.
 
@@ -94,7 +100,7 @@ contain malformed IRIs.
 
 <#baseIRIEx> foo:prefixIRIEx <http://fullIRI/#ex> .
 ```
-This will insert only first triple as follows: < `http://base-prefix/#baseIRIEx`, `http://xmlns.com/foaf/0.1/prefixIRIEx`, `http://fullIRI/#ex`, >.
+This will insert only the first triple as follows: < `http://base-prefix/#baseIRIEx`, `http://xmlns.com/foaf/0.1/prefixIRIEx`, `http://fullIRI/#ex` >.
 In the second triple `#baseIRI` is malformed because it is not enclosed between angle brackets. 
 In the third triple `foo:prefixIRIEx` is malformed because `foo` is not defined as a prefix in the Turtle file.
 
@@ -121,16 +127,21 @@ but skips the rest of the chunk of triples about `ex:spiderman`.
 The second chunk, which contains the single triple <`ex:green-goblin`, `rel:enemyOf`, `ex:spiderman`> 
 will also be inserted. 
 
+You can also set copy configuration `(strict=true)` to throw exceptions and stop loading when a malformed line is detected
+as described [above](#turtle-configuration).
+
 ### Blank Nodes
 Blank nodes in Turtle files can appear in one of two formats:
 
-- Labeled Blank Nodes: appear in the file with the `_:` prefix. For example,
+- Labeled Blank Nodes: appear in the file with the `_:opt-label` prefix. For example,
 the example in the beginning of this page contains 2 blank nodes: `_:super-character-1` and `_:super-character-2`.
-Kùzu assigns blank nodes in Turtle files an IRI of the form: `_:ibj`, where i and j are two integers, 
-such as `_:0b1` or `_:3b17`. If you have blank nodes in
+Kùzu assigns labeled blank nodes in Turtle files an IRI of the form: `_:iopt-label`, where i is an integers, 
+such as `_:3super-character-1`. If you have blank nodes in
 your triples, you will see such generated IRIs, which may not exist in the original Turtle files, when you query your triples.
-- Unlabeled Blank Nodes: appear in the file with the `[]` syntax. For example, the following example (copy-pasted from the original Turtle specification) 
+- Unlabeled Blank Nodes: appear in the file with the `[]` syntax. assigns unlabeled blank nodes an IRI of the form `_:ibj`.
+For example, the following example (copy-pasted from the original Turtle specification) 
 contains two unlabeled blank nodes `_:0b1` and `_:0b2`:
+
 ```
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
@@ -140,25 +151,25 @@ contains two unlabeled blank nodes `_:0b1` and `_:0b2`:
 `_:0b2` is the nested blank node's IRI with triple`<_:0b2, foaf:name, "Bob">` and `_:0b1` is the IRI of 
 the blank node that knows `_:0b2`:`<_:0b1, foaf:knows, _:0b2>`.
 
-*You cannot use blank nodes as predicates in Turtle files. If you do, Kùzu will skip the triple.*
+*You cannot use blank nodes as predicates in Turtle files according to Turtle standards. If you do, Kùzu will skip the triple.*
 
 ### Language Tag for Literals and Size Limitation
 RDF Literals consist of a data type, a value, and an optional language tag.
 For example, the example in the beginning of this page contains the following triple: (`http://example.org/#spiderman`, `foaf:name`, `"Человек-паук"@ru`). The object here
 is an RDF Literal with data type string, value "Человек-паук", and language tag @ru indicating
-that it is Russian. Kùzu ignores the language tags when inserting RDF Literals, so when you query this triple, you will not see the language tag:
+that it is Russian. Kùzu loads the language tag into a separate `lang` property column.
 ```
 WITH "http://xmlns.com/foaf/0.1/" as foaf, "http://example.org/" as ex
 MATCH (s {iri: ex + "spiderman"})-[p:TurtleEx {iri: foaf + "name"}]-(o) 
-RETURN s.iri, p.iri, o.val;
+RETURN s.iri, p.iri, o.val, o.lang;
 Output:
---------------------------------------------------------------------------------
-| s.iri                        | p.iri                          | o.val        |
---------------------------------------------------------------------------------
-| http://example.org/spiderman | http://xmlns.com/foaf/0.1/name | Spiderman    |
---------------------------------------------------------------------------------
-| http://example.org/spiderman | http://xmlns.com/foaf/0.1/name | Человек-паук |
---------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+| s.iri                        | p.iri                          | o.val        | o.lang |
+-----------------------------------------------------------------------------------------
+| http://example.org/spiderman | http://xmlns.com/foaf/0.1/name | Spiderman    |        |
+-----------------------------------------------------------------------------------------
+| http://example.org/spiderman | http://xmlns.com/foaf/0.1/name | Человек-паук | ru     |
+-----------------------------------------------------------------------------------------
 ```
 
 Further, there is currently a size limitation that your literal strings can be of size at most 256KB in characters.

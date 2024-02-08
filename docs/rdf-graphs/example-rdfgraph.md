@@ -32,7 +32,7 @@ We will use the following 14 triples stored in a `uni.ttl` Turtle file:
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 kz:Waterloo a kz:City ;
-	    kz:name "Waterloo" ;
+	    kz:name "Waterloo"@en ;
 	    kz:population 150000 .
 
 kz:Adam a kz:student ;

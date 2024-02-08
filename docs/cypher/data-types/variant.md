@@ -20,7 +20,7 @@ kz:Waterloo a kz:City ;
 Suppose that you insert these into an RDFGraph named `UniKG`. You will get the following values in the `val` column 
 of the Literals node table `UniKG_l`:
 ```
-MATCH (a:UniKG_r)-[p:UniKG_lt]->(o:UniKG_l 
+MATCH (a:UniKG_r)-[p:UniKG_lt]->(o:UniKG_l)
 RETURN a.iri, p.iri, o.val;
 -------------------------------------------------------------------------------------------------
 | a.iri                          | p.iri                                           | o.val      |
@@ -130,3 +130,8 @@ The data types above are as follows (again data types are not rendered in Kùzu 
 - 329.000000 (for altitude1 and altitude2) are DOUBLE. Note that altitude1 is automatically inferred, while altitude2 is explicitly typed with an xsd tag.
 - 329.0 (for altitude3) is a STRING (automatically inferred)
 
+## Exporting Variant Values (e.g., Tables with Variant Columns)
+Kùzu supports exporting Variant data to some files. For example, you can export a table with a Variant column to a CSV file and
+each value will be converted to a string (as every value in CSV files are strings). However, we do not support exporting Variant data to Parquet.
+If you want to export a variant data type to Parquet, you need to explicitly cast Variant data type to another data type
+that can be exported to Parquet, such a strings. Check the documentation on [data exporting](../../data-export) for upto date information on this.
