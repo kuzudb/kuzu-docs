@@ -17,12 +17,12 @@ import TabItem from '@theme/TabItem';
 
 - Intel
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-osx-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-osx-x86_64.zip
  ```
 
 - Apple Silicon
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-osx-arm64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-osx-arm64.zip
 ```
 
 </TabItem>
@@ -30,7 +30,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-osx-arm64.zip
 <TabItem value="linux">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-linux-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-linux-x86_64.zip
  ```
 
 </TabItem>
@@ -38,7 +38,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-linux-x86_64.zi
 <TabItem value="win">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.1.0/kuzu_cli-windows-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-windows-x86_64.zip
  ```
 
 </TabItem>
@@ -92,12 +92,12 @@ pip install kuzu
 
 - Intel
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-osx-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-osx-x86_64.zip
  ```
 
 - Apple Silicon
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-osx-arm64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-osx-arm64.zip
 ```
 
 </TabItem>
@@ -105,7 +105,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-osx-arm64.zip
 <TabItem value="linux">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-linux-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-linux-x86_64.zip
  ```
 
 </TabItem>
@@ -113,7 +113,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-linux-x86_64.zip
 <TabItem value="win">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.1.0/libkuzu-windows-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-windows-x86_64.zip
  ```
 
 </TabItem>
