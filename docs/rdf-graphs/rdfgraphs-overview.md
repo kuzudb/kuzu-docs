@@ -90,7 +90,7 @@ The contents of these mapped tables are shown below:
 
 |_id | val | lang |
 | -- | -- | -- |
-| 0  | Waterloo (string) | |
+| 0  | Waterloo (string) | en |
 | 1  | 150000 (int64) | |
 | 2 | Adam (string) | |
 | 3 | 30 (int64) | |

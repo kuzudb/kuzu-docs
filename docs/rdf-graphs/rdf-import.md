@@ -68,7 +68,7 @@ the additional memory that Kùzu will use during loading, you should set this op
 If you are ingesting a large Turtle file and you are running into memory issues, you can set `IN_MEMORY=false`.
 
 
-By default, Kùzu will ignore malformed lines during loading. Setting `STRICT=true` will make the system through an runtime exception when encountering a malformed line.
+By default, Kùzu will ignore malformed lines during loading. Setting `STRICT=true` will make the system through a runtime exception when a malformed line is encountered.
 
 ###  Importing Multiple Turtle Files
 Similar to importing multiple CSV or Parquet files, you can also import multiple Turtle files by specifying a glob pattern. 
@@ -159,7 +159,7 @@ MATCH (s {iri: ex + "spiderman"})-[p:TurtleEx {iri: foaf + "name"}]-(o)
 RETURN s.iri, p.iri, o.val, o.lang;
 Output:
 -----------------------------------------------------------------------------------------
-| s.iri                         | p.iri                          | o.val       | o.lang |
+| s.iri                        | p.iri                          | o.val        | o.lang |
 -----------------------------------------------------------------------------------------
 | http://example.org/spiderman | http://xmlns.com/foaf/0.1/name | Spiderman    |        |
 -----------------------------------------------------------------------------------------

@@ -25,6 +25,6 @@ Query: LOAD FROM 'user.parquet' RETURN *;
 ```
 
 **Notes**
-- Exporting [Fixed List](../cypher/data-types/list.md) data type to Parquet is not supported yet.
+- Exporting [Fixed List](../cypher/data-types/list.md) or [Variant](../cypher/data-types/variant.md) data type to Parquet is not supported yet.
 - The [Union](../cypher/data-types/union.md) data type is exported as a struct, which is the internal representation of Union datatype.
 - Currently, only snappy compression is supported.

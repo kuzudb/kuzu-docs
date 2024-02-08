@@ -129,4 +129,3 @@ The data types above are as follows (again data types are not rendered in Kùzu 
 - 10000 is an INT64 (automatically inferred)
 - 329.000000 (for altitude1 and altitude2) are DOUBLE. Note that altitude1 is automatically inferred, while altitude2 is explicitly typed with an xsd tag.
 - 329.0 (for altitude3) is a STRING (automatically inferred)
-
