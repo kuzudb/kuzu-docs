@@ -16,7 +16,7 @@ It can be installed and loaded using the following commands:
 
 ```
 INSTALL httpfs;
-LOAD httpfs;
+LOAD EXTENSIONS httpfs;
 ```
 
 ## HTTP(S) file system
