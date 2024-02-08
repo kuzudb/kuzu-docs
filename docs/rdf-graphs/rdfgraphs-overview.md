@@ -51,13 +51,14 @@ The specifics of the mapping are as follows:
    single property, `iri`, which stores the IRI of the resource as a string.
 
 2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, lang STRING, PRIMARY KEY (id))`: Stores the [Literals](rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples. 
-   Each unique literal that appears in the triples is mapped to a separate `UniKG_l` node. Literals have a 
-   two properties, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../cypher/data-types/string.md).
+   Each unique literal that appears in the triples is mapped to a separate `UniKG_l` node. 
+   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../cypher/data-types/string.md).
    There is a third `id` property of type [SERIAL](../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table. 
 
 3. **Resource-to-Resource Triples Relationship Table** — `UniKG_rt(FROM UniKG_r, TO UniKG_r, iri STRING)`: Stores the triples between UniKG_r resources and 
    UniKG_r resources. `_rt` suffix stands for "**r**esource **t**riples", i.e., triples whose objects are resources. 
    The `FROM` and `TO` columns store the subject and object resources in the triple. The `iri` property stores the IRI of the predicate of the triple.
+
 4. **Resource-to-Literal Triples Relationship Table** — `UniKG_lt(FROM UniKG_r, TO UniKG_l, iri STRING)`: Stores the triples between UniKG_r resources and
    UniKG_l literals. `_lt` suffix stands for "**l**iteral **t**riples", i.e., triples whose objects are literals.
    The `FROM` and `TO` columns store the subject resource and the object literal in the triple. The `iri` property stores the IRI of the predicate of the triple.
@@ -144,9 +145,10 @@ need to use the previous pattern for triples between resources and resources and
 and inspect the properties of the mapped resources to match triples between resources and literals.
 
 ### Physical Storage of UniKG_rt and UniKG_lt Relationship Tables
-For `UniKG_rt` and `UniKG_rl` tables, instead of storing the "iri" property as a STRING column, 
-Kùzu stores it as an integer property
-that stores the system-level id of the resource that corresponds to the IRI of the predicate.
+For `UniKG_rt` and `UniKG_rl` tables, which store predicates of triples,
+Kùzu stores the string `iri` property internally as an integer 
+that stores the system-level id of the resource that corresponds to the IRI of the predicate. This is an internal
+optimization and not visible to users but it helps both saving space and query performance.
 Recall that each IRI that appears in your dataset is mapped to a separate resource node even if it is not
 the subject or object of a triple, such as "rdf:type" in our example. Consider
 a triple where rdf:type appears as a predicate, such as "<kz:Waterloo, rdf:type, kz:city>". 
@@ -382,10 +384,12 @@ entire "chunk" of triples in the Turtle file; see the [documentation](./rdf-impo
 
 ### Using Blank Node IDs in CREATE Statements
 Kùzu has the convention that during bulk data import from Turtle or N-Triples files, 
-blank nodes are replaced with specific IRIs of the form `_:i`, where i is an integer.
+blank nodes are replaced with specific IRIs of the form `_:iopt-label` or `_:ibj`, where i and j are integers.
+The common prefix of these IRIs is `_:i`.
 If you use IRIs of this form, say `_:i`, in your CREATE statements for Resource nodes,
-Kùzu will interpret these as simple strings. For example, if
-a blank node with IRI `_:7b4` already exists, Kùzu will not CREATE a new Resource node and instead error.
+Kùzu will interpret these simply as strings and will not do anything special. For example, if
+you provide a CREATE statement that enters a Resource node with IRI `_:7b4` and `_:7b4` already exists, 
+Kùzu will not CREATE a new Resource node and instead error.
 Further, you cannot have predicates whose IRIs of the form `_:` (as in Turtle files).
 Kùzu will error on CREATE statements that try to create a relationship
 record in the `_rt` or `_lt` relationship tables with a predicate
