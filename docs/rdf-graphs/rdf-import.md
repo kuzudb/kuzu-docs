@@ -59,7 +59,7 @@ Currently we support one option.
 
 | Parameter           | Description                                                        | Default Value |
 |:--------------------|:-------------------------------------------------------------------|:-----|
-| IN_MEMORY           | Whether the entire file should be cached in memory during loading  | true |
+| IN_MEMORY           | Whether the entire file should be cached in memory during loading  | false|
 | STRICT              | Whether malformed lines should be ignored                          | false| 
 
 Setting `IN_MEMORY` to true makes loading faster because we currently go over the triples multiple times
