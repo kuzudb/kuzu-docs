@@ -6,17 +6,12 @@ description: SKIP controls the number of tuples to skip from the start of the qu
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copy pasting the commands on that page. 
-
 # SKIP
 `SKIP` controls the number of tuples to skip from the start of the queryResult. It is often used within in an [ORDER BY](order-by.md) 
 clause to skip the top k tuples from the query result. 
 Note: SKIP accepts any expression that can be evaluated to an integer.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 For example, the following query skips the youngest 2 users
 and returns the rest of the users' ages.

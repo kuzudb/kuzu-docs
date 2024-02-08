@@ -6,19 +6,14 @@ description: RETURN is similar to the `SELECT` clause of SQL. RETURN is where th
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copy pasting the commands on that page. 
-
 # RETURN
 `RETURN` is similar to the `SELECT` clause of SQL. RETURN is where the final results of the
 query are specified, which can be listed as a list of expressions, e.g., variables that have
 bound to nodes or relationships, aliases, or more complex expressions. RETURN can also be used 
 for performing group-by and aggregations as well as duplication removing (using the `DISTINCT` clause). 
 We discuss several common expressions used in RETURN.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 ## Returning Node and Relationship Variables
 Returning variables in the query that are bound to node and relationships in the query 

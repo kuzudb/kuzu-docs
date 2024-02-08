@@ -1,30 +1,56 @@
 ---
-title: CLI
+title: Command Line
 sidebar_position: 0
-description: Through CLI, you can issue Cypher queries or call shell commands.
+description: Through the CLI, you can issue Cypher queries or call shell commands.
 ---
 
 # Kùzu CLI
 
-- [Kùzu CLI](#kùzu-cli)
-    - [`:help`](#help)
-    - [`:clear`](#clear)
-    - [`:quit`](#quit)
-    - [`:thread [num_thread]`](#thread-num_thread)
-    - [`:loggin_level [logging_level]`](#loggin_level-logging_level)
-    - [`:timeout`](#timeout)
-    - [`:list_nodes`](#list_nodes)
-    - [`:list_rels`](#list_rels)
-    - [`:show_node [node_name]`](#show_node-node_name)
-    - [`:show_rel [rel_name]`](#show_rel-rel_name)
-    - [Interrupt](#interrupt)
-    - [Non-interactive usage](#non-interactive-usage)
-  
-Please see the [getting started page](../getting-started/cli.md) for instructions on how
-to install Kùzu's command line interface and its basic usage. Through CLI, you can issue Cypher queries or call shell commands.
+Kùzu provides a command line interface (CLI) through which you can issue Cypher queries or call shell
+commands. See the [getting started page](../getting-started/cli.md) for instructions on how
+to install the CLI and its basic usage.
+
+## Start the shell
+
+Navigate to the directory where the Kùzu CLI is located and run the following command:
+
+```bash
+./kuzu <db_path>
+```
+
+Where `<db_path>` is the directory for the database files. 
+This path can point to an existing database or a yet-to-be-created directory, in which case
+Kùzu will automatically create the directory and initialize an empty database for you.
+
+You can view the additional shell startup flags by running `./kuzu -h`.
+
+```bash
+$ ./kuzu -h
+help
+  ./kuzu databasePath {OPTIONS}
+    KuzuDB Shell
+
+  OPTIONS:
+
+      databasePath                      Database path.
+      -h, --help                        Display this help menu
+      -d, --defaultBPSize               Size of buffer pool for default and
+                                        large page sizes in megabytes
+      --nocompression                   Disable compression
+      -r, --readOnly                    Open database at read-only mode.
+      -p                                Path to directory for shell history
+      -v, --version                     Display current database version
+      "--" can be used to terminate flag options and force all following
+      arguments to be treated as positional options
+```
+
+## Shell commands
+
+Once you start the shell, you can issue Cypher queries as shown [here](../getting-started/cli.md#execute-cypher-query), or call
+any of the shell commands listed below.
 
 ### `:help`
-Show built-in command list.
+Show built-in command list within the Kùzu shell.
 
 ```
 kuzu> :help
@@ -34,78 +60,33 @@ kuzu> :help
     :thread [num_threads]     set number of threads for query execution
     :logging_level [logging_level]     set logging level of database, available options: debug, info, err
     :timeout [query_timeout]     set query timeout in ms
-    :list_nodes     list all node tables
-    :list_rels     list all rel tables
-    :show_node     [table_name] show node schema
-    :show_rel     [table_name] show rel schema
 ```
 
 ### `:clear`
-Clear shell.
+Clear shell. Alternatively, you can use `Ctrl + L` to clear the shell.
 
 ### `:quit`
-Exit from shell.
+Exit from shell. Alternatively, you can use `Ctrl + D` to exit the shell.
 
 ### `:thread [num_thread]`
 Set maximum number of threads to execute query in current connection.
 
-### `:loggin_level [logging_level]`
+### `:logging_level [logging_level]`
 Set logging level, available options: debug, info, err
 
 ### `:timeout`
 Set query timeout in ms.
 
-### `:list_nodes`
-List all node tables.
+## Interrupt
+To interrupt a running query, use `Ctrl + C` in CLI. Note: We currently don't support interrupting `COPY` statement.
 
-```
-kuzu> :list_nodes
-Node tables:
-	City
-	User
-```
+## Non-interactive usage
+To read and process a file in non-interactive mode, pipe the file content to the CLI.
 
-### `:list_rels`
-List all rel tables.
-
-```
-kuzu> :list_rels
-Rel tables:
-	Follows
-	LivesIn
-```
-
-### `:show_node [node_name]` 
-Show node schema for [node_name]
-
-```
-kuzu> :show_node User
-User properties:
-	name STRING(PRIMARY KEY)
-	age INT64
-```
-
-### `:show_rel [rel_name]` 
-Show rel schema for [rel_name]
-
-```
-kuzu> :show_rel Follows
-Follows src node: User
-Follows dst node: User
-Follows properties:
-	since INT64
-```
-### Interrupt
-To interrupt a running query, use `ctrl + C` in CLI. Note: currently we don't support interrupting `COPY` statement.
-
-### Non-interactive usage
-To read and process a file in non-interactive mode, pipe the file content to CLI.
-```
-./kuzu_shell testdb < tinysnb/schema.cypher
+```bash
+./kuzu testdb < tinysnb/schema.cypher
 ---------------------------------------
 | outputMsg                           |
 ---------------------------------------
 | NodeTable: person has been created. |
----------------------------------------
-
-``` 
+```

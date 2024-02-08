@@ -5,11 +5,15 @@ sidebar_position: 17
 
 # Transaction
 
-Kùzu is a transactional system. Specifically, it implements a transaction management sub-system that is atomic, durable and supports serializability (satisfying these properties is traditionally known as being ACID-compliant in database terminology). That is, every query, data manipulation command, every DDL (i.e., new node/rel table schema definitions), or `COPY FROM` commands to Kùzu is part of a transaction. Therefore they depict all-or-nothing behavior, so after these commands or a set of them execute and committed successfully, you are guaranteed that all of their changes will persist entirely. If they do not execute successfully or are rolled back, you are guaranteed that none of their changes will persist. These conditions hold, even if your system crashes at any point during a transaction. That is, after committing successfully, all your changes will persist even if there is an error after committing. Similarly, if your system crashes before committing or rolling back, then none of your updates will persist.
+Kùzu is a transactional system, in that it implements a transaction management subsystem that is atomic, durable and supports serializability. Satisfying these properties makes Kùzu ACID-compliant, as per database terminology.
 
-#### Important Properties of Kùzu Transactions: 
-- Each transaction is identified as a write or read transaction (see below for how this is done).
-- At any point in time, there can be multiple read transactions but one write transaction.
+Every query, data manipulation command, DDL (i.e., new node/rel table schema definitions), or `COPY FROM` command to Kùzu is part of a transaction. Therefore, they depict all-or-nothing behavior, and after these commands or a set of them execute and are committed successfully, you are guaranteed that all of their changes will persist in entirety. If the commands do not execute successfully or are rolled back, you are guaranteed that none of their changes will persist.
+
+These conditions hold even if your system crashes at any point during a transaction. That is, once you commit a transaction successfully, all your changes will persist even if there is an error *after* committing. Similarly, if your system crashes before committing or rolling back, then none of your updates will persist.
+
+## Important Properties of Kùzu Transactions
+- Each transaction is identified as a read or write transaction (see below for how this is done).
+- At any point in time, there can be multiple read transactions but **one** write transaction.
 - There are two ways to use transactions: (i) manually beginning and committing/rolling back transactions; 
 or (ii) auto-committing. These are reviewed below.
 

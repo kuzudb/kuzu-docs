@@ -6,13 +6,6 @@ description: UNION is the clause where you combine query result A and query resu
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copy pasting the commands on that page. 
-
 # UNION
 `UNION` is the clause where you combine query result A and query result B 
 that have the same schema but were produced by different queries into a single result C
@@ -20,6 +13,8 @@ by taking their union. Two notes:
 
 - The number of columns and dataType of each column must be identical in A and B but their names can be different.
 - UNION will remove all duplicates in the union of A and B. Instead, UNION ALL preserves the duplicates.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 For example, the following query returns the age of the follower 
 of Zhang and Karissa without duplicate elimination

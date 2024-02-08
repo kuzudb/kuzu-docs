@@ -40,6 +40,8 @@ for an example. The 3 point bullet point after the "Knowledge graphs significant
 enhance RAG models" describes such an approach. According to my organization of RAG approaches, 
 such approaches would fall under RAG using structured data, since KGs are structured records.
 
+<!-- truncate -->
+
 :::tip TL;DR: The key takeaways from this post are:
 - **Two design decisions when preparing a RAG-U system are (i) "What additional data" to put in prompts; and (ii) "How to store and fetch" the additional data.**: Explored options for types of additional data include chunks of texts, full documents, or automatically extracted triples from documents. There are different ways to store and fetch this additional data, such as use of vector indices. Many combinations of this design space are not yet explored.
 - **Standard RAG-U**: A common design point, which I will call the standard RAG-U, is to add chunks of documents as additional data and store them in a vector index. I found some of the most technically deep and interesting future work directions in this space, e.g., extending vectors to matrices.

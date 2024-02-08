@@ -6,17 +6,12 @@ description: LIMIT controls the number of tuples returned from a query.
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copy pasting the commands on that page. 
-
 # LIMIT
 `LIMIT` controls the number of tuples returned from a query. It is often used within in an [ORDER BY](order-by.md) 
 clause to fetch the top k tuples from the query result. 
 Note: LIMIT accepts any expression that can be evaluated to an integer.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 For example, the following query returns the top three oldest users.
 Query:

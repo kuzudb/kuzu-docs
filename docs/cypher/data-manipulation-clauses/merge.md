@@ -6,15 +6,13 @@ sidebar_position: 4
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](../query-clauses/example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
 # MERGE
-`MERGE` clause tries to match the query pattern in database or, if not present, create the pattern in database. `MERGE <pattern>` can be interrepted as `If MATCH <pattern> then RETURN <pattern> ELES CREATE <patten>`. Note that there is no notion of partially match, i.e. either the whole pattern is matched or the whole pattern is created.
+`MERGE` clause tries to match the query pattern in database or, if not present, create the pattern in database. `MERGE <pattern>` can be interrepted as `If MATCH <pattern> then RETURN <pattern> ELSE CREATE <pattern>`. Note that there is no notion of partially matching of the pattern
+and creating the remaining parts. That is, either the whole pattern is matched or the whole pattern is created.
 
-Similar to `INSERT ON CONFLICT` in sql, `MERGE` clause comes with `ON CREATE` and `ON MATCH` set operation allowing user to specify addition update logic if the pattern is (not) found.
+Similar to `INSERT ON CONFLICT` in SQL, `MERGE` clause comes with `ON CREATE` and `ON MATCH` set operation allowing users to specify additional update logic if the pattern is (not) found.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 ## Merge Nodes
 
@@ -53,7 +51,7 @@ MATCH (:User) RETURN COUNT(*);
 ```
 
 ### Merge with `ON MATCH`
-`ON MATCH` specifies the set operation once a match is found. The followng query updates age property if pattern is matched.
+`ON MATCH` specifies the `SET` operation once a match is found. The followng query updates age property if pattern is matched.
 ```
 MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
 ------------------
@@ -64,7 +62,7 @@ MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
 ```
 
 ### Merge with `ON CREATE`
-`ON CREATE` specifies the set operation if no match is found. The following query updates age property if pattern is not matched.
+`ON CREATE` specifies the `SET` operation if no match is found. The following query updates age property if pattern is not matched.
 ```
 MERGE (n:User {name : 'Bob'}) ON CREATE SET n.age = 60 RETURN n.*;
 ------------------

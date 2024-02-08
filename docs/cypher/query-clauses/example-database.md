@@ -10,7 +10,9 @@ For the clauses we cover here, we will use the following graph database that
 consists of User and City nodes, Follows relationships between Users,
 and LivesIn relationships between Users and Cities.
 
+<div class="img-center">
 <img src={RunningExample} style={{width: 800}} />
+</div>
 
 The DDL statements to define the schema of this database, the csv files containing
 the records of the tables in the database and the data import (`COPY FROM`) commands

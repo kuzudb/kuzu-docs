@@ -1,14 +1,23 @@
 ---
-title: Load From
-sidebar_position: 12
+title: Scan
+sidebar_position: 11
 description: Direct scan over file
 ---
 
-# LOAD FROM
+# Scan
 
-`LOAD FROM` clause performs a direct scan over input file without loading it into the database. This can be useful when performing quick testing over a small sample of the file. `LOAD FROM` can be used in the exact same way as `MATCH`, meaning it can be followed by arbitrary clauses like `WHERE, RETURN, CREATE, ...`. Some example usage are as following.
+The `LOAD FROM` clause, which performs a direct scan over an input file without loading it into the database.
+This clause can be useful when performing quick testing to extract a small sample of a larger file
+to load into a node table, or to perform simple transformation tasks like rearranging column order.
 
-E.g. Filtering and aggregating over input file.
+`LOAD FROM` is designed to be used in the exact same way as `MATCH`, meaning that it can be followed
+by arbitrary clauses like `WHERE, RETURN, CREATE, ...`.
+
+## Example usage
+
+Some example usage is as follows.
+
+### Filtering/aggregating
 ```
 LOAD FROM "user.csv" (header = true)
 WHERE to_int64(age) > 25 
@@ -20,7 +29,7 @@ RETURN COUNT(*);
 ----------------
 ```
 
-E.g. Create nodes from input file.
+### Create nodes from input file
 ```
 LOAD FROM "user.csv" (header = true)
 CREATE (:User {name: name, age:to_int64(age)});
@@ -39,11 +48,32 @@ MATCH (u:User) RETURN u;
 ----------------------------------------------------
 ```
 
+### Reorder and subset columns
+
+You can also use the scan functionality to reorder and subset columns from a given dataset. For
+example, the following query will return just the `age` and `name` in that order, even if the
+input file has more columns specified in a different order.
+
+```
+LOAD FROM "user.csv" (header = true)
+RETURN age, name LIMIT 3;
+
+--------------------
+| age | name       |
+--------------------
+| 30  | Adam       |
+--------------------
+| 40  | Karissa    |
+--------------------
+| 50  | Zhang      |
+--------------------
+```
+
 
 ## Schema Information
 
 ### CSV Detection
-When loading from a CSV file, user can specify the same set of configuration as [importing from CSV through COPY](../../data-import/csv-import.md).
+When loading from a CSV file, user can specify the same set of configuration as [importing from CSV through COPY](../data-import/csv-import.md).
 
 If no header information is available, Kùzu will use the default cofiguration and parse each column as `STRING` type with name `column0, column1, ...`. E.g.
 ```
@@ -92,7 +122,7 @@ LOAD FROM "user.parquet" RETURN *;
 ----------------
 ```
 
-### Manually Speficy
+### Manually Specify
 To specify the schema information, user can use `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...`
 
 E.g. the following query will bind first column to `name` with STRING type and second column to `age` with INT64 type.
@@ -107,6 +137,7 @@ RETURN name, age;
 --------------
 ```
 #### Notes
-If header is specified manually
-- Kùzu will throw an exception if given does not match number of columns in the file.
-- Kùzu will always try to cast to the type specified header. An exception will be thrown if cast fails.
+If the header is specified manually
+- Kùzu will throw an exception if the given header does not the match number of columns in the file.
+- Kùzu will always try to cast to the type specified header. An exception will be thrown if the
+casting operation fails.

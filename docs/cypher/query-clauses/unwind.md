@@ -6,18 +6,13 @@ description: UNWIND allows you to "unnest" a list L that has k elements in it, i
 
 import RunningExample from '../running-example.png';
 
-# Database
-We will use the database, whose schema and data import commands are given [here](example-database.md):
-
-<img src={RunningExample} style={{width: 800}} />
-
-You can import this database by copy pasting the commands on that page. 
-
 # UNWIND
 `UNWIND` allows you to "unnest" a list L that has k elements in it,
 into a table T with k element. 
 When using UNWIND, you need to specify an alias to refer to the elements
 of the unnested list, i.e., T.
+
+We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
 
 For example, the following unnests a literal "list of strings" into multiple rows 
 and return them:
