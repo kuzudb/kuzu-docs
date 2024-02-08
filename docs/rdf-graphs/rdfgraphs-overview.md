@@ -144,18 +144,8 @@ need to use the previous pattern for triples between resources and resources and
 and inspect the properties of the mapped resources to match triples between resources and literals.
 
 ### Physical Storage of UniKG_rt and UniKG_lt Relationship Tables
-If you inspect  the schema of `UniKG_rt` or `UniKG_rl` tables, you will get the following Output:
-
-```
-CALL table_info("UniKG_rt") RETURN *;
-Output:
-------------------------------------
-| property id | name | type        |
-------------------------------------
-| 1           | pid  | INTERNAL_ID |
-------------------------------------
-```
-Instead of storing the "iri" property as a STRING column, Kùzu stores it as an integer property
+For `UniKG_rt` and `UniKG_rl` tables, instead of storing the "iri" property as a STRING column, 
+Kùzu stores it as an integer property
 that stores the system-level id of the resource that corresponds to the IRI of the predicate.
 Recall that each IRI that appears in your dataset is mapped to a separate resource node even if it is not
 the subject or object of a triple, such as "rdf:type" in our example. Consider
@@ -305,7 +295,7 @@ Output:
 | 123456789 | http://kuzu.io/rdf-ex#Adam | http://www.w3.org/1999/02/22-rdf-syntax-ns#type |       | http://kuzu.io/rdf-ex#student  |
 -------------------------------------------------------------------------------------------------------------------------------------
 ```
-Above, a is a node table record from the Student node table, s is a resource node from the `UniKG_r` node table, 
+Above, `a` is a node table record from the Student node table, `s` is a resource node from the `UniKG_r` node table, 
 `p` is either a relationship record from the `UniKG_rt` or `UniKG_lt` relationship tables, and `o` is either a resource or literal
 record from the `UniKG_r` or `UniKG_l` node tables.
 
