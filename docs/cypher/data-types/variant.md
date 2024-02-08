@@ -20,7 +20,7 @@ kz:Waterloo a kz:City ;
 Suppose that you insert these into an RDFGraph named `UniKG`. You will get the following values in the `val` column 
 of the Literals node table `UniKG_l`:
 ```
-MATCH (a:UniKG_r)-[p:UniKG_lt]->(o:UniKG_l 
+MATCH (a:UniKG_r)-[p:UniKG_lt]->(o:UniKG_l)
 RETURN a.iri, p.iri, o.val;
 -------------------------------------------------------------------------------------------------
 | a.iri                          | p.iri                                           | o.val      |

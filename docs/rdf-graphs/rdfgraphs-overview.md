@@ -50,10 +50,10 @@ The specifics of the mapping are as follows:
    `rdf:type` in the example database). Resource nodes have a 
    single property, `iri`, which stores the IRI of the resource as a string.
 
-2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, PRIMARY KEY (id))`: Stores the [Literals](rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples. 
+2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, lang STRING, PRIMARY KEY (id))`: Stores the [Literals](rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples. 
    Each unique literal that appears in the triples is mapped to a separate `UniKG_l` node. Literals have a 
-   single property, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant)
-   There is a second `id` property of type [SERIAL](../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table. 
+   two properties, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../cypher/data-types/string.md).
+   There is a third `id` property of type [SERIAL](../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table. 
 
 3. **Resource-to-Resource Triples Relationship Table** — `UniKG_rt(FROM UniKG_r, TO UniKG_r, iri STRING)`: Stores the triples between UniKG_r resources and 
    UniKG_r resources. `_rt` suffix stands for "**r**esource **t**riples", i.e., triples whose objects are resources. 
@@ -88,14 +88,14 @@ The contents of these mapped tables are shown below:
 
 </td><td>
 
-|_id | val |
-| -- | -- |
-| 0  | Waterloo (string) |
-| 1  | 150000 (int64) |
-| 2 | Adam (string) |
-| 3 | 30 (int64) |
-| 4 | Karissa (string) |
-| 5 | Zhang (string) |
+|_id | val | lang |
+| -- | -- | -- |
+| 0  | Waterloo (string) | |
+| 1  | 150000 (int64) | |
+| 2 | Adam (string) | |
+| 3 | 30 (int64) | |
+| 4 | Karissa (string) | |
+| 5 | Zhang (string) | |
 
 </td><td>
 
@@ -392,14 +392,14 @@ entire "chunk" of triples in the Turtle file; see the [documentation](./rdf-impo
 
 ### Using Blank Node IDs in CREATE Statements
 Kùzu has the convention that during bulk data import from Turtle or N-Triples files, 
-blank nodes are replaced with specific IRIs of the form `_:ibj`, where i and j are some integers.
-If you use IRIs of this form, say `_:7b4`, in your CREATE statements for Resource nodes,
+blank nodes are replaced with specific IRIs of the form `_:i`, where i is an integer.
+If you use IRIs of this form, say `_:i`, in your CREATE statements for Resource nodes,
 Kùzu will interpret these as simple strings. For example, if
 a blank node with IRI `_:7b4` already exists, Kùzu will not CREATE a new Resource node and instead error.
-Further, you cannot have predicates whose IRIs of the form `_:ibj` (as in Turtle files).
+Further, you cannot have predicates whose IRIs of the form `_:` (as in Turtle files).
 Kùzu will error on CREATE statements that try to create a relationship
 record in the `_rt` or `_lt` relationship tables with a predicate
-whose IRI is of the form `_:ibj`.
+whose IRI is of the form `_:`.
 
 ## Duplicate Triples
 Some RDF stores do not allow duplicate triples to be inserted into a database.
