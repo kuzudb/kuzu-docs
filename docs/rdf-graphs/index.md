@@ -32,3 +32,4 @@ RDFGraphs are therefore a specific mapping of your triples into
 Kùzu's native property graph data model, so you can query
 them with Cypher, Kùzu's native query language. This way, you can benefit from Kùzu's easy, scalable and
 fast querying capabilities (instead of SPARQL, which is the standard query language to query over RDF triples).
+
