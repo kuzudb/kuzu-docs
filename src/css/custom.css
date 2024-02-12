@@ -45,3 +45,10 @@ a.navbar__link.navbar__link--social{
 div.toggle_node_modules-\@docusaurus-theme-classic-lib-theme-ColorModeToggle-styles-module{
   padding-left: 6px;
 }
+
+.scroll-table {
+    overflow-x:scroll;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
