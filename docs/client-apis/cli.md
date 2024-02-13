@@ -60,8 +60,8 @@ kuzu> :help
     :thread [num_threads]     set number of threads for query execution
     :logging_level [logging_level]     set logging level of database, available options: debug, info, err
     :timeout [query_timeout]     set query timeout in ms
-    :maxrows [max_rows]     set maximum number of rows for display (default: 20)
-    :maxwidth [max_width]     set maximum width in characters for display
+    :max_rows [max_rows]     set maximum number of rows for display (default: 20)
+    :max_width [max_width]     set maximum width in characters for display
 ```
 
 ### `:clear`
