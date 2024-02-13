@@ -70,7 +70,7 @@ Clear shell. Alternatively, you can use `Ctrl + L` to clear the shell.
 ### `:quit`
 Exit from shell. Alternatively, you can use `Ctrl + D` to exit the shell.
 
-### `:thread [num_thread]`
+### `:thread [num_threads]`
 Set maximum number of threads to execute query in current connection.
 
 ### `:logging_level [logging_level]`
@@ -79,10 +79,10 @@ Set logging level, available options: debug, info, err
 ### `:timeout [query_timeout]`
 Set query timeout in ms.
 
-### `:maxrows [max_rows]`
+### `:max_rows [max_rows]`
 Set maximum number of rows for display. 0 defaults to 20.
 
-### `:maxwidth [max_width]`
+### `:max_width [max_width]`
 Set maximum width in characters for display. Defaults to terminal width if unable to display first and last columns. 
 
 ## Interrupt
