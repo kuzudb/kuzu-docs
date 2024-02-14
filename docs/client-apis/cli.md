@@ -57,9 +57,13 @@ kuzu> :help
     :help     get command list
     :clear     clear shell
     :quit     exit from shell
-    :thread [num_threads]     set number of threads for query execution
-    :logging_level [logging_level]     set logging level of database, available options: debug, info, err
-    :timeout [query_timeout]     set query timeout in ms
+    :max_rows [max_rows]     set maximum number of rows for display (default: 20)
+    :max_width [max_width]     set maximum width in characters for display
+
+    Note: you can change and see several system configurations, such as num-threads, 
+          timeout, and logging_level using Cypher CALL statements.
+          e.g. CALL THREADS=5; or CALL current_setting('threads') return *;
+          See: https://kuzudb.com/docusaurus/cypher/configuration
 ```
 
 ### `:clear`
@@ -68,14 +72,11 @@ Clear shell. Alternatively, you can use `Ctrl + L` to clear the shell.
 ### `:quit`
 Exit from shell. Alternatively, you can use `Ctrl + D` to exit the shell.
 
-### `:thread [num_thread]`
-Set maximum number of threads to execute query in current connection.
+### `:max_rows [max_rows]`
+Set maximum number of rows for display. 0 defaults to 20.
 
-### `:logging_level [logging_level]`
-Set logging level, available options: debug, info, err
-
-### `:timeout`
-Set query timeout in ms.
+### `:max_width [max_width]`
+Set maximum width in characters for display. Defaults to terminal width if unable to display first and last columns. 
 
 ## Interrupt
 To interrupt a running query, use `Ctrl + C` in CLI. Note: We currently don't support interrupting `COPY` statement.
