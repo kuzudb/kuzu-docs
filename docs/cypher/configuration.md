@@ -1,11 +1,11 @@
 ---
-title: Database Configuration
+title: Connection Configuration
 sidebar_position: 15
 ---
 
-# Database Configuration
+# Connection Configuration
 
-The configuration of Kùzu can be changed through standalone `Call` statement. Different from the `Call` clause, this statement of changing configuration cannot be used with other query clauses.
+The configuration of a connection to Kùzu database can be changed through standalone `Call` statement. Different from the `Call` clause, this statement of changing configuration cannot be used with other query clauses.
 
 | Option | Description |
 | ----------- | --------------- |
