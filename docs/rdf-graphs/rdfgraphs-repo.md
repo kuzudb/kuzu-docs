@@ -41,6 +41,8 @@ download these databases.
 
 </div>
 
+To verify your download, please use the MD5 checksums [here](https://rgw.cs.uwaterloo.ca/kuzu-rdf-database/0.2.0/md5.txt).
+
 If you would like to see another popular RDF dataset in Kùzu hosted here, please [email us](mailto:contact@kuzudb.com)
 or chat with our team on [Discord](https://discord.gg/jw7xN2ZhJB).
 
