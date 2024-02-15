@@ -57,8 +57,8 @@ by just clicking on the above link and double clicking on the zip file.
 
 ```bash
 > cd ${KZ-DB-BASE-DIR}
-> wget s3:xyz-e-wordnet-kz.zip
-> unzip s3:xyz-e-wordnet-kz.zip
+> wget https://rgw.cs.uwaterloo.ca/kuzu-rdf-database/0.2.0/zips/e-wordnet-kz.zip
+> unzip e-wordnet-kz.zip
 > ls 
 e-wordnet
 ```
