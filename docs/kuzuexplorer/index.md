@@ -1,7 +1,11 @@
 import DatasetsPanel from './datasets-panel.png';
 import DocCardList from '@theme/DocCardList';
+import SchemaPanel from './schema-panel.png';
+import QueryResultGraphView from './query-result-graph-view.png';
 
 # KùzuExplorer
+
+<img src={QueryResultGraphView}/>
 
 ## Overview
 
@@ -10,7 +14,7 @@ and query results in the form of a graph, table, or in json. This is a very usef
 databases and debugging applications during prototyping phase. These documentation pages describes the
 different panels in KùzuExplorer. Here, we first explain how to launch KùzuExplorer.
 
-## Launching KùzuExplorer
+## Launching Explorer
 
 KùzuExplorer is a web application that is launched from a deployed Docker image.
 Please refer to the [Docker documentation](https://docs.docker.com/get-docker/) for details on how to install and use Docker.

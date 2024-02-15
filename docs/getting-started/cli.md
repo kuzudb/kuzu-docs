@@ -5,8 +5,14 @@ sidebar_position: 0
 
 ## Downloading
 The Kùzu Command Line Interface (CLI) is a unified, dependency-free executable, precompiled for Mac, Linux and Windows systems.
-The CLI can be downloaded [here](https://github.com/kuzudb/kuzu/releases/latest) (search for `Assets` on the page and download the correct `kuzu_cli-xxx.zip` file for your platform). After the CLI is downloaded and extracted into a directory, you can navigate the directory via your terminal, and set it to have execute permissions with `chmod +x kuzu`.
-
+Follow these steps:
+1. Download the CLI from [here](https://github.com/kuzudb/kuzu/releases/latest): Go to `Assets` on the page and download the correct `kuzu_cli-xxx.zip` file for your platform. 
+2. Extract the `kuzu_cli-xxx.zip` file and give it execute permissions. For example, you can run the following commands on your shell.
+```
+# Replace `xxx` with the zip version you downloaded. This will output a file named kuzu.
+unzip kuzu_cli-xxx.zip
+chmod +x kuzu
+```
 ## Running the CLI
 You are now ready to run the executable using `./kuzu <db_path>`, where `<db_path>` is the directory for the database files. This path can point to an existing database or a yet-to-be-created directory, in which case Kùzu will automatically create the directory and initialize an empty database for you.
 If you input `test` as your `<db_path>`, you should see the following prompt:

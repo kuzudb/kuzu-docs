@@ -213,3 +213,8 @@ so use `rdf:subject`, `rdf:predicate`, `rdf:object`. You could have also made `k
 <`kz:KfollowsZ`, `kz:followee`, `kz:Zhang`> and keep the other two triple about the `since` property as before.
 This is an alternative representation that omits the `rdf:predicate` triple (the predicate is implicit 
 in the type `kz:follows` of `kz:KfollowsZ`). 
+
+### Note on RDF-Star
+[RDF-star](https://w3c.github.io/rdf-star/cg-spec/editors_draft.html) is an extension to RDF standard that allows reification in serialized files (e.g., `.ntx` files).
+Kùzu currently does not support storing RDF-star statements, e.g., you cannot load `.ntx` files into Kùzu.
+You have to explicitly reify those statements to import them into Kùzu.
