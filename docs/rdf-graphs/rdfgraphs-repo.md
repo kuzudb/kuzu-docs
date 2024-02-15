@@ -4,17 +4,18 @@ sidebar_position: 3
 
 ---
 
-# Pre-loaded RDFGraphs Repository
+# Preloaded RDFGraphs
 
-Below are a few examples of popular RDF datasets that have been imported to Kùzu and readily usable. 
-You can download these databases and without any additional setup, start querying them in Cypher with Kùzu. 
-Below are the datasets and their several properties. Clicking on the dataset name will start downloading the Kùzu database:
+To make getting started with RDF graphs simpler, we've uploaded ready-made databases for a few
+examples of popular RDF datasets that have already been imported to Kùzu.
+You can download these databases without any additional setup and start querying them in Cypher with Kùzu. 
 
-**Note on database versions**: The below databases have been pre-loaded to work with Kùzu [version 0.2.0](https://github.com/kuzudb/kuzu/releases/tag/v0.2.0).
+**Note on database versions**: The below databases have been preloaded to work with Kùzu [version 0.2.0](https://github.com/kuzudb/kuzu/releases/tag/v0.2.0).
+Because Kùzu's storage continually evolves, it's important to use the same version of Kùzu as was used to create the database, in this case, v0.2.0.
 
 :::tip
-In general, you can share your Kùzu databases with others by zipping the database directory, simply sharing the zip file
-and ensuring that both parties use the **same** Kùzu version.
+In general, you can easily share your Kùzu databases with others by zipping the database directory and send them the zip file
+via conventional means like object stores or shared drives. All you have to do is to ensure that both parties use the **same** Kùzu version.
 :::
 
 ## Preloaded RDFGraphs
@@ -71,14 +72,63 @@ Now you are ready to query and explore the database in Kùzu via Cypher! Below, 
 query the database with [Kùzu CLI](../getting-started/cli.md) but you can also use
 [Kùzu Explorer](../kuzuexplorer/index.md) or any of Kùzu's [client libraries](../client-apis/index.md).
 
-### Query the database
+### Visualize the data in KùzuExplorer
+
+To get familiar with the database and its schema, you can use KùzuExplorer, our visualization tool.
+See the download instructions [here](https://github.com/kuzudb/explorer?tab=readme-ov-file#option-1-using-an-existing-database)
+(note that you need Docker installed and running on your machine first).
+
+You can visualize the EWordnet RDFGraph schema from the Explorer by clicking on the "Schema" tab
+on the top right.
+
+![](./rdf-wordnet-schema.png)
+
+Run the following query in the editor to see 20 random triples as follows:
+
+```sql
+MATCH (s:EWordnet_r)-[p:EWordnet]->(o)
+RETURN * LIMIT 20;
+```
+
+![](./rdf-wordnet-viz.png)
+
+### Query the database using the CLI
+
+If you prefer to work in the terminal, you can just as well use the Kùzu CLI to query the database.
 
 Follow the instructions [here](../getting-started/cli#downloading)
 to download the CLI compatible with Kùzu [version 0.2.0](https://github.com/kuzudb/kuzu/releases/tag/v0.2.0).
-Then run the following command on your shell to start the CLI and issue a query:
+
+First, connect to the downloaded database's directory via the terminal.
 
 ```bash
 ./kuzu ${KZ-DB-BASE-DIR}/e-wordnet
+```
+
+Then run the following command on your shell to start the CLI and issue a query:
+
+Display the available tables in the database as follows:
+
+```bash
+kuzu> CALL show_tables() return *;
+------------------------------------
+| name        | type     | comment |
+------------------------------------
+| EWordnet_r  | NODE     |         |
+------------------------------------
+| EWordnet_l  | NODE     |         |
+------------------------------------
+| EWordnet_rt | REL      |         |
+------------------------------------
+| EWordnet_lt | REL      |         |
+------------------------------------
+| EWordnet    | RDFGraph |         |
+------------------------------------
+(5 tuples)
+```
+
+You can also run a count query to see the number of triples that match a specific condition:
+```bash
 kuzu> MATCH (s:EWordnet_r)-[p:EWordnet]->(o)
       RETURN COUNT(*);
 ----------------
