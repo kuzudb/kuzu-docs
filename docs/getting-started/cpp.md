@@ -75,7 +75,7 @@ int main() {
 Since we did not install the `libkuzu` as a system library, we need to override the linker search path to correctly compile the C++ code and run the compiled program.
 On Linux:
 ```bash
-env LIBRARY_PATH=. LD_LIBRARY_PATH=. g++ test.cpp -std=c++2a -lkuzu -lpthread -D_GLIBCXX_USE_CXX11_ABI=0
+env LIBRARY_PATH=. LD_LIBRARY_PATH=. g++ test.cpp -std=c++2a -lkuzu -lpthread
 env LIBRARY_PATH=. LD_LIBRARY_PATH=. ./a.out
 ```
 On macOS:
