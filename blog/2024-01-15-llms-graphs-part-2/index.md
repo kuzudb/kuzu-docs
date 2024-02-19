@@ -177,7 +177,7 @@ would be enhanced with an additional step as follows:
 
 That is, using some entity extraction mechanism, the chunks would be linked to the entities that
 they mention in the KG (assuming the KG contains these entities as nodes). You can think of this linking 
-as the adding new edges to the KG that relate entities to some chunkIDs that identify the chunks in the vector index. 
+as adding new edges to the KG that relate entities to some chunkIDs that identify the chunks in the vector index. 
 After the preprocessing step, the standard RAG-U system would be enhanced as follows:
 
 <div class="img-center">
