@@ -119,9 +119,9 @@ on the broader topic of natural language interfaces to databases.
 Neither of these surveys cover any work that directly uses LLMs such as GPT models, 
 which are quite recent developments. Take any of the work covered in these surveys and 
 you'll find an approach that requires significant engineering to build the pipeline shown in the above figure. 
-There exist several pre-LLM text-to-SQL systems (e.g., [ATHENA](https://www.vldb.org/pvldb/vol9/p1209-saha.pdf)
-or [BELA](https://download.hrz.tu-darmstadt.de/pub/FB20/Dekanat/Publikationen/UKP/76500354.pdf)). 
-For example, most of the pre-LLM approaches that use deep learning require
+There exist several pre-LLM text-to-SQL systems, such as [ATHENA](https://www.vldb.org/pvldb/vol9/p1209-saha.pdf)
+or [BELA](https://download.hrz.tu-darmstadt.de/pub/FB20/Dekanat/Publikationen/UKP/76500354.pdf). 
+Most of the pre-LLM approaches that use deep learning require
 hard work *to teach a model how to "speak" SQL* using large 
 corpora of tables and (question, query) examples, such as [WikiSQL](https://arxiv.org/abs/1709.00103) or [Spider](https://github.com/taoyds/spider).
 People had to solve and glue-together solutions to many technical problems, such as parsing the question,
@@ -135,7 +135,7 @@ I'll show next.
 If you have been following the developments in the LLM space, you will not be surprised to hear that nowadays people build 
 Q&A systems that convert $Q_{NL}$ to a high-level query language using two common tools:
 (i) [LangChain](https://www.langchain.com/); and (ii) [LlamaIndex](https://www.llamaindex.ai/).
-The same tools also integrate with the underlying storage system to load and retrieve your data. To make this more concrete, let me review the [Kùzu-LangChain integration](https://python.langchain.com/docs/use_cases/graph/graph_kuzu_qa), similar to the integrations found in other GDBMSs. You as a programmer have very little to do: you prepare your Kùzu
+The same tools also integrate with the underlying storage system to load and retrieve your data. To make this more concrete, let me review the [Kùzu-LangChain integration](https://python.langchain.com/docs/use_cases/graph/graph_kuzu_qa), which is similar to the integrations of other GDBMSs. You as a programmer have very little to do: you prepare your Kùzu
 database `db` and load your data into it, wrap it around a `KuzuGraph` and `KuzuQAChain` objects in Python and you have
 a text-to-Cypher pipeline:
 
@@ -190,7 +190,7 @@ Who played in The Godfather: Part II?
 ```
 
 Indeed, if you copy this prompt and paste it in [chatGPT's browser interface](https://chat.openai.com/), 
-you will get the same or very similar Cypher query. The important point is: that's all
+you will get the same or a very similar Cypher query. The important point is: that's all
 the coding you have to do to build a natural language interface that can query your database. 
 You ultimately construct a string prompt that contains $Q_{NL}$, some
 instructions, and schema of the database, and the LLM will generate a query for you. 
@@ -309,7 +309,7 @@ The below figure shows an overview of these approaches for reference:
    ```
 2. Indirect SQL Generation via Graph Modeling/SPARQL: In this approach, instead of the relational schema of the database, the same
    database is modeled as an *[OWL ontology](https://www.w3.org/OWL/)* (OWL is short for Web Ontology Language).
-   Ontology is another term for schema when modeling data as graph as classes and relationships between them. OWL is a W3C standard
+   Ontology is another term for schema when modeling data as a graph of classes and relationships between them. OWL is a W3C standard
    and part of the RDF technology stack so OWL ontologies are expressed as a set RDF triples, such as:
    ```
    ...
@@ -342,10 +342,12 @@ The below figure shows an overview of these approaches for reference:
    as the modeling as an ontology vs relational schema have direct translations from classes and properties to tables and columns.
 
 An interesting comparison. There is some intuition for why one would be interested in the effectiveness of
-query generation through an ontology because one of the well-known 
+query generation through an ontology. Specifically, one of the well-known 
 pre-LLM text-to-SQL papers [ATHENA](https://www.vldb.org/pvldb/vol9/p1209-saha.pdf) did something similar.
 Instead of SPARQL they had another query language over an ontology called Ontology Query Language, which
-was then mapped to SQL. 
+was then mapped to SQL. So we can expect benefits of mapping natural language to an ontology first, where 
+one can be explicit about class hierarchies and provide more information about metadata than standard 
+relational modeling.
 
 The results are even more interesting. The authors categorize their 43 questions into
 4 quadrants based on 2 dimensions: 
@@ -425,7 +427,7 @@ asked to generate a SPARQL query. I can hypothesize about a few possible reasons
     constraint was given an explicit English name: `hasCatastrophe` in the ontology. This explicitness may make
     it easier for LLMs to understand the schema and generate SPARQL queries.
 
-Both of these are qualitative hypotheses. however, there is a more immediate
+Both of these are qualitative hypotheses. However, there is a more immediate
 reason the authors of this paper may have obtained such major differences between the two approaches they tried.
 Intentionally or unintentionally, their ontology is simplified significantly compared to the relational schema they have.
 For example, the Claim relation has `Claim_Reopen_Date` and `Claim_Status_Code` properties which are removed from the ontology.
