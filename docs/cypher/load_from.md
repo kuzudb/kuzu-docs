@@ -69,10 +69,32 @@ RETURN age, name LIMIT 3;
 --------------------
 ```
 
+### Enforce Schema
+To enforce a specific schema when reading CSV, user can use `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...`
 
-## Schema Information
+E.g. the following query will bind first column to `name` to the STRING type and second column to `age` to the INT64 type.
 
-### CSV Detection
+```
+LOAD WITH HEADERS (name STRING, age INT64) FROM "user.csv" (header = true)
+WHERE name =~ 'Adam*'
+RETURN name, age;
+--------------
+| name | age |
+--------------
+| Adam | 30  |
+--------------
+```
+
+:::info Note
+If the header is specified manually:
+- Kùzu will throw an exception if the given header does not the match number of columns in the file.
+- Kùzu will always try to cast to the type specified header. An exception will be thrown if the
+casting operation fails.
+:::
+
+## Scan Data Formats
+
+### CSV
 When loading from a CSV file, user can specify the same set of configuration as [importing from CSV through COPY](../data-import/csv-import.md).
 
 If no header information is available, Kùzu will use the default cofiguration and parse each column as `STRING` type with name `column0, column1, ...`. E.g.
@@ -103,7 +125,7 @@ LOAD FROM "user.csv" (header = true) RETURN *;
 -----------------
 ```
 
-### Parquet Detection
+### Parquet
 
 Since parquet file contains schema, Kùzu will always use parquet schema information. 
 
@@ -122,22 +144,38 @@ LOAD FROM "user.parquet" RETURN *;
 ----------------
 ```
 
-### Manually Specify
-To specify the schema information, user can use `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...`
+### Pandas
 
-E.g. the following query will bind first column to `name` with STRING type and second column to `age` with INT64 type.
+Kùzu allows zero-copy access to Pandas DataFrames. The data types within a Pandas DataFrame will be used to infer the schema of the data.
+
+Because Pandas is a Python-only DataFrame library, the following example is for Python users. We first create a Pandas
+DataFrame as follows:
+
+```py
+import kuzu
+import pandas as pd
+
+db = kuzu.Database("persons")
+conn = kuzu.Connection(db)
+
+df = pd.DataFrame({
+    "name": ["Adam", "Karissa", "Zhang", "Noura"],
+    "age": [30, 40, 50, 25]
+})
 ```
-LOAD WITH HEADERS (name STRING, age INT64) FROM "user.csv" (header = true)
-WHERE name =~ 'Adam*'
-RETURN name, age;
---------------
-| name | age |
---------------
-| Adam | 30  |
---------------
+
+The Pandas DataFrame can be scanned using the LOAD FROM clause just like we would from
+an external file. The data access occurs in a zero-copy manner, meaning that Kùzu natively scans
+the underlying Pandas data objects.
+
+```py
+result = conn.execute("LOAD FROM df RETURN *;")
+print(result.get_as_df())
+
+# Result
+      name  age
+0     Adam   30
+1  Karissa   40
+2    Zhang   50
+3    Noura   25
 ```
-#### Notes
-If the header is specified manually
-- Kùzu will throw an exception if the given header does not the match number of columns in the file.
-- Kùzu will always try to cast to the type specified header. An exception will be thrown if the
-casting operation fails.
