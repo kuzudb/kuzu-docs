@@ -17,7 +17,7 @@ import TabItem from '@theme/TabItem';
 <TabItem value="mac">
 
 ```
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/kuzu_cli-osx-universal.tar.gz
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/kuzu_cli-osx-universal.tar.gz
 ```
 
 </TabItem>
@@ -27,13 +27,13 @@ https://github.com/kuzudb/kuzu/releases/download/v0.2.2/kuzu_cli-osx-universal.t
 - x86-64
 
 ```
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/kuzu_cli-linux-x86_64.tar.gz
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/kuzu_cli-linux-x86_64.tar.gz
 ```
 
 - aarch64
 
 ```
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/kuzu_cli-linux-aarch64.tar.gz
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/kuzu_cli-linux-aarch64.tar.gz
 ```
 
 </TabItem>
@@ -41,7 +41,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.2.2/kuzu_cli-linux-aarch64.t
 <TabItem value="win">
 
 ```
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/kuzu_cli-windows-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/kuzu_cli-windows-x86_64.zip
 ```
 
 </TabItem>
@@ -93,7 +93,7 @@ pip install kuzu
 <TabItem value="mac">
 
 ```
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/libkuzu-osx-universal.tar.gz
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/libkuzu-osx-universal.tar.gz
 ```
 
 </TabItem>
@@ -103,19 +103,19 @@ https://github.com/kuzudb/kuzu/releases/download/v0.2.2/libkuzu-osx-universal.ta
 - x86-64
 
 ```
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/libkuzu-linux-x86_64.tar.gz
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/libkuzu-linux-x86_64.tar.gz
 ```
 
 - aarch64
 
 ```
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/libkuzu-linux-aarch64.tar.gz
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/libkuzu-linux-aarch64.tar.gz
 ```
 
 - x86-64 ([old ABI](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html))
 
 ```
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/libkuzu-linux-old_abi-x86_64.tar.gz
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/libkuzu-linux-old_abi-x86_64.tar.gz
 ```
 
 </TabItem>
@@ -123,7 +123,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.2.2/libkuzu-linux-old_abi-x8
 <TabItem value="win">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.2/libkuzu-windows-x86_64.zip
+https://github.com/kuzudb/kuzu/releases/download/v0.2.1/libkuzu-windows-x86_64.zip
 ```
 
 </TabItem>
@@ -200,7 +200,7 @@ cargo add kuzu
 
 ## Java
 
-Download the latest version [here](https://github.com/kuzudb/kuzu/releases/download/v0.2.2/kuzu_java.jar), and put it under `src/main/resources`. (We assume this is the project directory structure and the project dependency is managed through Apache Maven).
+Download the latest version [here](https://github.com/kuzudb/kuzu/releases/download/v0.2.1/kuzu_java.jar), and put it under `src/main/resources`. (We assume this is the project directory structure and the project dependency is managed through Apache Maven).
 
 <Tabs groupId="installation" defaultValue="mac" values={[
       { label: 'MacOS', value: 'mac', },
@@ -214,7 +214,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/downl
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.1</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -228,7 +228,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/downl
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.1</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -242,7 +242,7 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/downl
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.1</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
