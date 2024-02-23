@@ -1,7 +1,6 @@
 ---
 title: Preloaded RDFGraphs
 sidebar_position: 3
-
 ---
 
 # Pre-loaded RDFGraphs Repository
@@ -10,7 +9,7 @@ Below are a few examples of popular RDF datasets that have been imported to Kùz
 You can download these databases and without any additional setup, start querying them in Cypher with Kùzu. 
 Below are the datasets and their several properties. Clicking on the dataset name will start downloading the Kùzu database:
 
-**Note on database versions**: The below databases have been pre-loaded to work with Kùzu version [0.2.0](https://github.com/kuzudb/kuzu/releases/tag/v0.2.0) and [0.2.1](https://github.com/kuzudb/kuzu/releases/tag/v0.2.1).
+**Note on database versions**: The below databases have been pre-loaded to work with Kùzu version 0.2.x ([0.2.0](https://github.com/kuzudb/kuzu/releases/tag/v0.2.0), [0.2.1](https://github.com/kuzudb/kuzu/releases/tag/v0.2.1), and [0.2.2](https://github.com/kuzudb/kuzu/releases/tag/v0.2.2)).
 
 :::tip
 In general, you can share your Kùzu databases with others by zipping the database directory, simply sharing the zip file
