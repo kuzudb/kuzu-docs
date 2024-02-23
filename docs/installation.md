@@ -200,7 +200,7 @@ cargo add kuzu
 
 ## Java
 
-Download the latest version [here](https://github.com/kuzudb/kuzu/releases/latest), and put it under `src/main/resources`. (We assume this is the project directory structure and the project dependency is managed through Apache Maven).
+Download the latest version [here](https://github.com/kuzudb/kuzu/releases/download/v0.2.2/kuzu_java.jar), and put it under `src/main/resources`. (We assume this is the project directory structure and the project dependency is managed through Apache Maven).
 
 <Tabs groupId="installation" defaultValue="mac" values={[
       { label: 'MacOS', value: 'mac', },
