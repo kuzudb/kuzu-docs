@@ -1,7 +1,6 @@
 ---
 title: Preloaded RDFGraphs
 sidebar_position: 3
-
 ---
 
 # Preloaded RDFGraphs

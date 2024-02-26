@@ -7,6 +7,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 ## Command Line
+
 <Tabs groupId="installation" defaultValue="mac" values={[
       { label: 'MacOS', value: 'mac', },
       { label: 'Linux', value: 'linux', },
@@ -15,36 +16,37 @@ import TabItem from '@theme/TabItem';
 >
 <TabItem value="mac">
 
-- Intel
-```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-osx-x86_64.zip
- ```
-
-- Apple Silicon
-```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-osx-arm64.zip
+```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/kuzu_cli-osx-universal.tar.gz
 ```
 
 </TabItem>
 
 <TabItem value="linux">
 
-```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-linux-x86_64.zip
- ```
+- x86-64
+
+```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/kuzu_cli-linux-x86_64.tar.gz
+```
+
+- aarch64
+
+```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/kuzu_cli-linux-aarch64.tar.gz
+```
 
 </TabItem>
 
 <TabItem value="win">
 
-```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-windows-x86_64.zip
- ```
+```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/kuzu_cli-windows-x86_64.zip
+```
 
 </TabItem>
 
 </Tabs>
-
 
 ## Python
 
@@ -58,7 +60,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.2.0/kuzu_cli-windows-x86_64.
 
 ```bash
 pip install kuzu
- ```
+```
 
 </TabItem>
 
@@ -66,7 +68,7 @@ pip install kuzu
 
 ```bash
 pip install kuzu
- ```
+```
 
 </TabItem>
 
@@ -74,7 +76,7 @@ pip install kuzu
 
 ```bash
 pip install kuzu
- ```
+```
 
 </TabItem>
 
@@ -90,31 +92,39 @@ pip install kuzu
 >
 <TabItem value="mac">
 
-- Intel
-```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-osx-x86_64.zip
- ```
-
-- Apple Silicon
-```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-osx-arm64.zip
+```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/libkuzu-osx-universal.tar.gz
 ```
 
 </TabItem>
 
 <TabItem value="linux">
 
-```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-linux-x86_64.zip
- ```
+- x86-64
+
+```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/libkuzu-linux-x86_64.tar.gz
+```
+
+- aarch64
+
+```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/libkuzu-linux-aarch64.tar.gz
+```
+
+- x86-64 ([old ABI](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html))
+
+```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/libkuzu-linux-old_abi-x86_64.tar.gz
+```
 
 </TabItem>
 
 <TabItem value="win">
 
 ```bash
-https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-windows-x86_64.zip
- ```
+https://github.com/kuzudb/kuzu/releases/download/v0.3.0/libkuzu-windows-x86_64.zip
+```
 
 </TabItem>
 
@@ -132,7 +142,7 @@ https://github.com/kuzudb/kuzu/releases/download/v0.2.0/libkuzu-windows-x86_64.z
 
 ```bash
 npm install kuzu
- ```
+```
 
 </TabItem>
 
@@ -140,7 +150,7 @@ npm install kuzu
 
 ```bash
 npm install kuzu
- ```
+```
 
 </TabItem>
 
@@ -148,7 +158,7 @@ npm install kuzu
 
 ```bash
 npm install kuzu
- ```
+```
 
 </TabItem>
 
@@ -166,7 +176,7 @@ npm install kuzu
 
 ```bash
 cargo add kuzu
- ```
+```
 
 </TabItem>
 
@@ -174,7 +184,7 @@ cargo add kuzu
 
 ```bash
 cargo add kuzu
- ```
+```
 
 </TabItem>
 
@@ -182,14 +192,15 @@ cargo add kuzu
 
 ```bash
 cargo add kuzu
- ```
+```
 
 </TabItem>
 
 </Tabs>
 
 ## Java
-Download the latest version [here](https://github.com/kuzudb/kuzu/releases/latest), and put it under `src/main/resources`. (We assume this is the project directory structure and the project dependency is managed through Apache Maven).
+
+Download the latest version [here](https://github.com/kuzudb/kuzu/releases/download/v0.3.0/kuzu_java.jar), and put it under `src/main/resources`. (We assume this is the project directory structure and the project dependency is managed through Apache Maven).
 
 <Tabs groupId="installation" defaultValue="mac" values={[
       { label: 'MacOS', value: 'mac', },
@@ -203,11 +214,11 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.1.0</version>
+    <version>0.3.0</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
- ```
+```
 
 </TabItem>
 
@@ -217,11 +228,11 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.1.0</version>
+    <version>0.3.0</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
- ```
+```
 
 </TabItem>
 
@@ -231,23 +242,24 @@ Download the latest version [here](https://github.com/kuzudb/kuzu/releases/lates
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzudb</artifactId>
-    <version>0.1.0</version>
+    <version>0.3.0</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
- ```
+```
 
 </TabItem>
 
 </Tabs>
 
 ## Nightly Builds
+
 We have setup a nightly build pipeline for those who want to access latest feature set. To use the latest nightly version of Kùzu, follow the instructions below:
 
 For Python API, the latest nightly version can be installed with `pip install --pre kuzu`.
 
 For Node.js API, the latest nightly version can be installed with `npm i kuzu@next`.
 
-For Rust API, the latest nightly version can be found at [crates.io](https://crates.io/crates/kuzu/versions).
+For Rust API, the latest version can be installed directly from the GitHub repository.
 
 For CLI, C and C++ shared library, and Java JAR, the latest nightly version can be downloaded from the latest run of [this GitHub Actions pipeline](https://github.com/kuzudb/kuzu/actions/workflows/build-and-deploy.yml).
