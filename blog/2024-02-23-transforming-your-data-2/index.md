@@ -69,7 +69,7 @@ The following graph schema makes sense for our dataset:
 <img src={GraphSchema}/>
 </div>
 
-The transactions are modelled as edges, with an `is_disputed` property to indicate whether the
+The transactions are modelled as edges, with an `is_disputed` property to indicate whether
 a transaction is disputed or not. This simplifies the kinds of queries we need to write, and is
 sufficient for our initial analysis.
 
@@ -96,7 +96,7 @@ format that need to be inserted into Kùzu:
 ```
 
 The script `load_data.py` reads the CSV files and inserts the data into Kùzu using the Python API.
-The result of running this script is that we a graph whose schema matches that shown in the sketch
+The result of running this script is a graph whose schema matches that shown in the sketch
 above.
 
 <div class="img-center">
@@ -105,8 +105,8 @@ above.
 
 ## Exploratory data analysis
 
-Once the data is loaded into Kùzu, it's trivial to begin exploring the data using Cypher queries
-in one of three ways: i) using a Kùzu CLI shell ii) using a Jupyter notebook, and iii) using the
+Once the data is loaded into Kùzu, it's very simple to begin exploring the data using Cypher queries
+in one of three ways: i) using a Kùzu CLI shell, ii) using a Jupyter notebook, and iii) using the
 Kùzu Explorer UI. Because the goal of this exercise is to perform exploratory data analysis on the
 graph, we'll [Kùzu Explorer](https://github.com/kuzudb/explorer) to visualize the graph and run Cypher queries.
 
@@ -143,9 +143,8 @@ company using the following query:
 
 ```sql
 MATCH (c:Client)-[t:TransactedWith]->(m:Merchant)-[b:BelongsTo]->(co:Company)
-WHERE co.company = "Panera Bread"
-WITH *
 MATCH (m)-[l:LocatedIn]->(ci:City {city: "Boston"})
+WHERE co.company = "Panera Bread"
 RETURN * LIMIT 25;
 ```
 
@@ -166,9 +165,8 @@ clients reported disputed transactions.
 
 ```sql
 MATCH (c:Client)-[t:TransactedWith]->(m:Merchant)
-WHERE t.is_disputed = true
-WITH *
 MATCH (c)-[t2:TransactedWith]->(m2:Merchant)
+WHERE t.is_disputed = true
 RETURN * LIMIT 25;
 ```
 
@@ -181,10 +179,10 @@ marked as `true`.
 <img src={QueryDisputedVicinity}/>
 </div>
 
-It can be seen that certain clients interacted with multiple merchants, some of which share common paths with
-with one another. In other cases, a disputed transaction subgraph has no common paths with the larger graph,
-resulting in a disjoint cluster. Fraud is less likely in the latter case, because a fraudster would
-likely interact with multiple clients who have merchants that they interacted with in common.
+It can be seen that certain clients interacted with multiple merchants, some of which form a cluster.
+In other cases, nodes in the vicinity of a disputed transaction have no common paths with the larger graph,
+resulting in a disjoint subgraph. Fraud is less likely in the latter case, because a fraudster would
+likely have interacted with multiple clients that are part of a cluster sharing common merchants.
 
 The list of client names who reported disputed transactions can be listed as follows:
 
@@ -323,14 +321,16 @@ nodes. This helps narrow down on a transaction subgraph that has a greater degre
 
 ### Closeness centrality
 
-Centrality algorithms are among the most commonly used algorithms in graph data science. They are
-used to detect nodes that spread information efficiently, or that are important in some way by
-measuring how central a node is relative to the group. Closeness centrality[^2] is different from
-common algorithms like PageRank or degree centrality in that they indicate how _close_ a node is
-to all other nodes. It is calculated as the average of the shortest path length from the node to
-every other node in the network in the graph.
+Centrality algorithms are among the most commonly used algorithms in graph data science. 
+At a high-level, centrality algorithms are used to identify "important" nodes - specifically, nodes
+that serve the role of connecting many other nodes in the graph. Suppose the owner of our
+transaction graph is an e-commerce company, and that the company wants to promote its
+"important merchants" to attract more customers to its network. Centrality metrics, similar to the
+popular PageRank metric, are concrete ways to order nodes in terms of "importance".
 
-For this metric, we will first isolate the full subgraph of clients, merchants and transactions, not
+Closeness centrality[^2] measures how close a node `n` is to all other nodes by calculating the
+*average* of the shortest path length from `n` to every other node in the graph. For this example,
+we will first isolate the full subgraph of all clients, merchants and transactions, not
 just those in the vicinity of disputed transactions.
 
 ```py
@@ -420,7 +420,7 @@ Kùzu's in-process architecture makes it very friendly towards these sorts of wo
 data scientist having to worry about servers or managing infrastructure. Data can be conveniently read into Kùzu from a
 variety of sources, including relational databases, CSV or parquet files, or DataFrames. Future
 versions of Kùzu will support more convenience features, such as the ability to natively scan
-PostgreSQL tables, as well as native support for arrow tables (and eventually, Polars).
+PostgreSQL tables, as well as native support for Arrow tables.
 
 In summary, the interoperability of an embedded graph database with popular Python libraries like
 NetworkX and Pandas makes Kùzu a powerful tool for graph data science. If you have data of a similar
