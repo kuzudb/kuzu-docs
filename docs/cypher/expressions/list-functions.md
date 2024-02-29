@@ -2,6 +2,11 @@
 title: List Functions
 description: List functions are used to create and manipulate lists.
 ---
+# List Operators
+| Operator | Description | Example | Result |
+| ----------- | ----------- |  ----------- |  ----------- |
+| IN | operator for list_contains | 1 IN [1,2,3]  | true | 
+
 # List Functions
 
 | Function | Description | Example | Result |
@@ -30,6 +35,7 @@ description: List functions are used to create and manipulate lists.
 | array_has(list, element) | alias of list_contains | array_has([3,4,5], 5) | true |
 | list_slice(list, begin, end) | extracts a sublist using slice conventions and negative values are accepted. | list_slice([3,4,5], 2, 3) | [4] |
 | array_slice(list, begin, end) | alias of list_slice | array_slice([6,7,1], 1, 3) | [6,7] |
+| list_reverse(list) | reverse list elements | list_reverse([1,2,3]) | [3,2,1] |
 | list_sort(list) | sorts the elements of the list. More configurations available [here](#list_sort-function) | list_sort([3,10,4]) | [3,4,10] |
 | list_reverse_sort(list) | alias of list_sort(list, 'DESC') | list_reverse_sort([3,10,4]) | [10,4,3] |
 | list_sum(list) | sums the elements of the list. | list_sum(1,2,3) | 6 |
