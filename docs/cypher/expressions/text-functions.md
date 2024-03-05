@@ -20,6 +20,7 @@ description: Text functions are used to manipulate text.
 | ends_with(string1, string2) | alias of suffix | ends_with("best student", "student") | true  |
 | lcase(string) | alias of lower | lcase("UPPER CASE") | "upper case" |
 | left(string, count) | returns the left most count number of characters from string | left("long string", 2) | "lo" |
+| levenshtein(s1, s2) | returns the minimum number of single-character edits (insertions, deletions or substitutions) required to transform string s1 to s2 (case-insensitive).  | levenshtein('kitten', 'sitting') | 3 |
 | size(string) | returns the number of characters in string | size("database") | 8 |
 | list_element(string, index) | alias of array_extract | list_element("university", 3) | "i" | 
 | list_extract(string, index) | alias of array_extract | list_extract("waterloo", 2) | "a" |
