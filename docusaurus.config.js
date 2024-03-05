@@ -144,7 +144,7 @@ const config = {
             items: [
               {
                 label: "Blog",
-                to: "/blog",
+                href: "//blog.kuzudb.com",
               },
               {
                 label: "GitHub",
