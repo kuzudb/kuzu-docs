@@ -29,4 +29,4 @@ This command generates static content into the `build` directory and can be serv
 
 ### Deployment
 
-A CI pipeline is configured to deploy the documentation to the server. The pipeline is triggered when a commit is pushed to the `main` branch. The CI pipeline will automatically build the documentation and create a pull request in the [kuzudb.github.io repository](https://github.com/kuzudb/kuzudb.github.io). Merging the pull request will automatically deploy the documentation to the server.
+A CI pipeline is configured to deploy the documentation to the server. The pipeline is triggered when a commit is pushed to the `main` branch. The CI pipeline will automatically build the documentation ane deploy the documentation to https://docs.kuzudb.com.
