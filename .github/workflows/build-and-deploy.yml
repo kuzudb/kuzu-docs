@@ -1,56 +1,46 @@
-name: CI
-
+name: Build and Deploy
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Install Node.js dependencies
-        run: npm install --include=dev
-
-      - name: Build website
-        run: npm run build
-      
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          repository: kuzudb/kuzudb.github.io
-          token: ${{ secrets.DOC_PUSH_TOKEN }}
-          path: kuzudb.github.io
-        
-      - name: Remove old documentations
-        run: rm -rf kuzudb.github.io/docusaurus
-        
-      - name: Move new documentations
-        run: |
-          mv build kuzudb.github.io/docusaurus
-          
-        
-      - name: Push changes
-        working-directory: kuzudb.github.io
-        run: |
-          git checkout -b "documentation-update-${{ github.sha }}"
-          git config --global user.name "CI User"
-          git config --global user.email "contact@kuzudb.com"
-          git add .
-          git commit -m "Update documentation"
-          git push -u origin "documentation-update-${{ github.sha }}"
-      
-      - name: Create pull request
-        working-directory: kuzudb.github.io
-        run: |
-          echo "${{ secrets.DOC_PUSH_TOKEN }}" > token.txt
-          gh auth login --with-token < token.txt
-          rm -rf token.txt
-          gh pr create \
-            --body "Action triggered by commit: <a href='https://github.com/kuzudb/kuzu-docs/commit/${{ github.sha }}'> ${{ github.sha }} </a>" \
-            --title "Update documentations" \
-            --head "documentation-update-${{ github.sha }}" \
-            --base "main"
-      
+          node-version: 20
+      - name: Install dependencies
+        run: npm i
+      - name: Build with Docusaurus
+        run: npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: github-pages
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
