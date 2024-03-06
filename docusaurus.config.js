@@ -194,12 +194,12 @@ const config = {
           content: "https://kuzudb.com/img/logo-u-with-orange-tick.jpg",
         },
       ],
-      // algolia: {
-      //   appId: "XV0PE3XW33",
-      //   apiKey: "4bfd55d3ab2a3f3a4ee8a806d6bf8099",
-      //   indexName: "kuzudb",
-      //   contextualSearch: true,
-      // },
+      algolia: {
+        appId: "XV0PE3XW33",
+        apiKey: "4bfd55d3ab2a3f3a4ee8a806d6bf8099",
+        indexName: "kuzudb",
+        contextualSearch: true,
+      },
     }),
   stylesheets: [
     {
