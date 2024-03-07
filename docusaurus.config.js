@@ -164,7 +164,7 @@ const config = {
         {
           name: "keywords",
           content: "graph database, graph db, docs, documentation",
-        }
+        },
         {
           name: "og:locale",
           content: "en_US",
