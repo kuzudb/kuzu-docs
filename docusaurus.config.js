@@ -8,7 +8,7 @@ const katex = require("rehype-katex");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Kùzu",
+  title: "Kùzu Docs",
   tagline:
     "Kùzu is an in-process property graph database management system built for query speed and scalability.",
   favicon: "img/favicon.ico",
