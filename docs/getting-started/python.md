@@ -92,9 +92,9 @@ u.age: [[30,40,50,25]]
 
 We've compiled a series of Google Colab notebooks that demonstrate how Kùzu can be used through Python APIs, and integrated with the Python data science ecosystem:
 
-- [Kùzu Quick Start](https://colab.research.google.com/drive/1r9Yay6hUvrcxLrnmh3mz8uXHFKs12xUZ?usp=sharing)
-- [Cypher in Kùzu: Intro](https://colab.research.google.com/drive/1zgTCEOFdskYRQ45COYRww7sA6fTXE66S?usp=sharing)
-- [Export Query Results to NetworkX](hhttps://colab.research.google.com/drive/1_AK-CHELz0fLAc2RCPvPgD-R7-NGyrGu?usp=sharing)
-- [Export Query Results to PyTorch Geometric: Node Property Prediction Example](https://colab.research.google.com/drive/1ijFoPN4USr4umUzRoCfRPFNZfbhKKLcC?usp=sharing)
-- [Export Query Results to PyTorch Geometric: Link Prediction Example](https://colab.research.google.com/drive/1OxlDLUYZL8jTkqKdVebFtek7yZ5of7FK?usp=sharing)
-- [Using Kùzu as PyTorch Geometric Remote Backend](https://colab.research.google.com/drive/1OKohp9SlRNe0EO5HrLcNqyqi4XsLFdrV?usp=sharing)
+- [Kùzu Quick Start](https://colab.research.google.com/drive/1r9Yay6hUvrcxLrnmh3mz8uXHFKs12xUZ)
+- [Cypher in Kùzu: Intro](https://colab.research.google.com/drive/1zgTCEOFdskYRQ45COYRww7sA6fTXE66S)
+- [Export Query Results to NetworkX](https://colab.research.google.com/drive/1_AK-CHELz0fLAc2RCPvPgD-R7-NGyrGu)
+- [Export Query Results to PyTorch Geometric: Node Property Prediction Example](https://colab.research.google.com/drive/1ijFoPN4USr4umUzRoCfRPFNZfbhKKLcC)
+- [Export Query Results to PyTorch Geometric: Link Prediction Example](https://colab.research.google.com/drive/1OxlDLUYZL8jTkqKdVebFtek7yZ5of7FK)
+- [Using Kùzu as PyTorch Geometric Remote Backend](https://colab.research.google.com/drive/1OKohp9SlRNe0EO5HrLcNqyqi4XsLFdrV)
