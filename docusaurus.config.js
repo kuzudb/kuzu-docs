@@ -8,7 +8,7 @@ const katex = require("rehype-katex");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Kùzu Docs",
+  title: "Docs - Kùzu",
   tagline:
     "Kùzu is an in-process property graph database management system built for query speed and scalability.",
   favicon: "img/favicon.ico",
@@ -153,12 +153,12 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Kùzu Team. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Kùzu Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ["java", "rust"],
+        additionalLanguages: ["java", "rust", "cypher"],
       },
       metadata: [
         {
