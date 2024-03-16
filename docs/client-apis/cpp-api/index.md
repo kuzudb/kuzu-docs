@@ -5,7 +5,7 @@ import DocCardList from '@theme/DocCardList';
 [Detailed C++ API documentation can be found here](https://kuzudb.com/api-docs/cpp/annotated.html).
 
 This module contains C++ API documentaion. Please
-see the [getting started instructions](../../getting-started/cpp.md) for details on installation and environment setup.
+see the [getting started instructions](../../getting-started/quick-start/cpp.md) for details on installation and environment setup.
 Here is a short example on a small program that
 demonstrates how to construct at `Database` instance and issue a query.
 

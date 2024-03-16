@@ -1,6 +1,6 @@
 ---
 title: Node.js
-sidebar_position: 4
+sidebar_position: 2
 ---
 
 [Detailed Node.js API documentation can be found here](https://kuzudb.com/api-docs/nodejs). This page is a brief guide

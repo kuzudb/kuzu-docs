@@ -69,7 +69,7 @@ If the download was successful, you should see the `e-wordnet` directory when yo
 
 Now you are ready to query and explore the database in Kùzu via Cypher! Below, we show how you
 query the database with [Kùzu CLI](../getting-started/cli.md) but you can also use
-[Kùzu Explorer](../kuzuexplorer/index.md) or any of Kùzu's [client libraries](../client-apis/index.md).
+[Kùzu Explorer](../visualization/index.md) or any of Kùzu's [client libraries](../client-apis/index.md).
 
 ### Visualize the data in KùzuExplorer
 

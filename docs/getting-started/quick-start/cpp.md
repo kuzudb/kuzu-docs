@@ -1,6 +1,6 @@
 ---
 title: C++
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 [Detailed C++ API documentation can be found here](https://kuzudb.com/api-docs/cpp/annotated.html). This page is a brief guide 

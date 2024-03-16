@@ -1,28 +1,40 @@
 ---
-title: Command Line
-sidebar_position: 0
+title: CLI
+sidebar_position: 1
 ---
 
-## Downloading
-The Kùzu Command Line Interface (CLI) is a unified, dependency-free executable, precompiled for Mac, Linux and Windows systems.
-Follow these steps:
-1. Download the CLI from [here](https://github.com/kuzudb/kuzu/releases/latest): Go to `Assets` on the page and download the correct `kuzu_cli-xxx.zip` file for your platform. 
-2. Extract the `kuzu_cli-xxx.zip` file and give it execute permissions. For example, you can run the following commands on your shell.
-```
+The Kùzu Command Line Interface (CLI) is a unified, dependency-free executable that has been
+precompiled for Linux, MacOS, and Windows systems. If you're familiar with command line utilities and
+want to begin using Kùzu with no dependencies, the CLI is the best place to start.
+
+## Download
+
+Follow these steps to use the CLI and get started with Kùzu:
+1. [Download the latest version](https://kuzudb.com/#download) of the CLI by clicking on the link for your operating system.
+2. Extract the `kuzu_cli-xxx.zip` file and give it executable permissions. For Linux/MacOS, you
+can run the command shown below.
+
+```bash
 # Replace `xxx` with the zip version you downloaded. This will output a file named kuzu.
 unzip kuzu_cli-xxx.zip
 chmod +x kuzu
 ```
-## Running the CLI
-You are now ready to run the executable using `./kuzu <db_path>`, where `<db_path>` is the directory for the database files. This path can point to an existing database or a yet-to-be-created directory, in which case Kùzu will automatically create the directory and initialize an empty database for you.
-If you input `test` as your `<db_path>`, you should see the following prompt:
 
-```
-./kuzu ./test
-kuzu> 
-```
+## Run
 
-To exit the shell, you can type `:quit` and press enter. A list of available shell commands can be found by typing `:help` and pressing enter.
+You are now ready to run the CLI using `./kuzu <db_path>`, where `<db_path>` is the directory for the database files. This path can point to an existing database or a yet-to-be-created one, in which case Kùzu will automatically initialize an empty database for you in the specified path.
+
+```bash
+# Create an empty database named my-kuzu-database in the current directory
+./kuzu ./my-kuzu-database
+kuzu>
+
+# List available shell commands
+kuzu> :help
+
+# Quit shell
+kuzu> :quit
+```
 
 :::info For Mac OS users
 In MacOS, when you download the CLI and try to run it the first time, you'll likely see the following error message:
@@ -42,9 +54,9 @@ identified developer`. Next to this warning will be an **Allow Anyway** button. 
 
 Upon launching the CLI, you can enter a Cypher query and press enter to execute it. The instructions below outline how to load nodes and rels from CSV files and how to run a Cypher query:
 
-## Create a schema
+## Create schema
 
-```sql
+```cypher
 kuzu> CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name));
 
 -------------------------------------
@@ -76,12 +88,12 @@ kuzu> COPY Follows FROM "follows.csv";
 ----------------------------------------------------------
 ```
 
-## Execute Cypher query
+## Execute Cypher queries
 
 Multi-line queries are allowed in the CLI shell. Kùzu will continue parsing the query until it
 encounters the semicolon `;` that denotes the end of the query.
 
-```sql
+```cypher
 kuzu> MATCH (a:User)-[f:Follows]->(b:User)
       RETURN a.name, b.name, f.since;
 ```

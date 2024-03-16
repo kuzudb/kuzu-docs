@@ -1,6 +1,6 @@
 ---
 title: C
-sidebar_position: 3
+sidebar_position: 4
 ---
 [Detailed C API documentation can be found here](https://kuzudb.com/api-docs/c/kuzu_8h.html). This page is a brief guide
 on how to get started with the Kùzu C API.

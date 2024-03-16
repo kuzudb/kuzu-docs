@@ -1,10 +1,14 @@
 ---
 title: Installation
-sidebar_position: 1
+sidebar_position: 0
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+
+Kùzu is an embedded graph database that can be used from the command line, as well as
+a variety of programming languages. The following sections cover how to install each of the
+client libraries.
 
 ## Command Line
 
