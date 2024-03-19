@@ -12,51 +12,56 @@ Welcome to the Kùzu docs!
 <!-- Insert 3-min intro to Kùzu YT video embed here when it's ready -->
 
 Kùzu is an embedded graph database built for query speed and scalability. It is optimized for
-handling complex join-heavy analytical workloads on very large databases, with the following core
+handling complex join-heavy analytical workloads on very large graphs, with the following core
 feature set:
 
-- Support for two popular graph data models: Property Graph model and RDF model
+- Support for two popular graph data models: **Property Graph** and **RDF**
 - Cypher query language
 - Embedded (in-process) integration with applications
 - Columnar disk-based storage
-- Columnar sparse row-based (CSR) adjacency list/join indices
+- Columnar, compressed sparse row-based (CSR) adjacency list/join indices
 - Vectorized and factorized query processor
 - Novel and very fast join algorithms
 - Multi-core query parallelism
 - Serializable ACID transactions
-- High degree of interoperability with other data formats (Arrow, Numpy, DuckDB, etc.)
 
-## Walkthroughs and tutorials
+## Why Kùzu
 
-If you're new to Kùzu or graph databases in general, we recommend starting with the following sections:
+Although there are many other graph database management systems (GDBMSs) in the market today,
+Kùzu stands apart because it addresses specific trade-offs via its design and implementation that
+make it a compelling choice for analytical graph workloads.
+Below are some of the key reasons why you might want to consider using Kùzu.
 
-- [Quickstart](./getting-started/quick-start/index.md): Learn how to work with Kùzu using any of our supported client APIs
-- [Tutorials](./tutorials/index.md): Hands-on examples and use cases
+### Structured property graph model
 
-## Visualization
+The data model in Kùzu is based on the property graph model, with the addition of structure (including
+node/edge tables and a pre-defined schema). This makes it flexible and intuitive to model your existing
+data as a graph, while being highly suitable for vectorized operations.
 
-Kùzu provides a stand-alone tool called Kùzu Explorer that allows you to interactively explore your
-graph and visualize your data. See the following components of Kùzu Explorer to learn more:
+### Cypher query language
 
-- [Shell panel](./visualization/shell-panel.md): Interact with the database using Cypher queries
-- [Schema panel](./visualization/schema-panel.md): View and manage the schema of your Kùzu database
-- [Settings panel](./visualization/settings-panel.md): Configure and customize the appearance of your graphs
+Kùzu's query engine implements the Cypher query language and is based on the [openCypher](https://opencypher.org/) standard.
+Cypher is a powerful and expressive query language that is easy to learn and use, and is designed
+from the ground up to support a range of graph query patterns.
 
-## Deep dive into Cypher
+### Embedded (in-process) architecture
 
-Kùzu implements Cypher, a high-level query language for the property graph data model, though we also
-extend it to query RDF graphs as well. For users who have experience with graph data models, it may
-be helpful to start with the following sections:
+Because Kùzu is an embedded database, it runs in-process with the application layer, allowing for
+simplicity in setup with no external dependencies and no hassles in managing DBMS servers.
 
-- [Data types](./cypher/data-types/)
-- [Data definition](./cypher/data-definition/)
-- [Functions and expressions](./cypher/expressions/)
-- [Data manipulation clauses](./cypher/data-manipulation-clauses/)
-- [Query clauses](/category/query-clauses)
-- [RDFGraphs overview and Cypher clauses](./rdf-graphs/rdfgraphs-overview.md)
+### Interoperability
 
-## Report issues
+Kùzu is designed to be interoperable with a variety of external formats and columnar or relational stores,
+including Parquet, Arrow, DuckDB and more. This allows you to easily move your existing data to and from Kùzu.
 
-Kùzu is being actively developed by [Kùzu Inc.](https://kuzudb.com/#team). We track issues, feature
-requests and discussions of our upcoming roadmap on GitHub, so enjoy your exploration of Kùzu and
-report any bugs or feature requests you may have on [GitHub](https://github.com/kuzudb/kuzu/issues)!
+### Performance
+
+Kùzu is fast and efficient, and is built with a focus on query speed and scalability. It is optimized for
+handling complex join-heavy analytical (OLAP) workloads on very large graphs. To achieve this, Kùzu uses a
+variety of state-of-the-art techniques in database systems, such as worst-case optimal joins and
+factorization.
+
+### Open source
+
+Kùzu is open source and has a permissive [MIT license](https://github.com/kuzudb/kuzu?tab=MIT-1-ov-file#readme),
+allowing you to integrate it with your commercial and proprietary applications, with ease.
