@@ -1,8 +1,0 @@
-{
-  "label": "Query Clauses",
-  "position": 10,
-  "link": {
-    "type": "generated-index",
-    "description": "This section contains all clauses that read data from the database."
-  }
-}
