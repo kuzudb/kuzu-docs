@@ -37,9 +37,9 @@ export default defineConfig({
                     link: '/quick-start/',
                 },
                 {
-                    label: 'RDFGraphs',
+                    label: 'Model RDF databases',
                     badge: 'New',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         { label: 'Motivation', link: '/rdf-graphs' },
                         { label: 'RDF basics', link: '/rdf-graphs/rdf-basics' },
