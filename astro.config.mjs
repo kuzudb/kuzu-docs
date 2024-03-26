@@ -39,7 +39,7 @@ export default defineConfig({
                 {
                     label: 'Model RDF databases',
                     badge: 'New',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                         { label: 'Motivation', link: '/rdf-graphs' },
                         { label: 'RDF basics', link: '/rdf-graphs/rdf-basics' },
@@ -52,7 +52,7 @@ export default defineConfig({
                 },
                 {
                     label: 'Cypher manual',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                         { label: 'Overview', link: '/cypher'},
                         { label: 'Data types', link: '/cypher/data-types'},
@@ -64,6 +64,21 @@ export default defineConfig({
                         { label: 'Copy', link: '/cypher/copy' },
                     ],
                     autogenerate: { directory: 'reference' },
+                },
+                {
+                    label: 'Client libraries',
+                    collapsed: false,
+                    items: [
+                        { label: 'Overview', link: '/client-libraries/' },
+                        { label: 'CLI', link: '/client-libraries/cli' },
+                        { label: 'Python', link: '/client-libraries/python' },
+                        { label: 'Node.js', link: '/client-libraries/nodejs' },
+                        { label: 'Java', link: '/client-libraries/java' },
+                        { label: 'Rust', link: '/client-libraries/rust' },
+                        { label: 'C++', link: '/client-libraries/cpp' },
+                        { label: 'C', link: '/client-libraries/c' },
+                        { label: '.NET', link: '/client-libraries/net', badge: { text: 'Community', variant: 'caution'}},
+                    ],
                 },
                 {
                     label: 'Blog 🔗',
