@@ -1,22 +1,21 @@
 ---
-title: Connection Configuration
-sidebar_position: 15
+title: Connection configuration
 ---
 
-# Connection Configuration
-
-The configuration of a connection to Kùzu database can be changed through standalone `Call` statement. Different from the `Call` clause, this statement of changing configuration cannot be used with other query clauses.
+The configuration of a connection to Kùzu database can be changed through a standalone `CALL`
+statement, described in this section. Different from the `CALL` clause, this statement of changing
+configuration **cannot** be used with other query clauses.
 
 | Option | Description |
 | ----------- | --------------- |
-| THREADS | number of threads used by execution |
-| TIMEOUT | timeout of query execution in ms | 
-| VAR_LENGTH_EXTEND_MAX_DEPTH | maximum depth of var length extend |
-| ENABLE_SEMI_MASK | eenables the semi mask optimization |
+| `THREADS` | number of threads used by execution |
+| `TIMEOUT` | timeout of query execution in ms |
+| `VAR_LENGTH_EXTEND_MAX_DEPTH` | maximum depth of var length extend |
+| `ENABLE_SEMI_MASK` | enables the semi mask optimization |
 
-### Change Number of Threads for Execution
+## Change number of threads for execution
 
-```
+```cypher
 CALL THREADS=5;
 CALL current_setting('threads') return *;
 
@@ -27,10 +26,9 @@ CALL current_setting('threads') return *;
 -----------
 ```
 
+## Change query timeout
 
-### Change Query Timeout
-
-```
+```cypher
 CALL TIMEOUT=3000;
 CALL current_setting('timeout') return *;
 
@@ -41,9 +39,9 @@ CALL current_setting('timeout') return *;
 -----------
 ```
 
-### Change maximum depth of var length extend
+## Change maximum depth of `var_length_extend`
 
-```
+```cypher
 CALL var_length_extend_max_depth=10;
 CALL current_setting('var_length_extend_max_depth') RETURN *;
 
@@ -54,9 +52,9 @@ CALL current_setting('var_length_extend_max_depth') RETURN *;
 -------------------------------
 ```
 
-### Disable semi mask optimization
+## Disable semi-mask optimization
 
-```
+```cypher
 CALL enable_semi_mask=false;
 CALL current_setting('enable_semi_mask') RETURN *;
 

@@ -1,15 +1,19 @@
 ---
-title: Data definition
+title: Data definition language (DDL)
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
 
-## Create
+The Data definition language (DDL) in Kùzu defines the commands and statments that create, alter,
+and delete database objects. The schema provides a logical grouping of node and relationship tables
+that define the structure of the graph database.
+
+## Create (statement)
 
 As a first step to creating your database, you need to define your node and directed relationships.
 In the property graph model, nodes and relationships have labels. In Kùzu, every node or
 relationship can have 1 label. The node and relationships and the predefined properties on them are
-defined through `CREATE NODE TABLE` and `CREATE REL TABLE` commands.
+defined through `CREATE NODE TABLE` and `CREATE REL TABLE` statements.
 The choice of using the term "table" over "label" is intentional and explained in the footnote below[^1].
 
 Click on the card below to learn more about creating tables.
@@ -21,7 +25,7 @@ Click on the card below to learn more about creating tables.
 
 ## Alter
 
-You can update the schema of a table using the `ALTER TABLE` command.
+You can update the schema of a table using `ALTER TABLE`.
 
 <LinkCard
     title="ALTER" href="./data-definition/alter"
@@ -30,7 +34,7 @@ You can update the schema of a table using the `ALTER TABLE` command.
 
 ## Drop
 
-You can drop tables from the database with the `DROP TABLE` command
+You can drop tables from the database with the `DROP TABLE`.
 
 <LinkCard
     title="DROP" href="./data-definition/drop"

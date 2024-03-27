@@ -29,12 +29,16 @@ export default defineConfig({
                     link: '/',
                 },
                 {
-                    label: 'Installation',
+                    label: 'Install Kùzu',
                     link: '/installation/',
                 },
                 {
-                    label: 'Quick start',
-                    link: '/quick-start/',
+                    label: 'Get started',
+                    collapsed: true,
+                    items: [
+                        { label: 'Query your first graph', link: '/get-started' },
+                        // { label: 'Create a database', link: '/get-started/create-database' },
+                    ]
                 },
                 {
                     label: 'Model RDF databases',
@@ -52,22 +56,24 @@ export default defineConfig({
                 },
                 {
                     label: 'Cypher manual',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         { label: 'Overview', link: '/cypher'},
                         { label: 'Data types', link: '/cypher/data-types'},
                         { label: 'Query clauses', link: '/cypher/query-clauses' },
                         { label: 'Functions, expressions & operators', link: '/cypher/expressions' },
-                        { label: 'Data definition', link: '/cypher/data-definition' },
-                        { label: 'Data manipulation', link: '/cypher/data-manipulation-clauses' },
-                        { label: 'Scan', link: '/cypher/load_from' },
-                        { label: 'Copy', link: '/cypher/copy' },
+                        { label: 'Data definition language (DDL)', link: '/cypher/data-definition' },
+                        { label: 'Data manipulation clauses', link: '/cypher/data-manipulation-clauses' },
+                        { label: 'Subquery', link: '/cypher/subquery' },
+                        { label: 'Macros', link: '/cypher/macro' },
+                        { label: 'Transactions', link: '/cypher/transaction' },
+                        { label: 'Connection configuration', link: '/cypher/configuration' },
                     ],
                     autogenerate: { directory: 'reference' },
                 },
                 {
-                    label: 'Client libraries',
-                    collapsed: false,
+                    label: 'Using client libraries',
+                    collapsed: true,
                     items: [
                         { label: 'Overview', link: '/client-libraries/' },
                         { label: 'CLI', link: '/client-libraries/cli' },
@@ -81,7 +87,7 @@ export default defineConfig({
                     ],
                 },
                 {
-                    label: 'Blog 🔗',
+                    label: 'Read the blog 🔗',
                     link: 'https://blog.kuzudb.com',
                     attrs: { target: '_blank' },
                 },

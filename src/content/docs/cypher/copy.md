@@ -1,11 +1,11 @@
 ---
 title: Copy
-sidebar_position: 12
 ---
 
-`COPY` statement moves data between external files and database internal.
+`COPY` is a statement, as opposed to a query clause. It is used to move data between external files
+and Kùzu tables, i.e., it is essentially used for data import and export.
 
-## Copy From
+## COPY FROM
 `COPY FROM` imports data from external files into tables. `COPY FROM` can only be used when the tables are empty and in initial state. 
 
 Kùzu supports `COPY FROM` different file formats. Details can be found at

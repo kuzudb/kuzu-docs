@@ -1,5 +1,5 @@
 ---
-title: Create
+title: Create (statement)
 description: Create tables
 ---
 
