@@ -1,0 +1,294 @@
+---
+title: Installation
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Kùzu is an embedded graph database that can be used from the command line as well as
+a variety of programming languages. This page shows how to install Kùzu for the various client
+libraries available in various languages.
+
+## Command Line (Shell)
+
+If you don't need Kùzu embedded in your application, you can use the CLI shell. This is a standalone
+executable with no dependencies that can be used to interact with a Kùzu database using just Cypher.
+
+<Tabs>
+<TabItem label="macOS">
+
+Use a tool like cURL to download the latest version of the Kùzu CLI to your local machine. Alternatively,
+simply copy-paste [this HTTPS URL](https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_cli-osx-universal.tar.gz)
+into your browser.
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_cli-osx-universal.tar.gz
+```
+
+Double-click the `kuzu_cli-osx-universal.tar.gz` file to extract a file named `kuzu`, and give it
+executable permissions using the command `chmod +x kuzu`.
+
+:::caution[Note]
+In macOS, when you download and try to run the CLI for the first time, you'll likely see the following error message:
+
+> _“kuzu” cannot be opened because it is from an unidentified developer.
+> macOS cannot verify that this app is free from malware._
+
+To fix this, navigate to **System Settings > Privacy & Security**. Depending on your macOS version, either go 
+to the **General** OR the **Security** section and you will see a warning: `"kuzu" was blocked from use because it is not from an
+identified developer`. Click on the **Allow Anyway** button and the CLI should run afterward.
+:::
+
+</TabItem>
+
+<TabItem label="Linux">
+
+Use a tool like cURL to download the latest version of the Kùzu CLI to your local machine. Alternatively,
+simply copy-paste [this URL](https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_cli-linux-x86_64.tar.gz)
+for x86-64 or [this one](https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_cli-linux-aarch64.tar.gz)
+for aarch64 into your browser.
+
+**x86-64**
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_cli-linux-x86_64.tar.gz
+```
+
+**aarch64**
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_cli-linux-aarch64.tar.gz
+```
+
+Double-click the `kuzu_cli-linux-*.tar.gz` file to extract a file named `kuzu`, and give it
+executable permissions using the command `chmod +x kuzu`.
+
+</TabItem>
+
+<TabItem label="Windows">
+
+Use a tool like cURL to download the latest version of the Kùzu CLI to your local machine. Alternatively,
+simply copy-paste [this HTTPS URL](https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_cli-windows-x86_64.zip)
+into your browser.
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_cli-windows-x86_64.zip
+```
+
+Right-click on the `kuzu_cli-xxx.zip` file and click on **Extract All**. This will create a directory
+containing a file named `kuzu.exe`. Then, right-click on the directory and click "Open in terminal".
+From within the terminal, you can then run `./kuzu.exe`.
+
+</TabItem>
+
+</Tabs>
+
+## Python
+
+Use `pip` to install the Kùzu Python client library.
+
+<Tabs>
+
+<TabItem label="macOS">
+
+```bash
+pip install kuzu
+```
+
+</TabItem>
+
+<TabItem label="Linux">
+
+```bash
+pip install kuzu
+```
+
+</TabItem>
+
+<TabItem label="Windows">
+
+```bash
+pip install kuzu
+```
+
+</TabItem>
+
+</Tabs>
+
+## Node.js
+
+Use `npm` to install the Kùzu Node.js client library.
+
+<Tabs>
+
+<TabItem label="macOS">
+
+```bash
+npm install kuzu
+```
+
+</TabItem>
+
+<TabItem label="Linux">
+
+```bash
+npm install kuzu
+```
+
+</TabItem>
+
+<TabItem label="Windows">
+
+```bash
+npm install kuzu
+```
+
+</TabItem>
+
+</Tabs>
+
+## Java
+
+Download the latest version [here](https://github.com/kuzudb/kuzu/releases/download/v0.3.1/kuzu_java.jar),
+and put it under `src/main/resources`. (We assume this is the project directory structure and the
+project dependency is managed through Apache Maven).
+
+<Tabs>
+
+<TabItem label="macOS">
+
+```xml
+<dependency>
+  <groupId>com.kuzudb</groupId>
+  <artifactId>kuzudb</artifactId>
+  <version>0.3.1</version>
+  <scope>system</scope>
+  <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
+</dependency>
+```
+
+</TabItem>
+
+<TabItem label="Linux">
+
+```xml
+<dependency>
+  <groupId>com.kuzudb</groupId>
+  <artifactId>kuzudb</artifactId>
+  <version>0.3.1</version>
+  <scope>system</scope>
+  <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
+</dependency>
+```
+
+</TabItem>
+
+<TabItem label="Windows">
+
+```xml
+<dependency>
+  <groupId>com.kuzudb</groupId>
+  <artifactId>kuzudb</artifactId>
+  <version>0.3.1</version>
+  <scope>system</scope>
+  <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
+</dependency>
+```
+
+</TabItem>
+
+## Rust
+
+Use Cargo to install the Kùzu Rust client library. This will by default build and statically link Kùzu's C++
+library from source. You can also link against the dynamic release libraries (see the Rust
+[crate docs](https://docs.rs/kuzu/0.1.1-pre.31/kuzu/) for details).
+
+<Tabs>
+
+<TabItem label="macOS">
+
+```bash
+cargo add kuzu
+```
+
+</TabItem>
+
+<TabItem label="Linux">
+
+```bash
+cargo add kuzu
+```
+
+</TabItem>
+
+<TabItem label="Windows">
+
+```bash
+cargo add kuzu
+```
+
+</TabItem>
+
+</Tabs>
+
+## C/C++
+
+Use a tool like cURL to download the latest version of the Kùzu C/C++ binaries to your local machine
+(or, simply copy-paste the below HTTPS URL into your browser).
+
+The Kùzu C++ client is distributed as so/dylib/dll+lib library files along with a header file (`kuzu.hpp`).
+Once you've downloaded and extracted the C++ files into a directory, it's ready to use without
+any additional installation. You just need to specify the library search path for the linker.
+
+<Tabs>
+
+<TabItem label="macOS">
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/libkuzu-osx-universal.tar.gz
+```
+
+</TabItem>
+
+<TabItem label="Linux">
+
+**x86-64**
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/libkuzu-linux-x86_64.tar.gz
+```
+
+**aarch64**
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/libkuzu-linux-aarch64.tar.gz
+```
+
+**x86-64** ([old ABI](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html))
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/libkuzu-linux-old_abi-x86_64.tar.gz
+```
+
+</TabItem>
+
+<TabItem label="Windows">
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.3.1/libkuzu-windows-x86_64.zip
+```
+
+</TabItem>
+
+</Tabs>
+
+</Tabs>
+
+
+## Nightly Builds
+
+If you want access to the bleeding edge feature set in Kùzu, install from our nightly build pipeline.
+
+- Python: `pip install --pre kuzu`
+- Node.js: `npm i kuzu@next`
+- For the CLI, C/C++ shared libraries, Rust and Java, the latest nightly versions for each can be
+downloaded from the latest run of [this GitHub Actions pipeline](https://github.com/kuzudb/kuzu/actions/workflows/build-and-deploy.yml).

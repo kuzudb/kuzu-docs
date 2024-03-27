@@ -1,0 +1,77 @@
+---
+title: "Client libraries"
+---
+
+import { LinkCard, CardGrid} from '@astrojs/starlight/components';
+
+Kùzu is embeddable in a variety of languages via client library APIs. Queries in Kùzu through via
+its CLI or client APIs are transactional, satisfying serializability, atomicity and durability requirements.
+
+## Official clients
+
+The following client libraries are officially supported.
+
+<CardGrid>
+  <LinkCard
+    title="CLI"
+    href="/client-libraries/cli"
+  />
+  <LinkCard
+    title="Python"
+    href="/client-libraries/python"
+  />
+  <LinkCard
+    title="Node.js"
+    href="/client-libraries/nodejs"
+  />
+  <LinkCard
+    title="Java"
+    href="/client-libraries/java"
+  />
+  <LinkCard
+    title="Rust"
+    href="/client-libraries/rust"
+  />
+  <LinkCard
+    title="C"
+    href="/client-libraries/c"
+  />
+  <LinkCard
+    title="C++"
+    href="/client-libraries/cpp"
+  />
+</CardGrid>
+
+
+## Community-contributed clients
+
+Community members and users are welcome to contribute client libraries for languages that are as-yet
+unsupported. The following client libraries have been contributed by the community.
+
+<CardGrid>
+  <LinkCard
+    title=".NET"
+    href="/client-libraries/net"
+  />
+</CardGrid>
+
+---
+
+## Best practices
+
+:::caution[Note]
+
+This note pertains to those **connecting to the same database directory via multiple `Database` instances.**
+
+Each way ultimately creates a `Database` instance in C++ (Kùzu's CLI is written in C++, so is a C++
+process, and Kùzu's Python API, through which you create a `PyDatabase` instance is a binding to Kùzu's C++ API
+and so ultimately creates a `Database` instance. Similar for other language APIs). Each database you create is identified by its directory. 
+While it's possible to create multiple `Database` instances that connect to the same database directory, you should only issue read queries in such scenarios.
+This is because writes from one `Database` instance will not be visible to another, leading to potential database corruption.
+
+As of now, Kùzu does not ensure that you are connecting to the same database directory through a single `Database` instance.
+That being said, *you're free to open multiple connections to the same database from the same `Database` instance.*
+But as a best practice, you shouldn't concurrently have a CLI open that writes to a database directory and multiple separate processes or threads
+that read from the same database in the same directory, for the above mentioned reasons.
+
+:::
