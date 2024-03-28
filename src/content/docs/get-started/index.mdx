@@ -1,5 +1,5 @@
 ---
-title: "Query your first graph"
+title: "Build & query your first graph"
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
@@ -18,11 +18,12 @@ Kùzu implements a _structured_ property graph model and requires a pre-defined 
 - For relationship tables, no primary key is required
 :::
 
-## Build and query your first graph
+## Quick start
 
-Because Kùzu is an embedded database, you can simply import the `kuzu` module in your client of choice
-and start interacting with the database. Cypher queries can be passed as string literals
-to the `execute` (or equivalent) method in the respective client.
+Because Kùzu is an embedded database, there are no servers to set up -- you can simply import
+the `kuzu` module in your preferred client library and begin interacting with the database. Cypher queries
+can be passed as string literals to the `execute` (or equivalent) method in the respective client,
+or run directly in the Kùzu CLI shell.
 
 <Tabs>
 <TabItem label="Python">
@@ -68,12 +69,13 @@ Result:
 ['Zhang', 'Noura', 2022]
 ```
 
-You've now created and queried your first graph in Kùzu!
+The approach shown above returned a list of lists containing query results. See below for more
+output options for Python.
 
 **Pandas**
 
-In Python, you can also use the [Pandas](https://pandas.pydata.org/) library to work with the
-results of a Cypher query. This assumes that `pandas` is installed in your environment.
+You can also pass the results of a Cypher query to a [Pandas](https://pandas.pydata.org/) DataFrame
+for downstream tasks. This assumes that `pandas` is installed in your environment.
 
 ```py
 # pip install pandas
@@ -96,8 +98,9 @@ print(response.get_as_df())
 
 **Polars**
 
-[Polars](https://pola.rs/) is another popular library for working with DataFrames in Python. This
-assumes that `polars` is installed in your environment.
+[Polars](https://pola.rs/) is another popular DataFrames library for Python users, and you
+can process the results of a Cypher query in much the same way you did with Pandas. This assumes
+that `polars` is installed in your environment.
 
 ```py
 # pip install polars
@@ -127,9 +130,9 @@ shape: (4, 3)
 **Arrow Table**
 
 You can also use the [PyArrow](https://arrow.apache.org/docs/python/index.html) library to work with
-Arrow Tables in Python. This assumes that `pyarrow` is installed in your environment. Working with
-Arrow tables is useful when you need to interoperate with other systems that use Arrow as a backend.
-In fact, the `get_as_pl()` method shown above materializes a PyArrow table under the hood.
+Arrow Tables in Python. This assumes that `pyarrow` is installed in your environment. This
+approach is useful when you need to interoperate with other systems that use Arrow as a backend.
+In fact, the `get_as_pl()` method shown above for Polars materializes a `pyarrow.Table` under the hood.
 
 ```py
 # pip install pyarrow
@@ -352,12 +355,12 @@ Zhang, 2022, Noura
 
 <TabItem label="C++">
 
-The Kùzu C++ client is distributed as so/dylib/dll+lib library files along with a header file (`kuzu.hpp`).
+The Kùzu C++ client is distributed as `so`/`dylib`/`dll+lib` library files along with a header file (`kuzu.hpp`).
 Once you've downloaded and extracted the C++ files into a directory, it's ready to use without
 any additional installation. You just need to specify the library search path for the linker.
 
-In the following example, we assume that the so/dylib/dll+lib, the header file, the CSV files, and
-the cpp code file are all under the same directory:
+In the following example, we assume that the `so`/`dylib`/`dll+lib`, the header file, the CSV files, and
+the cpp code file are all under the same directory as follows:
 
 ```bash
 ├── include
@@ -454,10 +457,10 @@ Zhang 2022 Noura
 
 <TabItem label="C">
 
-The Kùzu C API shares the same so/dylib/dll+lib library files with the C++ API and can be used by
+The Kùzu C API shares the same `so`/`dylib` library files with the C++ API and can be used by
 including the C header file (`kuzu.h`).
 
-In this example, we assume that the so/dylib, the header file, the CSV files, and the C code file
+In this example, we assume that the `so`/`dylib`, the header file, the CSV files, and the C code file
 are all under the same directory:
 
 ```bash

@@ -30,15 +30,19 @@ export default defineConfig({
                 },
                 {
                     label: 'Install Kùzu',
-                    link: '/installation/',
+                    link: '/installation',
                 },
                 {
                     label: 'Get started',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
-                        { label: 'Query your first graph', link: '/get-started' },
-                        // { label: 'Create a database', link: '/get-started/create-database' },
+                        { label: 'Build & query your first graph', link: '/get-started' },
+                        { label: 'Visualize your graph', link: '/get-started/visualize' },
                     ]
+                },
+                {
+                    label: 'Visualize graphs',
+                    link: '/visualization/',
                 },
                 {
                     label: 'Model RDF databases',
@@ -55,8 +59,23 @@ export default defineConfig({
                     autogenerate: { directory: 'reference' },
                 },
                 {
+                    label: 'Use client APIs',
+                    collapsed: true,
+                    items: [
+                        { label: 'Overview', link: '/client-libraries/' },
+                        { label: 'CLI', link: '/client-libraries/cli' },
+                        { label: 'Python', link: '/client-libraries/python' },
+                        { label: 'Node.js', link: '/client-libraries/nodejs' },
+                        { label: 'Java', link: '/client-libraries/java' },
+                        { label: 'Rust', link: '/client-libraries/rust' },
+                        { label: 'C++', link: '/client-libraries/cpp' },
+                        { label: 'C', link: '/client-libraries/c' },
+                        { label: '.NET', link: '/client-libraries/net', badge: { text: 'Community', variant: 'caution'}},
+                    ],
+                },
+                {
                     label: 'Cypher manual',
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                         { label: 'Overview', link: '/cypher'},
                         { label: 'Data types', link: '/cypher/data-types'},
@@ -72,22 +91,29 @@ export default defineConfig({
                     autogenerate: { directory: 'reference' },
                 },
                 {
-                    label: 'Using client libraries',
+                    label: 'Developer guide',
                     collapsed: true,
                     items: [
-                        { label: 'Overview', link: '/client-libraries/' },
-                        { label: 'CLI', link: '/client-libraries/cli' },
-                        { label: 'Python', link: '/client-libraries/python' },
-                        { label: 'Node.js', link: '/client-libraries/nodejs' },
-                        { label: 'Java', link: '/client-libraries/java' },
-                        { label: 'Rust', link: '/client-libraries/rust' },
-                        { label: 'C++', link: '/client-libraries/cpp' },
-                        { label: 'C', link: '/client-libraries/c' },
-                        { label: '.NET', link: '/client-libraries/net', badge: { text: 'Community', variant: 'caution'}},
-                    ],
+                        { label: 'Build Kùzu from source', link: '/developer-guide' },
+                        { label: 'Performance debugging', link: '/developer-guide/performance-debugging' },
+                        { label: 'Testing framework', link: '/developer-guide/testing-framework' },
+                        { 
+                            label: 'Database internals',
+                            items: [
+                                { label: 'Overview', link: '/developer-guide/database-internal' },
+                                { label: 'Data types', link: '/developer-guide/database-internal/datatype' },
+                                { label: 'Vector types', link: '/developer-guide/database-internal/vector' },
+                                { label: 'Execution', link: '/developer-guide/database-internal/execution' },
+                            ]
+                        }
+                    ]
                 },
                 {
-                    label: 'Read the blog 🔗',
+                    label: 'System requirements',
+                    link: '/system-requirements',
+                },
+                {
+                    label: 'Read our blog 🔗',
                     link: 'https://blog.kuzudb.com',
                     attrs: { target: '_blank' },
                 },
