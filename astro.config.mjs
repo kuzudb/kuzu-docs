@@ -37,12 +37,12 @@ export default defineConfig({
                     collapsed: false,
                     items: [
                         { label: 'Build & query your first graph', link: '/get-started' },
-                        { label: 'Visualize your graph', link: '/get-started/visualize' },
+                        { label: 'Explore your data', link: '/get-started/explore' },
                     ]
                 },
                 {
                     label: 'Visualize graphs',
-                    link: '/visualization/',
+                    link: '/visualization',
                 },
                 {
                     label: 'Model RDF databases',
@@ -72,6 +72,10 @@ export default defineConfig({
                         { label: 'C', link: '/client-libraries/c' },
                         { label: '.NET', link: '/client-libraries/net', badge: { text: 'Community', variant: 'caution'}},
                     ],
+                },
+                {
+                    label: 'Tutorials',
+                    link: '/tutorials',
                 },
                 {
                     label: 'Cypher manual',
