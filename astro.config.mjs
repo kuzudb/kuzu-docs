@@ -36,8 +36,8 @@ export default defineConfig({
                     label: 'Get started',
                     collapsed: false,
                     items: [
-                        { label: 'Build & query your first graph', link: '/get-started' },
-                        { label: 'Explore your data', link: '/get-started/explore' },
+                        { label: 'Create your first graph', link: '/get-started' },
+                        { label: 'Query & visualize your graph', link: '/get-started/cypher-intro' },
                     ]
                 },
                 {
