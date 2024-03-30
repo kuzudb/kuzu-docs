@@ -117,6 +117,15 @@ export default defineConfig({
                     link: '/system-requirements',
                 },
                 {
+                    label: 'Extensions',
+                    collapsed: true,
+                    items: [
+                        { label: 'Overview', link: '/extensions'},
+                        { label: 'httpfs (HTTP File System)', link: '/extensions/httpfs'},
+                    ],
+                    autogenerate: { directory: 'reference' },
+                },
+                {
                     label: 'Read our blog 🔗',
                     link: 'https://blog.kuzudb.com',
                     attrs: { target: '_blank' },
