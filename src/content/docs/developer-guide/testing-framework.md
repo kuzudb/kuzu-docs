@@ -110,7 +110,7 @@ dataset is required, use the keyword 'empty'.
 
 Examples:
 
-```bsh
+```bash
 -GROUP MyTest
 -DATASET CSV tinysnb
 --
