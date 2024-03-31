@@ -5,7 +5,7 @@ title: Example UniKG RDFGraph
 Throughout the documentation on Kùzu's RDFGraph feature, we will use the following 
 set of triples about students and faculty at universities, which we call `UniKG`.
 
-<Image src="/src/assets/img/rdfgraphs/rdf-running-example.png" />
+<Image src="/img/rdfgraphs/rdf-running-example.png" />
 
 The DDL statements to define the RDFGraph, the [Turtle (.ttl) file](https://www.w3.org/TR/turtle/) 
 containing the triples, and the data import (`COPY FROM`) commands

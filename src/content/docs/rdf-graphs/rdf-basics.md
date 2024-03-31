@@ -106,7 +106,7 @@ above RDF graph that consists of 4 triples pictorially. In the figure, each trip
 is an edge, each resource is a node, and each literal appears simply as a value without
 an ellipse around it.
 
-<Image src="/src/assets/img/rdfgraphs/rdf-basics-example.png" />
+<Image src="/img/rdfgraphs/rdf-basics-example.png" />
 
 ## RDF Schema and OWL
 
@@ -199,7 +199,7 @@ So you have at least 4 triples, one with predicate `rdf:type`, the other 3 with 
 to attach to the reified statement. In the above example, we attached the `kz:since` property to the reified statement.
 The following figure shows these triples pictorially.
 
-<Image src="/src/assets/img/rdfgraphs/reification-example.png" />
+<Image src="/img/rdfgraphs/reification-example.png" />
 
 Note that this is similar to a strategy that property graph model
 users apply to represent n-ary relationships. In a property graph model,

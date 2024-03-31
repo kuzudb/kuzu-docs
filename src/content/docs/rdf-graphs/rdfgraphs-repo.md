@@ -79,7 +79,7 @@ See the download instructions [here](https://github.com/kuzudb/explorer?tab=read
 You can visualize the EWordnet RDFGraph schema from the Explorer by clicking on the "Schema" tab
 on the top right.
 
-<Image src="/src/assets/img/rdfgraphs/rdf-wordnet-schema.png" />
+<Image src="/img/rdfgraphs/rdf-wordnet-schema.png" />
 
 Run the following query in the editor to see 20 random triples as follows:
 
@@ -88,7 +88,7 @@ MATCH (s:EWordnet_r)-[p:EWordnet]->(o)
 RETURN * LIMIT 20;
 ```
 
-<Image src="/src/assets/img/rdfgraphs/rdf-wordnet-viz.png" />
+<Image src="/img/rdfgraphs/rdf-wordnet-viz.png" />
 
 ### Query the database using the CLI
 
