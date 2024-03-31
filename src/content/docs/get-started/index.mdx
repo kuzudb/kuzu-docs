@@ -1,0 +1,640 @@
+---
+title: "Create your first graph"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Once you have Kùzu's CLI or your desired client library installed, you can define a graph schema and
+begin inserting data to the database using the Cypher query language. The example below uses a
+graph schema with two node types, `User` and `City`, and two relationship types, `Follows` and `LivesIn`.
+The dataset in CSV format can be found [here](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
+
+:::caution[Info]
+Kùzu implements a _structured_ property graph model and requires a pre-defined schema.
+
+- "Schema definition" involves declaring node and relationship tables and their associated properties.
+- Each property key is strongly typed (types must be explicitly declared
+- For node tables, a primary key **must** be defined
+- For relationship tables, no primary key is required
+:::
+
+## Quick start
+
+Because Kùzu is an embedded database, there are no servers to set up -- you can simply import
+the `kuzu` module in your preferred client library and begin interacting with the database. Cypher queries
+can be passed as string literals to the `execute` (or equivalent) method in the respective client,
+or run directly in the Kùzu CLI shell.
+
+<Tabs>
+<TabItem label="Python">
+
+```py
+# main.py
+import kuzu
+
+def main() -> None:
+    # Initialize database
+    db = kuzu.Database("./demo_db")
+    conn = kuzu.Connection(db)
+
+    # Create schema 
+    conn.execute("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))")
+    conn.execute("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))")
+    conn.execute("CREATE REL TABLE Follows(FROM User TO User, since INT64)")
+    conn.execute("CREATE REL TABLE LivesIn(FROM User TO City)")
+
+    # Insert data
+    conn.execute('COPY User FROM "./data/user.csv"')
+    conn.execute('COPY City FROM "./data/city.csv"')
+    conn.execute('COPY Follows FROM "./data/follows.csv"')
+    conn.execute('COPY LivesIn FROM "./data/lives-in.csv"')
+
+    # Execute Cypher query
+    response = conn.execute(
+        """
+        MATCH (a:User)-[f:Follows]->(b:User)
+        RETURN a.name, b.name, f.since;
+        """
+    )
+    while response.has_next():
+        print(response.get_next())
+```
+
+Result:
+
+```bash
+['Adam', 'Karissa', 2020]
+['Adam', 'Zhang', 2020]
+['Karissa', 'Zhang', 2021]
+['Zhang', 'Noura', 2022]
+```
+
+The approach shown above returned a list of lists containing query results. See below for more
+output options for Python.
+
+**Pandas**
+
+You can also pass the results of a Cypher query to a [Pandas](https://pandas.pydata.org/) DataFrame
+for downstream tasks. This assumes that `pandas` is installed in your environment.
+
+```py
+# pip install pandas
+response = conn.execute(
+    """
+    MATCH (a:User)-[f:Follows]->(b:User)
+    RETURN a.name, b.name, f.since;
+    """
+)
+print(response.get_as_df())
+```
+
+```bash
+    a.name   b.name  f.since
+0     Adam  Karissa     2020
+1     Adam    Zhang     2020
+2  Karissa    Zhang     2021
+3    Zhang    Noura     2022
+```
+
+**Polars**
+
+[Polars](https://pola.rs/) is another popular DataFrames library for Python users, and you
+can process the results of a Cypher query in much the same way you did with Pandas. This assumes
+that `polars` is installed in your environment.
+
+```py
+# pip install polars
+response = conn.execute(
+    """
+    MATCH (a:User)-[f:Follows]->(b:User)
+    RETURN a.name, b.name, f.since;
+    """
+)
+print(response.get_as_pl())
+```
+
+```bash
+shape: (4, 3)
+┌─────────┬─────────┬─────────┐
+│ a.name  ┆ b.name  ┆ f.since │
+│ ---     ┆ ---     ┆ ---     │
+│ str     ┆ str     ┆ i64     │
+╞═════════╪═════════╪═════════╡
+│ Adam    ┆ Karissa ┆ 2020    │
+│ Adam    ┆ Zhang   ┆ 2020    │
+│ Karissa ┆ Zhang   ┆ 2021    │
+│ Zhang   ┆ Noura   ┆ 2022    │
+└─────────┴─────────┴─────────┘
+```
+
+**Arrow Table**
+
+You can also use the [PyArrow](https://arrow.apache.org/docs/python/index.html) library to work with
+Arrow Tables in Python. This assumes that `pyarrow` is installed in your environment. This
+approach is useful when you need to interoperate with other systems that use Arrow as a backend.
+In fact, the `get_as_pl()` method shown above for Polars materializes a `pyarrow.Table` under the hood.
+
+```py
+# pip install pyarrow
+response = conn.execute(
+    """
+    MATCH (a:User)-[f:Follows]->(b:User)
+    RETURN a.name, b.name, f.since;
+    """
+)
+print(response.get_as_arrow())
+```
+
+```bash
+pyarrow.Table
+a.name: string
+b.name: string
+f.since: int64
+----
+a.name: [["Adam","Adam","Karissa","Zhang"]]
+b.name: [["Karissa","Zhang","Zhang","Noura"]]
+f.since: [[2020,2020,2021,2022]]
+```
+
+</TabItem>
+
+<TabItem label="Node.js">
+
+```js
+// main.js
+const kuzu = require("kuzu");
+
+(async () => {
+  // Create an empty database and connect to it
+  const db = new kuzu.Database("./demo_db");
+  const conn = new kuzu.Connection(db);
+
+  // Create the tables
+  await conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
+  await conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+  await conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
+  await conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
+
+  // Load the data
+  await conn.query('COPY User FROM "./data/user.csv"');
+  await conn.query('COPY City FROM "./data/city.csv"');
+  await conn.query('COPY Follows FROM "./data/follows.csv"');
+  await conn.query('COPY LivesIn FROM "./data/lives-in.csv"');
+
+  const queryResult = await conn.query("MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;");
+
+  // Get all rows from the query result
+  const rows = await queryResult.getAll();
+
+  // Print the rows
+  for (const row of rows) {
+    console.log(row);
+  }
+})();
+```
+
+Result:
+
+```json
+{ "a.name": "Adam", "f.since": 2020, "b.name": "Karissa" }
+{ "a.name": "Adam", "f.since": 2020, "b.name": "Zhang" }
+{ "a.name": "Karissa", "f.since": 2021, "b.name": "Zhang" }
+{ "a.name": "Zhang", "f.since": 2022, "b.name": "Noura" }
+```
+
+</TabItem>
+
+<TabItem label="Java">
+
+Kùzu's Java client library is available as a JAR file that you can include in your project. You can
+download the latest version here. The JAR file is referenced in the `classpath` with the `-cp` flag.
+
+Below is the project structure for a simple Java application that creates a graph schema and inserts
+data into the database for the given example.
+
+```bash
+├── data
+|   ├── user.csv
+|   ├── city.csv
+|   ├── follows.csv
+|   └── lives-in.csv
+|-- src/main
+|   ├── java/org/example/Main.java
+|   └── resources/kuzu_java.jar
+```
+
+The `Main.java` contains the following code:
+
+```java
+// Main.java
+package org.example;
+import com.kuzudb.*;
+
+public class Main {
+
+    public static void main(String[] args) throws KuzuObjectRefDestroyedException {
+        String db_path = "./testdb";
+        KuzuDatabase db = new KuzuDatabase(db_path, 0);
+        KuzuConnection conn = new KuzuConnection(db);
+
+        // Create tables.
+        conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
+        conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+        conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
+        conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
+
+        // Load data.
+        KuzuQueryResult r1 = conn.query("COPY User FROM './data/user.csv'");
+        System.out.println(r1.toString());
+
+        KuzuQueryResult r2 = conn.query("COPY City FROM './data/city.csv'");
+        System.out.println(r2.toString());
+
+        KuzuQueryResult r3 = conn.query("COPY Follows FROM './data/follows.csv'");
+        System.out.println(r3.toString());
+
+        KuzuQueryResult r4 = conn.query("COPY LivesIn FROM './data/lives-in.csv'");
+        System.out.println(r4.toString());
+
+        // Execute a simple query.
+        KuzuQueryResult result =
+                conn.query("MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;");
+
+        while (result.hasNext()) {
+            KuzuFlatTuple row = result.getNext();
+            System.out.println("Row: " + row);
+            row.destroy();
+        }
+        result.destroy();
+    }
+}
+```
+
+To execute the example, navigate to the project root directory and run the following command:
+
+```bash
+java -cp '.:src/main/resources/kuzu_java.jar' src/main/java/org/example/Main.java
+```
+
+Result:
+
+```bash
+Row: (Adam, 2020, Karissa)
+Row: (Adam, 2020, Zhang)
+Row: (Karissa, 2021, Zhang)
+Row: (Zhang, 2022, Noura)
+```
+
+For users who prefer Maven, our jar file can also be manually referenced from your Maven configuration:
+
+```xml
+<dependency>
+    <groupId>com.kuzudb</groupId>
+    <artifactId>kuzudb</artifactId>
+    <version>0.0.6</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
+</dependency>
+```
+
+Please note that we will soon provide a more convenient Maven-based solution for installing our API
+directly from Maven Central.
+
+</TabItem>
+
+<TabItem label="Rust">
+
+When installing the `kuzu` crate via Cargo, it will by default build and statically link Kùzu's C++
+library from source. You can also link against the dynamic release libraries (see the Rust
+[crate docs](https://docs.rs/kuzu/0.1.1-pre.31/kuzu/) for details).
+
+The `main.rs` file contains the following code:
+
+```rust
+// main.rs
+use kuzu::{Connection, Database, Error, SystemConfig};
+
+fn main() -> Result<(), Error> {
+    // Create an empty database and connect to it
+    let db = Database::new("./demo_db", SystemConfig::default())?;
+    let conn = Connection::new(&db)?;
+
+    // Create the tables
+    conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))")?;
+    conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))")?;
+    conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)")?;
+    conn.query("CREATE REL TABLE LivesIn(FROM User TO City)")?;
+
+    // Load the data
+    conn.query("COPY User FROM './data/user.csv'")?;
+    conn.query("COPY City FROM './data/city.csv'")?;
+    conn.query("COPY Follows FROM './data/follows.csv'")?;
+    conn.query("COPY LivesIn FROM './data/lives-in.csv'")?;
+
+    let query_result =
+        conn.query("MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;")?;
+
+    // Print the rows
+    for row in query_result {
+        println!("{}, {}, {}", row[0], row[1], row[2]);
+    }
+    Ok(())
+}
+```
+
+Result:
+
+```bash
+Adam, 2020, Karissa
+Adam, 2020, Zhang
+Karissa, 2021, Zhang
+Zhang, 2022, Noura
+```
+
+</TabItem>
+
+<TabItem label="C++">
+
+The Kùzu C++ client is distributed as `so`/`dylib`/`dll+lib` library files along with a header file (`kuzu.hpp`).
+Once you've downloaded and extracted the C++ files into a directory, it's ready to use without
+any additional installation. You just need to specify the library search path for the linker.
+
+In the following example, we assume that the `so`/`dylib`/`dll+lib`, the header file, the CSV files, and
+the cpp code file are all under the same directory as follows:
+
+```bash
+├── include
+│   ├── kuzu.hpp
+│   └── ......
+├── libkuzu.so / libkuzu.dylib / kuzu_shared.dll + kuzu_shared.lib
+├── main.cpp
+├── user.csv
+├── city.csv
+├── follows.csv
+└── lives-in.csv
+```
+
+The `main.cpp` file contains the following code:
+
+```cpp
+// main.cpp
+#include <iostream>
+
+#include "include/kuzu.hpp"
+
+using namespace kuzu::main;
+using namespace std;
+
+int main() {
+    // Create an empty database.
+    SystemConfig systemConfig;
+    auto database = make_unique<Database>("test", systemConfig);
+
+    // Connect to the database.
+    auto connection = make_unique<Connection>(database.get());
+
+    // Create the schema.
+    connection->query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
+    connection->query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+    connection->query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
+    connection->query("CREATE REL TABLE LivesIn(FROM User TO City)");
+
+    // Load data.
+    connection->query("COPY User FROM \"user.csv\"");
+    connection->query("COPY City FROM \"city.csv\"");
+    connection->query("COPY Follows FROM \"follows.csv\"");
+    connection->query("COPY LivesIn FROM \"lives-in.csv\"");
+
+    // Execute a simple query.
+    auto result =
+        connection->query("MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;");
+
+    // Output query result.
+    while (result->hasNext()) {
+        auto row = result->getNext();
+        std::cout << row->getValue(0)->getValue<string>() << " "
+                  << row->getValue(1)->getValue<int64_t>() << " "
+                  << row->getValue(2)->getValue<string>() << std::endl;
+    }
+    return 0;
+}
+```
+
+Compile and run `main.cpp`. Since we did not install the `libkuzu` as a system library, we need to
+override the linker search path to correctly compile the C++ code and run the compiled program.
+On Linux:
+
+```bash
+env LIBRARY_PATH=. LD_LIBRARY_PATH=. g++ main.cpp -std=c++2a -lkuzu -lpthread
+env LIBRARY_PATH=. LD_LIBRARY_PATH=. ./a.out
+```
+
+On macOS:
+
+```bash
+env DYLD_LIBRARY_PATH=. LIBRARY_PATH=. clang++ main.cpp -std=c++20 -lkuzu
+env DYLD_LIBRARY_PATH=. LIBRARY_PATH=. ./a.out
+```
+
+On Windows, the library file is passed to the compiler directly and the current directory is used
+automatically when searching for `kuzu_shared.dll` at runtime:
+
+```cmd
+cl /std:c++20 /EHsc main.cpp kuzu_shared.lib
+./main.exe
+```
+
+Result:
+
+```bash
+Adam 2020 Karissa
+Adam 2020 Zhang
+Karissa 2021 Zhang
+Zhang 2022 Noura
+```
+
+</TabItem>
+
+<TabItem label="C">
+
+The Kùzu C API shares the same `so`/`dylib` library files with the C++ API and can be used by
+including the C header file (`kuzu.h`).
+
+In this example, we assume that the `so`/`dylib`, the header file, the CSV files, and the C code file
+are all under the same directory:
+
+```bash
+├── include
+│   ├── kuzu.h
+│   └── ......
+├── libkuzu.so / libkuzu.dylib
+├── main.c
+├── user.csv
+├── city.csv
+├── follows.csv
+└── lives-in.csv
+```
+
+The file `main.c` contains the following code:
+
+```c
+// main.c
+#include <stdio.h>
+
+#include "include/kuzu.h"
+
+int main()
+{
+    // Create kuzu system config with 512MB buffer pool size and 2 threads.
+    kuzu_system_config config = {.buffer_pool_size = 512 * 1024 * 1024, .max_num_threads = 2, .enable_compression = true, .read_only = false};
+    // Create an empty database.
+    kuzu_database *db = kuzu_database_init("test", config);
+
+    // Connect to the database.
+    kuzu_connection *conn = kuzu_connection_init(db);
+
+    // Create the schema.
+    kuzu_query_result *result = kuzu_connection_query(conn, "CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
+    kuzu_query_result_destroy(result);
+    result = kuzu_connection_query(conn, "CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+    kuzu_query_result_destroy(result);
+    result = kuzu_connection_query(conn, "CREATE REL TABLE Follows(FROM User TO User, since INT64)");
+    kuzu_query_result_destroy(result);
+    result = kuzu_connection_query(conn, "CREATE REL TABLE LivesIn(FROM User TO City)");
+    kuzu_query_result_destroy(result);
+
+    // Load data.
+    result = kuzu_connection_query(conn, "COPY User FROM \"user.csv\"");
+    kuzu_query_result_destroy(result);
+    result = kuzu_connection_query(conn, "COPY City FROM \"city.csv\"");
+    kuzu_query_result_destroy(result);
+    result = kuzu_connection_query(conn, "COPY Follows FROM \"follows.csv\"");
+    kuzu_query_result_destroy(result);
+    result = kuzu_connection_query(conn, "COPY LivesIn FROM \"lives-in.csv\"");
+    kuzu_query_result_destroy(result);
+
+    // Execute a simple query.
+    result = kuzu_connection_query(conn, "MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;");
+
+    // Output query result.
+    while (kuzu_query_result_has_next(result))
+    {
+        kuzu_flat_tuple *tuple = kuzu_query_result_get_next(result);
+
+        kuzu_value *value = kuzu_flat_tuple_get_value(tuple, 0);
+        char *name = kuzu_value_get_string(value);
+        kuzu_value_destroy(value);
+
+        value = kuzu_flat_tuple_get_value(tuple, 1);
+        int64_t since = kuzu_value_get_int64(value);
+        kuzu_value_destroy(value);
+
+        value = kuzu_flat_tuple_get_value(tuple, 2);
+        char *name2 = kuzu_value_get_string(value);
+        kuzu_value_destroy(value);
+
+        printf("%s follows %s since %lld \n", name, name2, since);
+        free(name);
+        free(name2);
+        kuzu_flat_tuple_destroy(tuple);
+    }
+
+    kuzu_query_result_destroy(result);
+    kuzu_connection_destroy(conn);
+    kuzu_database_destroy(db);
+    return 0;
+}
+```
+
+Compile and run `main.c`: Since we did not install the libkuzu as a system library, we need to
+override the linker search path to correctly compile the C code and run the compiled program.
+
+On Linux:
+
+```bash
+env LIBRARY_PATH=. LD_LIBRARY_PATH=. gcc main.c -lkuzu
+env LIBRARY_PATH=. LD_LIBRARY_PATH=. ./a.out
+```
+
+On macOS:
+
+```bash
+env DYLD_LIBRARY_PATH=. LIBRARY_PATH=. clang main.c -lkuzu
+env DYLD_LIBRARY_PATH=. LIBRARY_PATH=. ./a.out
+```
+
+On Windows, the library file is passed to the compiler directly and the current directory is used
+automatically when searching for `kuzu_shared.dll` at runtime:
+
+```cmd
+cl main.c kuzu_shared.lib
+./main.exe
+```
+
+Result:
+
+```bash
+Adam follows Karissa since 2020
+Adam follows Zhang since 2020
+Karissa follows Zhang since 2021
+Zhang follows Noura since 2022
+```
+
+</TabItem>
+
+<TabItem label="Shell">
+
+When using the Kùzu CLI's shell, you need to first initialize an empty database.
+
+```bash
+# Initialize database
+./kuzu ./demo_db
+```
+
+Then, proceed to enter the following Cypher statements separated by semicolons. Note that you _must_
+indicate the end of each query statement with a semicolon in the shell, otherwise it will not be parsed
+correctly and fail to execute.
+
+```cypher
+// Create schema
+kuzu> CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name));
+kuzu> CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name));
+kuzu> CREATE REL TABLE Follows(FROM User TO User, since INT64);
+kuzu> CREATE REL TABLE LivesIn(FROM User TO City);
+
+// Insert data
+kuzu> COPY User FROM "./data/user.csv";
+kuzu> COPY City FROM "./data/city.csv";
+kuzu> COPY Follows FROM "./data/follows.csv";
+kuzu> COPY LivesIn FROM "./data/lives-in.csv";
+
+// Execute Cypher query
+kuzu> MATCH (a:User)-[f:Follows]->(b:User)
+      RETURN a.name, b.name, f.since;
+```
+
+The following result is obtained:
+
+```bash
+-------------------------------
+| a.name  | b.name  | f.since |
+-------------------------------
+| Adam    | Karissa | 2020    |
+-------------------------------
+| Adam    | Zhang   | 2020    |
+-------------------------------
+| Karissa | Zhang   | 2021    |
+-------------------------------
+| Zhang   | Noura   | 2022    |
+-------------------------------
+```
+
+</TabItem>
+
+</Tabs>
+
+---
+
+:::tip[Congratulations]
+You've now created and queried your first graph in Kùzu!
+:::
