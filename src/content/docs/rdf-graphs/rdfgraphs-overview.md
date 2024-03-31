@@ -4,7 +4,7 @@ title: Overview & Cypher clauses
 
 The examples on this page use the below database, whose schema and data import commands are given [here](./example-rdfgraph):
 
-<Image src="/src/assets/img/rdfgraphs/rdf-running-example.png" />
+<Image src="/img/rdfgraphs/rdf-running-example.png" />
 
 # RDFGraphs: Creating, Dropping, and Importing Data 
 

@@ -6,7 +6,7 @@ We use the following example graph dataset that
 consists of `User` and `City` nodes, `Follows` relationships between users,
 and `LivesIn` relationships between users and cities.
 
-![](/src/assets/img/running-example.png)
+![](/img/running-example.png)
 
 The DDL statements to define the schema of this database, the csv files containing
 the records of the tables in the database and the data import (`COPY FROM`) commands

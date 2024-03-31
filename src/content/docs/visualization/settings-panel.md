@@ -6,7 +6,7 @@ The Settings Panel, which you can go to by clicking `Settings` on the top right 
 contains several knobs to configure your schema and query result visualizations. Below is 
 a screenshot of the Settings Panel.
 
-<img src="/src/assets/img/visualization/settings-panel.png" />
+<img src="/img/visualization/settings-panel.png" />
 
 The available configurations are:
 

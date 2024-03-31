@@ -16,7 +16,7 @@ The dataset we will use for this exercise is the MovieLens dataset, available [h
 The small version of the dataset is used, which contains 610 user nodes, 9724 movie nodes, 100863
  rates edges, and 3684 tags edges. The schema of the dataset is shown below.
 
-![](/src/assets/img/graph-algorithms/movie-schema.png)
+![](/img/graph-algorithms/movie-schema.png)
 
 You can download the dataset locally via wget.
 
@@ -68,7 +68,7 @@ WHERE u.userId IN [1, 2]
 RETURN u, r, m LIMIT 100;
 ```
 
-![](/src/assets/img/graph-algorithms/movie-subgraph.png)
+![](/img/graph-algorithms/movie-subgraph.png)
 
 ## Export subgraph to NetworkX
 

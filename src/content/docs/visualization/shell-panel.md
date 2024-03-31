@@ -13,7 +13,7 @@ be rendered in 3 possible ways.
 
 First, query results can be rendered as a graph view as shown below.
 
-<img src="/src/assets/img/visualization/query-result-graph-view.png" />
+<img src="/img/visualization/query-result-graph-view.png" />
 
 There is a side panel in the graph view, which you can open and close to see the properties of
 individual nodes and relationships you click on or hover over. The graph view is enabled
@@ -26,9 +26,9 @@ in the `RETURN` statement is a node you will get by default a graph view.
 Second, query results can be output as a table as shown below by clicking the table icon on the left hand
 side of a canvas.
 
-<img src="/src/assets/img/visualization/query-result-table-view.png" />
+<img src="/img/visualization/query-result-table-view.png" />
 
 Finally query results can be output in JSON format as shown below by clicking the `</>` icon on the
 left hand side of a canvas.
 
-<img src="/src/assets/img/visualization/query-result-json-view.png" />
+<img src="/img/visualization/query-result-json-view.png" />
