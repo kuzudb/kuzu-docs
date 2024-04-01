@@ -129,18 +129,11 @@ using `CSV_TO_PARQUET(dataset path)`. This case is especially useful to ensure
 the expected result remains the same for both CSV and PARQUET file format
 without storing the same dataset in the codebase twice.
 
-
 ```
 -GROUP MyTest
 -DATASET PARQUET CSV_TO_PARQUET(tinysnb)
 --
 ```
-
-:::note[Note]
-For the conversion, the framework does not match the current schema to
-the parquet files. It relies on arrow to auto detect the datatype when reading
-and convering the CSV to Parquet.
-:::
 
 ### Other properties
 
@@ -253,7 +246,6 @@ It is also possible to use the additional properties inside each test case:
 | `-LOG` | any string | Define a name for each block for informational purposes |
 | `-SKIP` | none | Register the test but skip the whole test case. When a test is skipped, it will display as disabled in the test run |
 | `-PARALLELISM` | integer | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()` |
-| `-BEGIN_WRITE_TRANSACTION` | none | Call `connection.beginWriteTransaction()` before the subsequent statements. |
 | `-CHECK_ORDER` | none | By default, the query results and expected results are ordered before asserting comparison. |
 
 ### Defining variables
@@ -438,25 +430,6 @@ RETURN a.ID, b.ID
 ---- 16
 <FILE>:person_study_at_answers.txt
 
-```
-
-### Example of `BEGIN_WRITE_TRANSACTION`
-
-```
--CASE ParsingErrorRollbackTest
-
--BEGIN_WRITE_TRANSACTION
--STATEMENT CREATE (p:person {ID: 100})
----- ok
--STATEMENT MATCH (:person) RETURN count(*)
----- 1
-9
--STATEMENT RETURN make_date(2011,1,32)
----- error
-Date out of range: 2011-1-32.
--STATEMENT MATCH (:person) RETURN count(*)
----- 1
-8
 ```
 
 ### Sample test log
