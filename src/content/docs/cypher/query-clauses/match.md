@@ -4,7 +4,7 @@ description: MATCH is the clause where you define a graph pattern", i.e., a join
 ---
 
 MATCH is the clause where you define a "graph pattern", i.e., a join of node or relationship records,
-to find in the database[^1]. MATCH is often accompanied by[WHERE](./where) (equivalent to SQL's WHERE clause)
+to find in the database[^1]. MATCH is often accompanied by [WHERE](./where) (equivalent to SQL's WHERE clause)
 to define more predicates on the patterns that are matched.
 
 :::caution[Note]
