@@ -3,14 +3,9 @@ title: List Functions
 description: List functions are used to create and manipulate lists.
 ---
 
-List functions are used to create and manipulate lists. First, let's see the list operators that can be used with lists.
-
-| Operator | Description | Example | Result |
-| ----------- | ----------- |  ----------- |  ----------- |
-| IN | operator for the `list_contains` function | `1 IN [1,2,3]` | `true` |
+List functions are used to create and manipulate lists.
 
 :::caution[Note]
-The following table shows the functions that are used in the list operations.
 Scroll to the right to see the example usage in the below table.
 :::
 
