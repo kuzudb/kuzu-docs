@@ -15,7 +15,7 @@ export default defineConfig({
                 replacesTitle: true,
             },
             social: {
-                github: 'https://github.com/withastro/starlight',
+                github: 'https://github.com/kuzudb/kuzu',
                 discord: 'https://discord.gg/jw7xN2ZhJB',
                 twitter: 'https://twitter.com/kuzudb',
                 linkedin: 'https://www.linkedin.com/company/101059770',
