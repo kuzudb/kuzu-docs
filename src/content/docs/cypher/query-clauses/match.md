@@ -283,7 +283,7 @@ and both queries output:
 --------------------------------------------------------------------
 ```
 
-## Match variable length (recursive) relationships
+## Match variable length/recursive relationships
 You can also find paths that are of variable length between node records. Variable-length relationships
 are sometimes known as recursive patterns or recursive joins. Specifically, you can find variable-hop
 connections between nodes by specifying in the relationship patterns,
@@ -335,7 +335,7 @@ Output:
 - Karissa is found through `Noura <- User -> Karissa`
 - Kitchener is found through `Noura <- User -> Kitchener`
 
-### Returning variable length relationships
+### Return variable length/recursive relationships
 
 A variable length relationship is a `STURCT{LIST[NODE], LIST[REL]}`. Returning a variable length relationship will return all properties 
 ```cypher
@@ -358,7 +358,7 @@ Output:
 ----------------------------------------------------------------------------------------------
 ```
 
-### Filter variable length relationships
+#### Filter variable length/recursive relationships
 We also support running predicates on recursive patterns to constrain the relationship being traversed.
 
 The following query finds name of users and the number of path that are followed between 1 - 2 hops from Adam by person with age more than 45 and before 2022.
@@ -381,9 +381,9 @@ Output:
 Our filter grammar is similar to that used by [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms)
 for example, in Cypher list comprehensions. The first variable represents intermediate relationships and the second one represents intermediate nodes.
 
-### Projecting properties of intermediate nodes and relationships in variable length relationships
+### Project properties of intermediate nodes/relationships
 You can project a subset of properties for the intermediate nodes and relationships that bind within a variable length
-relationship. You can define the projection list of intermediate nodes and rels within two curly brackets `{}` `{}` at 
+relationship. You can define the projection list of intermediate nodes and relationships within two curly brackets `{}` `{}` at 
 the end of the variable length pattern. The first `{}` is used for projecting relationship properties and the second `{}` for 
 node properties. Currently, Kùzu only supports directly projecting properties and not of expressions using
 the properties. Projecting properties of intermediate nodes and relationships can improve both performance and memory footprint.
@@ -432,10 +432,10 @@ Output:
 ----------------------
 ```
 
-### All shortest path
-You can also search for all shortest path with `ALL SHORTEST` key word, e.g. `-[:Label* ALL SHORTEST 1..max]`
+### All shortest paths
+You can also search for all shortest paths with `ALL SHORTEST` key word, e.g. `-[:Label* ALL SHORTEST 1..max]`
 
-The following query finds all shortest path between `Zhang` and `Waterloo`.
+The following query finds all shortest paths between `Zhang` and `Waterloo`.
 ```cypher
 MATCH p = (a)-[* ALL SHORTEST 1..3 ]-(b) 
 WHERE a.name = 'Zhang' AND b.name = 'Waterloo' 
@@ -457,7 +457,7 @@ There are two interpretations when the lower bound is greater than 1:
 - Compute the path with length greater than lower bound and then return the shortest path.
 :::
 
-## Named path
+## Named paths
 Kùzu treats paths as a first-class citizen, so users can assign a named variable to a path (i.e. connected graph ) and use it later on.
  
 The following query returns all paths between `Adam` and `Karissa`.
@@ -511,8 +511,8 @@ Output:
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-### Extracting nodes and rels from a path
-Internally `PATH` is processed as a `STRUCT{LIST[NODE], LIST[REL]}` see [`PATH data type`](../data-types/path) for details. Users can access nodes and rels within a path through `nodes(p)` and `rels(p)` function calls.
+### Extracting nodes and relationships from a path
+Internally `PATH` is processed as a `STRUCT{LIST[NODE], LIST[REL]}` see [`PATH data type`](../data-types/path) for details. Users can access nodes and relationships within a path through `nodes(p)` and `rels(p)` function calls.
 
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2]->(:User) 
