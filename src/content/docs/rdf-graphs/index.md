@@ -35,3 +35,5 @@ Kùzu's native property graph data model, so you can query
 them with Cypher, Kùzu's native query language. This way, you can benefit from Kùzu's easy, scalable and
 fast querying capabilities instead of resorting to SPARQL, which is the standard query language to
 query over RDF triples in other systems.
+
+---
