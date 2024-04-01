@@ -58,6 +58,6 @@ operations at scale.
 
 ### Open source
 
-Kùzu is [open source](https://github.com/kuzudb/kuzu) and has a permissive MIT license,
-allowing you to easily get started building your commercial and proprietary applications on top of it.
-While you check out the repo and try out Kùzu, consider giving us a star and spreading the word!
+Kùzu is open source and has a permissive MIT license, allowing you to easily get started building
+your commercial and proprietary applications on top of it. While you check out
+[the repo](https://github.com/kuzudb/kuzu) and try out Kùzu, consider giving us a star and spreading the word!
