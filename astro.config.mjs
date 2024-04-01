@@ -1,12 +1,14 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 import starlight from '@astrojs/starlight';
 import starlightLinksValidator from 'starlight-links-validator';
 
 // https://astro.build/config
 export default defineConfig({
+    site: 'https://docs.kuzudb.com',
     integrations: [
+        sitemap(),
         starlight({
-            // site: 'https://docs.kuzudb.com',
             favicon: '/src/assets/favicon.ico',
             title: 'Kùzu',
             logo: {
@@ -15,7 +17,7 @@ export default defineConfig({
                 replacesTitle: true,
             },
             social: {
-                github: 'https://github.com/withastro/starlight',
+                github: 'https://github.com/kuzudb/kuzu',
                 discord: 'https://discord.gg/jw7xN2ZhJB',
                 twitter: 'https://twitter.com/kuzudb',
                 linkedin: 'https://www.linkedin.com/company/101059770',
