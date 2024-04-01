@@ -3,22 +3,26 @@ title: Cypher manual
 ---
 
 Cypher is a high-level query language for the property graph data model.
-Cypher is similar to SQL in many aspects. Some of its main differences are:
+It is similar to SQL in many aspects. Some of its analogues with SQL are shown below.
 
-- Instead of SQL's SELECT/FROM/WHERE, Cypher has MATCH (equivalent to FROM) WHERE,
-and RETURN (equivalent to SELECT) as its main query clauses.
-- Instead of SQL's INSERT/UPDATE/DELETE, Cypher has CREATE/SET/REMOVE data manipulation clauses.
-- Joins between the records of different (node/rel) tables are specified using a graph-syntax.
-- There are special syntax, such as the Kleene star, or min...max, to describe variable-length
-and recursive joins.
+| Type | SQL | Cypher
+| ---| --- | ---
+| Query | `SELECT`/`FROM`/`WHERE` | `MATCH`/`WHERE`/`RETURN`
+| Data manipulation | `INSERT`/`UPDATE`/`DELETE` | `CREATE`/`SET`/`REMOVE`
 
-There are other differences between SQL and Cypher. Yet, similar to other high-level database
-query languages, it is very much like SQL and most of its semantics can be understood
-as mappings to relational algebra operations of selections, joins, projections, or
-group-by and aggregations.
+The features of Cypher that are different from SQL are listed below:
+- Joins between records from different node and relationship tables are specified using a graph-like syntax.
+  - `MATCH (n:Person)-[:Follows]->(m:Person)`
+- Special syntax, such as the Kleene star `*` to describe variable-length and recursive joins.
+- Cypher does not have an explicit `GROUP BY` like SQL does -- instead, grouping is done implicitly
+depending on the combination of bound variables in the `RETURN` clause.
 
-Kùzu's query language is based on the openCypher[^1] variant of the Cypher query language.
-In this part of the documentation, we cover those clauses that are implemented in Kùzu.
+There are a few other differences between SQL and Cypher. Yet, like other high-level database
+query languages, most of its semantics can be understood as mappings to relational algebra operators
+for selections, joins, projections and aggregations.
+
+Kùzu implements openCypher's[^1] standard predicates and expressions. The following sections in this
+chapter covers all Cypher clauses, expressions and functions implemented in Kùzu.
 
 ---
 
