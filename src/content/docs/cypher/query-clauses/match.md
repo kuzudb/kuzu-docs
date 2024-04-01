@@ -4,15 +4,15 @@ description: MATCH is the clause where you define a graph pattern", i.e., a join
 ---
 
 MATCH is the clause where you define a "graph pattern", i.e., a join of node or relationship records,
-to find in the database.[^1]. There are several different ways to match patterns and we go through them
-below. MATCH is often accompanied by [WHERE](./where) (equivalent to SQL's WHERE clause) to define more predicates on the patterns that are matched.
+to find in the database[^1]. MATCH is often accompanied by[WHERE](./where) (equivalent to SQL's WHERE clause)
+to define more predicates on the patterns that are matched.
 
 :::caution[Note]
 - Similar to other high-level database query languages, nodes and relationships in the patterns 
 are bound to variables, which can be referenced in other clauses (e.g., WHERE or RETURN) of the query.
 openCypher allows you to omit these variables, if you do not need to reference them.
-- Node/Rel table names in Kùzu are case sensitive. So you need to specify the labels of nodes/rels
-using the same letter cases you used in your node/rel table schema definitions.
+- Node/relationship table names in Kùzu are case sensitive. So you need to specify the labels of nodes/relationships
+using the same letter cases you used in your node/relationship table schema definitions.
 :::
 
 We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database).
@@ -259,7 +259,7 @@ in the query. In such cases, their labels need to be specified *only the first t
 in the pattern*. In the above query a and c's labels are defined on the first/left path, 
 so you don't have to specify them on the right path (though you still can).
 
-### Equality predicates on node/rel properties
+### Equality predicates on node/relationship properties
 The [WHERE](./where) clause is the main clause to specify arbitrary predicates on the nodes and relationships in your patters (e.g., a.age < b.age in where "a" and "b" bind to User nodes). 
 As a syntactic sugar openCypher allows *equality predicates* to be matched on
 nodes and edges using the `{prop1 : value1, prop2 : value2, ...}` syntax. For example: 
@@ -283,9 +283,11 @@ and both queries output:
 --------------------------------------------------------------------
 ```
 
-## Match variable length relationships
-You can also find paths that are variable-length between node records. Specifically, you can find variable-hop connections between nodes by specifying in the relationship patterns,
-e.g., `-[:Label*min..max]->`, where min and max specify the minimum and the maximum number of hops[^2].
+## Match variable length (recursive) relationships
+You can also find paths that are of variable length between node records. Variable-length relationships
+are sometimes known as recursive patterns or recursive joins. Specifically, you can find variable-hop
+connections between nodes by specifying in the relationship patterns,
+e.g., `-[:Label*min..max]->`, where `min` and `max` specify the minimum and the maximum number of hops[^2].
 The following query finds all Users that "Adam" follows within 1 to 2 hops and returns their names as well as length of the path.
 ```cypher
 MATCH (a:User)-[e:Follows*1..2]->(b:User) 
