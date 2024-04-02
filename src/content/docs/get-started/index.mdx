@@ -4,16 +4,16 @@ title: "Create your first graph"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Once you have Kùzu's CLI or your desired client library installed, you can define a graph schema and
-begin inserting data to the database using the Cypher query language. The example below uses a
+Once you have the Kùzu CLI or your preferred client library installed, you can define a graph schema and
+begin inserting data to the database using Cypher. The example below uses a
 graph schema with two node types, `User` and `City`, and two relationship types, `Follows` and `LivesIn`.
 The dataset in CSV format can be found [here](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
 
 :::caution[Info]
 Kùzu implements a _structured_ property graph model and requires a pre-defined schema.
 
-- "Schema definition" involves declaring node and relationship tables and their associated properties.
-- Each property key is strongly typed (types must be explicitly declared
+- Schema definition involves declaring node and relationship tables and their associated properties.
+- Each property key is strongly typed (types must be explicitly declared)
 - For node tables, a primary key **must** be defined
 - For relationship tables, no primary key is required
 :::
