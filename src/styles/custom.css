@@ -14,6 +14,11 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-color-gray-6: #23262f;
   --sl-color-black: #17181c;
 
+  /* Asides box colors for tips */
+  --sl-color-green-low: hsl(var(--sl-hue-green), 15%, 15%);
+  --sl-color-green: hsl(var(--sl-hue-green), 65%, 55%);
+  --sl-color-green-high: hsl(var(--sl-hue-green), 82%, 75%);
+
   --sl-color-accent-low: #208bc2;
   --sl-color-accent: #239bd7;
   --sl-color-accent-high: #35a6de;
@@ -168,4 +173,10 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
     margin-bottom: 1em;
     background-color: #fff;
   }
+}
+
+.starlight-aside--tip {
+	--sl-color-asides-text-accent: var(--sl-color-green-high);
+	border-color: var(--sl-color-green);
+	background-color: var(--sl-color-green-low);
 }
