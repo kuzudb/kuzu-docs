@@ -241,12 +241,15 @@ the hash
 
 It is also possible to use the additional properties inside each test case:
 
-| Property | Parameter | Description |
-|---|---|---|
-| `-LOG` | any string | Define a name for each block for informational purposes |
-| `-SKIP` | none | Register the test but skip the whole test case. When a test is skipped, it will display as disabled in the test run |
-| `-PARALLELISM` | integer | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()` |
-| `-CHECK_ORDER` | none | By default, the query results and expected results are ordered before asserting comparison. |
+| Property           | Parameter | Description                                                                                                         |
+|--------------------|---|---------------------------------------------------------------------------------------------------------------------|
+| `-LOG`             | any string | Define a name for each block for informational purposes                                                             |
+| `-SKIP`            | none | Register the test but skip the whole test case. When a test is skipped, it will display as disabled in the test run |
+| `-PARALLELISM`     | integer | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()`                         |
+| `-CHECK_ORDER`     | none | By default, the query results and expected results are ordered before asserting comparison.                         |
+|  `-RELOADDB`       | none           | Reload database from file system.                                                                                   |
+| `-REMOVE_FILE`     | file path      | Delete the file at the given path.                                                                                  |
+| `-IMPORT_DATABASE` | directory path | Close current database. Open a new database in the given directory.                                                 |
 
 ### Defining variables
 
