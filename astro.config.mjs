@@ -3,9 +3,11 @@ import sitemap from '@astrojs/sitemap';
 import starlight from '@astrojs/starlight';
 import starlightLinksValidator from 'starlight-links-validator';
 
+const site = 'https://docs.kuzudb.com';
+
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://docs.kuzudb.com',
+    site: site,
     integrations: [
         sitemap(),
         starlight({
@@ -23,8 +25,21 @@ export default defineConfig({
                 linkedin: 'https://www.linkedin.com/company/101059770',
                 youtube: 'https://youtube.com/@kuzudb',
             },
+            editLink: {
+                baseUrl: 'https://github.com/kuzudb/kuzu-docs/edit/main',
+            },
             customCss: ['./src/styles/custom.css'],
             expressiveCode: true,
+            head: [
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:image', content: site + '/og.png' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'twitter:image', content: site + '/og.png' },
+                },
+            ],
             sidebar: [
                 {
                     label: 'Home',
@@ -65,15 +80,15 @@ export default defineConfig({
                     label: 'Use client APIs',
                     collapsed: true,
                     items: [
-                        { label: 'Overview', link: '/client-libraries/' },
-                        { label: 'CLI', link: '/client-libraries/cli' },
-                        { label: 'Python', link: '/client-libraries/python' },
-                        { label: 'Node.js', link: '/client-libraries/nodejs' },
-                        { label: 'Java', link: '/client-libraries/java' },
-                        { label: 'Rust', link: '/client-libraries/rust' },
-                        { label: 'C++', link: '/client-libraries/cpp' },
-                        { label: 'C', link: '/client-libraries/c' },
-                        { label: '.NET', link: '/client-libraries/net', badge: { text: 'Community', variant: 'caution'}},
+                        { label: 'Overview', link: '/client-apis/' },
+                        { label: 'CLI', link: '/client-apis/cli' },
+                        { label: 'Python', link: '/client-apis/python' },
+                        { label: 'Node.js', link: '/client-apis/nodejs' },
+                        { label: 'Java', link: '/client-apis/java' },
+                        { label: 'Rust', link: '/client-apis/rust' },
+                        { label: 'C++', link: '/client-apis/cpp' },
+                        { label: 'C', link: '/client-apis/c' },
+                        { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}},
                     ],
                 },
                 {
@@ -92,7 +107,7 @@ export default defineConfig({
                         { label: 'Data manipulation clauses', link: '/cypher/data-manipulation-clauses' },
                         { label: 'Subquery', link: '/cypher/subquery' },
                         { label: 'Macros', link: '/cypher/macro' },
-                        { label: 'Transactions', link: '/cypher/transaction' },
+                        { label: 'Transactions', link: '/cypher/trnpm ansaction' },
                         { label: 'Connection configuration', link: '/cypher/configuration' },
                     ],
                     autogenerate: { directory: 'reference' },
@@ -142,6 +157,7 @@ export default defineConfig({
                         }),
                   ]
                 : [],
+            lastUpdated: true,
         }),
     ],
 });
