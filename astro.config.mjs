@@ -33,13 +33,16 @@ export default defineConfig({
             head: [
                 {
                     tag: 'meta',
-                    attrs: { property: 'og:image', content: site + '/og.png' },
+                    attrs: { property: 'og:image', content: site + '/img/og.png' },
                 },
                 {
                     tag: 'meta',
-                    attrs: { property: 'twitter:image', content: site + '/og.png' },
+                    attrs: { property: 'twitter:image', content: site + '/img/og.png' },
                 },
             ],
+            components: {
+                Header: './src/components/overrides/Header.astro',
+            },
             sidebar: [
                 {
                     label: 'Home',
@@ -142,11 +145,6 @@ export default defineConfig({
                         { label: 'httpfs (HTTP File System)', link: '/extensions/httpfs'},
                     ],
                     autogenerate: { directory: 'reference' },
-                },
-                {
-                    label: 'Read our blog 🔗',
-                    link: 'https://blog.kuzudb.com',
-                    attrs: { target: '_blank' },
                 },
             ],
             plugins: process.env.CHECK_LINKS
