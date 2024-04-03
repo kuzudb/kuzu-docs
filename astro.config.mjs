@@ -7,7 +7,7 @@ const site = 'https://docs.kuzudb.com';
 
 // https://astro.build/config
 export default defineConfig({
-    site: site,
+    site,
     integrations: [
         sitemap(),
         starlight({
@@ -107,7 +107,7 @@ export default defineConfig({
                         { label: 'Data manipulation clauses', link: '/cypher/data-manipulation-clauses' },
                         { label: 'Subquery', link: '/cypher/subquery' },
                         { label: 'Macros', link: '/cypher/macro' },
-                        { label: 'Transactions', link: '/cypher/trnpm ansaction' },
+                        { label: 'Transactions', link: '/cypher/transaction' },
                         { label: 'Connection configuration', link: '/cypher/configuration' },
                     ],
                     autogenerate: { directory: 'reference' },
