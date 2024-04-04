@@ -73,7 +73,7 @@ query the database with Kùzu CLI but you can also use
 ### Visualize the data in KùzuExplorer
 
 To get familiar with the database and its schema, you can use KùzuExplorer, our visualization tool.
-See the download instructions [here](../installation)
+See the download instructions [here](../../installation)
 (note that you need Docker installed and running on your machine first).
 
 Connect the Docker server to your local directory volume by specifying the `-v` flag and the
