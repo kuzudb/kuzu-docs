@@ -1,5 +1,5 @@
 ---
-title: Overview & Cypher clauses
+title: Query an RDF graph in Cypher
 ---
 
 The examples on this page use the below database, whose schema and data import commands are given [here](./example-rdfgraph):

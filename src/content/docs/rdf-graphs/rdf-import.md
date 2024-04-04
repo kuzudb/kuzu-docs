@@ -1,5 +1,5 @@
 ---
-title: RDF Data Import
+title: RDF bulk data import
 ---
 
 Kùzu currently supports bulk importing triples into RDFGraphs through [RDF Turtle (ttl)](https://www.w3.org/TR/turtle/) 

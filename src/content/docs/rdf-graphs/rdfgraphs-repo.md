@@ -1,8 +1,8 @@
 ---
-title: Preloaded RDFGraphs
+title: Preloaded RDF databases
 ---
 
-To make getting started with RDF graphs simpler, we've uploaded ready-made databases for a few
+To help users get started with RDFGraphs, we've uploaded ready-made databases for a few
 examples of popular RDF datasets that have already been imported to Kùzu.
 You can download these databases without any additional setup and start querying them in Cypher with Kùzu. 
 

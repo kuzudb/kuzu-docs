@@ -1,8 +1,8 @@
 ---
-title: Example UniKG RDFGraph
+title: Create & query your first RDFGraph
 ---
 
-Throughout the documentation on Kùzu's RDFGraph feature, we will use the following 
+Throughout this example on Kùzu's RDFGraph feature, we will use the following
 set of triples about students and faculty at universities, which we call `UniKG`.
 
 <Image src="/img/rdfgraphs/rdf-running-example.png" />

@@ -1,5 +1,5 @@
 ---
-title: RDF Basics
+title: RDF basics
 ---
 
 RDF is part of a set of *[semantic web standards](https://www.w3.org/2001/sw/wiki/Main_Page)* by W3C consortium,
