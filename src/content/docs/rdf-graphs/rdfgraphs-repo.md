@@ -73,8 +73,17 @@ query the database with Kùzu CLI but you can also use
 ### Visualize the data in KùzuExplorer
 
 To get familiar with the database and its schema, you can use KùzuExplorer, our visualization tool.
-See the download instructions [here](https://github.com/kuzudb/explorer?tab=readme-ov-file#option-1-using-an-existing-database)
+See the download instructions [here](../installation)
 (note that you need Docker installed and running on your machine first).
+
+Connect the Docker server to your local directory volume by specifying the `-v` flag and the
+absolute path to the database directory as follows:
+
+```bash
+docker run -p 8000:8000 \
+    -v /path/to/your/local/database:/database \
+    --rm kuzudb/explorer:latest
+```
 
 You can visualize the EWordnet RDFGraph schema from the Explorer by clicking on the "Schema" tab
 on the top right.

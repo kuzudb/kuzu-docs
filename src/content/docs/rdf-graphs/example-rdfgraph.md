@@ -1,5 +1,5 @@
 ---
-title: Create & query your first RDFGraph
+title: Create your first RDFGraph
 ---
 
 Throughout this example on Kùzu's RDFGraph feature, we will use the following
