@@ -1,8 +1,8 @@
 ---
-title: Example UniKG RDFGraph
+title: Create your first RDFGraph
 ---
 
-Throughout the documentation on Kùzu's RDFGraph feature, we will use the following 
+Throughout this example on Kùzu's RDFGraph feature, we will use the following
 set of triples about students and faculty at universities, which we call `UniKG`.
 
 <Image src="/img/rdfgraphs/rdf-running-example.png" />
@@ -13,7 +13,7 @@ are given below. You can copy-paste and type these commands in the Kùzu CLI she
 or [KùzuExplorer](https://kuzudb.com/docusaurus/kuzuexplorer/) to replicate
 the examples in this documentation locally.
 
-## Creating the RDFGraph and Importing the Triples
+## Creating the RDFGraph
 
 ```cypher
 CREATE RDFGraph UniKG;
@@ -47,7 +47,9 @@ kz:Zhang a kz:faculty ;
 kz:faculty rdfs:subClassOf kz:person .
 ```
 
-Data import. We assume `${PATH-TO-DIR}` is the directory containing `uni.ttl` file:
+## Data import
+
+We assume `${PATH-TO-DIR}` is the directory containing `uni.ttl` file:
 
 ```cypher
 COPY UniKG FROM "${PATH-TO-DIR}/uni.ttl";
@@ -68,3 +70,15 @@ Output:
 | 14           |
 ----------------
 ```
+
+## Drop an RDFGraph
+
+You can drop an RDFGraph using the following command:
+
+```cypher
+DROP RDFGraph UniKG;
+```
+
+:::caution[Note]
+Note that you cannot alter RDFGraphs. You can only create or drop them.
+:::

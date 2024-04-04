@@ -1,37 +1,12 @@
 ---
-title: Overview & Cypher clauses
+title: Query an RDF graph in Cypher
 ---
 
 The examples on this page use the below database, whose schema and data import commands are given [here](./example-rdfgraph):
 
 <Image src="/img/rdfgraphs/rdf-running-example.png" />
 
-# RDFGraphs: Creating, Dropping, and Importing Data 
-
-An RDFGraph is a lightweight extension to Kùzu's structured property graph data model
-to natively ingest and query RDF triples. You can create an RDFGraph using the following command:
-
-```cypher
-CREATE RDFGraph UniKG;
-```
-
-You can then ingest data into RDFGraphs using a `COPY FROM` command. For example,
-the following will ingest the triples in the `uni.ttl` [Turtle file](https://www.w3.org/TR/turtle/) 
-into the `UniKG` RDFGraph:
-
-```cypher
-COPY UniKG FROM "${PATH-TO-DIR}/uni.ttl" (in_memory=true);
-```
-
-You can drop an RDFGraph using the following command:
-
-```cypher
-DROP RDFGraph UniKG;
-```
-
-Note that you cannot alter RDFGraphs. You can only create or drop them.
-
-## RDFGraphs Mapping of Triples to Property Graph Tables
+## RDFGraphs: Mapping of triples to Property Graph tables
 
 Once you have imported your triples, you can query the triples with Cypher, Kùzu's query language. 
 However, Cypher is not a query language that was designed for RDF. It assumes an underlying property graph data model. 
@@ -49,7 +24,7 @@ The specifics of the mapping are as follows:
 
 2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, lang STRING, PRIMARY KEY (id))`: Stores the [Literals](rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples. 
    Each unique literal that appears in the triples is mapped to a separate `UniKG_l` node. 
-   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../cypher/data-types/string.md).
+   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../cypher/data-types/string).
    There is a third `id` property of type [SERIAL](../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table. 
 
 3. **Resource-to-Resource Triples Relationship Table** — `UniKG_rt(FROM UniKG_r, TO UniKG_r, iri STRING)`: Stores the triples between UniKG_r resources and 
@@ -126,13 +101,13 @@ For example, the (0, rdf:type, 2) tuple in the `UniKG_rt` table corresponds to t
 while the (0, kz:population, 1) tuple in the `UniKG_lt` table corresponds to the (kz:Waterloo, kz:population, 150000) triple.
 
 
-### Altering the Schemas of the Base Tables of RDFGraphs
+### Altering the schemas of the base tables of RDFGraphs
 You cannot alter the schemas of any of the node and relationship tables of RDFGraphs.
 So the schemas of `UniKG_r`, `UniKG_l`, `UniKG_rt`, and `UniKG_lt` tables are immutable. However,
 as [discussed below](#modifying-rdfgraphs-using-create-set-merge-and-delete) you can add or delete the records in these tables as if they are
 regular tables with several restrictions.
 
-### Mapping of RDF Literals as Separate Nodes
+### Mapping of RDF literals as separate nodes
 Storing RDF Literals as separate "Literal nodes" may rightly look unintuitive at first. The other natural alternative would be to store literals as node
 properties of the resources they are associated with. However, storing them as separate nodes has the advantage that
 you can query both types of triples, those between resources and resources as well as between resources and literals
@@ -141,7 +116,7 @@ homogeneously with a relationship pattern. As will be discussed momentarily, you
 need to use the previous pattern for triples between resources and resources and a different pattern `MATCH (s:UniKG_r)`
 and inspect the properties of the mapped resources to match triples between resources and literals.
 
-### Physical Storage of UniKG_rt and UniKG_lt Relationship Tables
+### Physical storage of UniKG_rt and UniKG_lt relationship tables
 For `UniKG_rt` and `UniKG_rl` tables, which store predicates of triples,
 Kùzu stores the string `iri` property internally as an integer 
 that stores the system-level id of the resource that corresponds to the IRI of the predicate. This is an internal
@@ -154,7 +129,7 @@ respectively the system-level internal ids of resources kz:Waterloo, rdf:type, a
 you can still query a "virtual" iri property of the `UniKG_rt` relationship table, e.g., `MATCH (s)-[p:UniKG_rt]->(o) RETURN p.iri` will
 return among other tuples, the `http://www.w3.org/1999/02/22-rdf-syntax-ns#type` tuple. `
 
-## Querying Triples in RDFGraphs
+## Querying triples in RDFGraphs
 Given the mapping of RDF triples into node and relationship tables, these tables can be queried using Cypher just like any other node and relationship
 table in Kùzu. For example, you can query all the triples between one resource and another using
 the following query:
@@ -186,7 +161,7 @@ Output:
 ---------------------------------------------------------------------------------------------------------------------
 ```
 
-### Using RDFGraph Name to Query Both Relationship Tables
+### Using RDFGraph name to query both relationship tables
 We have also added syntactic sugar to make it easier to query the triples. Specifically, the RDFGraph name,
 which is the prefix of all of the 4 tables, can be used to refer to both relationship table names.
 That is, the RDFGraph name acts as a [rel table group](../cypher/data-definition/create-table#create-rel-table-group),
@@ -234,7 +209,7 @@ omit the label of the nodes as done in the above query. In the above query, vari
 and Kùzu resolves it to the  2 labels `(o:UniKG_r:UniKG_l)`, which is the syntax for representing multi label
 node variables in Cypher. 
 
-### Use of Namespace Prefixes in Queries
+### Use of namespace prefixes in queries
 Writing IRI namespaces, which are the prefix strings, such as "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
 "http://kuzu.io/rdf-ex#" or "http://xmlns.com/foaf/0.1/", can be verbose. 
 In SPARQL, which is the standard query language for RDF, you can define a variable with "PREFIX" keyword,
@@ -261,7 +236,7 @@ Output:
 Note that in the above query if you instead projected every variable in scope with `RETURN *`, the "kz" and "rdf"
 aliases, which are also in scope would also be returned as columns in the output.
 
-### Querying of Regular Node and Relationship Tables and RDFGraphs
+### Querying of regular node and relationship tables and RDFGraphs
 Since RDFGraphs are simply a set of node and relationship tables, you can link the node tables to other node
 tables in your database. This can especially be useful if you would like to enrich some of
 the resources with additional information. Suppose you had another source of information about
@@ -320,7 +295,7 @@ Above, `a` is a node table record from the Student node table, `s` is a resource
 `p` is either a relationship record from the `UniKG_rt` or `UniKG_lt` relationship tables, and `o` is either a resource or literal
 record from the `UniKG_r` or `UniKG_l` node tables.
 
-## Modifying RDFGraphs Using `CREATE`, `SET`, `MERGE` and `DELETE` 
+## Modifying RDFGraphs using `CREATE`, `SET`, `MERGE` and `DELETE` 
 
 Similar to how you can query the base 4 tables in RDFGraphs, you can also manipulate the base tables of RDFGraphs 
 through the regular [CREATE](../cypher/data-manipulation-clauses/create), 
@@ -384,7 +359,7 @@ DETACH DELETE l;
 Only the literal node in the <`kz:Waterloo`, `kz:population`, 150000> triple will match `l`. So `l` and the
 triple <`kz:Waterloo`, `kz:population`, 150000> will be deleted.
 
-### Restrictions for Deleting Resource Nodes
+### Restrictions for deleting resource nodes
 
 As listed among the above restrictions, Resource node table is append only, i.e., you cannot delete resource nodes. 
 The reason for this restriction is that
@@ -399,7 +374,7 @@ To correctly delete this node, we would have to delete all triples/relationships
 that have `rdf:type` as their `iri`. For example, there are 4 such relationships in `UniKG_rt`. 
 This is a non-trivial operation and we have not yet implemented it in Kùzu.
 
-### Malformed IRI Behavior In CREATE Statements vs Turtle Files
+### Malformed IRI behavior in `CREATE` statements vs. Turtle files
 
 Kùzu does not require that the values stored in the `iri` property of the Resource node table is a valid IRI
 according to the [official IRI standard](https://www.ietf.org/rfc/rfc3987.txt). From Kùzu's perspective they can be arbitrary strings. 
@@ -411,7 +386,7 @@ triples with malformed IRIs will be ignored and not inserted into Kùzu. That is
 [Serd](https://github.com/drobilla/serd) that Kùzu uses, which skips such triples (in fact it may skip an 
 entire "chunk" of triples in the Turtle file; see the [documentation](./rdf-import#behavior-during-importing-malformed-triples-in-turtle-files) on this behavior here).
 
-### Using Blank Node IDs in CREATE Statements
+### Using blank node IDs in `CREATE` statements
 
 Kùzu has the convention that during bulk data import from Turtle or N-Triples files, 
 blank nodes are replaced with specific IRIs of the form `_:iopt-label` or `_:ibj`, where i and j are integers.
@@ -425,7 +400,7 @@ Kùzu will error on CREATE statements that try to create a relationship
 record in the `_rt` or `_lt` relationship tables with a predicate
 whose IRI is of the form `_:`.
 
-## Duplicate Triples
+## Duplicate triples
 
 Some RDF stores do not allow duplicate triples to be inserted into a database.
 In Kùzu, because each triple is a relationship record, and Kùzu supports multiple relationships between

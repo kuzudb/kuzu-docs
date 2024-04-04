@@ -1,5 +1,5 @@
 ---
-title: RDF Basics
+title: RDF basics
 ---
 
 RDF is part of a set of *[semantic web standards](https://www.w3.org/2001/sw/wiki/Main_Page)* by W3C consortium,
@@ -69,7 +69,7 @@ We will describe other IRIs to identify other resources throughout the
 Kùzu RDFGraphs documentation. For the purpose of covering RDF basics, 
 we'll use the above resources/IRIs.
 
-## RDF Literals
+## RDF literals
 
 Some properties of resources are not other resources but primitive values.
 For example the age of the student Adam, identified by `kz:Adam`, is 30.
@@ -82,7 +82,7 @@ literal values about the Resource `ex:spiderman`:
 The first triple has tag `@en` to indicate that the string is in English, and the second
 one has tag `@ru` to indicate that the string is in Russian.
 
-## RDF Blank Nodes
+## RDF blank nodes
 
 [Blank nodes](https://www.w3.org/TR/rdf11-concepts/#section-blank-nodes) are RDF resources
 whose IRIs are not known. These may appear in some RDF file formats, e.g.,
@@ -90,7 +90,7 @@ in Turtle files, their IRIs appear with prefix `_:<some-label>` or inside `[ ]`.
 that support RDF, when loading RDF data into Kùzu, Kùzu will generate
 a specific IRI for blank nodes. See [here](./rdf-import#blank-nodes) for more details.
 
-## RDF Triples and RDF/Knowledge Graphs
+## RDF triples and RDF/Knowledge Graphs
 
 Now we can describe how to express the information in the database.
 All information in RDF is expressed as a set of <subject, predicate, object>
@@ -108,7 +108,7 @@ an ellipse around it.
 
 <Image src="/img/rdfgraphs/rdf-basics-example.png" />
 
-## RDF Schema and OWL
+## RDF schema and OWL
 
 RDF is part of larger set of standards to model knowledge.
 For example, `rdf:type` is a common IRI that is used universally
@@ -132,7 +132,7 @@ natively in Kùzu using Cypher.
 
 [^1]: `owl` is the abbreviation for `http://www.w3.org/2002/07/owl` namespace.
 
-## When to Use RDF vs Property Graphs
+## When to use RDF vs. Property Graphs
 
 Questions about the choice of data models are at some level, a user decision. 
 A rule of thumb is that if you have sufficient structure over your 
@@ -150,7 +150,6 @@ scenarios for using RDF are the following:
 3. You need some automatic reasoning/inference capabilities.[^2]
 
 [^2]: RDFS or OWL-based inference is currently not supported in Kùzu.
-
 
 ## Reification
 

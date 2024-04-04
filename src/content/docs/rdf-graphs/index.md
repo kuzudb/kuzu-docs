@@ -1,5 +1,5 @@
 ---
-title: "Motivation for RDF Graphs"
+title: "Motivation for RDFGraphs"
 ---
 
 Kùzu's **RDFGraphs** can be thought of as a lightweight extension to Kùzu's property graph data model
