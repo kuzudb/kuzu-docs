@@ -24,7 +24,7 @@ The specifics of the mapping are as follows:
 
 2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, lang STRING, PRIMARY KEY (id))`: Stores the [Literals](rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples. 
    Each unique literal that appears in the triples is mapped to a separate `UniKG_l` node. 
-   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../cypher/data-types/string.md).
+   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../cypher/data-types/string).
    There is a third `id` property of type [SERIAL](../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table. 
 
 3. **Resource-to-Resource Triples Relationship Table** — `UniKG_rt(FROM UniKG_r, TO UniKG_r, iri STRING)`: Stores the triples between UniKG_r resources and 
