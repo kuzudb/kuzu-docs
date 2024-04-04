@@ -13,7 +13,7 @@ for how to ingest triples through `CREATE` statements.
 with the same `COPY FROM` commands and options as Turtle files, and do not require special handling.
 That is why below we only cover the `COPY FROM` statement for importing triples from Turtle files.
 
-## RDF Data Import From Turtle Files Using COPY FROM
+## RDF Data import from Turtle files using `COPY FROM`
 
 Turtle files represent triples in the following format:
 
@@ -54,7 +54,7 @@ and your RDFGraph is called TurtleEx, you can call:
 COPY TurtleEx FROM "${PATH-TO-DIR}/turtle-ex.ttl" (IN_MEMORY=true);
 ```
 
-### Turtle Configuration
+### Turtle configuration
 
 Similar to CSV configuration, Turtle import configuration can be manually changed by specifying them inside `( )` at the end of the the `COPY FROM` command. 
 Currently we support these options:
@@ -73,7 +73,7 @@ leave it out of the `COPY FROM` command.
 By default, Kùzu will ignore malformed lines during loading. Setting `STRICT=true` will make the system throw a runtime exception 
 when a malformed line is encountered and stop loading.
 
-### Importing Multiple Turtle Files
+### Importing multiple Turtle files
 
 Similar to importing multiple CSV or Parquet files, you can also import multiple Turtle files by specifying a glob pattern. 
 For example, you can import all the Turtle files in the `${PATH-TO-DIR}` directory as follows:
@@ -84,7 +84,7 @@ COPY TurtleEx FROM "${PATH-TO-DIR}/*.ttl";
 
 Refer to the [COPY FROM MULTIPLE CSV Files](https://kuzudb.com/docusaurus/data-import/csv-import#copy-from-multiple-csv-files-to-a-single-table) section for details.
 
-### Full IRIs, Prefixes, and Relative IRIs
+### Full IRIs, prefixes and relative IRIs
 
 IRIs in Turtle files can be specified in one of 3 ways:
 
@@ -112,7 +112,7 @@ This will insert only the first triple as follows: < `http://base-prefix/#baseIR
 In the second triple `#baseIRI` is malformed because it is not enclosed between angle brackets. 
 In the third triple `foo:prefixIRIEx` is malformed because `foo` is not defined as a prefix in the Turtle file.
 
-### Behavior During Importing Malformed Triples in Turtle Files
+### Behavior during iporting malformed triples in Turtle files
 
 If your Turtle file contains malformed triples, e.g., if the subject, predicate, or object is not a valid IRI,
 Kùzu will skip the rest of "chunk" of triples after the first malformed triple. A chunk is a set of
@@ -141,7 +141,7 @@ will also be inserted.
 You can also set copy configuration `(strict=true)` to throw exceptions and stop loading when a malformed line is detected
 as described [above](#turtle-configuration).
 
-### Blank Nodes
+### Blank nodes
 
 Blank nodes in Turtle files can appear in one of two formats:
 
@@ -168,7 +168,7 @@ the blank node that knows `_:0b2`:`<_:0b1, foaf:knows, _:0b2>`.
 You cannot use blank nodes as predicates in Turtle files according to Turtle standards. If you do, Kùzu will skip the triple.
 :::
 
-### Language Tag for Literals and Size Limitation
+### Language tag for literals and size limitation
 RDF Literals consist of a data type, a value, and an optional language tag.
 For example, the example in the beginning of this page contains the following triple: (`http://example.org/#spiderman`, `foaf:name`, `"Человек-паук"@ru`). The object here
 is an RDF Literal with data type string, value "Человек-паук", and language tag @ru indicating
@@ -194,7 +194,7 @@ Output:
 Further, there is currently a size limitation that your literal strings can be of size at most 256KB in characters.
 If you are storing longer text, we will truncate them while ingesting your literals.
 
-### Converting Other RDF Files to Turtle and Validating Turtle Files
+### Converting other RDF files to Turtle files and validating them
 
 If you have RDF files in formats other than Turtle and N-Triples, such as 
 [RDF/XML](https://www.w3.org/TR/rdf-syntax-grammar/) or [JSON-LD](https://www.w3.org/TR/json-ld11/), 
