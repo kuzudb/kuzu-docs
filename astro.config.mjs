@@ -62,6 +62,25 @@ export default defineConfig({
                     ]
                 },
                 {
+                    label: 'Import data',
+                    collapsed: true,
+                    items: [
+                        { label: 'Overview', link: '/import' },
+                        { label: 'Copy from CSV', link: '/import/csv' },
+                        { label: 'Copy from Parquet', link: '/import/parquet' },
+                        { label: 'Copy from NumPy', link: '/import/npy', badge: { text: 'Experimental', variant: 'danger'}},
+                    ]
+                },
+                {
+                    label: 'Export data',
+                    collapsed: true,
+                    items: [
+                        { label: 'Overview', link: '/export' },
+                        { label: 'Copy to CSV', link: '/export/csv' },
+                        { label: 'Copy to Parquet', link: '/export/parquet' },
+                    ]
+                },
+                {
                     label: 'Visualize graphs',
                     link: '/visualization',
                 },
@@ -75,7 +94,7 @@ export default defineConfig({
                         { label: 'Create your first RDF graph', link: '/rdf-graphs/example-rdfgraph' },
                         { label: 'Query an RDF graph in Cypher', link: '/rdf-graphs/rdfgraphs-overview' },
                         { label: 'RDF bulk data import', link: '/rdf-graphs/rdf-import' },
-                        { label: 'Example RDFGraphs', link: '/rdf-graphs/rdfgraphs-repo' },
+                        { label: 'Preloaded RDFGraphs', link: '/rdf-graphs/rdfgraphs-repo' },
                     ],
                     autogenerate: { directory: 'reference' },
                 },
