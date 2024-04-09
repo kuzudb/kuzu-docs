@@ -27,7 +27,7 @@ The `LOAD FROM` clause can used to scan the Parquet file and to verify that the 
 ```
 
 :::caution[Notes]
-- Exporting [Fixed List](../cypher/data-types#list) or [Variant](../../cypher/data-types/variant) data type to Parquet is not yet supported.
-- The [Union](../../cypher/data-types/union) data type is exported as a struct, which is the internal representation of `Union` data type.
-- Currently, only snappy compression is supported for exports.
+- Exporting [fixed list](../cypher/data-types#list) or [variant](../../cypher/data-types/variant) data types to Parquet are not yet supported.
+- [UNION](../../cypher/data-types/union) is exported as a [STRUCT](../../cypher/data-types/struct), which is the internal representation of the `Union` data type.
+- Currently, only Snappy compression is supported for exports.
 :::
