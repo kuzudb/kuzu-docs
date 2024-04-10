@@ -175,7 +175,7 @@ df = pd.DataFrame({
 })
 ```
 
-The Pandas DataFrame can be scanned using the LOAD FROM clause just like we would from
+The Pandas DataFrame can be scanned using the `LOAD FROM` clause just like we would from
 an external file. The data access occurs in a zero-copy manner, meaning that Kùzu natively scans
 the underlying Pandas data objects.
 
@@ -190,3 +190,8 @@ print(result.get_as_df())
 2    Zhang   50
 3    Noura   25
 ```
+
+:::caution[Note]
+Currently, only the NumPy backend of Pandas is supported for native scan. We will soon support
+the Arrow backend for Pandas too.
+:::
