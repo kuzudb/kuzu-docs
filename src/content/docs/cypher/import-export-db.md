@@ -2,9 +2,13 @@
 title: EXPORT/IMPORT DATABASE
 ---
 
-Kùzu allows you to import/export database using query statements. 
+The import/export database feature is useful for migrating data between different versions of Kùzu
+without the need to manually write DDL and COPY statements. Note that because the storage layer of
+Kùzu can change between versions, the import/export is not guaranteed to be compatible
+between versions of Kùzu that are very far apart.
 
-## EXPORT DATABASE
+## Export database
+
 The `EXPORT DATABASE` command allows you to export the contents of the database to a specific directory.
 The query below exports the database to an absolute directory named `/path/to/export`, utilizing the same configuration parameters as Copy From Statements. 
 ```cypher
@@ -17,8 +21,8 @@ The `EXPORT DATABASE` command generates three Cypher files and a series of data 
 - `copy.cypher`: Contains `COPY FROM` statements for reimporting data.
 - `Data files`: These files contain the actual database data and are in CSV (by default) or Parquet format.
 
+## Import database
 
-## IMPORT DATABASE
 The `IMPORT DATABASE` command allows you to import the contents of the database from a specific directory.
 The query below imports the database from a directory named `/path/to/export`.
 ```cypher

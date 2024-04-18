@@ -130,6 +130,7 @@ export default defineConfig({
                         { label: 'Subquery', link: '/cypher/subquery' },
                         { label: 'Macros', link: '/cypher/macro' },
                         { label: 'Transactions', link: '/cypher/transaction' },
+                        { label: 'import-export-db', link: '/cypher/import-export-db' },
                         { label: 'Connection configuration', link: '/cypher/configuration' },
                     ],
                     autogenerate: { directory: 'reference' },
