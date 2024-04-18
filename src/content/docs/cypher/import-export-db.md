@@ -1,11 +1,10 @@
 ---
-title: EXPORT/IMPORT DATABASE
+title: Migrating databases
 ---
 
-The import/export database feature is useful for migrating data between different versions of Kùzu
-without the need to manually write DDL and COPY statements. Note that because the storage layer of
-Kùzu can change between versions, the import/export is not guaranteed to be compatible
-between versions of Kùzu that are very far apart.
+You can migrate databases between different versions without manually writing DDL and COPY statements.
+Note that because the storage layer of Kùzu can change between versions, the import/export is not
+guaranteed to be compatible between versions of Kùzu that are very far apart.
 
 ## Export database
 
