@@ -115,7 +115,13 @@ export default defineConfig({
                 },
                 {
                     label: 'Tutorials',
-                    link: '/tutorials',
+                    collapsed: true,
+                    items: [
+                        { 
+                            label: 'Python notebooks',
+                            link: '/tutorials#python',
+                        }
+                    ]
                 },
                 {
                     label: 'Cypher manual',

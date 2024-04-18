@@ -6,7 +6,7 @@ title: Execution
 
 We decompose `PhysicalPlan` into `Pipeline`s. A pipeline is a linear sequence of physical operators. The leaf operator of a pipeline is a source operator that scans from disk, storage or the output of other pipelines. The last operator of a pipeline is a sink operator that accumulates the intermediate results of the pipeline. Within a pipeline, data flows between operators without materialization until sink.
 
-### Pipeline decompistion
+### Pipeline decomposition
 
 Given a physical plan, we decompose into pipelines when we encounter a sink operator. A sink operator is an operator that must exhaust its input in order to process correctly, e.g. `HASH_JOIN_BUILD`, `AGGREGATE`, `ORDER BY`, etc. Pipelines have dependencies, meaning that one pipeline may depend on the output of another pipeline. For e.g., `HASH_JOIN_PROBE` pipeline must depend on a `HASH_JOIN_BUILD` pipeline.
 
