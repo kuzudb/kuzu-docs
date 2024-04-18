@@ -1,34 +1,27 @@
 ---
-title: List
-sidebar_position: 4
+title: LIST and ARRAY
 ---
 
-# LIST
-Kùzu supports two LIST data types: variable-size list `VAR-LIST` and fixed-size `FIXED-LIST.`
-`LIST` data types include values of a single data type. The data type of values within a `LIST` is declared before a set of brackets in DDL.
-For example, `STRING[]` declares a `(VAR-)LIST` of STRING values.
+Kùzu supports two list-like data types: (i) variable-length lists, simply called `LIST`, and (ii)
+fixed-length lists, called `ARRAY`. `ARRAY` is a special case of `LIST`, where the length of the `LIST`
+is known beforehand.
 
-A `VAR-LIST` type can contain arbitrary number of values with the same type. VAR-LISTS can be of any
-type Kùzu supports including nested and complex type. For example, `STRING[][]` is
-`VAR-LIST` of `VAR-LIST` of STRING values. Similarly, `MAP(STRING, STRING)[]`
-is a `VAR-LIST` of `MAP(STRING, STRING)` values.
+## LIST
 
-A `FIXED-LIST` type can contain fixed number of values with the same numeric type. For example,
-`INT64[5]` is a `FIXED-LIST` of 5 INT64 values.  FIXED-LIST is an **experimental** feature designed
-for Kùzu's [Pytorch Geometric integration](https://kuzudb.com/docusaurus/getting-started/python/#colab-notebooks). 
+A `LIST` can contain an arbitrary number of values, but they must all be of the same type. The types
+inside a `LIST` can be any of those supported by Kùzu, including nested/complex types. Some examples are shown below:
 
-The below table summarizes VAR-LIST and FIXED-LIST data types and how to define them in DDL statements.
+- `STRING[]` is a `LIST` of `STRING` values
+- `INT64[]` is a `LIST` of `INT64` values
+- `STRING[][]` is a `LIST` of `LIST` of `STRING` values
+- `MAP(STRING, STRING)[]` is a `LIST` of `MAP(STRING, STRING)` values
 
-| Data Type | DDL Definition |
-| --- | --- | 
-| VAR-LIST | INT64[] |
-| FIXED-LIST | INT64[5] |
+### Create a `LIST`
 
-Kùzu does not support operations on `FIXED-LIST` values (except casting values to `FIXED-LIST`).
-Instead, Kùzu support several operations on VAR-LIST, which we cover below through several examples:
+In Cypher, enclosing comma-separated values in square brackets will store the values as a `LIST`. The type
+of the elements is inferred by the query parser during the binding stage.
 
-### `VAR-LIST` creation
-```
+```cypher
 RETURN ["Alice", "Bob"] AS l;
 ```
 Output:
@@ -40,8 +33,17 @@ Output:
 ---------------
 ```
 
-### `VAR-LIST` creation with function
+:::danger[Note]
+If you try to create a `LIST` with elements that are of different types, an exception will be thrown.
 ```
+kuzu> RETURN ["Alice", 1] AS l;
+Error: Binder exception: Cannot bind LIST_CREATION with parameter type STRING and INT64.
+```
+:::
+
+You can also create a `LIST` by explicitly calling the creation function as follows.
+
+```cypher
 RETURN list_creation(1,2,3,4) AS l;
 ```
 Output:
@@ -53,8 +55,8 @@ Output:
 -------------
 ```
 
-### UNWIND'ing `VAR-LIST`
-```
+### `UNWIND` a `LIST`
+```cypher
 UNWIND [[1,2], [3], [4, 5]] AS x 
 UNWIND x as y 
 RETURN y;
@@ -75,3 +77,15 @@ Output:
 | 5 |
 -----
 ```
+
+## ARRAY
+
+`ARRAY` is a special case of `LIST`, in which the number of elements is fixed. Just like a `LIST`,
+all values in `ARRAY` must be of the same type. The number of elements is specified as an
+integer inside square brackets. Some examples are shown below:
+
+- `INT64[256]` is an `ARRAY` of `INT64` values, with 256 elements
+- `DOUBLE[512]` is an `ARRAY` of `DOUBLE` values, with 512 elements
+
+An `ARRAY` is useful for storing items like embeddings (for use in similarity search or in machine learning
+via our PyTorch Geometric integration), where the number of elements is fixed and known in advance.
