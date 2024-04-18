@@ -9,7 +9,7 @@ guaranteed to be compatible between versions of Kùzu that are very far apart.
 ## Export database
 
 The `EXPORT DATABASE` command allows you to export the contents of the database to a specific directory.
-The query below exports the database to an absolute directory named `/path/to/export`, utilizing the same configuration parameters as Copy From Statements. 
+The query below exports the database to an absolute directory named `/path/to/export`, utilizing the same configuration parameters as `COPY FROM` statements.
 ```cypher
 EXPORT DATABASE TO '/path/to/export' (HEADER=true);
 ```
