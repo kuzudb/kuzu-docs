@@ -11,7 +11,7 @@ export default defineConfig({
     integrations: [
         sitemap(),
         starlight({
-            favicon: '/src/assets/favicon.ico',
+            favicon: '/img/favicon.ico',
             title: 'Kùzu',
             logo: {
                 light: '/src/assets/logo/kuzu-logo.png',
