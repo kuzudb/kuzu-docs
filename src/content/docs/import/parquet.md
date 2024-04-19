@@ -4,14 +4,12 @@ title: Import Parquet
 
 [Apache Parquet](https://Parquet.apache.org/docs/) is an open source, column-oriented persistent storage format
 designed for efficient data storage and retrieval. Kùzu supports bulk data import from Parquet files
-using the `COPY FROM` command.
+using the `COPY FROM` command. You can use `COPY FROM` to import data into an empty table or to append data to an existing table.
 
 :::caution[Notes]
 Parquet files store schema information in their metadata, so you don't need to explicitly handle columns
 based on type, unlike in CSV. However, the same rules apply:
 
-- **Start with empty tables:** `COPY FROM` commands can be used when your tables are completely empty.
-So you should use `COPY FROM` immediately after you define the schemas of your tables.
 - **Copy nodes before relationships:** In order to copy a relationship table `R` from a Parquet file `RFile`,
 the nodes that appear in `RFile` need to already exist in the database (either imported in bulk or
 inserted through Cypher data manipulation commands).
