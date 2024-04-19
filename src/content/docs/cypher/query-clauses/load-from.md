@@ -191,7 +191,6 @@ print(result.get_as_df())
 3    Noura   25
 ```
 
-:::caution[Note]
-Currently, only the NumPy backend of Pandas is supported for native scan. We will soon support
-the Arrow backend for Pandas too.
+:::note[Note]
+Pandas can use either a NumPy or Arrow backend - Kùzu can natively scan from either backend.
 :::
