@@ -1,8 +1,8 @@
 ---
-title: DuckDB scanner
+title: DuckDB Extension
 ---
 
-The `duckdb_scanner` extension allows Kùzu to directly scan from DuckDB databases that are persisted to
+The `duckdb` extension allows Kùzu to directly scan from DuckDB databases that are persisted to
 disk. This allows users to not only view their DuckDB data in Kùzu, but also facilitates seamless
 migraton of data from DuckDB to Kùzu for deeper graph analysis.
 
