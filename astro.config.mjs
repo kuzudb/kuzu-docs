@@ -169,7 +169,8 @@ export default defineConfig({
                     items: [
                         { label: 'Overview', link: '/extensions'},
                         { label: 'httpfs (HTTP File System)', link: '/extensions/httpfs'},
-                        { label: 'DuckDB scanner', link: '/extensions/duckdb_scanner', badge: { text: 'New'} },
+                        { label: 'DuckDB', link: '/extensions/duckdb', badge: { text: 'New'} },
+                        { label: 'PostgreSQL', link: '/extensions/postgres', badge: { text: 'New'} },
                     ],
                     autogenerate: { directory: 'reference' },
                 },
