@@ -2,21 +2,29 @@
 title: PostgreSQL Extension
 ---
 
-The `postgreSQL` extension allows Kùzu to directly scan from PostgreSQL databases.
-This allows users to not only view their PostgreSQL data in Kùzu, but also facilitates seamless
+The PostgreSQL extension allows Kùzu to directly scan data from PostgreSQL databases.
+This allows users to not only view their PostgreSQL tables in Kùzu, but also facilitates seamless
 migraton of data from PostgreSQL to Kùzu for deeper graph analysis. Currently, the extension is read-only
-from DuckDB and does not support write operations.
+from Postgres and does not support write operations.
 
 ## Usage
 
-`PostgreSQL` is an official extension developed and maintained by Kùzu.
+`postgres` is an official extension developed and maintained by Kùzu.
 It can be installed and loaded by running the following commands using the CLI or your preferred language
 client API:
 
-```cypher
-INSTALL postgres_scanner;
-LOAD EXTENSION postgres_scanner;
+```sql
+INSTALL postgres;
+LOAD EXTENSION postgres;
 ```
+
+:::note[Notes]
+- This extension works for PostgreSQL versions 14 and above (and possibly on older versions,
+though this hasn't been tested extensively).
+- If you experience an error while loading the extension, ensure that `postgres` 14 or above is installed
+on your system. On MacOS for PostfreSQL 16, this is done via `brew install postgres@16`. See the PostgreSQL
+[installation guide](https://www.postgresql.org/download/) for specific instructions for your OS.
+:::
 
 ## Direct scan from PostgreSQL
 
@@ -25,16 +33,17 @@ Directly scan from PostgreSQL tables using the `LOAD FROM` statement.
 ### Create a sample postgreSQL database
 
 To illustrate the usage of this extension, we create a sample `postgresql` database of university
-students.
+students. The first step is to create an empty database.
 
-Firstly, we have to create the university database:
 ```py
 import psycopg2
 
 conn = psycopg2.connect(
-    dbname="postgres",
-    user="username",
+    dbname="university",
+    user="postgres",
     host="localhost",
+    password=os.environ.get("POSTGRES_PASSWORD"),
+    port=5432,
 )
 
 cur = conn.cursor()
@@ -44,15 +53,16 @@ cur.close()
 conn.close()
 ```
 
-
-Then we can connect and start populating the university database with some data:
+Then we can connect to this database and start populating it with with some data:
 ```py
 import psycopg2
 
 conn = psycopg2.connect(
     dbname="university",
-    user="username",
+    user="postgres",
     host="localhost",
+    password=os.environ.get("POSTGRES_PASSWORD"),
+    port=5432,
 )
 
 cur = conn.cursor()
@@ -69,30 +79,49 @@ conn.close()
 
 ### Attach PostgreSQL instance in Kùzu
 
+```sql
+ATTACH [PG_CONNECTION_STRING] AS [alias] (dbtype 'postgres')
 ```
-ATTACH [PG_CONNECTION_STRING] as [alias] (dbtype 'postgres')
+
+The below example shows how the `university` PostgreSQL database can be attached to Kùzu using
+the alias `uw`:
+
+```sql
+ATTACH 'dbname=university user=postgres host=localhost password=POSTGRES_PASSWORD' AS uw (dbtype 'POSTGRES');
 ```
+
+The `ATTACH` statement requires the following parameters:
 
 - `PG_CONNECTION_STRING`: PostgreSQL connection string
 - `alias`: Database alias to use in Kùzu - If not provided, the database name from PostgreSQL will be used
-
-:::note[Note]
-When attaching multiple databases, it's recommended to use aliasing to avoid conflicts in
+    - When attaching multiple databases, it's recommended to use aliasing to avoid conflicts in
 referencing tables.
-:::
 
-The following example shows how the `university` PostgreSQL database can be attached to Kùzu using
-the alias `uw`:
+The below table lists some common connection string parameters:
 
-```cypher
-ATTACH 'dbname=university user=username host=localhost' as uw (dbtype 'POSTGRES');
+| Parameter | Description | Default |
+|-----------|-------------| ------- |
+| `dbname`    | Database name | [user defined] |
+| `host`      | Host IP address | `localhost` |
+| `user`      | Postgres username | `postgres` |
+| `password`  | Postgres password | [empty] |
+| `port`      | Port number | 5432 |
+
+#### Configuring PostgreSQL via environment variables
+
+It's recommended to use environment variables to store sensitive information like passwords. This is
+common practice in production environments where the connection information is managed externally and
+passed to the application via scripts.
+
+```sh
+export POSTGRES_PASSWORD="secret"
 ```
 
 ### Scan from PostgreSQL tables
 
-Finally, we can utilize the `load from` statement to scan the person table.
+Finally, we can utilize the `LOAD FROM` statement to scan the `Person` table.
 
-```cypher
+```sql
 LOAD FROM uw.person
 RETURN *
 ```
@@ -113,19 +142,19 @@ Result:
 ---------------
 ```
 
-The above steps showed how to scan (i.e., read) data from a PostgreSQL table using the `postgres_scanner`.
+The above steps showed how to scan (i.e., read) data from a PostgreSQL table using the `postgres` extension.
 
 ## Data migration from PostgreSQL tables
 
-The larger purpose of the PostgreSQL Scanner is to facilitate seamless data transfer from PostgreSQL to Kùzu.
-In this example, We continue using the `university.db` database created in the last step, but this time,
+One important use case of the PostgreSQL extension is to facilitate seamless data transfer from PostgreSQL to Kùzu.
+In this example, We continue using the `university` database created in the last step, but this time,
 we copy the data and persist it to Kùzu. This is done with the `COPY FROM {subquery}` feature.
 
-### Create a person table in Kùzu
+### Create a `Person` table in Kùzu
 
 We first create a `Person` table in Kùzu which has the same schema as the one defined in PostgreSQL.
 
-```cypher
+```sql
 CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 ```
 
@@ -133,7 +162,7 @@ CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 
 We can reference the created alias `uw` to copy data from the PostgreSQL table to the Kùzu table.
 
-```cypher
+```sql
 COPY Person FROM (LOAD FROM uw.person RETURN *);
 ```
 
