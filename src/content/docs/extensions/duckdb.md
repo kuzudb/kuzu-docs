@@ -65,7 +65,7 @@ The following example shows how the `university.db` DuckDB database can be attac
 the alias `uw`:
 
 ```sql
-ATTACH 'university.db' as uw (dbtype 'duckdb');
+ATTACH 'university.db' AS uw (dbtype 'duckdb');
 ```
 
 ### Scan from DuckDB tables
@@ -119,7 +119,7 @@ CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 
 We can reference the created alias `uw` to copy data from the DuckDB table to the Kùzu table.
 
-```cypher
+```sql
 COPY Person FROM (LOAD FROM uw.person RETURN *);
 ```
 

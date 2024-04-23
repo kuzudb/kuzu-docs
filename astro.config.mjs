@@ -85,8 +85,7 @@ export default defineConfig({
                     link: '/visualization',
                 },
                 {
-                    label: 'Model RDF databases',
-                    badge: 'New',
+                    label: 'Model RDF data',
                     collapsed: true,
                     items: [
                         { label: 'Motivation', link: '/rdf-graphs' },
