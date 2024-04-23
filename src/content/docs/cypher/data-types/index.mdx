@@ -64,15 +64,15 @@ shows all built-in data types.
 
 ## FLOAT
 
-| Size | Description
-| --- | ---
-| 4 bytes | single precision floating-point number
+| Size | Description | Aliases
+| --- | --- | ---
+| 4 bytes | single precision floating-point number | REAL, FLOAT4
 
 ## DOUBLE
 
-| Size | Description
-| --- | ---
-| 8 bytes | double precision floating-point number
+| Size | Description | Aliases
+| --- | --- | ---
+| 8 bytes | double precision floating-point number | FLOAT8
 
 ## BOOLEAN
 
@@ -223,9 +223,9 @@ Output:
 
 ## INTERVAL
 
-| Size | Description
-| --- | ---
-| 4 bytes | date/time difference
+| Size | Description | Aliases
+| --- | --- | ---
+| 4 bytes | date/time difference | DURATION
 
 `INTERVAL` consists of multiple date parts and represents the total time length of these date parts.
 Kùzu follows [DuckDB's implementation](https://duckdb.org/docs/sql/data_types/interval) for the
