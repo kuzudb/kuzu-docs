@@ -2,14 +2,16 @@
 title: PostgreSQL Extension
 ---
 
-The `postgreSQL` extension allows Kùzu to directly scan from PostgreSQL databases that are persisted to
-disk. This allows users to not only view their PostgreSQL data in Kùzu, but also facilitates seamless
-migraton of data from PostgreSQL to Kùzu for deeper graph analysis.
+The `postgreSQL` extension allows Kùzu to directly scan from PostgreSQL databases.
+This allows users to not only view their PostgreSQL data in Kùzu, but also facilitates seamless
+migraton of data from PostgreSQL to Kùzu for deeper graph analysis. Currently, the extension is read-only
+from DuckDB and does not support write operations.
 
 ## Usage
 
 `PostgreSQL` is an official extension developed and maintained by Kùzu.
-It can be installed and loaded using the following commands:
+It can be installed and loaded by running the following commands using the CLI or your preferred language
+client API:
 
 ```cypher
 INSTALL postgres_scanner;

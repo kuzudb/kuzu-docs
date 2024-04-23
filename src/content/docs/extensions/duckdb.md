@@ -4,20 +4,23 @@ title: DuckDB extension
 
 The DuckDB scanner extension allows Kùzu to directly scan from DuckDB databases that are persisted to
 disk. This allows users to not only view their DuckDB data in Kùzu, but also facilitates seamless
-migration of data from DuckDB to Kùzu for deeper graph analysis.
+migration of data from DuckDB to Kùzu for deeper graph analysis. Currently, the extension is read-only
+from DuckDB and does not support write operations.
 
 ## Usage
 
 `duckdb` is an official extension developed and maintained by Kùzu.
-It can be installed and loaded using the following commands:
+It can be installed and loaded by running the following commands using the CLI or your preferred language
+client API:
 
 ```sql
 INSTALL duckdb;
 LOAD EXTENSION duckdb;
 ```
 
-:::note[Note]
-If you experience an error while loading the extension, ensure that the `duckdb` binary is installed
+:::note[Notes]
+- The minimum required version of DuckDB to use this extension is 0.10.0.
+- If you experience an error while loading the extension, ensure that the `duckdb` binary is installed
 on your system. On MacOS, this is done via `brew install duckdb`. See the DuckDB
 [installation guide](https://duckdb.org/docs/installation) for instructions for your OS.
 :::
@@ -37,11 +40,11 @@ import duckdb
 conn = duckdb.connect('university.db')
 
 # Insert data to person table
-conn.execute("CREATE TABLE person (name VARCHAR, age INTEGER);")
-conn.execute("INSERT INTO person values ('Alice', 30);")
-conn.execute("INSERT INTO person values ('Bob', 27);")
-conn.execute("INSERT INTO person values ('Carol', 19);")
-conn.execute("INSERT INTO person values ('Dan', 25);")
+conn.execute("CREATE TABLE Person (name VARCHAR, age INTEGER);")
+conn.execute("INSERT INTO Person values ('Alice', 30);")
+conn.execute("INSERT INTO Person values ('Bob', 27);")
+conn.execute("INSERT INTO Person values ('Carol', 19);")
+conn.execute("INSERT INTO Person values ('Dan', 25);")
 ```
 
 ### Attach DuckDB instance in Kùzu
@@ -100,7 +103,7 @@ DETACH uw
 
 ## Data migration from duckdb tables
 
-The larger purpose of the DuckDB Scanner is to facilitate seamless data transfer from DuckDB to Kùzu.
+One important use case of the DuckDB Scanner extension is to facilitate seamless data transfer from DuckDB to Kùzu.
 In this example, We continue using the `university.db` database created in the last step, but this time,
 we copy the data and persist it to Kùzu. This is done with the `COPY FROM {subquery}` feature.
 
@@ -125,13 +128,13 @@ COPY Person FROM (LOAD FROM uw.person RETURN *);
 Finally, we can verify the data in the `Person` table in Kùzu.
 
 ```cypher
-MATCH (p:person) RETURN p.*;
+MATCH (p:Person) RETURN p.*;
 ```
 
 Result:
 ```
 ------------------
-| s.name | s.age |
+| p.name | p.age |
 ------------------
 | Alice  | 30    |
 ------------------
