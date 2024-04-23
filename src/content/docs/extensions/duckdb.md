@@ -1,20 +1,26 @@
 ---
-title: DuckDB Extension
+title: DuckDB extension
 ---
 
-The `duckdb` extension allows Kùzu to directly scan from DuckDB databases that are persisted to
+The DuckDB scanner extension allows Kùzu to directly scan from DuckDB databases that are persisted to
 disk. This allows users to not only view their DuckDB data in Kùzu, but also facilitates seamless
-migraton of data from DuckDB to Kùzu for deeper graph analysis.
+migration of data from DuckDB to Kùzu for deeper graph analysis.
 
 ## Usage
 
-`duckdb_scanner` is an official extension developed and maintained by Kùzu.
+`duckdb` is an official extension developed and maintained by Kùzu.
 It can be installed and loaded using the following commands:
 
-```cypher
-INSTALL duckdb_scanner;
-LOAD EXTENSION duckdb_scanner;
+```sql
+INSTALL duckdb;
+LOAD EXTENSION duckdb;
 ```
+
+:::note[Note]
+If you experience an error while loading the extension, ensure that the `duckdb` binary is installed
+on your system. On MacOS, this is done via `brew install duckdb`. See the DuckDB
+[installation guide](https://duckdb.org/docs/installation) for instructions for your OS.
+:::
 
 ## Direct scan from DuckDB
 
@@ -40,8 +46,8 @@ conn.execute("INSERT INTO person values ('Dan', 25);")
 
 ### Attach DuckDB instance in Kùzu
 
-```
-ATTACH [DB_PATH] as [alias] (dbtype 'duckdb')
+```sql
+ATTACH [DB_PATH] AS [alias] (dbtype 'duckdb')
 ```
 
 - `DB_PATH`: Path to the DuckDB database instance (can be relative or absolute path)
@@ -55,15 +61,15 @@ referencing tables.
 The following example shows how the `university.db` DuckDB database can be attached to Kùzu using
 the alias `uw`:
 
-```cypher
+```sql
 ATTACH 'university.db' as uw (dbtype 'duckdb');
 ```
 
 ### Scan from DuckDB tables
 
-Finally, we can utilize the `load from` statement to scan the person table.
+Finally, we can utilize the `LOAD FROM` statement to scan the person table.
 
-```cypher
+```sql
 LOAD FROM uw.person
 RETURN *
 ```
@@ -84,7 +90,13 @@ Result:
 ---------------
 ```
 
-The above steps showed how to scan (i.e., read) data from a DuckDB table using the `duckdb_scanner`.
+## Detach DuckDB instance
+
+To detach a DuckDB instance, use `DETACH [ALIAS]` as follows:
+
+```sql
+DETACH uw
+```
 
 ## Data migration from duckdb tables
 
