@@ -132,7 +132,7 @@ export default defineConfig({
                         { label: 'Functions, expressions & operators', link: '/cypher/expressions' },
                         { label: 'Data definition language (DDL)', link: '/cypher/data-definition' },
                         { label: 'Data manipulation clauses', link: '/cypher/data-manipulation-clauses' },
-                        { label: 'Subquery', link: '/cypher/subquery' },
+                        { label: 'Subqueries', link: '/cypher/subquery' },
                         { label: 'Macros', link: '/cypher/macro' },
                         { label: 'Transactions', link: '/cypher/transaction' },
                         { label: 'Migrate database', link: '/cypher/import-export-db', badge: { text: 'New'} },
