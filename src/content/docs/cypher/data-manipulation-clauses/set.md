@@ -1,7 +1,6 @@
 ---
 title: Set
 description: Update properties of node or relationship records to new values.
-sidebar_position: 2
 ---
 
 import RunningExample from '../running-example.png';
@@ -11,7 +10,7 @@ import RunningExample from '../running-example.png';
 # SET 
 `SET` is similar to that in SQL. It allows updating properties of node or relationship records (possibly NULL).
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database.md).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
 
 ## Set Node Properties
 

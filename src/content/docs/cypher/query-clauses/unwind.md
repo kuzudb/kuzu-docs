@@ -8,7 +8,7 @@ into a table T with k element.
 When using UNWIND, you need to specify an alias to refer to the elements
 of the unnested list, i.e., T.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
 
 For example, the following unnests a literal "list of strings" into multiple rows 
 and return them:
