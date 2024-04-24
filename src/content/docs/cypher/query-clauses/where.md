@@ -10,7 +10,7 @@ Regardless of what comes before WHERE, the semantics of WHERE is this two step c
 1. It then runs the boolean predicate specified in the WHERE clause and outputs those that pass the predicates to
 the next part of your query.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
 
 For example:
 
