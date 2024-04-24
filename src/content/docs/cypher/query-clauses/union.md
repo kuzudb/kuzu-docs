@@ -10,7 +10,7 @@ by taking their union. Two notes:
 - The number of columns and dataType of each column must be identical in A and B but their names can be different.
 - UNION will remove all duplicates in the union of A and B. Instead, UNION ALL preserves the duplicates.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
 
 For example, the following query returns the age of the follower
 of Zhang and Karissa without duplicate elimination:

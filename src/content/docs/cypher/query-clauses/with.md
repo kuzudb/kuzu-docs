@@ -9,7 +9,7 @@ two very common cases of using WITH is: (1) to compute a numeric result, often t
 that can be used as a predicate in the following parts; and (2) performing a "top-k" computation on a
 some query, before performing other querying on those top-k. We give examples of each.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database)
 
 ### Using WITH for aggregations
 The following query returns all Users whose ages are greater than the average age of Users in the database. This
