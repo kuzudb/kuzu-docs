@@ -46,6 +46,7 @@ Scroll to the right to see the example usage in the below table.
 | `list_distinct(list)` | removes NULLs and duplicate values from the list. | `list_distinct(3,3,3,NULL)` | `[3]` |
 | `list_unique(list)` | counts number of unique elements of the list. NULLs are ignored. | `list_unique(3,3,3,NULL)` | `1` |
 | `list_any_value(list)` | returns the first non-NULL value of the list | `list_any_value(NULL, 'a', NULL)` | `'a'` |
+| `list_to_string(list, separator)` | converts a list to a string separated by the given separator | `list_to_string([1,2,3], '..' )` | `'1..2..3'` |
 | `range(start, stop)` | returns a list of values from `start` to `stop`. Specify the step as shown [here](#range) | `range(1,3)` | `[1,2,3]` |
 | `coalesce(element1, element2)` | returns the first non-NULL value from the list of elements | `coalesce(NULL, 'a', NULL)` | `'a'` |
 | `ifnull(element1, element2)` | a two-argument version of coalesce | `ifnull(NULL, 'a')` | `'a'` |
@@ -54,7 +55,6 @@ Scroll to the right to see the example usage in the below table.
 | `array_inner_product(array1, array2)` | calculates the inner product of two arrays | `array_inner_product([1,2,3], [4,5,6])` | `32` |
 | `array_cross_product(array1, array2)` | calculates the cross product of two arrays | `array_cross_product([1,2,3], [4,5,6])` | `[[-3,6,-3],[6,-12,6],[-3,6,-3]]` |
 | `array_cosine_similarity(array1, array2)` | calculates the cosine similarity of two arrays | `array_cosine_similarity([1,2,3], [4,5,6])` | `0.9746318461970762` |
-
 
 </div>
 
