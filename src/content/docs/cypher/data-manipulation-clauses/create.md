@@ -7,7 +7,7 @@ Not to be confused with the `CREATE` statement from the DDL, the `CREATE` clause
 similar to the `INSERT` clause of SQL and lets you insert records into your node and relationship
 tables. We describe the generic semantics of the `CREATE` clause [below](#general-semantics).
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
 
 ## Insert new nodes
 The following query inserts a single node record, `(Alice, 35)`, into the `User` node table:

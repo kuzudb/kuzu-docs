@@ -10,7 +10,7 @@ you can understand the semantics as follows: perform the join inside `MATCH` and
 (ii) perform the join inside the `OPTIONAL MATCH` and store it as an intermediate table R. Then take the left
 outer join of L and R (where L is on the left) on their common variables (i.e., `L ⟕ R` in relational algebra).
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
 
 For example, the following query returns the followees of each user or NULL if a user doesn't follow anyone.
 

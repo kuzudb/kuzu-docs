@@ -4,7 +4,7 @@ description: MATCH is the clause where you define a graph pattern", i.e., a join
 ---
 
 MATCH is the clause where you define a "graph pattern", i.e., a join of node or relationship records,
-to find in the database[^1]. MATCH is often accompanied by [WHERE](./where) (equivalent to SQL's WHERE clause)
+to find in the database[^1]. MATCH is often accompanied by [WHERE](../where) (equivalent to SQL's WHERE clause)
 to define more predicates on the patterns that are matched.
 
 :::caution[Note]
@@ -15,7 +15,7 @@ openCypher allows you to omit these variables, if you do not need to reference t
 using the same letter cases you used in your node/relationship table schema definitions.
 :::
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
 
 ## Match nodes
 
@@ -260,7 +260,7 @@ in the pattern*. In the above query a and c's labels are defined on the first/le
 so you don't have to specify them on the right path (though you still can).
 
 ### Equality predicates on node/relationship properties
-The [WHERE](./where) clause is the main clause to specify arbitrary predicates on the nodes and relationships in your patters (e.g., a.age < b.age in where "a" and "b" bind to User nodes). 
+The [WHERE](../where) clause is the main clause to specify arbitrary predicates on the nodes and relationships in your patters (e.g., a.age < b.age in where "a" and "b" bind to User nodes). 
 As a syntactic sugar openCypher allows *equality predicates* to be matched on
 nodes and edges using the `{prop1 : value1, prop2 : value2, ...}` syntax. For example: 
 ```cypher
@@ -512,7 +512,7 @@ Output:
 ```
 
 ### Extracting nodes and relationships from a path
-Internally `PATH` is processed as a `STRUCT{LIST[NODE], LIST[REL]}` see [`PATH data type`](../data-types/path) for details. Users can access nodes and relationships within a path through `nodes(p)` and `rels(p)` function calls.
+Internally `PATH` is processed as a `STRUCT{LIST[NODE], LIST[REL]}` see [`PATH data type`](https://docs.kuzudb.com/cypher/data-types/#path) for details. Users can access nodes and relationships within a path through `nodes(p)` and `rels(p)` function calls.
 
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2]->(:User) 
@@ -533,7 +533,7 @@ Output:
 | [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
 --------------------------------------------------------------------------------------------
 ```
-More path functions can be found [here](../expressions/path-functions).
+More path functions can be found [here](https://docs.kuzudb.com/cypher/expressions/path-functions).
 
 [^1]: `MATCH` is similar to the `FROM` clause of SQL, where the list of tables that need to be joined are specified. 
 [^2]: Max number of hop will be set to 30 if omitted. You can change the configuration through `SET` statement.
