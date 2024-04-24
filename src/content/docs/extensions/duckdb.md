@@ -14,8 +14,8 @@ It can be installed and loaded by running the following commands using the CLI o
 client API:
 
 ```sql
-INSTALL duckdb;
-LOAD EXTENSION duckdb;
+INSTALL duckdb_scanner;
+LOAD EXTENSION duckdb_scanner;
 ```
 
 :::note[Notes]
@@ -40,11 +40,11 @@ import duckdb
 conn = duckdb.connect('university.db')
 
 # Insert data to person table
-conn.execute("CREATE TABLE Person (name VARCHAR, age INTEGER);")
-conn.execute("INSERT INTO Person values ('Alice', 30);")
-conn.execute("INSERT INTO Person values ('Bob', 27);")
-conn.execute("INSERT INTO Person values ('Carol', 19);")
-conn.execute("INSERT INTO Person values ('Dan', 25);")
+conn.execute("CREATE TABLE person (name VARCHAR, age INTEGER);")
+conn.execute("INSERT INTO person values ('Alice', 30);")
+conn.execute("INSERT INTO person values ('Bob', 27);")
+conn.execute("INSERT INTO person values ('Carol', 19);")
+conn.execute("INSERT INTO person values ('Dan', 25);")
 ```
 
 ### Attach DuckDB instance in Kùzu
