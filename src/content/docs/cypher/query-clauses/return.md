@@ -10,7 +10,7 @@ bound to nodes or relationships, aliases, or more complex expressions. RETURN ca
 for performing group-by and aggregations as well as duplication removing (using the `DISTINCT` clause). 
 We discuss several common expressions used in RETURN.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database)
+We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database)
 
 ## Returning node and relationship variables
 Returning variables in the query that are bound to node and relationships in the query 

@@ -8,7 +8,7 @@ or sort a set of tuples you computed up to a point in your query.  Kùzu current
 sorting orders: `ASC`, `DESC`. By default if no sorting order is specified, Kùzu sorts
 rows in ascending order and NULLs are placed first.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
 
 ## Basic example
 The following query returns the user's name and age ordered by user's age using the default ordering(asc order):

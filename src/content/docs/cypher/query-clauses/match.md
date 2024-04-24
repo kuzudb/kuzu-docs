@@ -15,7 +15,7 @@ openCypher allows you to omit these variables, if you do not need to reference t
 using the same letter cases you used in your node/relationship table schema definitions.
 :::
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../../cypher/query-clauses/example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
 
 ## Match nodes
 
