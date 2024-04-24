@@ -28,7 +28,7 @@ on your system. On MacOS for PostfreSQL 16, this is done via `brew install postg
 
 ## Direct scan from PostgreSQL
 
-Directly scan from PostgreSQL tables using the `LOAD FROM` statement.
+This section shows how to directly scan from PostgreSQL tables to Kùzu using the `LOAD FROM` statement.
 
 ### Set up a PostgreSQL server via Docker
 

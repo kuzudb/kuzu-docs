@@ -27,7 +27,7 @@ on your system. On MacOS, this is done via `brew install duckdb`. See the DuckDB
 
 ## Direct scan from DuckDB
 
-Directly scan from DuckDB tables using the `LOAD FROM` statement.
+This section shows how to directly scan from DuckDB tables to Kùzu using the `LOAD FROM` statement.
 
 ### Create a sample DuckDB database
 
