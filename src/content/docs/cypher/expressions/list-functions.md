@@ -1,9 +1,10 @@
 ---
 title: List Functions
-description: List functions are used to create and manipulate lists.
+description: List functions are used to create and manipulate lists or arrays.
 ---
 
-List functions are used to create and manipulate lists.
+List functions are used to create and manipulate lists and/or arrays. Arrays are a special case of lists,
+where the length is fixed. The following list functions have been implemented.
 
 :::caution[Note]
 Scroll to the right to see the example usage in the below table.
@@ -48,6 +49,12 @@ Scroll to the right to see the example usage in the below table.
 | `range(start, stop)` | returns a list of values from `start` to `stop`. Specify the step as shown [here](#range) | `range(1,3)` | `[1,2,3]` |
 | `coalesce(element1, element2)` | returns the first non-NULL value from the list of elements | `coalesce(NULL, 'a', NULL)` | `'a'` |
 | `ifnull(element1, element2)` | a two-argument version of coalesce | `ifnull(NULL, 'a')` | `'a'` |
+| `array_value(arg1, arg2, arg3..)` | creates an array containing the argument values | `array_value(1,2,3,4,5,56,2)` | `[1,2,3,4,5,56,2] |
+| `array_dot_product(array1, array2)` | calculates the dot product of two arrays | `array_dot_product([1,2,3], [4,5,6])` | `32` |
+| `array_inner_product(array1, array2)` | calculates the inner product of two arrays | `array_inner_product([1,2,3], [4,5,6])` | `32` |
+| `array_cross_product(array1, array2)` | calculates the cross product of two arrays | `array_cross_product([1,2,3], [4,5,6])` | `[[-3,6,-3],[6,-12,6],[-3,6,-3]]` |
+| `array_cosine_similarity(array1, array2)` | calculates the cosine similarity of two arrays | `array_cosine_similarity([1,2,3], [4,5,6])` | `0.9746318461970762` |
+
 
 </div>
 
