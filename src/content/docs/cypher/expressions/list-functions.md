@@ -46,6 +46,8 @@ Scroll to the right to see the example usage in the below table.
 | `list_unique(list)` | counts number of unique elements of the list. NULLs are ignored. | `list_unique(3,3,3,NULL)` | `1` |
 | `list_any_value(list)` | returns the first non-NULL value of the list | `list_any_value(NULL, 'a', NULL)` | `'a'` |
 | `range(start, stop)` | returns a list of values from `start` to `stop`. Specify the step as shown [here](#range) | `range(1,3)` | `[1,2,3]` |
+| `coalesce(element1, element2)` | returns the first non-NULL value from the list of elements | `coalesce(NULL, 'a', NULL)` | `'a'` |
+| `ifnull(element1, element2)` | a two-argument version of coalesce | `ifnull(NULL, 'a')` | `'a'` |
 
 </div>
 
@@ -110,3 +112,36 @@ RETURN range(1,10,2);
 | [1,3,5,7,9]   |
 -----------------
 ```
+
+## COALESCE and IFNULL
+
+`COALESCE` and `IFNULL` functions are used to return the first non-NULL value from the list of elements.
+The only difference is that `COALESCE` can take more than two arguments.
+
+```cypher
+RETURN coalesce(NULL, 'a', NULL) AS result;
+```
+
+Output:
+```
+-----------
+| result  |
+-----------
+| 'a'     |
+-----------
+
+```
+
+```cypher
+RETURN ifnull(NULL, 'a') AS result;
+```
+
+Output:
+```
+-----------
+| result  |
+-----------
+| 'a'     |
+-----------
+```
+
