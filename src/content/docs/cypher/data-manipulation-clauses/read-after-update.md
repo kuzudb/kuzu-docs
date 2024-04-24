@@ -1,6 +1,5 @@
 ---
 title: Read After Update
-sidebar_position: 10
 ---
 
 
