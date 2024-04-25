@@ -183,3 +183,10 @@ Result:
 | Dan    | 25    |
 ------------------
 ```
+
+### Postgres schema cache
+To avoid repetitive retriving schema data from Postgres, Kùzu maintains cached schema information including table names, their respective columns and types. Should modifications occur in the schema via an alternate connection to the Postgres server, such as creation/deletion of tables, the cached schema data may become obsolete. Users can utilize postgres_clear_cache() function to refresh cached schema information.
+Example:
+```
+CALL POSTGRES_CLEAR_CACHE() RETURN *;
+```
