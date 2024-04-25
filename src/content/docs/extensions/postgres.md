@@ -14,8 +14,8 @@ It can be installed and loaded by running the following commands using the CLI o
 client API:
 
 ```sql
-INSTALL postgres_scanner;
-LOAD EXTENSION postgres_scanner;
+INSTALL postgres;
+LOAD EXTENSION postgres;
 ```
 
 :::note[Notes]
@@ -137,7 +137,7 @@ Result:
 ---------------
 ```
 
-The above steps showed how to scan (i.e., read) data from a PostgreSQL table using the `postgres_scanner` extension.
+The above steps showed how to scan (i.e., read) data from a PostgreSQL table using the `postgres` extension.
 
 ## Data migration from PostgreSQL tables
 
