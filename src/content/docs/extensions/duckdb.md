@@ -143,11 +143,14 @@ Result:
 ------------------
 ```
 
-### DuckDB schema cache
-To avoid repetitive retriving schema data from Postgres, Kùzu maintains cached schema information including table names, their respective columns and types. Should modifications occur in the schema via an alternate connection to the DuckDB instance, such as creation/deletion of tables, the cached schema data may become obsolete. Users can utilize duckdb_clear_cache() function to refresh cached schema information.
+### Schema cache
 
-Example:
-```
-CALL DUCKDB_CLEAR_CACHE() RETURN *
-```
+To avoid redundantly retrieving schema information from DuckDB, Kùzu maintains a schema cache
+including table names and their respective columns and types. Should modifications occur in the schema
+via an alternate connection to the DuckDB instance, such as creation or deletion of tables, the cached
+schema data may become obsolete. You can use the `duckdb_clear_cache()` function to refresh cached
+schema information in such cases.
 
+```sql
+CALL duckdb_clear_cache() RETURN *
+```

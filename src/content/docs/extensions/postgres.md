@@ -49,7 +49,7 @@ To illustrate the usage of the extension, we create a sample Postgres database o
 students. We will use [asyncpg](https://magicstack.github.io/asyncpg/current/index.html),
 an asynchronous PostgreSQL client library for Python, to create the database and insert some sample data
 via a Python script.
-Run `pip install asyncpg` to install the library.
+This step assumes you have run `pip install asyncpg` to install the library, and are using Python 3.10+.
 
 ```py
 import asyncio
@@ -65,7 +65,7 @@ async def main():
         await conn.execute("INSERT INTO person (name, age) VALUES ('Carol', 19)")
         await conn.execute("INSERT INTO person (name, age) VALUES ('Dan', 25)")
     except asyncpg.exceptions.DuplicateTableError:
-        print(f"Table already exists, skipping creation...")
+        print(f"Table already exists, skipping creation and insertion...")
     # Check results
     print(await conn.fetch("SELECT * FROM person"))
 
@@ -184,10 +184,14 @@ Result:
 ------------------
 ```
 
-### Postgres schema cache
-To avoid repetitive retriving schema data from Postgres, Kùzu maintains cached schema information including table names, their respective columns and types. Should modifications occur in the schema via an alternate connection to the Postgres server, such as creation/deletion of tables, the cached schema data may become obsolete. Users can utilize postgres_clear_cache() function to refresh cached schema information.
+### Schema cache
 
-Example:
-```
-CALL POSTGRES_CLEAR_CACHE() RETURN *;
+To avoid redundantly retrieving schema information from Postgres, Kùzu maintains a schema cache
+including table names and their respective columns and types. Should modifications occur in the schema
+via an alternate connection to the Postgres server, such as creation or deletion of tables, the cached
+schema data may become obsolete. You can use the `postgres_clear_cache()` function to refresh cached
+schema information in such cases.
+
+```sql
+CALL postgres_clear_cache() RETURN *;
 ```
