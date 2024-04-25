@@ -2,7 +2,7 @@
 title: DuckDB extension
 ---
 
-The DuckDB scanner extension allows Kùzu to directly scan data from DuckDB databases that are persisted to
+The DuckDB extension allows Kùzu to directly scan data from DuckDB databases that are persisted to
 disk. This allows users to not only view their DuckDB tables in Kùzu, but also facilitates seamless
 migration of data from DuckDB to Kùzu for deeper graph analysis. Currently, the extension is read-only
 from DuckDB and does not support write operations.
@@ -14,8 +14,8 @@ It can be installed and loaded by running the following commands using the CLI o
 client API:
 
 ```sql
-INSTALL duckdb_scanner;
-LOAD EXTENSION duckdb_scanner;
+INSTALL duckdb;
+LOAD EXTENSION duckdb;
 ```
 
 :::note[Notes]
@@ -145,4 +145,9 @@ Result:
 
 ### DuckDB schema cache
 To avoid repetitive retriving schema data from Postgres, Kùzu maintains cached schema information including table names, their respective columns and types. Should modifications occur in the schema via an alternate connection to the DuckDB instance, such as creation/deletion of tables, the cached schema data may become obsolete. Users can utilize duckdb_clear_cache() function to refresh cached schema information.
+
+Example:
+```
+CALL DUCKDB_CLEAR_CACHE() RETURN *
+```
 
