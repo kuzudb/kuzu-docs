@@ -143,3 +143,26 @@ Output:
 | person            | person                 |
 ----------------------------------------------
 ```
+
+### SHOW_ATTACHED_DATABASES
+
+SHOW_ATTACHED_DATABASES returns the name, database type of all attached databases.
+
+| name | db_type |
+| ------ | ----------- |
+| name | name of the attached databases | STRING |
+| db_type | type of the table | STRING |
+
+```cypher
+CALL show_attached_databases() RETURN *;
+```
+Output:
+```
+------------------------------------
+| name             | database type |
+------------------------------------
+| tinysnb          | DUCKDB        |
+------------------------------------
+| dbfilewithoutext | DUCKDB        |
+------------------------------------
+```
