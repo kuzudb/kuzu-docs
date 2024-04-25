@@ -12,6 +12,7 @@ built-in schema functions
 | `CURRENT_SETTING('setting')` | returns the value of the given setting |
 | `DB_VERSION()` | returns the version of Kùzu |
 | `SHOW_TABLES()` | returns the name, type, comment of all tables in the database |
+| `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases |
 | `READ_PANDAS(pd)` | scans pandas DataFrame |
 
 ### TABLE_INFO
