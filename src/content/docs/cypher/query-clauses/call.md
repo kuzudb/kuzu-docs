@@ -27,7 +27,7 @@ the built-in schema functions:
 | `primary key` | if property is primary key | BOOLEAN |
 
 ```cypher
-CALL TABLE_INFO('User') return *;
+CALL TABLE_INFO('User') RETURN *;
 ```
 Output:
 ```
@@ -47,7 +47,7 @@ Output:
 <!-- All supported configurable database options can be found here: [configuration](../configuration) -->
 
 ```cypher
-CALL current_setting('threads') return *;
+CALL current_setting('threads') RETURN *;
 ```
 Output:
 ```
