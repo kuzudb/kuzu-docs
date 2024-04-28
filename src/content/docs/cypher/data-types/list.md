@@ -90,14 +90,24 @@ integer inside square brackets. Some examples are shown below:
 An `ARRAY` is useful for storing items like embeddings (for use in similarity search or in machine learning
 via our PyTorch Geometric integration), where the number of elements is fixed and known in advance.
 
-Users are allowed to create an array of any datatypes including nested datatypes.
-E.g. 
-1. Create an array of int64 with size 4. (Array of primitive type)
-```
+You can create an array of any data type and size, including nested types using explicit casting.
+Some examples are listed below:
+
+#### `ARRAY` of type `INT64` and size 4
+
+This is an example of creating an array with elements that are primitive types (integers).
+
+```cypher
 RETURN CAST([3,4,12,11], 'INT64[4]')
 ```
-2. Create an array of list of int64 with size 3. (Array of nested type)
-```
+
+#### `ARRAY` of `LIST`s of type `INT64` and size 3
+
+This is an example of creating an array whose elements are nested types that are themselves `LIST`s
+containing elements of a primitive type (integers).
+
+```cypher
 RETURN CAST([[5,2,1],[2,3],[15,64,74]], 'INT64[][3]') ;
 ```
-In this example, we created an array of size 3 with int64[] as element type.
+
+We do not support `UNWIND`ing an `ARRAY` like we do lists, for now.
