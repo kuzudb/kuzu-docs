@@ -3,8 +3,11 @@ title: LIST and ARRAY
 ---
 
 Kùzu supports two list-like data types: (i) variable-length lists, simply called `LIST`, and (ii)
-fixed-length lists, called `ARRAY`. `ARRAY` is a special case of `LIST`, where the length of the `LIST`
-is known beforehand.
+fixed-length lists, called `ARRAY`.
+
+:::note[Info]
+`ARRAY` is a special case of `LIST`, where the length of the `LIST` is fixed and known upfront.
+:::
 
 ## LIST
 
@@ -16,7 +19,7 @@ inside a `LIST` can be any of those supported by Kùzu, including nested/complex
 - `STRING[][]` is a `LIST` of `LIST` of `STRING` values
 - `MAP(STRING, STRING)[]` is a `LIST` of `MAP(STRING, STRING)` values
 
-### Create a `LIST`
+#### Create a `LIST`
 
 In Cypher, enclosing comma-separated values in square brackets will store the values as a `LIST`. The type
 of the elements is inferred by the query parser during the binding stage.
@@ -55,7 +58,7 @@ Output:
 -------------
 ```
 
-### `UNWIND` a `LIST`
+#### `UNWIND` a `LIST`
 ```cypher
 UNWIND [[1,2], [3], [4, 5]] AS x 
 UNWIND x as y 
@@ -76,6 +79,8 @@ Output:
 -----
 | 5 |
 -----
+(6 tuples)
+(1 column)
 ```
 
 ## ARRAY
@@ -98,7 +103,15 @@ Some examples are listed below:
 This is an example of creating an array with elements that are primitive types (integers).
 
 ```cypher
-RETURN CAST([3,4,12,11], 'INT64[4]')
+RETURN CAST([3,4,12,11], 'INT64[4]');
+```
+Output:
+```
+--------------------------------------------
+| CAST(LIST_CREATION(3,4,12,11), INT64[4]) |
+--------------------------------------------
+| [3,4,12,11]                              |
+--------------------------------------------
 ```
 
 #### `ARRAY` of `LIST`s of type `INT64` and size 3
@@ -107,7 +120,41 @@ This is an example of creating an array whose elements are nested types that are
 containing elements of a primitive type (integers).
 
 ```cypher
-RETURN CAST([[5,2,1],[2,3],[15,64,74]], 'INT64[][3]') ;
+RETURN CAST([[5,2,1],[2,3],[15,64,74]], 'INT64[][3]');
+```
+Output:
+```
+----------------------------------------------------------------------------------------------------
+| CAST(LIST_CREATION(LIST_CREATION(5,2,1),LIST_CREATION(2,3),LIST_CREATION(15,64,74)), INT64[][3]) |
+----------------------------------------------------------------------------------------------------
+| [[5,2,1],[2,3],[15,64,74]]                                                                       |
+----------------------------------------------------------------------------------------------------
 ```
 
-We do not support `UNWIND`ing an `ARRAY` like we do lists, for now.
+#### `UNWIND` an `ARRAY`
+
+`UNWIND`ing an `ARRAY` works exactly as shown [above](#unwind-a-list) for the `LIST` type.
+
+```cypher
+UNWIND CAST([[1,2,3],[3],[4,5]], 'INT64[][3]') AS x UNWIND x AS y RETURN y;
+```
+Output:
+```
+-----
+| y |
+-----
+| 1 |
+-----
+| 2 |
+-----
+| 3 |
+-----
+| 3 |
+-----
+| 4 |
+-----
+| 5 |
+-----
+(6 tuples)
+(1 column)
+```
