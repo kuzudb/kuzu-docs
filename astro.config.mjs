@@ -69,6 +69,7 @@ export default defineConfig({
                         { label: 'Copy from CSV', link: '/import/csv' },
                         { label: 'Copy from Parquet', link: '/import/parquet' },
                         { label: 'Copy from NumPy', link: '/import/npy', badge: { text: 'Experimental', variant: 'danger'}},
+                        { label: 'Copy from with subquery', link: '/import/copy-with-subquery', badge: { text: 'New'}},
                     ]
                 },
                 {

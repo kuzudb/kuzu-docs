@@ -110,27 +110,3 @@ Output:
 --------------------------
 ```
 
-## COPY FROM
-
-This subquery allows you attach the results of a prior statement like `MATCH` to a `COPY FROM` statement
-in order to insert data to a Kùzu database. Using the `COPY FROM` subquery opens up a wider
-range of possibilities for data manipulation and transformation prior to insertion.
-
-For example, consider that we have a graph with a `User` node label and a `Follows` relationship type.
-We want to create a new Person node table and a Knows relationship table, where we state that
-a Person knows another Person if they follow each other. We can use the COPY FROM command with a subquery
-to achieve this as follows:
-
-#### Create node/relationship tables
-
-```cypher
-CREATE NODE TABLE Person(name STRING, PRIMARY KEY (name));
-CREATE REL TABLE Knows(FROM Person TO Person);
-```
-
-#### Run the `COPY FROM` with a subquery
-
-```cypher
-COPY Person FROM (MATCH (a:User) RETURN a.name);
-COPY Knows FROM (MATCH (a:User)-[r:Follows]->(b:User) RETURN a.name, b.name);
-```
