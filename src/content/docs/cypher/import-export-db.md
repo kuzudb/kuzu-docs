@@ -11,7 +11,7 @@ guaranteed to be compatible between versions of Kùzu that are very far apart.
 The `EXPORT DATABASE` command allows you to export the contents of the database to a specific directory.
 The query below exports the database to an absolute directory named `/path/to/export`, utilizing the same configuration parameters as `COPY FROM` statements.
 ```cypher
-EXPORT DATABASE TO '/path/to/export' (HEADER=true);
+EXPORT DATABASE '/path/to/export' (HEADER=true);
 ```
 
 The `EXPORT DATABASE` command generates three Cypher files and a series of data files in the user-defined directory.
@@ -25,11 +25,10 @@ The `EXPORT DATABASE` command generates three Cypher files and a series of data 
 The `IMPORT DATABASE` command allows you to import the contents of the database from a specific directory.
 The query below imports the database from a directory named `/path/to/export`.
 ```cypher
-IMPORT DATABASE FROM '/path/to/export';
+IMPORT DATABASE '/path/to/export';
 ```
 
 :::caution[Note]
 The `IMPORT DATABASE` command can only be executed on an empty database.
 Currently, automatic rollback in case of failure is not supported. Therefore, if the `IMPORT DATABASE` command fails, you will need to delete the database directory and reload it again.
 :::
-
