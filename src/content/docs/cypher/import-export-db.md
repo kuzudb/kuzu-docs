@@ -13,13 +13,13 @@ The query below exports the database to an absolute directory named `/path/to/ex
 The `FORMAT` parameter specifies the format of the data files, which can be either `csv` or `parquet`.
 
 ```cypher
-EXPORT DATABASE '/path/to/export' (FORMAT="csv", HEADER=true);
+EXPORT DATABASE '/path/to/export' (format="csv", header=true);
 ```
 
 Alternatively, you can export the data files in Parquet format for more compact storage:
 
 ```cypher
-EXPORT DATABASE '/path/to/export' (FORMAT="parquet");
+EXPORT DATABASE '/path/to/export' (format="parquet");
 ```
 
 The `EXPORT DATABASE` command generates three Cypher files and a series of data files in the user-defined directory.
