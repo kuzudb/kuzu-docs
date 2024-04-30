@@ -143,7 +143,7 @@ Result:
 ------------------
 ```
 
-### Schema cache
+## Schema cache
 
 To avoid redundantly retrieving schema information from DuckDB, Kùzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
@@ -153,4 +153,31 @@ schema information in such cases.
 
 ```sql
 CALL duckdb_clear_cache() RETURN *
+```
+
+## `USE` statement
+
+The `USE` statement for attached databases sets a default database name to use for future operations.
+This can be used when reading from an attached database to avoid specifying the full database name
+as a prefix to the table name.
+
+Consider the same attached database as above:
+
+```sql
+ATTACH 'university.db' AS uw (dbtype 'duckdb');
+```
+
+Instead of defining the DUckDB database name for each subsequent clause like this:
+
+```sql
+LOAD FROM uw.person
+RETURN *
+```
+
+You can do:
+
+```sql
+USE uw
+LOAD FROM person
+RETURN *
 ```
