@@ -148,13 +148,13 @@ Result:
 To avoid redundantly retrieving schema information from DuckDB, Kùzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
 via an alternate connection to the DuckDB instance, such as creation or deletion of tables, the cached
-schema data may become obsolete. You can use the `duckdb_clear_cache()` function to refresh cached
+schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
 schema information in such cases.
 
 ```sql
-CALL duckdb_clear_cache() RETURN *
+CALL clear_attached_db_cache() RETURN *
 ```
-
+Note: this call function will clear cache of all attached databases.
 ## `USE` statement
 
 The `USE` statement for attached databases sets a default database name to use for future operations.
