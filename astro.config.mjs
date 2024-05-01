@@ -82,6 +82,13 @@ export default defineConfig({
                     ]
                 },
                 {
+                    label: 'Migrate your database',
+                    collapsed: true,
+                    items: [
+                        { label: 'Overview', link: '/migrate' },
+                    ]
+                },
+                {
                     label: 'Visualize graphs',
                     link: '/visualization',
                 },
