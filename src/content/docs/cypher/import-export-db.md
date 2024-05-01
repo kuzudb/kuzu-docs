@@ -23,8 +23,9 @@ are needed to be able to import the exported database later using a new Kùzu ve
 - `Data files`: These files contain the actual database data and are in CSV (by default) or Parquet format.
 
 Here's an example of how to export a database using the CSV format for data files.
-The configuration parameters when using CSV are the same as when using [`COPY TO` statements](../export/csv) 
-when exporting query results as CSV files.
+The `format` parameter can be either be "csv" or "parquet"; and if it is omitted by default it is set to "csv". 
+When `format` is "csv", you can provide additional parameters configuring the properties of the exported CSV files. These additional
+parameters, such as `header=true` below, are the same as the parameters you can use when running [`COPY TO` statements](../export/csv).
 
 ```cypher
 EXPORT DATABASE '/path/to/export' (format="csv", header=true);
