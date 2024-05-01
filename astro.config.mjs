@@ -175,9 +175,15 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        { label: 'httpfs (HTTP File System)', link: '/extensions/httpfs'},
-                        { label: 'DuckDB', link: '/extensions/duckdb', badge: { text: 'New'} },
-                        { label: 'PostgreSQL', link: '/extensions/postgres', badge: { text: 'New'} },
+                        { label: 'HTTP File System (httpfs)', link: '/extensions/httpfs'},
+                        { 
+                            label: 'External databases',
+                            badge: 'New',
+                            items: [
+                                { label: 'DuckDB', link: '/extensions/external-databases/duckdb' },
+                                { label: 'PostgreSQL', link: '/extensions/external-databases/postgres' },
+                            ]
+                        }
                     ],
                     autogenerate: { directory: 'reference' },
                 },
