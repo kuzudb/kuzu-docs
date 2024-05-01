@@ -102,16 +102,6 @@ The below table lists some common connection string parameters:
 | `password`  | Postgres password | [empty] |
 | `port`      | Port number | 5432 |
 
-#### Configuring PostgreSQL via environment variables
-
-It's recommended to use environment variables to store sensitive information like passwords. This is
-common practice in production environments where the connection information is managed externally and
-passed to the application via scripts.
-
-```sh
-export POSTGRES_PASSWORD="secret"
-```
-
 ### Scan from PostgreSQL tables
 
 Finally, we can utilize the `LOAD FROM` statement to scan the `Person` table.
@@ -189,11 +179,11 @@ Result:
 To avoid redundantly retrieving schema information from Postgres, Kùzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
 via an alternate connection to the Postgres server, such as creation or deletion of tables, the cached
-schema data may become obsolete. You can use the `postgres_clear_cache()` function to refresh cached
+schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
 schema information in such cases.
 
 ```sql
-CALL postgres_clear_cache() RETURN *;
+CALL clear_attached_db_cache() RETURN *;
 ```
 
 ## `USE` statement
