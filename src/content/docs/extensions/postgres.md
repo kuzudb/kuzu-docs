@@ -186,6 +186,8 @@ schema information in such cases.
 CALL clear_attached_db_cache() RETURN *;
 ```
 
+Note: this call function will clear cache of all attached databases.
+
 ## `USE` statement
 
 The `USE` statement for attached databases sets a default database name to use for future operations.
