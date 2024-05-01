@@ -8,7 +8,7 @@ It is similar to SQL in many aspects. Some of its analogues with SQL are shown b
 | Type | SQL | Cypher
 | ---| --- | ---
 | Query | `SELECT`/`FROM`/`WHERE` | `MATCH`/`WHERE`/`RETURN`
-| Data manipulation | `INSERT`/`UPDATE`/`DELETE` | `CREATE`/`SET`/`REMOVE`
+| Data manipulation | `INSERT`/`UPDATE`/`DELETE` | `CREATE`/`SET`/`DELETE`
 
 The features of Cypher that are different from SQL are listed below:
 - Joins between records from different node and relationship tables are specified using a graph-like syntax.
