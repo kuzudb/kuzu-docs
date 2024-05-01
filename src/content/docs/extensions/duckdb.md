@@ -2,10 +2,16 @@
 title: DuckDB extension
 ---
 
-The DuckDB extension allows Kùzu to directly scan data from DuckDB databases that are persisted to
-disk. This allows users to not only view their DuckDB tables in Kùzu, but also facilitates seamless
+The DuckDB extension allows Kùzu to directly scan data from DuckDB databases. 
+Currently, this is done by `LOAD FROM` statements.
+This allows users to not only view their DuckDB tables in Kùzu, but also facilitates seamless
 migration of data from DuckDB to Kùzu for deeper graph analysis. Currently, the extension is read-only
 from DuckDB and does not support write operations.
+
+:::note[Notes]
+- The DuckDB database that you want to scan from needs to be created using a DuckDB 0.10.x version.
+:::
+
 
 ## Usage
 
@@ -13,17 +19,11 @@ from DuckDB and does not support write operations.
 It can be installed and loaded by running the following commands using the CLI or your preferred language
 client API:
 
-```sql
+```
 INSTALL duckdb;
 LOAD EXTENSION duckdb;
 ```
 
-:::note[Notes]
-- The minimum version of DuckDB required to use this extension is 0.10.0.
-- If you experience an error while loading the extension, ensure that the `duckdb` binary is installed
-on your system. On MacOS, this is done via `brew install duckdb`. See the DuckDB
-[installation guide](https://duckdb.org/docs/installation) for instructions for your OS.
-:::
 
 ## Direct scan from DuckDB
 
@@ -31,7 +31,7 @@ This section shows how to directly scan from DuckDB tables to Kùzu using the `L
 
 ### Create a sample DuckDB database
 
-To illustrate the usage of this extension, we create a sample `duckdb` database of university
+To illustrate the usage of this extension, we create a sample DuckDB database of university
 students in Python.
 
 ```py
@@ -54,9 +54,8 @@ ATTACH [DB_PATH] AS [alias] (dbtype 'duckdb')
 ```
 
 - `DB_PATH`: Path to the DuckDB database instance (can be relative or absolute path)
-- `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used
-    - When attaching multiple databases, it's recommended to use aliasing to avoid conflicts in
-referencing tables
+- `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used.
+  When attaching multiple databases, it's recommended to use aliasing.
 
 The below example shows how the `university.db` DuckDB database can be attached to Kùzu using
 the alias `uw`:
@@ -67,7 +66,7 @@ ATTACH 'university.db' AS uw (dbtype 'duckdb');
 
 ### Scan from DuckDB tables
 
-Finally, we can utilize the `LOAD FROM` statement to scan the person table.
+Finally, we can utilize the `LOAD FROM` statement to scan the `person` table.
 
 ```sql
 LOAD FROM uw.person
@@ -98,11 +97,11 @@ To detach a DuckDB instance, use `DETACH [ALIAS]` as follows:
 DETACH uw
 ```
 
-## Data migration from duckdb tables
+## Data migration from DuckDB tables
 
 One important use case of the DuckDB extension is to facilitate seamless data transfer from DuckDB to Kùzu.
-In this example, We continue using the `university.db` database created in the last step, but this time,
-we copy the data and persist it to Kùzu. This is done with the `COPY FROM {subquery}` feature.
+In this example, we continue using the `university.db` database created in the last step, but this time,
+we copy the data and persist it to Kùzu. This is done with the [`COPY FROM` query results feature](../import/copy-from-query-results).
 
 ### Create a `Person` table in Kùzu
 
@@ -112,7 +111,7 @@ We first create a `Person` table in Kùzu which has the same schema as the one d
 CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 ```
 
-### Utilize `COPY FROM` to migrate data
+### Use `COPY FROM` to migrate data
 
 We can reference the created alias `uw` to copy data from the DuckDB table to the Kùzu table.
 
@@ -143,11 +142,11 @@ Result:
 ------------------
 ```
 
-## Schema cache
+## Clear attached database schema cache
 
-To avoid redundantly retrieving schema information from DuckDB, Kùzu maintains a schema cache
+To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
-via an alternate connection to the DuckDB instance, such as creation or deletion of tables, the cached
+via an alternate connection to attached databases (DuckDB or some other attachad database), such as creation or deletion of tables, the cached
 schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
 schema information in such cases.
 
@@ -177,7 +176,7 @@ RETURN *
 You can do:
 
 ```sql
-USE uw
+USE uw;
 LOAD FROM person
 RETURN *
 ```

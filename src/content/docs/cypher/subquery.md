@@ -27,7 +27,7 @@ Output:
 ```
 
 #### Nested `EXISTS` subquery
-You can also specify nested subqueries, i.e., a `WHERE EXISTS` sub-query inside another `WHERE EXISTS`.
+You can also specify nested subqueries, i.e., a `WHERE EXISTS` subquery inside another `WHERE EXISTS`.
 
 For example:
 

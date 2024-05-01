@@ -1,11 +1,19 @@
 ---
 title: PostgreSQL Extension
 ---
-
 The PostgreSQL extension allows Kùzu to directly scan data from PostgreSQL databases.
+Currently, this is done by `LOAD FROM` statements.
 This allows users to not only view their PostgreSQL tables in Kùzu, but also facilitates seamless
-migraton of data from PostgreSQL to Kùzu for deeper graph analysis. Currently, the extension is read-only
-from Postgres and does not support write operations.
+migration of data from PostgreSQL to Kùzu for deeper graph analysis. Currently, the extension is read-only
+from PostgreSQL and does not support write operations.
+
+:::note[Notes]
+- This extension works for PostgreSQL versions 14 and above (and possibly on older versions,
+  though this hasn't been tested extensively).
+- If you experience an error while loading the extension, ensure that `postgres` 14 or above is installed
+  on your system. On MacOS for PostgreSQL 16, this is done via `brew install postgres@16`. See the PostgreSQL
+  [installation guide](https://www.postgresql.org/download/) for specific instructions for your OS.
+  :::
 
 ## Usage
 
@@ -13,18 +21,10 @@ from Postgres and does not support write operations.
 It can be installed and loaded by running the following commands using the CLI or your preferred language
 client API:
 
-```sql
+```
 INSTALL postgres;
 LOAD EXTENSION postgres;
 ```
-
-:::note[Notes]
-- This extension works for PostgreSQL versions 14 and above (and possibly on older versions,
-though this hasn't been tested extensively).
-- If you experience an error while loading the extension, ensure that `postgres` 14 or above is installed
-on your system. On MacOS for PostfreSQL 16, this is done via `brew install postgres@16`. See the PostgreSQL
-[installation guide](https://www.postgresql.org/download/) for specific instructions for your OS.
-:::
 
 ## Direct scan from PostgreSQL
 
@@ -43,7 +43,7 @@ Note that the storage volume for this database is not persistent and will be del
 container is stopped. Moreover, the password is provided via plain text, which is not recommended
 in a real use case, so the below example is for testing purposes only.
 
-### Create a sample postgreSQL database
+### Create a sample PostgreSQL database
 
 To illustrate the usage of the extension, we create a sample Postgres database of university
 students. We will use [asyncpg](https://magicstack.github.io/asyncpg/current/index.html),
@@ -88,9 +88,8 @@ ATTACH 'dbname=university user=postgres host=localhost password=testpassword por
 The `ATTACH` statement requires the following parameters:
 
 - `PG_CONNECTION_STRING`: PostgreSQL connection string with the necessary parameters
-- `alias`: Database alias to use in Kùzu - If not provided, the database name from PostgreSQL will be used
-    - When attaching multiple databases, it's recommended to use aliasing to avoid conflicts in
-referencing tables.
+- `alias`: Database alias to use in Kùzu - If not provided, the database name from PostgreSQL will be used.
+  When attaching multiple databases, it's recommended to use aliasing.
 
 The below table lists some common connection string parameters:
 
@@ -127,13 +126,11 @@ Result:
 ---------------
 ```
 
-The above steps showed how to scan (i.e., read) data from a PostgreSQL table using the `postgres` extension.
-
 ## Data migration from PostgreSQL tables
 
 One important use case of the PostgreSQL extension is to facilitate seamless data transfer from PostgreSQL to Kùzu.
-In this example, We continue using the `university` database created in the last step, but this time,
-we copy the data and persist it to Kùzu. This is done with the `COPY FROM {subquery}` feature.
+In this example, we continue using the `university` database created in the last step, but this time,
+we copy the data and persist it to Kùzu. This is done with the [`COPY FROM` query results feature](../import/copy-from-query-results).
 
 ### Create a `Person` table in Kùzu
 
@@ -143,7 +140,7 @@ We first create a `Person` table in Kùzu which has the same schema as the one d
 CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 ```
 
-### Utilize `COPY FROM` to migrate data
+### Use `COPY FROM` to migrate data
 
 We can reference the created alias `uw` to copy data from the PostgreSQL table to the Kùzu table.
 
@@ -156,7 +153,7 @@ COPY Person FROM (LOAD FROM uw.person RETURN *);
 Finally, we can verify the data in the `Person` table in Kùzu.
 
 ```cypher
-MATCH (p:person) RETURN p.*;
+MATCH (p:Person) RETURN p.*;
 ```
 
 Result:
@@ -174,11 +171,11 @@ Result:
 ------------------
 ```
 
-## Schema cache
+## Clear attached database schema cache
 
-To avoid redundantly retrieving schema information from Postgres, Kùzu maintains a schema cache
+To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
-via an alternate connection to the Postgres server, such as creation or deletion of tables, the cached
+via an alternate connection to attached databases (PosgreSQL or some other attachad database), such as creation or deletion of tables, the cached
 schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
 schema information in such cases.
 
@@ -210,7 +207,7 @@ RETURN *
 You can do:
 
 ```sql
-USE uw
+USE uw;
 LOAD FROM person
 RETURN *
 ```
