@@ -6,7 +6,7 @@ Kùzu currently supports bulk importing triples into RDFGraphs through [RDF Turt
 and [N-Triples (.nt)](https://www.w3.org/TR/n-triples/) files, which are a subset of Turtle files. Specifically,
 N-Triples files are uncompressed versions of Turtle files where each triple is written out as a separate line
 and without any prefix or base abbreviations in the IRIs. Triples can also be ingested through `CREATE` statements. See the 
-section on CREATE and DELETE statements in the [previous page](./rdfgraphs-overview#modifying-rdfgraphs-using-create-set-merge-and-delete)
+section on CREATE and DELETE statements in the [previous page](../rdfgraphs-overview#modifying-rdfgraphs-using-create-set-merge-and-delete)
 for how to ingest triples through `CREATE` statements.
 
 **Note on importing N-Triples files:** N-Triples can be ingested

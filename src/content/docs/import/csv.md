@@ -4,7 +4,7 @@ title: Import data from CSV files
 
 You can bulk import data to node and relationship tables from CSV files
 using the `COPY FROM` command. It is **highly recommended** to use `COPY FROM` if you are creating large
-databases.
+databases. You can use `COPY FROM` to import data into an empty table or to append data to an existing table.
 
 The CSV import configuration can be manually set by specifying the parameters inside `( )` at the
 end of the the `COPY FROM` clause. The following table shows the configuration parameters supported:
@@ -25,7 +25,6 @@ COPY User FROM "user.csv" (HEADER=true, DELIM="|");
 ```
 
 :::caution[Guidelines]
-- **Start with empty tables:** `COPY FROM` commands can be used when your tables are completely empty. So you should use `COPY FROM` immediately after you define the schemas of your tables. 
 - **Copy nodes before relationships:** In order to copy a relationship table `R` from a csv file `RFile`, the nodes that appear in `RFile` need to
 already exist in the database (either imported in bulk or inserted through Cypher data manipulation commands).
 - **Wrap strings inside quotes:** Kùzu will accept strings in string columns both with and without quotes, though it's recommended to wrap strings in quotes to avoid any ambiguity with delimiters.

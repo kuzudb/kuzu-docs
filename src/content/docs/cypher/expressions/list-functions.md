@@ -1,9 +1,10 @@
 ---
-title: List Functions
-description: List functions are used to create and manipulate lists.
+title: List functions
+description: List functions are used to create and manipulate lists or arrays.
 ---
 
-List functions are used to create and manipulate lists.
+List functions are used to create and manipulate lists and/or arrays. Arrays are a special case of lists,
+where the length is fixed. The following list functions have been implemented.
 
 :::caution[Note]
 Scroll to the right to see the example usage in the below table.
@@ -45,9 +46,12 @@ Scroll to the right to see the example usage in the below table.
 | `list_distinct(list)` | removes NULLs and duplicate values from the list. | `list_distinct(3,3,3,NULL)` | `[3]` |
 | `list_unique(list)` | counts number of unique elements of the list. NULLs are ignored. | `list_unique(3,3,3,NULL)` | `1` |
 | `list_any_value(list)` | returns the first non-NULL value of the list | `list_any_value(NULL, 'a', NULL)` | `'a'` |
+| `list_to_string(list, separator)` | converts a list to a string separated by the given separator | `list_to_string([1,2,3], '..' )` | `'1..2..3'` |
 | `range(start, stop)` | returns a list of values from `start` to `stop`. Specify the step as shown [here](#range) | `range(1,3)` | `[1,2,3]` |
 
 </div>
+
+For functions that specifically work with `ARRAY` data types, refer to the [Array functions](../array-functions) section.
 
 ## LIST_SORT
 `LIST_SORT` takes can be configured to sort in ascending or descending order as well as whether `NULL`
@@ -109,4 +113,36 @@ RETURN range(1,10,2);
 -----------------
 | [1,3,5,7,9]   |
 -----------------
+```
+
+## COALESCE and IFNULL
+
+`COALESCE` and `IFNULL` functions are used to return the first non-NULL value from the list of elements.
+The only difference is that `COALESCE` can take more than two arguments.
+
+```cypher
+RETURN coalesce(NULL, 'a', NULL) AS result;
+```
+
+Output:
+```
+-----------
+| result  |
+-----------
+| 'a'     |
+-----------
+
+```
+
+```cypher
+RETURN ifnull(NULL, 'a') AS result;
+```
+
+Output:
+```
+-----------
+| result  |
+-----------
+| 'a'     |
+-----------
 ```

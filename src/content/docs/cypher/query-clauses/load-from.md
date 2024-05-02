@@ -1,5 +1,5 @@
 ---
-title: Direct scan over files
+title: Load (Scan)
 description: Direct scan over file using the LOAD FROM clause
 ---
 
@@ -10,9 +10,9 @@ perform simple transformation tasks like rearranging column order.
 `LOAD FROM` is designed to be used in the exact same way as `MATCH`, meaning that it can be followed
 by arbitrary clauses like `CREATE`, `WHERE`, `RETURN`, and so on.
 
-## Example usage
+## LOAD FROM
 
-Some example usage is as follows.
+Some example usage for the `LOAD FROM` clause is shown below.
 
 ### Filtering/aggregating
 
@@ -191,7 +191,6 @@ print(result.get_as_df())
 3    Noura   25
 ```
 
-:::caution[Note]
-Currently, only the NumPy backend of Pandas is supported for native scan. We will soon support
-the Arrow backend for Pandas too.
+:::note[Note]
+Pandas can use either a NumPy or Arrow backend - Kùzu can natively scan from either backend.
 :::

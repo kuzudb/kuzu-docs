@@ -2,6 +2,8 @@
 title: Data types
 ---
 
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
 Kùzu supports a set of primitive and nested data types both for node and relationship properties as
 well as for forming expressions whose outputs are specified using these data types. This section
 shows all built-in data types.
@@ -62,15 +64,15 @@ shows all built-in data types.
 
 ## FLOAT
 
-| Size | Description
-| --- | ---
-| 4 bytes | single precision floating-point number
+| Size | Description | Aliases
+| --- | --- | ---
+| 4 bytes | single precision floating-point number | REAL, FLOAT4
 
 ## DOUBLE
 
-| Size | Description
-| --- | ---
-| 8 bytes | double precision floating-point number
+| Size | Description | Aliases
+| --- | --- | ---
+| 8 bytes | double precision floating-point number | FLOAT8
 
 ## BOOLEAN
 
@@ -221,9 +223,9 @@ Output:
 
 ## INTERVAL
 
-| Size | Description
-| --- | ---
-| 4 bytes | date/time difference
+| Size | Description | Aliases
+| --- | --- | ---
+| 4 bytes | date/time difference | DURATION
 
 `INTERVAL` consists of multiple date parts and represents the total time length of these date parts.
 Kùzu follows [DuckDB's implementation](https://duckdb.org/docs/sql/data_types/interval) for the
@@ -356,83 +358,16 @@ Output:
 ---------------------------------------------------------
 ```
 
-## LIST
+## LIST and ARRAY
 
-Kùzu supports two LIST data types: variable-size list `VAR-LIST` and fixed-size `FIXED-LIST.`
+Kùzu supports two list-like data types: (i) variable-length lists, simply called `LIST`, and
+(ii) fixed-length lists, called `ARRAY`. Click on the card below to learn more about them.
 
-| Data Type | DDL Definition | Size | Description
-| --- | --- | --- | ---
-| VAR-LIST | INT64[] | fixed | a fixed-size sequence of values of the same numerical type
-| FIXED-LIST | INT64[5] | variable | a sequence of values of the same type
-
-`LIST` data types include values of a single data type. The data type of values within a `LIST` is
-declared before a set of brackets in DDL. For example, `STRING[]` declares a `(VAR-)LIST` of STRING values.
-
-### FIXED-LIST
-
-A `FIXED-LIST` type can contain fixed number of values with the same numeric type. For example,
-`INT64[5]` is a `FIXED-LIST` of 5 INT64 values.
-
-### VAR-LIST
-A `VAR-LIST` type can contain arbitrary number of values with the same type. VAR-LISTS can be of any
-type Kùzu supports including nested and complex types. For example, `STRING[][]` is
-`VAR-LIST` of `VAR-LIST` of STRING values. Similarly, `MAP(STRING, STRING)[]`
-is a `VAR-LIST` of `MAP(STRING, STRING)` values.
-
-:::danger[Note]
-Kùzu does not currently support operations on `FIXED-LIST` values (except casting values to `FIXED-LIST`).
-:::
-
-Kùzu does support several operations on `VAR-LIST`, which are covered in the examples shown below.
-
-Create a `VAR-LIST` as follows:
-```cypher
-RETURN ["Alice", "Bob"] AS l;
-```
-Output:
-```
----------------
-| l           |
----------------
-| [Alice,Bob] |
----------------
-```
-
-Create a `VAR-LIST` via the function
-```cypher
-RETURN list_creation(1,2,3,4) AS l;
-```
-Output:
-```
--------------
-| l         |
--------------
-| [1,2,3,4] |
--------------
-```
-
-`UNWIND` a `VAR-LIST`:
-```cypher
-UNWIND [[1,2], [3], [4, 5]] AS x 
-UNWIND x as y 
-RETURN y;
-```
-Output:
-```
------
-| y |
------
-| 1 |
------
-| 2 |
------
-| 3 |
------
-| 4 |
------
-| 5 |
------
-```
+<LinkCard
+  title="LIST and ARRAY"
+  href="/cypher/data-types/list"
+  description="Example usage of LIST and ARRAY data types"
+/>
 
 ## VARIANT
 

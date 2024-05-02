@@ -4,16 +4,18 @@ title: Extensions
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-Kùzu has an extension framework designed to extend Kùzu's capabilities. Our goal is to implement
-more and more extensions over time, such as to support new data types, functions and
-indices.
+Kùzu has an extension framework designed to extend its capabilities. Our goal is to implement
+more and more extensions over time, such as supporting new data types, functions and
+indices, or to better integrate with external systems.
 
 Extensions expose several internal interfaces of Kùzu, for example, the FileSystem, and can have
 multiple implementations. Extensions are implementations of these interfaces that can be
 dynamically loaded at runtime.
 
-*Official extensions* are implemented and maintained by Kùzu Inc. These are hosted in our [official
-extensions repo](https://github.com/kuzudb/extension). 
+
+# Official Extensions
+
+The available extensions for each OS are listed [here](https://extension.kuzudb.com/).
 
 :::caution[Note]
 Third-party developers are also welcome to develop their own extensions for custom functionality.
@@ -21,10 +23,6 @@ However, it's important to note that the extension API is still in development a
 When it becomes more stable, we will document in more detail how users can implement their own extensions
 For now, please reach out to us on Discord or GitHub if you need a custom extension for your use case.
 :::
-
-# Official Extensions
-
-The available extensions for each OS are hosted in the `kuzudb/extension` [repo](https://github.com/kuzudb/extension).
 
 ## Available extensions
 
@@ -43,7 +41,7 @@ This section describes how to use officially supported extensions in Kùzu.
 Kùzu requires the user to install the extension before loading and using it.
 Official extensions can be simply installed by running the install command:
 
-```cypher
+```sql
 INSTALL <extension_name>
 ```
 
@@ -53,6 +51,12 @@ Where `extension_name` is the name of the extension to be installed.
 After installation, a load command is required to ask Kùzu to dynamically load the shared library.
 Extensions installed using the `INSTALL` command can be loaded directly as follows: 
 
-```cypher
+```sql
 LOAD EXTENSION <extension_name>
 ```
+
+:::note[Note]
+A new Database object at the C++ level is instantiated every time a new CLI session is started, or
+when a client script that embeds Kùzu is run. For this reason, the `LOAD EXTENSION` command must be
+run every time a new CLI session is started or a client script is run.
+:::

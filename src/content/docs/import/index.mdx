@@ -1,5 +1,5 @@
 ---
-title: Overview
+title: Import data
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -13,8 +13,8 @@ relationships. These are similar to SQL's `INSERT` statements, but bear in mind 
 options shown below. The `CREATE`/`MERGE` clauses are intended to do small additions or updates on a sporadic basis.
 
 In general, the recommended approach is to use `COPY FROM` (rather than creating or
-merging nodes one by one), for larger graphs of millions of nodes and beyond. For now, the `COPY FROM`
-commands can only be used when tables are empty.
+merging nodes one by one), for larger graphs of millions of nodes and beyond.
+This is the fastest way to bulk insert data into Kùzu.
 
 ## `COPY FROM` CSV
 
@@ -43,4 +43,13 @@ Importing from NumPy is a specific use case that allows you to import numeric da
 <LinkCard
   title="Import NumPy"
   href="/import/npy"
+/>
+
+## `COPY FROM` with subqueries
+
+You can copy data from a subquery into a node or relationship table.
+This is useful when you need to transform data before inserting it into the database.
+<LinkCard
+  title="Import results of a query"
+  href="/import/copy-query-results"
 />

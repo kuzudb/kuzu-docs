@@ -11,7 +11,7 @@ export default defineConfig({
     integrations: [
         sitemap(),
         starlight({
-            favicon: '/src/assets/favicon.ico',
+            favicon: '/img/favicon.ico',
             title: 'Kùzu',
             logo: {
                 light: '/src/assets/logo/kuzu-logo.png',
@@ -69,6 +69,7 @@ export default defineConfig({
                         { label: 'Copy from CSV', link: '/import/csv' },
                         { label: 'Copy from Parquet', link: '/import/parquet' },
                         { label: 'Copy from NumPy', link: '/import/npy', badge: { text: 'Experimental', variant: 'danger'}},
+                        { label: 'Copy from query results', link: '/import/copy-from-query-results', badge: { text: 'New'}},
                     ]
                 },
                 {
@@ -81,12 +82,18 @@ export default defineConfig({
                     ]
                 },
                 {
+                    label: 'Migrate your database',
+                    collapsed: true,
+                    items: [
+                        { label: 'Overview', link: '/migrate' },
+                    ]
+                },
+                {
                     label: 'Visualize graphs',
                     link: '/visualization',
                 },
                 {
-                    label: 'Model RDF databases',
-                    badge: 'New',
+                    label: 'Model RDF data',
                     collapsed: true,
                     items: [
                         { label: 'Motivation', link: '/rdf-graphs' },
@@ -115,7 +122,13 @@ export default defineConfig({
                 },
                 {
                     label: 'Tutorials',
-                    link: '/tutorials',
+                    collapsed: true,
+                    items: [
+                        { 
+                            label: 'Python notebooks',
+                            link: '/tutorials#python',
+                        }
+                    ]
                 },
                 {
                     label: 'Cypher manual',
@@ -127,9 +140,10 @@ export default defineConfig({
                         { label: 'Functions, expressions & operators', link: '/cypher/expressions' },
                         { label: 'Data definition language (DDL)', link: '/cypher/data-definition' },
                         { label: 'Data manipulation clauses', link: '/cypher/data-manipulation-clauses' },
-                        { label: 'Subquery', link: '/cypher/subquery' },
+                        { label: 'Subqueries', link: '/cypher/subquery' },
                         { label: 'Macros', link: '/cypher/macro' },
                         { label: 'Transactions', link: '/cypher/transaction' },
+                        { label: 'Migrate database', link: '/cypher/import-export-db', badge: { text: 'New'} },
                         { label: 'Connection configuration', link: '/cypher/configuration' },
                     ],
                     autogenerate: { directory: 'reference' },
@@ -161,7 +175,15 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        { label: 'httpfs (HTTP File System)', link: '/extensions/httpfs'},
+                        { label: 'HTTP File System (httpfs)', link: '/extensions/httpfs'},
+                        { 
+                            label: 'External databases',
+                            badge: 'New',
+                            items: [
+                                { label: 'DuckDB', link: '/extensions/external-databases/duckdb' },
+                                { label: 'PostgreSQL', link: '/extensions/external-databases/postgres' },
+                            ]
+                        }
                     ],
                     autogenerate: { directory: 'reference' },
                 },

@@ -1,5 +1,5 @@
 ---
-title: httpfs (HTTP File System)
+title: HTTP File System (httpfs)
 ---
 
 The `httpfs` extension extends the Kùzu file system by allowing reading from/writing to files hosted on

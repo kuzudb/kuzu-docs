@@ -1,11 +1,11 @@
 ---
-title: Subquery
+title: Subqueries
 ---
 
 A subquery in Kùzu can only be a single `MATCH` clause, optionally followed by a `WHERE` clause.
 **No other clauses are allowed**.
 
-## `Exists` subquery
+## EXISTS
 
 The `EXISTS` subquery checks if given pattern has at least one match in the graph.
 
@@ -26,8 +26,8 @@ Output:
 ------------------
 ```
 
-### Nested `Exists` subquery
-You can also specify nested subqueries, i.e., a `WHERE EXISTS` sub-query inside another `WHERE EXISTS`.
+#### Nested `EXISTS` subquery
+You can also specify nested subqueries, i.e., a `WHERE EXISTS` subquery inside another `WHERE EXISTS`.
 
 For example:
 
@@ -65,7 +65,7 @@ Output:
 ------------------
 ```
 
-## Count subquery
+## COUNT
 
 The `COUNT` subquery checks the number of matches for given pattern in the graph. The output of this
 counting can be bound to a variable with aliasing.
@@ -109,3 +109,4 @@ Output:
 | Noura   | 1            |
 --------------------------
 ```
+
