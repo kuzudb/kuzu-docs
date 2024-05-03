@@ -176,6 +176,7 @@ There are three ways to specify the expected result:
 | Result | Description |
 |---|---|
 | `---- error` | The following lines must be the expected error message. |
+| `---- error(regex)` | The following lines must be a regex pattern matching the expected error message. |
 | `---- ok` | does not require any additional information below the line.  |
 | `---- hash` | A single line must follow containing the number of values in the query results and the md5 hash value of the query result. |
 | `---- [number of expected tuples]` | The following lines must be exactly the query results. |
@@ -195,12 +196,19 @@ in its own section.
 ---- error
 Error: Binder exception: Variable intended is not in scope.
 
+# Expects regex-matching error message
+-STATEMENT MATCH (p:person) RETURN COUNT(intended-error);
+---- error(regex)
+^Error: Binder exception: Variable .* is not in scope\.$
+
 # Success results don't need anything after the dashes
 -STATEMENT CREATE NODE TABLE  Person (ID INT64, PRIMARY KEY (ID));
 ---- ok
 
+-CHECK_COLUMN_NAMES
 -STATEMENT MATCH (a:person) RETURN a.fName LIMIT 4
----- 4
+---- 5
+a.fName
 Alice
 Bob
 Carol
@@ -247,6 +255,7 @@ It is also possible to use the additional properties inside each test case:
 | `-SKIP`            | none | Register the test but skip the whole test case. When a test is skipped, it will display as disabled in the test run |
 | `-PARALLELISM`     | integer | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()`                         |
 | `-CHECK_ORDER`     | none | By default, the query results and expected results are ordered before asserting comparison.                         |
+| `-CHECK_COLUMN_NAMES` | none | Includes the column names as the first row of query result. Requires +1 to number of expected tuples. |
 |  `-RELOADDB`       | none           | Reload database from file system.                                                                                   |
 | `-REMOVE_FILE`     | file path      | Delete the file at the given path.                                                                                  |
 | `-IMPORT_DATABASE` | directory path | Close current database. Open a new database in the given directory.                                                 |
