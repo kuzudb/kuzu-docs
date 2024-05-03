@@ -11,7 +11,7 @@ instead we route all tests, when possible, end-to-end (e2e) via Cypher statement
 In order to use the e2e testing framework, developers are required to generate
 a `.test` file, which should be placed in the `test/test_files` directory. Each
 test file comprises two key sections: the test header and test body. In the header section,
-you must specify the dataset to be used, the test group name and other optional
+you must specify the dataset to be used and other optional
 parameters such as `BUFFER_POOL_SIZE`.
 
 Here is a basic example of a test:
@@ -19,7 +19,6 @@ Here is a basic example of a test:
 ```
 # test/test_files/basic.test
 # comments can also be addressed
--GROUP Basic 
 -DATASET CSV tinysnb
 -BUFFER_POOL_SIZE 64000000
 --
@@ -36,18 +35,20 @@ programatically](http://google.github.io/googletest/advanced.html#registering-te
 When it comes to the test case name, the provided example above would be equivalent to:
 
 ```
-TEST_F(Basic, BasicTest) {
+TEST_F(basic, BasicTest) {
 ...
 }
 ```
 
+The test group name will be the relative path of the file under the `test/test_files` directory, delimited by `~`, followed by a dot and the test case name.
+
 The testing framework will test each logical plan created from the prepared
-statements and assert the result. 
+statements and assert the result.
 
 ## Running the tests
 
 Our primary tool for generating the test list and executing it is `ctest`. Use the command
-`make test` to build and run all tests. By default, the tests will run 
+`make test` to build and run all tests. By default, the tests will run
 concurrently on 10 jobs, but it is also possible to change the number of parallel jobs by
 running `make test TEST_JOBS=X` where `X` is the desired number of jobs to be run in parallel.
 
@@ -60,14 +61,14 @@ There are two ways to run a specific e2e test or group of tests:
 Example:
 
 ```
-# Run the all tests from StringPrimaryKeyTest group
-$ ctest -R StringPrimaryKeyTest
+# Run the all tests from `test/test_files/common/types/interval.test`
+$ ctest -R common~types~interval
 
-# Run only PrimaryKeySecondColumn test
-$ ctest -R StringPrimaryKeyTest.PrimaryKeySecondColumn
+# Run only the DifferentTypesCheck test
+$ ctest -R common~types~interval.DifferentTypesCheck
 
 # Run in verbose mode
-$ ctest -V -R BinderErrorTest.MatchBuiltIn
+$ ctest -V -R common~types~interval.DifferentTypesCheck
 
 # Run in parallel
 $ ctest -j 10
@@ -91,33 +92,31 @@ $ ./e2e_test .
 ```
 
 :::caution[Note]
-Some test files contain multiple test cases, and sometimes it is not easy 
+Some test files contain multiple test cases, and sometimes it is not easy
 to find the output from a failed test. In this situation, the flag
 `--gtest_break_on_failure` might be helpful to break the test on failure.
 :::
 
 ## Test file header
 
-The `.test` file header contains two required parameters: `-GROUP` and
+The `.test` file header contains one required parameter:
 `-DATASET`, to specify the test group name and the dataset to be used. If no
 dataset is required, use the keyword 'empty'.
 
 ### Specifying the Dataset
 
-| Property | Description |
-|---|---|
-| `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY or empty<br/> **Dataset name:** the name of the directory inside  `dataset/`. i.e. tinysnb. |
+| Property                         | Description                                                                                                            |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY or empty<br/> **Dataset name:** the name of the directory inside `dataset/`. i.e. tinysnb. |
 
 Examples:
 
 ```bash
--GROUP MyTest
 -DATASET CSV tinysnb
 --
 ```
 
 ```
--GROUP MyTest
 -DATASET PARQUET demo-db/parquet
 --
 ```
@@ -130,7 +129,6 @@ the expected result remains the same for both CSV and PARQUET file format
 without storing the same dataset in the codebase twice.
 
 ```
--GROUP MyTest
 -DATASET PARQUET CSV_TO_PARQUET(tinysnb)
 --
 ```
@@ -146,7 +144,6 @@ will still be displayed as disabled when running through `ctest`.
 The following example illustrates a basic structure of how to create a test case:
 
 ```
--GROUP Test
 -DATASET tinysnb
 --
 
@@ -161,10 +158,10 @@ In the example above:
 
 `-CASE` is the name of the test case, analogous to `TEST_F(Test, MyTest)` in C++.  
 `-LOG` is optional and will be only used for display purposes when running in verbose mode.  
-`-STATEMENT` is followed by 4 dashes `----` alongside the expected result (error, success, hash, or the number of the tuples).   
+`-STATEMENT` is followed by 4 dashes `----` alongside the expected result (error, success, hash, or the number of the tuples).
 
 When specifying a number after the dashes, it's necessary to add the same number of tuples in the
-next following lines.  
+next following lines.
 
 If the subsequent lines contain additional statements to validate, they will be incorporated into the same test case
 unless a new `-CASE` is written.
@@ -173,13 +170,13 @@ unless a new `-CASE` is written.
 
 There are three ways to specify the expected result:
 
-| Result | Description |
-|---|---|
-| `---- error` | The following lines must be the expected error message. |
-| `---- error(regex)` | The following lines must be a regex pattern matching the expected error message. |
-| `---- ok` | does not require any additional information below the line.  |
-| `---- hash` | A single line must follow containing the number of values in the query results and the md5 hash value of the query result. |
-| `---- [number of expected tuples]` | The following lines must be exactly the query results. |
+| Result                             | Description                                                                                                                |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `---- error`                       | The following lines must be the expected error message.                                                                    |
+| `---- error(regex)`                | The following lines must be a regex pattern matching the expected error message.                                           |
+| `---- ok`                          | does not require any additional information below the line.                                                                |
+| `---- hash`                        | A single line must follow containing the number of values in the query results and the md5 hash value of the query result. |
+| `---- [number of expected tuples]` | The following lines must be exactly the query results.                                                                     |
 
 :::note[Note]
 By default, the expected result tuples can be written in any order. The framework will sort the
@@ -191,7 +188,7 @@ in its own section.
 :::
 
 ```
-# Expects error message 
+# Expects error message
 -STATEMENT MATCH (p:person) RETURN COUNT(intended-error);
 ---- error
 Error: Binder exception: Variable intended is not in scope.
@@ -249,16 +246,16 @@ the hash
 
 It is also possible to use the additional properties inside each test case:
 
-| Property           | Parameter | Description                                                                                                         |
-|--------------------|---|---------------------------------------------------------------------------------------------------------------------|
-| `-LOG`             | any string | Define a name for each block for informational purposes                                                             |
-| `-SKIP`            | none | Register the test but skip the whole test case. When a test is skipped, it will display as disabled in the test run |
-| `-PARALLELISM`     | integer | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()`                         |
-| `-CHECK_ORDER`     | none | By default, the query results and expected results are ordered before asserting comparison.                         |
-| `-CHECK_COLUMN_NAMES` | none | Includes the column names as the first row of query result. Requires +1 to number of expected tuples. |
-|  `-RELOADDB`       | none           | Reload database from file system.                                                                                   |
-| `-REMOVE_FILE`     | file path      | Delete the file at the given path.                                                                                  |
-| `-IMPORT_DATABASE` | directory path | Close current database. Open a new database in the given directory.                                                 |
+| Property              | Parameter      | Description                                                                                                         |
+| --------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `-LOG`                | any string     | Define a name for each block for informational purposes                                                             |
+| `-SKIP`               | none           | Register the test but skip the whole test case. When a test is skipped, it will display as disabled in the test run |
+| `-PARALLELISM`        | integer        | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()`                         |
+| `-CHECK_ORDER`        | none           | By default, the query results and expected results are ordered before asserting comparison.                         |
+| `-CHECK_COLUMN_NAMES` | none           | Includes the column names as the first row of query result. Requires +1 to number of expected tuples.               |
+| `-RELOADDB`           | none           | Reload database from file system.                                                                                   |
+| `-REMOVE_FILE`        | file path      | Delete the file at the given path.                                                                                  |
+| `-IMPORT_DATABASE`    | directory path | Close current database. Open a new database in the given directory.                                                 |
 
 ### Defining variables
 
@@ -281,20 +278,19 @@ ${EXPECTED_RESULT}
 A more practical example is using functions alongside `-DEFINE`. The framework
 currently support the following functions:
 
-| Function | Description | Example |
-|---|---|---|
-| `-DEFINE [var] ARANGE [start] [end]` | Generate a list of numbers from start to end | `-DEFINE STRING_OVERFLOW ARANGE 0 5` <br/> generates `STRING_OVERFLOW = [0,1,2,3,4,5]` |
-| `-DEFINE [var] REPEAT [count] "[text]"` | Repeat the text multiple times | `-DEFINE MY_STR REPEAT 3 "MyString"`<br/> generates `MY_STR = "MyStringMyStringMyString"` |
+| Function                                | Description                                  | Example                                                                                   |
+| --------------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `-DEFINE [var] ARANGE [start] [end]`    | Generate a list of numbers from start to end | `-DEFINE STRING_OVERFLOW ARANGE 0 5` <br/> generates `STRING_OVERFLOW = [0,1,2,3,4,5]`    |
+| `-DEFINE [var] REPEAT [count] "[text]"` | Repeat the text multiple times               | `-DEFINE MY_STR REPEAT 3 "MyString"`<br/> generates `MY_STR = "MyStringMyStringMyString"` |
 
 #### Pre-defined variables
 
 The following variables are available to use inside the statements:
 
-| Variable| Description |
-|---|---|
-| `${KUZU_ROOT_DIRECTORY}` | Kùzu directory path |
-| `${DATABASE_PATH}` | When a test case runs, a temporary database path is created and cleaned up after the suite finishes. This variable represents the path of the running test case. |
-
+| Variable                 | Description                                                                                                                                                      |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `${KUZU_ROOT_DIRECTORY}` | Kùzu directory path                                                                                                                                              |
+| `${DATABASE_PATH}`       | When a test case runs, a temporary database path is created and cleaned up after the suite finishes. This variable represents the path of the running test case. |
 
 ### Defining statement blocks
 
@@ -303,7 +299,6 @@ A statement block can be defined and re-used along the test file.
 calling `-INSERT_STATEMENT_BLOCK` in any part of the test case body. It
 can be useful to perform checks without having to re-write the same staments
 again.
-
 
 ```
 -DEFINE_STATEMENT_BLOCK CREATE_PERSON_REL [
@@ -329,7 +324,6 @@ again.
 The following example illustrates how to use multiple connections:
 
 ```
--GROUP Set_Transaction
 -DATASET CSV tinysnb
 
 --
@@ -355,7 +349,7 @@ Timeout waiting for read transactions to leave the system before committing and 
 
 In the example above:
 
-`-CREATE CONNECTION conn.*` initiates a connection to the database. It's essential that the connection name matches the specified prefix `conn`, like `conn_write`, `conn_read`.   
+`-CREATE CONNECTION conn.*` initiates a connection to the database. It's essential that the connection name matches the specified prefix `conn`, like `conn_write`, `conn_read`.  
 `-STATEMENT` is followed by a connection name that was defined in the `-CREATE CONNECTION` statement. If a connection name is not explicitly mentioned in a statement, the testing framework will default to using the default connection.
 
 ### Batch statements
@@ -380,8 +374,6 @@ framework reads the query statements from the file and execute each query statem
 ```
 # Header
 # We can add -SKIP here if we need to temporarily skip the whole file
--GROUP Create
--TEST CreateRelTest
 -BUFFER_POOL_SIZE 64000000
 -CHECKPOINT_WAIT_TIMEOUT 10000
 -DATASET PARQUET CSV_TO_PARQUET(tinysnb)
@@ -389,11 +381,11 @@ framework reads the query statements from the file and execute each query statem
 --
 
 -DEFINE_STATEMENT_BLOCK create_rel_set [
--STATEMENT MATCH (a:person), (b:person) 
-                 WHERE a.ID=10 AND b.ID=20 
+-STATEMENT MATCH (a:person), (b:person)
+                 WHERE a.ID=10 AND b.ID=20
                  CREATE (a)-[e:knows]->(b);
 ---- ok
--STATEMENT MATCH (a:person), (b:person) 
+-STATEMENT MATCH (a:person), (b:person)
                  WHERE a.ID=1 AND b.ID=2
                  CREATE (a)-[e:knows]->(b);
 ---- ok
@@ -416,7 +408,7 @@ framework reads the query statements from the file and execute each query statem
 # This is also part of TestRelationSet test case
 -LOG Test Duplicated Primary Key
 -STATEMENT MATCH (a:person), (b:person)
-                 WHERE a.ID=1 AND b.ID=20 
+                 WHERE a.ID=1 AND b.ID=20
                  CREATE (a)-[e:knows]->(b);
 ---- error
 "Exception: Duplicate primary key"
@@ -427,7 +419,7 @@ framework reads the query statements from the file and execute each query statem
 
 -CHECK_ORDER
 -PARALLELISM 1
--STATEMENT MATCH (a:person)-[:studyAt]->(b:organisation) 
+-STATEMENT MATCH (a:person)-[:studyAt]->(b:organisation)
              WHERE b.name = "Waterloo"
              RETURN a.name,
                     a.age ORDER BY a.age DESC;
@@ -435,8 +427,8 @@ framework reads the query statements from the file and execute each query statem
 Karissa|40
 Adam|30
 
-# Read query results from a file to compare 
--CASE PersonOrganisationRelTest 
+# Read query results from a file to compare
+-CASE PersonOrganisationRelTest
 -STATEMENT MATCH (a:person)-[:studyAt]->(b:organisation)
 RETURN a.ID, b.ID
 ---- 16
@@ -446,9 +438,9 @@ RETURN a.ID, b.ID
 
 ### Sample test log
 
-| File | Description|
-|---|---|
-| [set.test](https://github.com/kuzudb/kuzu/blob/1bd26e46eac7a5de1d8776bab74988b05c4913dc/test/test_files/tinysnb/update_node/set.test#LL78C33-L78C36) | ARANGE example |
-| [copy_long_string.test](https://github.com/kuzudb/kuzu/blob/1bd26e46eac7a5de1d8776bab74988b05c4913dc/test/test_files/copy/copy_long_string.test) | REPEAT example | 
-| [copy_multiple_files.test](https://github.com/kuzudb/kuzu/blob/1bd26e46eac7a5de1d8776bab74988b05c4913dc/test/test_files/copy/copy_multiple_files.test) | Using statement blocks |
-| [catalog.test](https://github.com/kuzudb/kuzu/blob/1bd26e46eac7a5de1d8776bab74988b05c4913dc/test/test_files/exceptions/catalog/catalog.test) | Dealing with exceptions |
+| File                                                                                                                                                   | Description             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- |
+| [set.test](https://github.com/kuzudb/kuzu/blob/1bd26e46eac7a5de1d8776bab74988b05c4913dc/test/test_files/tinysnb/update_node/set.test#LL78C33-L78C36)   | ARANGE example          |
+| [copy_long_string.test](https://github.com/kuzudb/kuzu/blob/1bd26e46eac7a5de1d8776bab74988b05c4913dc/test/test_files/copy/copy_long_string.test)       | REPEAT example          |
+| [copy_multiple_files.test](https://github.com/kuzudb/kuzu/blob/1bd26e46eac7a5de1d8776bab74988b05c4913dc/test/test_files/copy/copy_multiple_files.test) | Using statement blocks  |
+| [catalog.test](https://github.com/kuzudb/kuzu/blob/1bd26e46eac7a5de1d8776bab74988b05c4913dc/test/test_files/exceptions/catalog/catalog.test)           | Dealing with exceptions |
