@@ -10,3 +10,54 @@ See the following link for the full documentation of the Python client API.
   title="Python API documentation"
   href="https://kuzudb.com/api-docs/python"
 />
+
+# Basic setup
+```py
+import kuzu
+db = kuzu.Database("tmp")
+conn = kuzu.Connection(db)
+
+# define your function
+def difference(a, b):
+    return abs(a - b)
+
+# define the expected type of your parameters
+parameters = [kuzu.Type.INT64, kuzu.Type.INT64]
+
+# define expected type of the returned value
+return_type = kuzu.Type.INT64
+
+# register the UDF
+conn.create_function("difference", difference, parameters, return_type)
+```
+
+Alternatively, you can use python annotations to denote the signature of your function
+```py
+def difference(a : int, b : int) -> int:
+    return abs(a - b)
+
+conn.create_function("difference", difference)
+```
+
+# Details
+`create_function` parameters:
+
+- `name: str` : the name of the function to be invoked in cypher
+- `udf: Callable[[...], Any]` : The function to be executed
+- `params_type: Optional[list[Type]]` : a list of `kuzu.Type` enums to denote the expected parameter types. It's not necessary to declare the type of child values for nested parameter types. When left out, Kuzu will attempt to determine the type of the parameters through any provided function annotations.
+- `return_type: Optional[Type | str | None]` : Either a `kuzu.Type` enum, `str`, or `None`. If the return type is nested, child type information must be provided. As such, with nested types, it's not valid to use `kuzu.Type`. Instead, a string representation of the type should be given. For example, a list of `INT64` would be `"INT64[]"`, or a map from a `STRING` to a `DOUBLE` would be `"MAP(STRING, DOUBLE)"`. It's also valid to omit this parameter and define child types through the function annotation. (eg. `list[int]`, or `dict(str, float)`)
+
+Here is a table from python types to Kuzu LogicalTypeIDs, which will be used to infer types through annotations
+|python type|Kuzu LogicalTypeID|
+|-|-|
+|`bool`|`BOOL`|
+|`int`|`INT64`|
+|`float`|`DOUBLE`|
+|`str`|`STRING`|
+|`datetime`|`TIMESTAMP`|
+|`date`|`DATE`|
+|`timedelta`|`INTERVAL`|
+|`uuid`|`UUID`|
+|`list`|`LIST`|
+|`dict`|`DICT`|
+
