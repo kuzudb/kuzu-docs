@@ -256,6 +256,7 @@ It is also possible to use the additional properties inside each test case:
 | `-RELOADDB`           | none           | Reload database from file system.                                                                                   |
 | `-REMOVE_FILE`        | file path      | Delete the file at the given path.                                                                                  |
 | `-IMPORT_DATABASE`    | directory path | Close current database. Open a new database in the given directory.                                                 |
+| `-CHECK_PRECISION`    | none           | Checks floating point columns using machine epsilon precision. Requires `-CHECK_ORDER` enabled.                     |
 
 ### Defining variables
 
@@ -291,6 +292,20 @@ The following variables are available to use inside the statements:
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `${KUZU_ROOT_DIRECTORY}` | Kùzu directory path                                                                                                                                              |
 | `${DATABASE_PATH}`       | When a test case runs, a temporary database path is created and cleaned up after the suite finishes. This variable represents the path of the running test case. |
+
+### Multiple queries
+
+A statement can contain multiple queries, each separated by semi-colons, as per normal usage.
+The statement would then have multiple results, in the order of the queries.
+
+```
+-STATEMENT CREATE NODE TABLE V1 (id UUID, PRIMARY KEY(id));
+           CREATE NODE TABLE V2 (id INT64, PRIMARY KEY(id));
+           WITH NULL as bid MATCH (b:V1 {id: bid}) RETURN b;
+---- ok
+---- ok
+---- 0
+```
 
 ### Defining statement blocks
 
