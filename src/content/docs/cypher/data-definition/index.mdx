@@ -4,7 +4,7 @@ title: Data definition language (DDL)
 
 import { LinkCard } from '@astrojs/starlight/components';
 
-The Data definition language (DDL) in Kùzu defines the commands and statments that create, alter,
+The Data definition language (DDL) in Kùzu defines the commands and statements that create, alter,
 and delete database objects. The schema provides a logical grouping of node and relationship tables
 that define the structure of the graph database.
 
@@ -12,14 +12,37 @@ that define the structure of the graph database.
 
 As a first step to creating your database, you need to define your node and directed relationships.
 In the property graph model, nodes and relationships have labels. In Kùzu, every node or
-relationship can have 1 label. The node and relationships and the predefined properties on them are
+relationship can have one label. The node and relationships and the predefined properties on them are
 defined through `CREATE NODE TABLE` and `CREATE REL TABLE` statements.
-The choice of using the term "table" over "label" is intentional and explained in the footnote below[^1].
+The choice of using the term "table" over "label" is intentional and explained below.
 
-Click on the card below to learn more about creating tables.
+:::note[Why are there no "labels"?]
+Kùzu uses the term **table** rather than **label** because, like other GDBMSs, Kùzu is
+ultimately a relational system in the sense that it stores and processes sets of tuples, i.e., tables
+or relations.
+
+In fact, Kùzu's data model can be viewed as a _structured_ property graph model, in
+which you tag your tables as "node" and "relationship" tables depending on their roles in your
+application data. Nodes are generally
+well-suited for representing entities, while relationships are used to represent the
+connections between these entities. Relationships are also the primary means to *join* nodes with each other to
+find paths and patterns in your graph database. So when you sketch out a mental map of your
+nodes/relationships, it is equivalent to defining your records as nodes or relationship tables.
+
+During querying you can bind node records with syntax like `(a:Person)`, and relationships with syntax
+like `(..)-[e:Knows]->(...)`. Similar to table definitions in SQL, node and relationship tables have
+primary keys, a term that is defined in the context of tables: node tables explicitly define
+primary keys as one of their properties, while the primary keys of relationship tables are
+implicitly defined by the primary keys of their `FROM` and `TO` node records. Furthermore
+(similar to relational systems), properties can be thought of as equivalent to columns in a table,
+justifying our choice of using the term "table" in our design of the system.
+:::
+
+
+Click on the card below to learn more about creatin node and relationship tables in Kùzu.
 
 <LinkCard
-    title="CREATE" href="./create-table"
+    title="CREATE" href="/cypher/data-definition/create-table"
     description="Create node and relationship tables"
 />
 
@@ -28,7 +51,7 @@ Click on the card below to learn more about creating tables.
 You can update the schema of a table using `ALTER TABLE`.
 
 <LinkCard
-    title="ALTER" href="./alter"
+    title="ALTER" href="/cypher/data-definition/alter"
     description="Update the schema of a node or relationship table"
 />
 
@@ -37,25 +60,8 @@ You can update the schema of a table using `ALTER TABLE`.
 You can drop tables from the database with the `DROP TABLE`.
 
 <LinkCard
-    title="DROP" href="./drop"
+    title="DROP" href="/cypher/data-definition/drop"
     description="Drop node or relationship table"
 />
 
 ---
-
-[^1]: We prefer the term `TABLE` instead of `LABEL` because Kùzu, as well as other GDBMSs are
-ultimately relational systems in the sense that they store and process sets of tuples, i.e., tables
-or relations. In fact, Kùzu's data model can be viewed as a _structured_ property graph model, in
-which you tag your tables as "node" and "relationship tables" depending on their roles in your
-application data. Nodes are generally
-suited for representing entities, while relationships are used to represent the
-relationships/connections. Relationships are also the primary means to join nodes with each other to
-find paths and patterns in your graph database. So when you sketch out a mental map of your
-nodes/relationships, this is equivalent to defining your tables or records as nodes or relationships.
-During querying you can bind node records in syntax like `(a:Person)`, while relationships in syntax
-like `(..)-[e:Knows]->(...)`. Similar to table definitions in SQL, node and relationship tables have
-primary keys, a term that is defined in the context of tables: node tables explicitly define
-primary keys as one of their properties, while the primary keys of relationship tables are
-implicitly defined by the primary keys of their FROM and TO node records. Further observe that
-similar to relational systems, properties can be thought equivalently as columns of a table,
-justifying our choice of using the term table in these definitions.
