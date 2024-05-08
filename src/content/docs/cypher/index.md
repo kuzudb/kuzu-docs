@@ -3,7 +3,8 @@ title: Cypher manual
 ---
 
 Cypher is a high-level query language for the property graph data model.
-It is similar to SQL in many aspects. Some of its analogues with SQL are shown below.
+If you're coming from a SQL background, it's syntax may seem familiar. Some common analogues between
+SQL and Cypher are listed below:
 
 | Type | SQL | Cypher
 | ---| --- | ---
