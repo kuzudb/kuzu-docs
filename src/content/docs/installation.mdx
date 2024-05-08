@@ -16,27 +16,11 @@ executable with no dependencies that can be used to interact with a Kùzu databa
 <Tabs>
 <TabItem label="macOS">
 
-Use a tool like cURL to download the latest version of the Kùzu CLI to your local machine. Alternatively,
-simply copy-paste [this HTTPS URL](https://github.com/kuzudb/kuzu/releases/download/v0.4.1/kuzu_cli-osx-universal.tar.gz)
-into your browser.
+You can install the Kùzu CLI using Homebrew.
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.4.1/kuzu_cli-osx-universal.tar.gz
+brew install kuzu
 ```
-
-Double-click the `kuzu_cli-osx-universal.tar.gz` file to extract a file named `kuzu`, and give it
-executable permissions using the command `chmod +x kuzu`.
-
-:::caution[Note]
-In macOS, when you download and try to run the CLI for the first time, you'll likely see the following error message:
-
-> _“kuzu” cannot be opened because it is from an unidentified developer.
-> macOS cannot verify that this app is free from malware._
-
-To fix this, navigate to **System Settings > Privacy & Security**. Depending on your macOS version, either go 
-to the **General** OR the **Security** section and you will see a warning: `"kuzu" was blocked from use because it is not from an
-identified developer`. Click on the **Allow Anyway** button and the CLI should run afterward.
-:::
 
 </TabItem>
 
