@@ -105,9 +105,11 @@ dataset is required, use the keyword 'empty'.
 
 ### Specifying the Dataset
 
-| Property                         | Description                                                                                                            |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY or empty<br/> **Dataset name:** the name of the directory inside `dataset/`. i.e. tinysnb. |
+| Property                         | Description                                                                                                                  |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY, KUZU or empty<br/> **Dataset name:** the name of the directory inside `dataset/`. i.e. tinysnb. |
+
+The `KUZU` dataset type is a Kùzu database directory.
 
 Examples:
 
