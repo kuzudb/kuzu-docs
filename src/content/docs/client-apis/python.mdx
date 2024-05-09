@@ -47,6 +47,8 @@ conn.create_function("difference", difference)
 - `udf: Callable[[...], Any]` : The function to be executed
 - `params_type: Optional[list[Type | str]]` : A list whose elements can either be `kuzu.Type` or `str`. `kuzu.Type` can be used to denote nonnested parameter types, while `str` can be used to denote both nested and nonnested parameter types. Details on how to denote types are in the type notation section.
 - `return_type: Optional[Type | str]` : Either a `kuzu.Type` enum or `str`. Details on how to denote types are in the type notation section.
+- `default_null_handling: Optional[bool]` : True by default. When true, if any one of the inputs is null, function execution is skipped and the output is resolved to null
+- `catch_exceptions: Optional[bool]` : False by default. When true, if the UDF raises an exception, the output is resolved to null. Otherwise the Exception is rethrown
 
 # Type notation
 
@@ -65,3 +67,6 @@ Here is a table from python types to Kuzu LogicalTypeIDs, which will be used to 
 |`uuid`|`UUID`|
 |`list`|`LIST`|
 |`dict`|`DICT`|
+
+# Function Removal
+UDFs can be removed by calling `Connection.remove_function(name: str)`
