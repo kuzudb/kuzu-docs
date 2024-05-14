@@ -15,7 +15,7 @@ Scroll to the right to see the example usage in the below table.
 
 | Function | Description | Example | Result |
 | ----------- | --------------- | ----------- | ----------- |
-| `array_value(arg1, arg2, arg3..)` | creates an array containing the argument values | `array_value(1,2,3,4,5,56,2)` | `[1,2,3,4,5,56,2] |
+| `array_value(arg1, arg2, arg3..)` | creates an array containing the argument values | `array_value(1,2,3,4,5,56,2)` | `[1,2,3,4,5,56,2]` |
 | `array_dot_product(array1, array2)` | calculates the dot product of two arrays | `array_dot_product([1,2,3], [4,5,6])` | `32` |
 | `array_inner_product(array1, array2)` | calculates the inner product of two arrays | `array_inner_product([1,2,3], [4,5,6])` | `32` |
 | `array_cross_product(array1, array2)` | calculates the cross product of two arrays | `array_cross_product([1,2,3], [4,5,6])` | `[[-3,6,-3],[6,-12,6],[-3,6,-3]]` |
