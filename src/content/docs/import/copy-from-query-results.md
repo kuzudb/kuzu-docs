@@ -1,9 +1,11 @@
 ---
-title: Copy FROM query results
+title: Copy FROM subquery
 ---
 
-You can bulk import the results of a prior query like `MATCH ....` by attaching 
-that query as a subquery of a `COPY FROM` statement
+You can bulk import the results of a subquery like `MATCH ....` by attaching
+that query as a subquery of a `COPY FROM` statement. This is useful when you need to transform data
+before inserting it into the database, or if you want to copy data from a `LOAD FROM` scan operation
+on a data structure that's already in memory, such as Pandas DataFrames.
 
 For example, consider that we have a graph with a `User` node label and a `Follows` relationship type.
 We want to create a new `Person` node table and a `Knows` relationship table, where we state that
