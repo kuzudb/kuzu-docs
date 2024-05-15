@@ -33,8 +33,8 @@ object, such as a Pandas DataFrame using `LOAD FROM` and use its results as inpu
 command. This can be combined with predicate filters as follows:
 
 ```python
-# Assumes that you have a Kùzu connection object named `conn`
-# Also assumes that you created a node table named `Person` with columns `name` and `age`
+# First, ensure you create a Kùzu connection object and define a node table as follows:
+# conn.execute("CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name))")
 import pandas as pd
 
 df = pd.DataFrame({
@@ -42,7 +42,7 @@ df = pd.DataFrame({
     "age": [30, 40, 50, 25]
 })
 
-conn.execute("COPY Person FROM (LOAD FROM df WHERE age < 30 RETURN *")
+conn.execute("COPY Person FROM (LOAD FROM df WHERE age < 30 RETURN *)")
 ```
 
 Using `COPY FROM` with subqueries in this manner opens up a wider
