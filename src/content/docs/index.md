@@ -12,7 +12,7 @@ Kùzu is an embedded graph database built for query speed and scalability. It is
 handling complex join-heavy analytical workloads on very large graphs, with the following core
 feature set:
 
-- Support for the two most popular graph data models: **Property Graph** and **RDF**
+- Supports property graphs and automatic mapping of RDF datasets to property graphs
 - Cypher query language
 - Embedded (in-process) integration with applications
 - Columnar disk-based storage
