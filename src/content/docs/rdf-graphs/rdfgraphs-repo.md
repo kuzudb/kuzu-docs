@@ -13,11 +13,12 @@ via conventional means like object stores or shared drives. All you have to do i
 
 ## Preloaded RDFGraphs
 
-The names shown in the first column below are the RDFGraph names the RDFGraphs in Kùzu you will see when you  
-download these databases.
+The names shown in the first column below are the RDFGraphs you will see in Kùzu
+when you download these databases.
 
 :::caution[Info]
-Scroll to the right to see the full table.
+Scroll to the right to see the full table. The second column contains the download URL for the
+latest supported version of Kùzu for which we provide preloaded RDFGraphs.
 :::
 
 <div class="scroll-table">
