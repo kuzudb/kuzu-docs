@@ -88,7 +88,7 @@ one has tag `@ru` to indicate that the string is in Russian.
 whose IRIs are not known. These may appear in some RDF file formats, e.g.,
 in Turtle files, their IRIs appear with prefix `_:<some-label>` or inside `[ ]`. As many systems
 that support RDF, when loading RDF data into Kùzu, Kùzu will generate
-a specific IRI for blank nodes. See [here](./rdf-import#blank-nodes) for more details.
+a specific IRI for blank nodes. See [here](../rdf-import#blank-nodes) for more details.
 
 ## RDF triples and RDF/Knowledge Graphs
 

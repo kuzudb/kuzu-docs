@@ -2,7 +2,7 @@
 title: Query an RDF graph in Cypher
 ---
 
-The examples on this page use the below database, whose schema and data import commands are given [here](./example-rdfgraph):
+The examples on this page use the below database, whose schema and data import commands are given [here](../example-rdfgraph):
 
 <Image src="/img/rdfgraphs/rdf-running-example.png" />
 
@@ -16,16 +16,16 @@ When you then ingest your triples using the `COPY FROM` command, Kùzu maps the 
 To query your triples with Cypher, it is important to first understand this mapping.
 The specifics of the mapping are as follows:
 
-1. **Resources Node Table** — `UniKG_r(iri STRING, PRIMARY KEY (iri))`: Stores the [Resources](rdf-basics#resources-and-iris) (hence the `_r` suffix) in the triples. 
+1. **Resources Node Table** — `UniKG_r(iri STRING, PRIMARY KEY (iri))`: Stores the [Resources](../rdf-basics#resources-and-iris) (hence the `_r` suffix) in the triples.
    Each unique IRI that appears in the subject, predicate, or object of triples is mapped to a separate `UniKG_r` node. 
    Note that even IRIs that appear only as predicates and never as objects or subjects in any triple are mapped to a `UniKG_r` resource node (e.g., 
    `rdf:type` in the example database). Resource nodes have a 
    single property, `iri`, which stores the IRI of the resource as a string.
 
-2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, lang STRING, PRIMARY KEY (id))`: Stores the [Literals](rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples. 
+2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, lang STRING, PRIMARY KEY (id))`: Stores the [Literals](../rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples.
    Each unique literal that appears in the triples is mapped to a separate `UniKG_l` node. 
-   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../cypher/data-types/string).
-   There is a third `id` property of type [SERIAL](../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table. 
+   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../../cypher/data-types/string).
+   There is a third `id` property of type [SERIAL](../../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table.
 
 3. **Resource-to-Resource Triples Relationship Table** — `UniKG_rt(FROM UniKG_r, TO UniKG_r, iri STRING)`: Stores the triples between UniKG_r resources and 
    UniKG_r resources. `_rt` suffix stands for "**r**esource **t**riples", i.e., triples whose objects are resources. 
@@ -164,7 +164,7 @@ Output:
 ### Using RDFGraph name to query both relationship tables
 We have also added syntactic sugar to make it easier to query the triples. Specifically, the RDFGraph name,
 which is the prefix of all of the 4 tables, can be used to refer to both relationship table names.
-That is, the RDFGraph name acts as a [rel table group](../cypher/data-definition/create-table#create-rel-table-group),
+That is, the RDFGraph name acts as a [rel table group](../../cypher/data-definition/create-table#create-rel-table-group),
 which are syntactic sugars that use a common name to refer to multiple possible relationship tables. In our example,
 the RDFGraph's name is UniKG, and instead of using `UniKG_rt` and `UniKG_rl`, you can use UniKG as a relationship name
 to query both relationship tables as follows:
@@ -299,8 +299,8 @@ record from the `UniKG_r` or `UniKG_l` node tables.
 
 Similar to how you can query the base 4 tables in RDFGraphs, you can also manipulate the base tables of RDFGraphs 
 through the regular [CREATE](../cypher/data-manipulation-clauses/create), 
-[MERGE](../cypher/data-manipulation-clauses/merge),
-[DELETE](../cypher/data-manipulation-clauses/delete) and [DETACH DELETE](../cypher/data-manipulation-clauses/delete#detach-delete) 
+[MERGE](../../cypher/data-manipulation-clauses/merge),
+[DELETE](../../cypher/data-manipulation-clauses/delete) and [DETACH DELETE](../../cypher/data-manipulation-clauses/delete#detach-delete)
 statements of Cypher with some restrictions:
 
 - **Restriction 1:** `SET` operations, including those used after `MERGE`, such as
@@ -384,7 +384,7 @@ angle bracket and second because it contains the space character. However, you c
 be stored would be the "<http://full IRI/#ex>" string. However, when doing bulk data ingestion from Turtle files, 
 triples with malformed IRIs will be ignored and not inserted into Kùzu. That is a side effect of the parser
 [Serd](https://github.com/drobilla/serd) that Kùzu uses, which skips such triples (in fact it may skip an 
-entire "chunk" of triples in the Turtle file; see the [documentation](./rdf-import#behavior-during-importing-malformed-triples-in-turtle-files) on this behavior here).
+entire "chunk" of triples in the Turtle file; see the [documentation](../rdf-import#behavior-during-importing-malformed-triples-in-turtle-files) on this behavior here).
 
 ### Using blank node IDs in `CREATE` statements
 
