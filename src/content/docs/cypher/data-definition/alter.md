@@ -58,7 +58,7 @@ The following query adds a comment to `User` table.
 ```cypher
 COMMENT ON TABLE User IS 'User information';
 ```
-Comments can be extracted through `SHOW_TABLES()` function. See [CALL](../query-clauses/call.md) for more information.
+Comments can be extracted through `SHOW_TABLES()` function. See [CALL](../../query-clauses/call) for more information.
 ```cypher
 CALL SHOW_TABLES() RETURN *;
 --------------------------------------------
