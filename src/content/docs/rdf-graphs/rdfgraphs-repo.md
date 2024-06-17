@@ -66,6 +66,7 @@ Now you are ready to query and explore the database in Kùzu via Cypher! Below, 
 query the database with Kùzu CLI but you can also use
 [Kùzu Explorer](https://docs.kuzudb.com/visualization) or any of Kùzu's [client libraries](https://docs.kuzudb.com/client-apis).
 
+
 ### Visualize the data in KùzuExplorer
 
 To get familiar with the database and its schema, you can use KùzuExplorer, our visualization tool.
