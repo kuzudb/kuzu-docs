@@ -175,13 +175,13 @@ unless a new `-CASE` is written.
 
 There are three ways to specify the expected result:
 
-| Result                             | Description                                                                                                                |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `---- error`                       | The following lines must be the expected error message.                                                                    |
-| `---- error(regex)`                | The following lines must be a regex pattern matching the expected error message.                                           |
-| `---- ok`                          | does not require any additional information below the line.                                                                |
-| `---- hash`                        | A single line must follow containing the number of values in the query results and the md5 hash value of the query result. |
-| `---- [number of expected tuples]` | The following lines must be exactly the query results.                                                                     |
+| Result                                                                                                                          | Description                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `---- error`                                                                                                                    | The following lines must be the expected error message.                                                                    |
+| `---- error(regex)`                                                                                                             | The following lines must be a regex pattern matching the expected error message.                                           |
+| `---- ok`                                                                                                                       | does not require any additional information below the line.                                                                |
+| `---- hash`                                                                                                                     | A single line must follow containing the number of values in the query results and the md5 hash value of the query result. |
+| <span style="text-wrap: nowrap;">`---- [number of expected tuples]` <br> `[expected tuple 1]` <br> `[expected tuple 2]` </span> | The first line after `----` contains the number of tuples and the following lines must exactly match the query results.    |
 
 :::note[Note]
 By default, the expected result tuples can be written in any order. The framework will sort the
