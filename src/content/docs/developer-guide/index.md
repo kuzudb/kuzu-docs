@@ -4,7 +4,7 @@ title: Build Kùzu from source
 
 :::caution[Note]
 This page is intended for developers who want to build Kùzu from source. If you are a user of Kùzu,
-please refer to the [installation guide](../installation) for downloading pre-built binaries for your platform.
+please refer to the [installation guide](https://docs.kuzudb.com/installation) for downloading pre-built binaries for your platform.
 :::
 
 To build from source code, Kùzu requires CMake(`>=3.15`), Python(`>=3.9`), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 11, Clang 12, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
@@ -122,7 +122,7 @@ make release NUM_THREADS=$env:NUMBER_OF_PROCESSORS
 make test NUM_THREADS=X
 ```
 
-For additional information regarding the tests, please refer to the documentation for [Testing Framework](./testing-framework).
+For additional information regarding the tests, please refer to the documentation for [Testing Framework](../testing-framework).
 
 ### Increase `ulimit` for running tests
 
