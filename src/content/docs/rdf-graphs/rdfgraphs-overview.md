@@ -24,8 +24,8 @@ The specifics of the mapping are as follows:
 
 2. **Literals Node Table** — `UniKG_l(id SERIAL, val VARIANT, lang STRING, PRIMARY KEY (id))`: Stores the [Literals](../rdf-basics#rdf-literals) (hence the `_l` suffix) in the triples.
    Each unique literal that appears in the triples is mapped to a separate `UniKG_l` node. 
-   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](../../cypher/data-types/string).
-   There is a third `id` property of type [SERIAL](../../cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table.
+   Literals have two properties, `val`, which stores the value of the literal as a [VARIANT data type](../../cypher/data-types/variant) and `lang`, which stores the optional language tag as a [STRING](https://docs.kuzudb.com/cypher/data-types/string).
+   There is a third `id` property of type [SERIAL](https://docs.kuzudb.com/cypher/data-types/serial) which can be ignored. It is there to provide a primary key for the table.
 
 3. **Resource-to-Resource Triples Relationship Table** — `UniKG_rt(FROM UniKG_r, TO UniKG_r, iri STRING)`: Stores the triples between UniKG_r resources and 
    UniKG_r resources. `_rt` suffix stands for "**r**esource **t**riples", i.e., triples whose objects are resources. 
@@ -164,7 +164,7 @@ Output:
 ### Using RDFGraph name to query both relationship tables
 We have also added syntactic sugar to make it easier to query the triples. Specifically, the RDFGraph name,
 which is the prefix of all of the 4 tables, can be used to refer to both relationship table names.
-That is, the RDFGraph name acts as a [rel table group](../../cypher/data-definition/create-table#create-rel-table-group),
+That is, the RDFGraph name acts as a [rel table group](https://docs.kuzudb.com/cypher/data-definition/create-table#create-rel-table-group),
 which are syntactic sugars that use a common name to refer to multiple possible relationship tables. In our example,
 the RDFGraph's name is UniKG, and instead of using `UniKG_rt` and `UniKG_rl`, you can use UniKG as a relationship name
 to query both relationship tables as follows:
@@ -298,9 +298,9 @@ record from the `UniKG_r` or `UniKG_l` node tables.
 ## Modifying RDFGraphs using `CREATE`, `SET`, `MERGE` and `DELETE` 
 
 Similar to how you can query the base 4 tables in RDFGraphs, you can also manipulate the base tables of RDFGraphs 
-through the regular [CREATE](../cypher/data-manipulation-clauses/create), 
-[MERGE](../../cypher/data-manipulation-clauses/merge),
-[DELETE](../../cypher/data-manipulation-clauses/delete) and [DETACH DELETE](../../cypher/data-manipulation-clauses/delete#detach-delete)
+through the regular [CREATE](https://docs.kuzudb.com/cypher/data-manipulation-clauses/create), 
+[MERGE](https://docs.kuzudb.com/cypher/data-manipulation-clauses/merge),
+[DELETE](https://docs.kuzudb.com/cypher/data-manipulation-clauses/delete) and [DETACH DELETE](https://docs.kuzudb.com/cypher/data-manipulation-clauses/delete#detach-delete)
 statements of Cypher with some restrictions:
 
 - **Restriction 1:** `SET` operations, including those used after `MERGE`, such as

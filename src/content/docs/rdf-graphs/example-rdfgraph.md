@@ -10,7 +10,7 @@ set of triples about students and faculty at universities, which we call `UniKG`
 The DDL statements to define the RDFGraph, the [Turtle (.ttl) file](https://www.w3.org/TR/turtle/) 
 containing the triples, and the data import (`COPY FROM`) commands
 are given below. You can copy-paste and type these commands in the Kùzu CLI shell
-or [KùzuExplorer](../visualiziation) to replicate
+or [KùzuExplorer](https://docs.kuzudb.com/visualization) to replicate
 the examples in this documentation locally.
 
 ## Creating the RDFGraph
