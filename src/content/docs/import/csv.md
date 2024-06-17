@@ -15,7 +15,7 @@ end of the the `COPY FROM` clause. The following table shows the configuration p
 | `DELIM` | Character that separates different columns in a lines. | `,`|
 | `QUOTE` | Character to start a string quote. | `"` |
 | `ESCAPE` | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
-| `LIST_BEGIN`/`LIST_END` | For the [list data type](../cypher/data-types/list.md), the delimiters to specify <br/> list begin and list end characters | `[`, `]`|
+| `LIST_BEGIN`/`LIST_END` | For the [list data type](../cypher/data-types/list), the delimiters to specify <br/> list begin and list end characters | `[`, `]`|
 | `PARALLEL` | Read csv files in parallel or not | true |
 
 The example below specifies that the CSV delimiter is`|` and also that the header row exists.

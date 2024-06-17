@@ -88,7 +88,7 @@ last `DESC` in the above query, the first two tuples in the result
 would be swapped.
 
 :::caution[ORDER BY after WITH]
-You can use ORDER BY after [WITH](with.md) **only** if you use a LIMIT and/or SKIP, so you should
+You can use ORDER BY after [WITH](./with) **only** if you use a LIMIT and/or SKIP, so you should
 use it to keep or remove the top-k or bottom-k intermediate tuples. The reason for this
 restriction is that otherwise, ordering intermediate results is not useful, because if 
 a query has more computation to do after the WITH and ORDER BY, the operators on those following
