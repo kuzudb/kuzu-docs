@@ -61,6 +61,9 @@ There are two ways to run a specific e2e test or group of tests:
 Example:
 
 ```
+# First cd to build/relwithdebinfo/test (after running make test)
+$ cd build/relwithdebinfo/test
+
 # Run the all tests from `test/test_files/common/types/interval.test`
 $ ctest -R common~types~interval
 
