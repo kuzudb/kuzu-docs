@@ -36,4 +36,4 @@ RETURN map_extract(map([1, 2], ['a', 'b']),2) AS m;
 ```
 
 
-More map functions can be found at [map-functions](../../expressions/map-functions)
+More map functions can be found at [map-functions](https://docs.kuzudb.com/expressions/map-functions)
