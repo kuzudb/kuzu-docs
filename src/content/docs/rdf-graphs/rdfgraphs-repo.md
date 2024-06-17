@@ -64,7 +64,7 @@ If the download was successful, you should see the `e-wordnet` directory when yo
 
 Now you are ready to query and explore the database in Kùzu via Cypher! Below, we show how you
 query the database with Kùzu CLI but you can also use
-[Kùzu Explorer](../visualization/index.md) or any of Kùzu's [client libraries](../client-apis/index.md).
+[Kùzu Explorer](../../visualization) or any of Kùzu's [client libraries](../../client-apis).
 
 ### Visualize the data in KùzuExplorer
 
@@ -99,7 +99,7 @@ RETURN * LIMIT 20;
 
 If you prefer to work in the terminal, you can just as well use the Kùzu CLI to query the database.
 
-Follow the instructions [here](../installation#command-line-shell) and replace the HTTPS URL
+Follow the instructions [here](../../installation#command-line-shell) and replace the HTTPS URL
 to download the CLI compatible with Kùzu [version 0.2.0](https://github.com/kuzudb/kuzu/releases/tag/v0.2.0).
 
 Connect to the downloaded database's directory via the terminal as follows:
