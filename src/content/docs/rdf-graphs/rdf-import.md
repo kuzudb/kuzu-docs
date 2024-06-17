@@ -82,7 +82,7 @@ For example, you can import all the Turtle files in the `${PATH-TO-DIR}` directo
 COPY TurtleEx FROM "${PATH-TO-DIR}/*.ttl";
 ```
 
-Refer to the [COPY FROM MULTIPLE CSV Files](https://kuzudb.com/docusaurus/data-import/csv-import#copy-from-multiple-csv-files-to-a-single-table) section for details.
+Refer to the [COPY FROM MULTIPLE CSV Files](https://docs.kuzudb.com/import/csv/#import-multiple-files-to-a-single-table) section for details.
 
 ### Full IRIs, prefixes and relative IRIs
 
