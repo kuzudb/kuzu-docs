@@ -175,14 +175,7 @@ export default defineConfig({
                     items: [
                         { label: 'Overview', link: '/extensions'},
                         { label: 'HTTP File System (httpfs)', link: '/extensions/httpfs'},
-                        { 
-                            label: 'External databases',
-                            badge: 'New',
-                            items: [
-                                { label: 'DuckDB', link: '/extensions/external-databases/duckdb' },
-                                { label: 'PostgreSQL', link: '/extensions/external-databases/postgres' },
-                            ]
-                        }
+                        { label: 'RDBMS extensions', link: '/extensions/rdbms'},
                     ],
                     autogenerate: { directory: 'reference' },
                 },
