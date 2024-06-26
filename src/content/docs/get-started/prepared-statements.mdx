@@ -1,0 +1,72 @@
+---
+title: "Run prepared Cypher statements"
+---
+
+Just like we have [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) in relational databases,
+we can also have Cypher injection in graph databases. This is when a user can manipulate the query
+to execute arbitrary code that can threaten the integrity of the data. As a best practice, it's
+generally to provide parameters to your Cypher queries instead of using string literals in your code.
+
+In this guide, we'll show how to run prepared Cypher statements with parameters in Kùzu.
+
+## Why use parameters?
+
+In addition to security, you may want to use parameters in your Cypher queries for greater flexibility
+and dynamically adding data to your graph.
+
+Consider a scenario where you want to retrieve all persons in a database who are older than a certain age.
+Instead of hardcoding the age value into a Cypher query, it would make more sense to pass it as a parameter
+to the query, so that the same query can be run with different values.
+
+Another situation where parameters are useful is when you want to loop through a list of records and
+write each record to the database. Because records may have differnt values for a given property, it's
+a good idea to use parameters to provide the values dynamically.
+
+## Syntax
+
+Parameterized variables in Cypher are marked using the `$` symbol. The following query asks for only
+persons who are between a minimum and maximum age in the database. The below example in Python shows
+how to specify the parameters as a dictionary in the `parameters` argument of the `execute` method
+of the connection object.
+
+#### ✅ Recommended
+
+The `$min_age` and `$max_age` variables in the Cypher query are mapped to the `min_age` and `max_age`
+keys in the `parameters` dictionary, which then retrieve the values from the declared Python variables.
+
+```py
+min_age = 18
+max_age = 30
+
+conn.execute(
+    """
+    MATCH (p:Person)
+    WHERE p.age > $min_age and p.age < $max_age
+    RETURN p.name
+    """,
+    parameters={"min_age": min_age, "max_age": max_age}
+)
+```
+
+The act of using parameters in your queries is known as running **prepared statements**.
+
+#### ❌ Not recommended
+
+Although it's possible to pass the `min_age` and `max_age` variables directly into the query as
+string literals, this is strongly discouraged in practice.
+
+```py
+min_age = 18
+max_age = 30
+
+conn.execute(
+    f"""
+    MATCH (p:Person)
+    WHERE p.age > {min_age} and p.age < {max_age}
+    RETURN p.name
+    """
+)
+```
+
+
+
