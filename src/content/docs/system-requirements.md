@@ -8,7 +8,7 @@ Kùzu's CLI, C and C++ APIs are pre-compiled for **macOS >= 11.0** as a universa
 
 ## Python
 
-Kùzu's Python API wheel has been pre-compiled for **CPython 3.7 to 3.11**. For macOS, the OS compatibility is the same as the pre-compiled CLI, C and C++ API (i.e. macOS >= 11.0). For Linux, the pre-compiled wheels for x86-64 follows `manylinux2014_x86_64` standard; the pre-compiled wheels for aarch64 follows `manylinux_2_28_aarch64` standard. Please refer to this [link for more information on manylinux](https://github.com/pypa/manylinux). For Windows, the OS compatibility is the same as the pre-compiled CLI and C++ API (i.e. Windows 10 and 11).
+Kùzu's Python API wheel has been pre-compiled for **CPython 3.7 to 3.11**. For macOS, the OS compatibility is the same as the pre-compiled CLI, C and C++ API (i.e. macOS >= 11.0). For Linux, the pre-compiled wheels follows `manylinux_2_28` standard for both x86-64 and aarch64 architecture. Please refer to this [link for more information on manylinux](https://github.com/pypa/manylinux). For Windows, the OS compatibility is the same as the pre-compiled CLI and C++ API (i.e. Windows 10 and 11).
 
 ## Node.js
 
