@@ -92,7 +92,7 @@ make release NUM_THREADS=$(sysctl -n hw.physicalcpu)
 
 #### Install Visual Studio
 
-Install Visual Studio 2019 or 2022 with C++ support, CMake, and the SDK for your version of Windows. For detailed instructions, please refer to [Microsoft's documentation](https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
+Install Visual Studio 2022 with C++ support, CMake, and the SDK for your version of Windows. For detailed instructions, please refer to [Microsoft's documentation](https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
 
 #### Install Chocolatey
 
