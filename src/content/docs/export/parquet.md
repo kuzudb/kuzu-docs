@@ -6,7 +6,7 @@ The `COPY TO` clause can export query results to a Parquet file. It can be combi
 and used as shown below.
 
 ```cypher
-COPY (MATCH (u:User) return u.*) TO 'user.parquet';
+COPY (MATCH (u:User) return u.*) TO 'user.parquet' (compression = 'snappy');
 ```
 
 The `LOAD FROM` clause can used to scan the Parquet file and to verify that the export worked:
@@ -25,6 +25,15 @@ The `LOAD FROM` clause can used to scan the Parquet file and to verify that the 
 | Noura   | 25    |
 -------------------
 ```
+
+Available options are:
+
+<div class="scroll-table">
+
+| Option                   | Default Value           | Description                                                               |
+|:------------------------:|:-----------------------:|---------------------------------------------------------------------------|
+| `COMPRESSION`                 | `SNAPPY`                     | The compression format to use (uncompressed, snappy, gzip, lz4 or zstd). |
+</div>
 
 :::caution[Notes]
 - Exporting [fixed list](../cypher/data-types#list) or [variant](../../cypher/data-types/variant) data types to Parquet are not yet supported.
