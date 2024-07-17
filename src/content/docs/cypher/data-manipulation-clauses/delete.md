@@ -3,7 +3,7 @@ title: Delete
 description: Delete node records from your tables.
 ---
 
-import RunningExample from '../running-example.png';
+![](/img/running-example.png)
 
 # DELETE
 `DELETE` clause deletes node or relationship records from the table.

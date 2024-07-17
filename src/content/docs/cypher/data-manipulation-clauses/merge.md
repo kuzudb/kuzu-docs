@@ -3,7 +3,7 @@ title: Merge
 description: Match existing pattern or, if not present, create the pattern.
 ---
 
-import RunningExample from '../running-example.png';
+![](/img/running-example.png)
 
 # MERGE
 `MERGE` clause tries to match the query pattern in database or, if not present, create the pattern in database. `MERGE <pattern>` can be interrepted as `If MATCH <pattern> then RETURN <pattern> ELSE CREATE <pattern>`. Note that there is no notion of partially matching of the pattern
