@@ -3,7 +3,7 @@ title: Set
 description: Update properties of node or relationship records to new values.
 ---
 
-import RunningExample from '../running-example.png';
+![](/img/running-example.png)
 
 # Database
 
