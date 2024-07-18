@@ -34,3 +34,13 @@ DROP TABLE User
 | NodeTable: User has been dropped. |
 -------------------------------------
 ```
+
+## IF EXISTS
+By default, kuzu throws an exception if the given table does not exist in the database. `IF EXISTS` syntax instructs kuzu do nothing when
+the given table name does not exist in the database.
+
+Example:
+```sql
+DROP TABLE IF EXISTS UW
+```
+This query tells kuzu only drop the `UW` table when the `UW` table exists.

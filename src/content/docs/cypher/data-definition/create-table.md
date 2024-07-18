@@ -93,3 +93,14 @@ MATCH (a:User)-[:Knows_User_User|:Knows_User_city]->(b) RETURN *;
 ```
 
 As you can imagine, the more relationships you want to selectively query on, the more useful relationship table groups become.
+
+## IF NOT EXISTS
+By default, kuzu throws an exception if the given table name already exists in the database. `IF NOT EXISTS` syntax instructs kuzu do nothing when
+the given table name already exists in the database.
+
+Example:
+```sql
+CREATE NODE TABLE IF NOT EXISTS UW(ID INT64, PRIMARY KEY(ID))
+```
+This query tells kuzu only create the `UW` table when the `UW` table doesn't exist.
+
