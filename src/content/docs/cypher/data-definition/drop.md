@@ -36,11 +36,11 @@ DROP TABLE User
 ```
 
 ## IF EXISTS
-By default, kuzu throws an exception if the given table does not exist in the database. `IF EXISTS` syntax instructs kuzu do nothing when
+If the given table does not exist in the database, Kùzu throws an exception when you try to drop it. To avoid the exception being raised, use the `IF EXISTS` clause. This instructs Kùzu to do nothing when
 the given table name does not exist in the database.
 
 Example:
 ```sql
 DROP TABLE IF EXISTS UW
 ```
-This query tells kuzu only drop the `UW` table when the `UW` table exists.
+This query tells Kùzu to drop the `UW` table only if it exists.
