@@ -21,7 +21,7 @@ CREATE (:tab {col0: "123", col1: '{"a": [1, 2, 3]}', col2: '[9.5, 10.5, 11.5]'})
 
 # JSON File Support
 
-JSON files can be interacted with using [`LOAD FROM`](/cypher/query_clauses/load-from), [`COPY FROM`](/import/copy-from-query-results), and `COPY TO`
+JSON files can be interacted with using [`LOAD FROM`](/cypher/query-clauses/load-from), [`COPY FROM`](/import/copy-from-query-results), and `COPY TO`
 
 ### `LOAD FROM`
 
