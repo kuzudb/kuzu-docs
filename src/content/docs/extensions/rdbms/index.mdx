@@ -56,7 +56,7 @@ conn.execute("INSERT INTO person values ('Dan', 25);")
 #### 2. Attach database
 
 ```sql
-ATTACH [DB_PATH] AS [alias] (dbtype 'duckdb')
+ATTACH [DB_PATH] AS [alias] (dbtype duckdb)
 ```
 
 - `DB_PATH`: Path to the DuckDB database instance (can be relative or absolute path)
@@ -67,7 +67,7 @@ The below example shows how the `university.db` DuckDB database can be attached 
 the alias `uw`:
 
 ```sql
-ATTACH 'university.db' AS uw (dbtype 'duckdb');
+ATTACH 'university.db' AS uw (dbtype duckdb);
 ```
 
 #### 3. Scan from DuckDB tables
@@ -104,7 +104,7 @@ as a prefix to the table name.
 Consider the same attached database as above:
 
 ```sql
-ATTACH 'university.db' AS uw (dbtype 'duckdb');
+ATTACH 'university.db' AS uw (dbtype duckdb);
 ```
 
 Instead of defining the database name for each subsequent clause like this:
@@ -141,7 +141,7 @@ CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 We can reference the created alias `uw` to copy data from the DuckDB table to the Kùzu table.
 
 ```sql
-COPY Person FROM (LOAD FROM uw.person RETURN *);
+COPY Person FROM uw.person;
 ```
 
 #### 6. Query the data in Kùzu
@@ -245,14 +245,14 @@ asyncio.run(main())
 #### 2. Attach database
 
 ```sql
-ATTACH [PG_CONNECTION_STRING] AS [alias] (dbtype 'postgres')
+ATTACH [PG_CONNECTION_STRING] AS [alias] (dbtype postgres)
 ```
 
 The below example shows how the `university` PostgreSQL database can be attached to Kùzu using
 the alias `uw`:
 
 ```sql
-ATTACH 'dbname=university user=postgres host=localhost password=testpassword port=5432' AS uw (dbtype 'postgres');
+ATTACH 'dbname=university user=postgres host=localhost password=testpassword port=5432' AS uw (dbtype postgres);
 ```
 
 The `ATTACH` statement requires the following parameters:
@@ -305,7 +305,7 @@ as a prefix to the table name.
 Consider the same attached database as above:
 
 ```sql
-ATTACH 'university' AS uw (dbtype 'postgres');
+ATTACH 'university' AS uw (dbtype postgres);
 ```
 
 Instead of defining the Postgres database name for each subsequent clause like this:
@@ -342,7 +342,7 @@ CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 We can reference the created alias `uw` to copy data from the PostgreSQL table to the Kùzu table.
 
 ```sql
-COPY Person FROM (LOAD FROM uw.person RETURN *);
+COPY Person FROM uw.person;
 ```
 
 #### 6. Query the data in Kùzu
@@ -391,5 +391,170 @@ DETACH uw
 ```
 
 </TabItem>
+
+<TabItem label="SQLite>
+
+The SQLite extension can be installed and loaded by running the following commands using the Kùzu CLI
+or your preferred language client API:
+
+```
+INSTALL sqlite;
+LOAD EXTENSION sqlite;
+```
+
+#### 1. Create a SQLite database
+
+To illustrate the usage of this extension, we create a sample SQLite database of university
+students in Python.
+
+```py
+import sqlite3
+conn = sqlite3.connect('university.db')
+cursor = conn.cursor()
+cursor.execute("CREATE TABLE IF NOT EXISTS person (name VARCHAR, age INTEGER);")
+cursor.execute("INSERT INTO person (name, age) VALUES ('Alice', 30);")
+cursor.execute("INSERT INTO person (name, age) VALUES ('Bob', 27);")
+cursor.execute("INSERT INTO person (name, age) VALUES ('Carol', 19);")
+cursor.execute("INSERT INTO person (name, age) VALUES ('Dan', 25);")
+conn.commit()
+conn.close()
+```
+
+#### 2. Attach database
+
+```sql
+ATTACH [DB_PATH] AS [alias] (dbtype sqlite)
+```
+
+- `DB_PATH`: Path to the SQLite database instance (can be relative or absolute path)
+- `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used.
+  When attaching multiple databases, it's recommended to use aliasing.
+
+The below example shows how the `university.db` SQLite database can be attached to Kùzu using
+the alias `uw`:
+
+```sql
+ATTACH 'university.db' AS uw (dbtype sqlite);
+```
+
+#### 3. Scan from SQLite tables
+
+Finally, we can utilize the `LOAD FROM` statement to scan the `person` table.
+
+```sql
+LOAD FROM uw.person
+RETURN *
+```
+
+Result:
+
+```
+---------------
+| name  | age |
+---------------
+| Alice | 30  |
+---------------
+| Bob   | 27  |
+---------------
+| Carol | 19  |
+---------------
+| Dan   | 25  |
+---------------
+```
+
+#### 4. Reference database via alias
+
+You can utilize the `USE` statement for attached databases to use a default database name for future operations.
+This can be used when reading from an attached database to avoid specifying the full database name
+as a prefix to the table name.
+
+Consider the same attached database as above:
+
+```sql
+ATTACH 'university.db' AS uw (dbtype sqlite);
+```
+
+Instead of defining the database name for each subsequent clause like this:
+
+```sql
+LOAD FROM uw.person
+RETURN *
+```
+
+You can do:
+
+```sql
+USE uw;
+LOAD FROM person
+RETURN *
+```
+
+#### 5. Copy data from SQLite tables
+
+One important use case of the DuckDB extension is to facilitate seamless data transfer from SQLite to Kùzu.
+In this example, we continue using the `university.db` database created in the last step, but this time,
+we copy the data and persist it to Kùzu. This is done with the [`COPY FROM` query results feature](../import/copy-from-query-results).
+
+##### Create a `Person` table in Kùzu
+
+We first create a `Person` table in Kùzu which has the same schema as the one defined in SQLite.
+
+```sql
+CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name));
+```
+
+##### Copy the data to Kùzu
+
+We can reference the created alias `uw` to copy data from the SQLite table to the Kùzu table.
+
+```sql
+COPY Person FROM uw.person;
+```
+
+#### 6. Query the data in Kùzu
+
+Finally, we can verify the data in the `Person` table in Kùzu.
+
+```cypher
+MATCH (p:Person) RETURN p.*;
+```
+
+Result:
+```
+------------------
+| p.name | p.age |
+------------------
+| Alice  | 30    |
+------------------
+| Bob    | 27    |
+------------------
+| Carol  | 19    |
+------------------
+| Dan    | 25    |
+------------------
+```
+
+#### 7. Clear attached database schema cache
+
+To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
+including table names and their respective columns and types. Should modifications occur in the schema
+via an alternate connection to attached databases (SQLite or some other attached database), such as creation or deletion of tables, the cached
+schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
+schema information in such cases.
+
+```sql
+CALL clear_attached_db_cache() RETURN *
+```
+Note: this call function will clear cache of all attached databases.
+
+#### 8. Detach database
+
+To detach a database, use `DETACH [ALIAS]` as follows:
+
+```
+DETACH uw
+```
+
+
 
 </Tabs>

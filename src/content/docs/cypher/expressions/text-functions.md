@@ -47,5 +47,6 @@ Scroll the table to the right to see example usage.
 | `upper(string)` | returns the string in upper case | `upper("small case")` | `"SMALL CASE"` |
 | `ucase(string)` | alias of upper | `ucase("small case")` | `"SMALL CASE"` |
 | `initcap(string)` | returns the string with only the first letter in uppercase | `initcap("roma")` | `"Roma"` |
-
+| `string_split(string, separator)` |  splits the string along the separator. | `string_split('this is a sentence', ' ')` | `[this,is,a,sentence]` |
+| `split_part(string, separator, index)` | Split the string along the separator and return the data at the (1-based) index of the list. Returns empty string if index out of range | `split_part('this is a sentence', ' ', 1)` | `this` |
 </div>
