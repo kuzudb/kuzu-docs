@@ -111,3 +111,44 @@ Supported environments are:
 | AWS S3 secret key | S3_SECRET_ACCESS_KEY |
 | AWS S3 default endpoint | S3_ENDPOINT |
 | AWS S3 default region | S3_REGION |
+
+## ATTACH remote kuzu database
+HTTP filesystem also allows user to attach a remote(S3, HTTPS) hosted kuzu database.
+```sql
+ATTACH [DB_PATH] AS [alias] (dbtype kuzu)
+```
+
+- `DB_PATH`: Path to the remote filesystem. (Can either be a S3 or HTTP url)
+- `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used.
+  When attaching multiple databases, it's recommended to use aliasing.
+
+The below example shows how the `university.db` kuzu database hosted on S3 can be attached to Kùzu using
+the alias `uw`:
+
+```sql
+ATTACH 's3://kuzu-example/university' AS uw (dbtype kuzu);
+```
+Note: After attaching a remote kuzu database, users no longer have access to the original local kuzu database. Default database is
+switched to the attached remote kuzu database right after the `attach` statement and users can only query the remote kuzu database.
+
+#### Execute queries on remote kuzu database.
+Note: only read-only queries are allowed to execute on remote kuzu database.
+```sql
+MATCH (p:person) RETURN p.*
+```
+
+Result:
+
+```
+---------------
+| name  | age |
+---------------
+| Alice | 30  |
+---------------
+| Bob   | 27  |
+---------------
+| Carol | 19  |
+---------------
+| Dan   | 25  |
+---------------
+```
