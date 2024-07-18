@@ -17,14 +17,21 @@ We will use the example database for demonstration, whose schema and data import
 
 ### Merge Existing Nodes
 The following query tries to merge a user with name "Adam". Since user "Adam" exists in the database, no user is created.
-```
+```cypher
 MERGE (n:User {name : 'Adam'}) RETURN n.*;
+```
+```
 ------------------
 | n.name | n.age |
 ------------------
 | Adam   | 30    |
 ------------------
+```
+
+```cypher
 MATCH (:User) RETURN COUNT(*);
+```
+```
 ----------------
 | COUNT_STAR() |
 ----------------
@@ -34,14 +41,21 @@ MATCH (:User) RETURN COUNT(*);
 
 ### Merge Non-existing Nodes
 The following query tries to merge a user with name "Bob". Since user "Bob" does not exist in the database, a new user with name "Bob" is created.
-```
+```cypher
 MERGE (n:User {name : 'Bob'}) RETURN n.*;
+```
+```
 ------------------
 | n.name | n.age |
 ------------------
 | Bob    |       |
 ------------------
+```
+
+```cypher
 MATCH (:User) RETURN COUNT(*);
+```
+```
 ----------------
 | COUNT_STAR() |
 ----------------
@@ -51,8 +65,10 @@ MATCH (:User) RETURN COUNT(*);
 
 ### Merge with `ON MATCH`
 `ON MATCH` specifies the `SET` operation once a match is found. The followng query updates age property if pattern is matched.
-```
+```cypher
 MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
+```
+```
 ------------------
 | n.name | n.age |
 ------------------
@@ -62,8 +78,10 @@ MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
 
 ### Merge with `ON CREATE`
 `ON CREATE` specifies the `SET` operation if no match is found. The following query updates age property if pattern is not matched.
-```
+```cypher
 MERGE (n:User {name : 'Bob'}) ON CREATE SET n.age = 60 RETURN n.*;
+```
+```
 ------------------
 | n.name | n.age |
 ------------------
@@ -74,18 +92,24 @@ MERGE (n:User {name : 'Bob'}) ON CREATE SET n.age = 60 RETURN n.*;
 
 ### Merge Existing Relationships
 The following query tries to merge a follows edge since 2020 between "Adam" and "Zhang". A match is found in this case.
-```
+```cypher
 MATCH (a:User), (b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Zhang' 
 MERGE (a)-[e:Follows {since:2020}]->(b) RETURN e;
+```
+```
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
 | (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) |
 ---------------------------------------------------------
+```
+```cypher
 MATCH (a:User)-[e:Follows]->(b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Zhang' 
 RETURN e;
+```
+```
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
@@ -95,18 +119,25 @@ RETURN e;
 
 ### Merge Non-existing Relationships
 The following query tries to merge a follows edge since 2022 between "Adam" and "Zhang". No match is found and an edge is created.
-```
+```cypher
 MATCH (a:User), (b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Zhang' 
 MERGE (a)-[e:Follows {since:2022}]->(b) RETURN e;
+```
+```
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
 | (0:0)-{_LABEL: Follows, _ID: 0:4, since: 2022}->(0:2) |
 ---------------------------------------------------------
+```
+
+```cypher
 MATCH (a:User)-[e:Follows]->(b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Zhang' 
 RETURN e;
+```
+```
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
@@ -118,12 +149,14 @@ RETURN e;
 
 ### Merge with `ON MATCH`
 Similar to merge nodes, the following query update edge since property if the pattern is found.
-```
+```cypher
 MATCH (a:User), (b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
 MERGE (a)-[e:Follows {since:2020}]->(b) 
 ON MATCH SET e.since = 2021
 RETURN e;
+```
+```
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
@@ -133,12 +166,14 @@ RETURN e;
 
 ### Merge with `ON CREATE`
 Similar to merge nodes, the following query update edge since property if the pattern is not found.
-```
+```cypher
 MATCH (a:User), (b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
 MERGE (a)-[e:Follows {since:2022}]->(b) 
 ON CREATE SET e.since = 1999
 RETURN e;
+```
+```
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
@@ -149,10 +184,12 @@ RETURN e;
 ## Merge Complex Patterns
 Previous examples have shown how to merge single node and relationship pattern. It's also possible to merge a complex pattern involving 
 
-```
+```cypher
 MERGE (:User {name:'A'})-[:Follows]->(:User {name:'B'})-[:LivesIn]->(:City {name:'Toronto'});
 MATCH (a:User)-[:Follows]->(b:User)-[:LivesIn]->(c:City)
 RETURN a.name, b.name, c.name;
+```
+```
 ---------------------------------
 | a.name  | b.name  | c.name    |
 ---------------------------------
@@ -167,3 +204,4 @@ RETURN a.name, b.name, c.name;
 | A       | B       | Toronto   |
 ---------------------------------
 ```
+
