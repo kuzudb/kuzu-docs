@@ -46,7 +46,7 @@ import duckdb
 conn = duckdb.connect('university.db')
 
 # Insert data to person table
-conn.execute("CREATE TABLE person (name VARCHAR, age INTEGER);")
+conn.execute("CREATE TABLE IF NOT EXISTS person (name VARCHAR, age INTEGER);")
 conn.execute("INSERT INTO person values ('Alice', 30);")
 conn.execute("INSERT INTO person values ('Bob', 27);")
 conn.execute("INSERT INTO person values ('Carol', 19);")
@@ -229,7 +229,7 @@ async def main():
     conn = await asyncpg.connect('postgresql://postgres:testpassword@localhost:5432/postgres')
     # Create and insert data to a new table
     try:
-        await conn.execute("CREATE TABLE person (name VARCHAR, age INTEGER);")
+        await conn.execute("CREATE TABLE IF NOT EXISTS person (name VARCHAR, age INTEGER);")
         await conn.execute("INSERT INTO person (name, age) VALUES ('Alice', 30)")
         await conn.execute("INSERT INTO person (name, age) VALUES ('Bob', 27)")
         await conn.execute("INSERT INTO person (name, age) VALUES ('Carol', 19)")
@@ -392,7 +392,7 @@ DETACH uw
 
 </TabItem>
 
-<TabItem label="SQLite>
+<TabItem label="SQLite">
 
 The SQLite extension can be installed and loaded by running the following commands using the Kùzu CLI
 or your preferred language client API:
@@ -411,6 +411,7 @@ students in Python.
 import sqlite3
 conn = sqlite3.connect('university.db')
 cursor = conn.cursor()
+
 cursor.execute("CREATE TABLE IF NOT EXISTS person (name VARCHAR, age INTEGER);")
 cursor.execute("INSERT INTO person (name, age) VALUES ('Alice', 30);")
 cursor.execute("INSERT INTO person (name, age) VALUES ('Bob', 27);")
@@ -555,6 +556,6 @@ To detach a database, use `DETACH [ALIAS]` as follows:
 DETACH uw
 ```
 
-
+</TabItem>
 
 </Tabs>
