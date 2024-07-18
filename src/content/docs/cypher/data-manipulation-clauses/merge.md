@@ -11,7 +11,7 @@ and creating the remaining parts. That is, either the whole pattern is matched o
 
 Similar to `INSERT ON CONFLICT` in SQL, `MERGE` clause comes with `ON CREATE` and `ON MATCH` set operation allowing users to specify additional update logic if the pattern is (not) found.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/data-manipulation-clauses/example-database).
 
 ## Merge Nodes
 

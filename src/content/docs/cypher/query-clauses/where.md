@@ -10,7 +10,7 @@ Regardless of what comes before WHERE, the semantics of WHERE is this two step c
 1. It then runs the boolean predicate specified in the WHERE clause and outputs those that pass the predicates to
 the next part of your query.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
 
 For example:
 
@@ -30,13 +30,11 @@ Output:
 ---------------------------------------------
 ```
 
-
-
 The boolean predicate specified above can be understood as it reads: Users "a" whose ages are
-greater than 45 OR whose names start with "Kar". It combines several means to construct expressions in high-level database query languages, such as as boolean operator (OR), a numeric comparison operator (>), and a string function (starts_with). You can learn more about the operators, functions and expressions [here](../expressions).
+greater than 45 OR whose names start with "Kar". It combines several means to construct expressions in high-level database query languages, such as as boolean operator (OR), a numeric comparison operator (>), and a string function (starts_with). You can learn more about the operators, functions and expressions [here](/cypher/expressions).
 
 ## Filter with NULL
-If an expression is evaluated as NULL, it will be treated as FALSE in `WHERE` clause. To check if an expression is NULL, please refer to [comparison operators on NULLs](../data-types/null).
+If an expression is evaluated as NULL, it will be treated as FALSE in `WHERE` clause. To check if an expression is NULL, please refer to [comparison operators on NULLs](/cypher/data-types/null).
 
 The following predicate in the WHERE clause filters User nodes whose name start with "Kar" and whose age properties are not NULL.
 ```cypher

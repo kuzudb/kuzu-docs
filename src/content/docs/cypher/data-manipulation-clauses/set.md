@@ -8,7 +8,7 @@ description: Update properties of node or relationship records to new values.
 # SET 
 `SET` is similar to that in SQL. It allows updating properties of node or relationship records (possibly NULL).
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/data-manipulation-clauses/example-database).
 
 ## Set Node Properties
 

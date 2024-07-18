@@ -10,9 +10,6 @@ const site = "https://docs.kuzudb.com";
 // https://astro.build/config
 export default defineConfig({
   site,
-//   build: {
-//     format: 'file',
-//   },
   integrations: [
     sitemap(),
     starlight({
@@ -244,7 +241,10 @@ export default defineConfig({
           autogenerate: { directory: "reference" },
         },
       ],
-      plugins: [starlightLinksValidator({ errorOnRelativeLinks: false })],
+      // We do not allow relative links in the site to avoid broken links - all links must be absolute
+      // The root directory for the internal links in the site is /docs, so all links must start
+      // with paths below this, for e.g., /cypher/data-definition/create-table
+      plugins: [starlightLinksValidator({ errorOnRelativeLinks: true })],
     }),
   ],
   markdown: {
