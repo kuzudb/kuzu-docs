@@ -28,7 +28,7 @@ Optimizer contains a set of optimization rules. Each rule is a transformation fr
 
 Processor takes a `LogicalPlan` as an input and maps it to a `PhysicalPlan`. A physical plan is a sequence of physical operators, each of which is an implementation of logical operators with a specific algorithm. For example, a logical `JOIN` can be mapped into physical `INDEX_NESTED_LOOP_JOIN` or `HASH_JOIN`.
 
-In addition, the processor contains a task scheduler which breaks down a physical plan into multiple pipelines for [morsel-driven parallelism](../execution).
+In addition, the processor contains a task scheduler which breaks down a physical plan into multiple pipelines for [morsel-driven parallelism](/developer-guide/database-internal/execution).
 
 ### Expression evaluator
 

@@ -8,7 +8,7 @@ or sort a set of tuples you computed up to a point in your query.  Kùzu current
 sorting orders: `ASC`, `DESC`. By default if no sorting order is specified, Kùzu sorts
 rows in ascending order and NULLs are placed first.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
 
 ## Basic example
 The following query returns the user's name and age ordered by user's age using the default ordering(asc order):
@@ -88,7 +88,7 @@ last `DESC` in the above query, the first two tuples in the result
 would be swapped.
 
 :::caution[ORDER BY after WITH]
-You can use ORDER BY after [WITH](../with) **only** if you use a LIMIT and/or SKIP, so you should
+You can use ORDER BY after [WITH](/cypher/query-clauses/with) **only** if you use a LIMIT and/or SKIP, so you should
 use it to keep or remove the top-k or bottom-k intermediate tuples. The reason for this
 restriction is that otherwise, ordering intermediate results is not useful, because if 
 a query has more computation to do after the WITH and ORDER BY, the operators on those following

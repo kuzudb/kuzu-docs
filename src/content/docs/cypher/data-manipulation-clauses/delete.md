@@ -6,7 +6,7 @@ description: Delete node records from your tables.
 # DELETE
 `DELETE` clause deletes node or relationship records from the table.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/data-manipulation-clauses/example-database).
 
 ## Delete Nodes
 
