@@ -74,6 +74,14 @@ export default defineConfig({
           ],
         },
         {
+            label: "Learn about connections",
+            collapsed: true,
+            items: [
+              { label: "Understanding connections", link: "/connections" },
+              { label: "Concurrency", link: "/connections/concurrency" },
+            ],
+          },
+        {
           label: "Import data",
           collapsed: true,
           items: [

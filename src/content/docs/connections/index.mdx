@@ -1,0 +1,150 @@
+---
+title: "Learn about connections"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Kùzu is an embedded database that is designed for performance, scalability and ease of use. If
+you've used conventional client-server databases, you may be used to connecting to a remote server
+from your application via something like a REST API. In Kùzu, however, you connect directly to the
+database directory on disk (in-memory mode is coming soon, but similar principles apply).
+
+## `READ_WRITE` connections
+
+The default connection mode is `READ_WRITE`, meaning that you can read and write data to the database
+directory. This is the most common mode of operation when you're getting started with your project and
+building your graphs.
+
+The convention is to start a `Database` instance and create a `Connection` object that you can use
+to interact with the database. To create a `READ_WRITE` connection, you'd use the following code:
+
+<Tabs>
+<TabItem label="Python">
+
+```python
+db = kuzu.Database("./db")
+conn = kuzu.Connection(db)
+```
+
+</TabItem>
+
+<TabItem label="Node.js">
+
+```javascript
+const db = new kuzu.Database("./db");
+const conn = new kuzu.Connection(db);
+```
+
+</TabItem>
+
+<TabItem label="Java">
+
+```java
+KuzuDatabase db = new KuzuDatabase("./db", 0);
+KuzuConnection conn = new KuzuConnection(db);
+```
+
+</TabItem>
+
+<TabItem label="Rust">
+
+```rust
+let db = Database::new("./db", SystemConfig::default())?;
+let conn = Connection::new(&db)?;
+```
+
+</TabItem>
+
+<TabItem label="C++">
+
+```cpp
+auto config = SystemConfig();
+auto database = Database("db", config);
+auto connection = Connection(database);
+```
+
+</TabItem>
+
+<TabItem label="C">
+
+```c
+kuzu_database *db = kuzu_database_init("./db", config);
+kuzu_connection *conn = kuzu_connection_init(db);
+```
+
+</TabItem>
+
+</Tabs>
+
+## `READ_ONLY` connections
+
+Once you have data inserted into your database, you can create multiple `READ_ONLY` connections
+to your database to query the data. You can have multiple `READ_ONLY` connections to the same database
+open and query the data concurrently. To create a `READ_ONLY` connection, you'd use the following code:
+
+<Tabs>
+<TabItem label="Python">
+
+```python
+db = kuzu.Database("./db", read_only=True)
+conn = kuzu.Connection(db)
+```
+
+</TabItem>
+
+<TabItem label="Node.js">
+
+```javascript
+const db = new kuzu.Database("./db", { readOnly: true });
+const conn = new kuzu.Connection(db);
+```
+
+</TabItem>
+
+<TabItem label="Java">
+
+pass readOnly as true to the database connector.
+
+```java
+KuzuDatabase db = new KuzuDatabase("./db", 0, true, false);
+KuzuConnection conn = new KuzuConnection(db);
+```
+
+</TabItem>
+
+<TabItem label="Rust">
+
+```rust
+let db = Database::new("./db", SystemConfig::default().read_only(true))?;
+let conn = Connection::new(&db)?;
+```
+
+</TabItem>
+
+<TabItem label="C++">
+
+```cpp
+auto config = SystemConfig();
+config.readOnly = true;
+auto database = Database("db", config);
+auto connection = Connection(database);
+```
+
+</TabItem>
+
+<TabItem label="C">
+
+```c
+kuzu_database *db = kuzu_database_init("./db", config);
+kuzu_connection *conn = kuzu_connection_init(db);
+```
+
+</TabItem>
+
+</Tabs>
+
+:::danger[Note]
+You cannot have a `READ_WRITE` connection
+open to the database while you have `READ_ONLY` connections open -- see the next section on
+[concurrency](/connections/concurrency) for more information.
+:::

@@ -60,24 +60,3 @@ unsupported. The following client libraries have been contributed by the communi
     href="/client-apis/net"
   />
 </CardGrid>
-
----
-
-## Best practices
-
-:::caution[Note]
-
-This note pertains to those **connecting to the same database directory via multiple `Database` instances.**
-
-Each way ultimately creates a `Database` instance in C++ (Kùzu's CLI is written in C++, so is a C++
-process, and Kùzu's Python API, through which you create a `PyDatabase` instance is a binding to Kùzu's C++ API
-and so ultimately creates a `Database` instance. Similar for other language APIs). Each database you create is identified by its directory. 
-While it's possible to create multiple `Database` instances that connect to the same database directory, you should only issue read queries in such scenarios.
-This is because writes from one `Database` instance will not be visible to another, leading to potential database corruption.
-
-As of now, Kùzu does not ensure that you are connecting to the same database directory through a single `Database` instance.
-That being said, *you're free to open multiple connections to the same database from the same `Database` instance.*
-But as a best practice, you shouldn't concurrently have a CLI open that writes to a database directory and multiple separate processes or threads
-that read from the same database in the same directory, for the above mentioned reasons.
-
-:::
