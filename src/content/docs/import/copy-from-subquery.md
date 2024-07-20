@@ -1,5 +1,5 @@
 ---
-title: Copy FROM subquery
+title: Copy from subquery
 ---
 
 You can bulk import the results of a subquery like `MATCH ....` by attaching
@@ -26,24 +26,35 @@ COPY Person FROM (MATCH (a:User) RETURN a.name);
 COPY Knows FROM (MATCH (a:User)-[r:Follows]->(b:User) RETURN a.name, b.name);
 ```
 
-### `COPY FROM` a Pandas DataFrame
+### `COPY FROM` a `LOAD FROM` scan subquery
 
 An alternate use case for this feature would be when you want to directly scan data from an existing
 object, such as a Pandas DataFrame using `LOAD FROM` and use its results as input to the `COPY FROM`
 command. This can be combined with predicate filters as follows:
 
 ```python
-# First, ensure you create a Kùzu connection object and define a node table as follows:
-# conn.execute("CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name))")
+import kuzu
 import pandas as pd
+
+db = kuzu.Database("tmp")
+conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
     "name": ["Adam", "Karissa", "Zhang", "Noura"],
     "age": [30, 40, 50, 25]
 })
 
+conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+
+# Apply a predicate filter while scanning the DataFrame
+# Pass the results of the scan to the COPY FROM command
 conn.execute("COPY Person FROM (LOAD FROM df WHERE age < 30 RETURN *)")
 ```
 
-Using `COPY FROM` with subqueries in this manner opens up a wider
-range of possibilities for data manipulation and transformation prior to doing bulk-insertion into Kùzu.
+You can similarly use this approach to subset your data, for example, read only a part of your
+DataFrame, Parquet or CSV file, and then copy that subset into Kùzu.
+
+```python
+# Load specific columns only
+conn.execute("COPY Person FROM (LOAD FROM df RETURN name)")
+```
