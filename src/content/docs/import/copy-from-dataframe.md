@@ -47,7 +47,7 @@ conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name
 
 df = pl.DataFrame({
     "name": ["Adam", "Karissa", "Zhang"],
-    "age": [30, 40, 50, 25]
+    "age": [30, 40, 50]
 })
 
 conn.execute("COPY Person FROM df")
@@ -68,10 +68,8 @@ pa_table = pa.table({
     "name": ["Adam", "Karissa", "Zhang"],
     "age": [30, 40, 50]
 })
-print(pa_table)
 
 conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
 
 conn.execute("COPY Person FROM pa_table")
 ```
-
