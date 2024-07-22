@@ -84,6 +84,15 @@ For numbers where exact precision is required, the `DECIMAL` data type can be us
 specified as `DECIMAL(precision, scale)`, where `precision` is the total number of digits and
 `scale` is the number of digits to the right of the decimal point.
 
+Internally, decimals are represented as integers depending on their specified width.
+
+| Precision | Internal | Size (bytes)
+| --- | --- | ---
+| 1-4 | INT16 | 2
+| 5-9 | INT32 | 4
+| 10-18 | INT64 | 8
+| 19-38 | INT128 | 16
+
 You can explicitly cast a number (either integer or float) to a `DECIMAL` as follows:
 
 ```cypher
