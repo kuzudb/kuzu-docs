@@ -74,6 +74,39 @@ shows all built-in data types.
 | --- | --- | ---
 | 8 bytes | double precision floating-point number | FLOAT8
 
+## DECIMAL
+
+| Size | Description
+| --- | ---
+| variable | arbitrary fixed precision decimal number
+
+For numbers where exact precision is required, the `DECIMAL` data type can be used. The `DECIMAL` type is
+specified as `DECIMAL(precision, scale)`, where `precision` is the total number of digits and
+`scale` is the number of digits to the right of the decimal point.
+
+You can explicitly cast a number (either integer or float) to a `DECIMAL` as follows:
+
+```cypher
+RETURN CAST(127.3, "DECIMAL(5, 2)") AS result;
+```
+Output:
+```
+----------
+| result |
+----------
+| 127.30 |
+----------
+```
+
+Note that if you attempt to cast with a precision or scale that is too small, an overflow exception
+will be raised:
+```cypher
+RETURN CAST(127.3, "DECIMAL(4, 2)");
+```
+```
+Error: Overflow exception: To Decimal Cast Failed: 127.300000 is not in DECIMAL(4, 2) range
+```
+
 ## BOOLEAN
 
 | Size | Description
