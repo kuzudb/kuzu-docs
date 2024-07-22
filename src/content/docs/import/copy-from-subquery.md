@@ -3,27 +3,36 @@ title: Copy from subquery
 ---
 
 You can bulk import the results of a subquery like `MATCH ....` by attaching
-that query as a subquery of a `COPY FROM` statement. This is useful when you need to transform data
-before inserting it into the database, or if you want to copy data from a `LOAD FROM` scan operation
-on a data structure that's already in memory, such as Pandas DataFrames.
+that query as a subquery of a `COPY FROM` statement. Because the `COPY FROM` command is part of
+the Data Definition Language (DDL) in Kùzu, it follows SQL's semantics and hence, a subquery
+is passed within parentheses `()` that contains a `RETURN` clause.
 
-For example, consider that we have a graph with a `User` node label and a `Follows` relationship type.
-We want to create a new `Person` node table and a `Knows` relationship table, where we state that
-a Person knows another Person if they follow each other. We can use the `COPY FROM` command with a subquery
-to achieve this as follows:
+Copy using a subquery is useful when you need to transform data
+before inserting it into the database, or if you want to copy data from a `LOAD FROM` scan operation
+on a data structure that's already in memory, such as a DataFrame.
 
 #### Create node/relationship tables
 
+Consider that we have a database of `Person`, `Product` and `HasReward` relationships (where a
+person is eligible for a product reward if they have made a certain number of purchases).
+
 ```cypher
-CREATE NODE TABLE Person(name STRING, PRIMARY KEY (name));
-CREATE REL TABLE Knows(FROM Person TO Person);
+CREATE NODE TABLE Person(name STRING, num_purchases INT64, PRIMARY KEY (name));
+CREATE NODE TABLE Product(name STRING, price DOUBLE, PRIMARY KEY (name));
+CREATE REL TABLE HasReward(FROM Person TO Product);
 ```
 
 ### `COPY FROM` a `MATCH` subquery
 
+Now, let's say we want to reward a particular product (e.g., a `gift voucher`) to all the `Person`s
+who have made more than 10 purchases. We can do this with a `MATCH` subquery as follows:
+
 ```cypher
-COPY Person FROM (MATCH (a:User) RETURN a.name);
-COPY Knows FROM (MATCH (a:User)-[r:Follows]->(b:User) RETURN a.name, b.name);
+COPY HasReward FROM (
+    MATCH (p:Person)
+    WHERE p.num_purchases > 10
+    RETURN p.name, "gift voucher"
+)
 ```
 
 ### `COPY FROM` a `LOAD FROM` scan subquery
