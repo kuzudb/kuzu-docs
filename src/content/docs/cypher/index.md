@@ -37,9 +37,9 @@ data to return, and so on.
 
 ### Multi-line statements
 
-Multi-line statements are a set of statements that you can execute sequentially in the CLI in a single
-transaction, rather then executing them one by one in individual transactions. You can write a multi-line
-Cypher statement by ending each line with a semicolon `;`. For example:
+You can execute multiple query statements sequentially in the CLI, rather than
+executing them one by one. To run a multi-line statements, simply end each valid statement you want
+to execute with a semicolon `;`. For example:
 
 ```cypher
 MATCH (p1:Person)
@@ -50,9 +50,8 @@ MATCH (p2:Person)
 WHERE p2.age > 18
 RETURN p2.name AS adult;
 ```
-When you copy-paste the above blocks into the Kùzu CLI and press Enter, it will execute both statements
-sequentially in a single transaction. All you have to do to run multi-line statements is to ensure
-that each block is syntactically valid and ends with a semicolon.
+When you copy-paste the above blocks into the Kùzu CLI and press Enter, it will execute each block
+sequentially, so you don't have to send individual queries one at a time.
 
 ---
 
