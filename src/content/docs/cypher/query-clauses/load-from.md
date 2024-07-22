@@ -27,6 +27,13 @@ RETURN COUNT(*);
 ----------------
 ```
 
+To skip the first 2 lines of the CSV file, you can use the `SKIP` parameter as follows:
+
+```cypher
+LOAD FROM "user.csv" (header = true, skip = 2)
+RETURN *;
+```
+
 ### Create nodes from input file
 ```cypher
 LOAD FROM "user.csv" (header = true)
