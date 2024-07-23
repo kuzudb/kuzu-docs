@@ -74,14 +74,6 @@ export default defineConfig({
           ],
         },
         {
-            label: "Learn about connections",
-            collapsed: true,
-            items: [
-              { label: "Understanding connections", link: "/connections" },
-              { label: "Concurrency", link: "/connections/concurrency" },
-            ],
-          },
-        {
           label: "Import data",
           collapsed: true,
           items: [
@@ -203,6 +195,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: "Build Kùzu from source", link: "/developer-guide" },
+            { label: "Concurrency", link: "/developer-guide/concurrency" },
             {
               label: "Performance debugging",
               link: "/developer-guide/performance-debugging",
