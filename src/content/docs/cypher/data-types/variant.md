@@ -3,12 +3,12 @@ title: Variant
 sidebar_position: 14
 ---
 Variant is a data type that can store values of various data types (similar to the sql_variant data type of SQLServer).
-Currently it can only be used to store [RDF literals](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal) in [RDFGraphs](../../rdf-graphs). 
+Currently it can only be used to store [RDF literals](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal) in [RDFGraphs](/rdf-graphs). 
 That is, you cannot create a regular node or relationship table that holds a column of type VARIANT.
-When working with RDFGraphs, the [Literals node table](../../rdf-graphs/rdfgraphs-overview#rdfgraphs-mapping-of-triples-to-property-graph-tables)'s 
+When working with RDFGraphs, the [Literals node table](/rdf-graphs/rdfgraphs-overview#rdfgraphs-mapping-of-triples-to-property-graph-tables)'s 
 `val` column stores RDF literal values. RDF literals, and Kùzu's Variant data type can store values of different data types.
 For example, consider the following triples in a Turtle file:
-```
+```turtle
 @prefix kz: <http://kuzu.io/rdf-ex#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -19,9 +19,11 @@ kz:Waterloo a kz:City ;
 ```
 Suppose that you insert these into an RDFGraph named `UniKG`. You will get the following values in the `val` column 
 of the Literals node table `UniKG_l`:
-```
+```cypher
 MATCH (a:UniKG_r)-[p:UniKG_lt]->(o:UniKG_l)
 RETURN a.iri, p.iri, o.val;
+```
+```
 -------------------------------------------------------------------------------------------------
 | a.iri                          | p.iri                                           | o.val      |
 -------------------------------------------------------------------------------------------------
@@ -32,10 +34,10 @@ RETURN a.iri, p.iri, o.val;
 | http://kuzu.io/rdf-ex#Waterloo | http://kuzu.io/rdf-ex#name                      | Waterloo   |
 -------------------------------------------------------------------------------------------------
 ```
-In the output above the data types of the values in `o.val` are as follows (data types are not rendered in Kùzu cli's output)
-- 329.000000 is a double
-- 10000 is an integer
-- "Waterloo" is a string
+In the output above the data types of the values in `o.val` are as follows (data types are not rendered in Kùzu CLI's output)
+- `329.000000` is a double
+- `10000` is an integer
+- `"Waterloo"` is a string
 
 These different types are stored under the same column `val` of the `Literals` node table.
 
@@ -65,7 +67,7 @@ examples momentarily).
 | INTERVAL       | cast("1 year", "INTERVAL") |
 
 For example, the below code adds new triples into an RDFGraph with type date and float, respectively:
-```
+```cypher
 CREATE (a:UniKG_r {iri:"http://kuzu.io/rdf-ex#foo"})-[p:UniKG_lt {iri:"http://kuzu.io/rdf-ex#datepredicate"}]->(o:UniKG_l {val:cast("2024-01-01", "DATE")});
 CREATE (a:UniKG_r {iri:"http://kuzu.io/rdf-ex#foo"})-[p:UniKG_lt {iri:"http://kuzu.io/rdf-ex#doublepredicate"}]->(o:UniKG_l {val:4.4});
 ```
@@ -101,7 +103,7 @@ By default any literal that is not tagged explicitly with the above XSD tags wil
 When parsing RDF literals from Turtle files, if you explicitly
 type your literals with an XSD tag, then those will be the data types. In other cases,
 Kùzu will try to infer the data types. Consider the below Turtle file:
-```
+```turtle
 @prefix kz: <http://kuzu.io/rdf-ex#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -126,12 +128,12 @@ This will result in the following triples:
 ----------------------------------------------------------------------------------
 ```
 The data types above are as follows (again data types are not rendered in Kùzu cli's output):
-- 10000 is an INT64 (automatically inferred)
-- 329.000000 (for altitude1 and altitude2) are DOUBLE. Note that altitude1 is automatically inferred, while altitude2 is explicitly typed with an xsd tag.
-- 329.0 (for altitude3) is a STRING (automatically inferred)
+- `10000` is an INT64 (automatically inferred)
+- `329.000000` (for altitude1 and altitude2) are DOUBLE. Note that altitude1 is automatically inferred, while altitude2 is explicitly typed with an xsd tag.
+- `329.0`(for altitude3) is a STRING (automatically inferred)
 
 ## Exporting Variant Values (e.g., Tables with Variant Columns)
 Kùzu supports exporting Variant data to some files. For example, you can export a table with a Variant column to a CSV file and
 each value will be converted to a string (as every value in CSV files are strings). However, we do not support exporting Variant data to Parquet.
 If you want to export a variant data type to Parquet, you need to explicitly cast Variant data type to another data type
-that can be exported to Parquet, such a strings. Check the documentation on [data exporting](../../data-export) for upto date information on this.
+that can be exported to Parquet, such strings. Check the documentation on [data exporting](/export) for up-to-date information on this.

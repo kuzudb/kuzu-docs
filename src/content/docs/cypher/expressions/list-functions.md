@@ -51,7 +51,7 @@ Scroll to the right to see the example usage in the below table.
 
 </div>
 
-For functions that specifically work with `ARRAY` data types, refer to the [Array functions](../array-functions) section.
+For functions that specifically work with `ARRAY` data types, refer to the [Array functions](/cypher/expressions/array-functions) section.
 
 ## LIST_SORT
 `LIST_SORT` takes can be configured to sort in ascending or descending order as well as whether `NULL`

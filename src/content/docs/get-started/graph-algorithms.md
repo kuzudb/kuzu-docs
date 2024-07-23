@@ -58,7 +58,7 @@ load_data(conn)
 
 ## Visualize subgraphs in Kùzu Explorer
 
-You can visualize the data in Kùzu Explorer as shown in the [previous section](./cypher-intro).
+You can visualize the data in Kùzu Explorer as shown in the [previous section](/get-started/cypher-intro).
 An example is shown below.
 
 ```cypher

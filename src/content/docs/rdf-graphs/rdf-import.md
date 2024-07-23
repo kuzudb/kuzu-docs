@@ -6,7 +6,7 @@ Kùzu currently supports bulk importing triples into RDFGraphs through [RDF Turt
 and [N-Triples (.nt)](https://www.w3.org/TR/n-triples/) files, which are a subset of Turtle files. Specifically,
 N-Triples files are uncompressed versions of Turtle files where each triple is written out as a separate line
 and without any prefix or base abbreviations in the IRIs. Triples can also be ingested through `CREATE` statements. See the 
-section on CREATE and DELETE statements in the [previous page](../rdfgraphs-overview#modifying-rdfgraphs-using-create-set-merge-and-delete)
+section on CREATE and DELETE statements in the [previous page](/rdf-graphs/rdfgraphs-overview#modifying-rdfgraphs-using-create-set-merge-and-delete)
 for how to ingest triples through `CREATE` statements.
 
 **Note on importing N-Triples files:** N-Triples can be ingested
@@ -112,7 +112,7 @@ This will insert only the first triple as follows: < `http://base-prefix/#baseIR
 In the second triple `#baseIRI` is malformed because it is not enclosed between angle brackets. 
 In the third triple `foo:prefixIRIEx` is malformed because `foo` is not defined as a prefix in the Turtle file.
 
-### Behavior during iporting malformed triples in Turtle files
+### Behavior during importing malformed triples in Turtle files
 
 If your Turtle file contains malformed triples, e.g., if the subject, predicate, or object is not a valid IRI,
 Kùzu will skip the rest of "chunk" of triples after the first malformed triple. A chunk is a set of

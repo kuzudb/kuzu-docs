@@ -70,7 +70,7 @@ query the database with Kùzu CLI but you can also use
 ### Visualize the data in KùzuExplorer
 
 To get familiar with the database and its schema, you can use KùzuExplorer, our visualization tool.
-See the download instructions [here](../../installation)
+See the download instructions [here](/installation)
 (note that you need Docker installed and running on your machine first).
 
 Connect the Docker server to your local directory volume by specifying the `-v` flag and the
@@ -100,7 +100,7 @@ RETURN * LIMIT 20;
 
 If you prefer to work in the terminal, you can just as well use the Kùzu CLI to query the database.
 
-Follow the instructions [here](https://docs.kuzudb.com/installation/#command-line-shell) and replace the HTTPS URL
+Follow the instructions [here](/installation/#command-line-shell) and replace the HTTPS URL
 to download the CLI compatible with Kùzu [version 0.2.0](https://github.com/kuzudb/kuzu/releases/tag/v0.2.0).
 
 Connect to the downloaded database's directory via the terminal as follows:

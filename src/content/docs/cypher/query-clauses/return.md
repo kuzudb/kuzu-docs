@@ -10,7 +10,7 @@ bound to nodes or relationships, aliases, or more complex expressions. RETURN ca
 for performing group-by and aggregations as well as duplication removing (using the `DISTINCT` clause). 
 We discuss several common expressions used in RETURN.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database)
+We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database)
 
 ## Returning node and relationship variables
 Returning variables in the query that are bound to node and relationships in the query 
@@ -157,7 +157,7 @@ The semantics is exactly the same as SQL's semantics, which is a 3-step process:
 1. For each group G, compute the (or or more) aggregations in the query.
 1. Output for each group G, G's key(s) and the result of the aggregations. 
 
-You can find the list of aggregation functions supported in Kùzu [here](../../expressions/aggregate-functions).
+You can find the list of aggregation functions supported in Kùzu [here](/cypher/expressions/aggregate-functions).
 
 :::caution[Note on NULLS]
 The handling of NULLs in group by keys and values also follow the SQL semantics:

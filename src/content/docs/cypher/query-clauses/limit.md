@@ -3,10 +3,10 @@ title: Limit
 description: LIMIT controls the number of tuples returned from a query.
 ---
 
-`LIMIT` controls the number of tuples returned from a query. It is often used within in an [ORDER BY](../order-by)
+`LIMIT` controls the number of tuples returned from a query. It is often used within in an [ORDER BY](/cypher/query-clauses/order-by)
 clause to fetch the top-k tuples from the query result. Note that `LIMIT` accepts any expression that can be evaluated to an integer.
 
-We will use the example database for demonstration, whose schema and data import commands are given [here](../example-database).
+We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
 
 For example, the following query returns the top three oldest users.
 

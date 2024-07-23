@@ -414,9 +414,9 @@ Kùzu supports two list-like data types: (i) variable-length lists, simply calle
 ## VARIANT
 
 Variant is a data type that can store values of various data types (similar to the `sql_variant` data type of SQLServer).
-Currently it can only be used to store [RDF literals](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal) in [RDFGraphs](../../rdf-graphs). 
+Currently it can only be used to store [RDF literals](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal) in [RDFGraphs](/rdf-graphs). 
 That is, you cannot create a regular node or relationship table that holds a column of type VARIANT.
-When working with RDFGraphs, the [Literals node table](../../rdf-graphs/rdfgraphs-overview#rdfgraphs-mapping-of-triples-to-property-graph-tables)'s 
+When working with RDFGraphs, the [Literals node table](/rdf-graphs/rdfgraphs-overview#rdfgraphs-mapping-of-triples-to-property-graph-tables)'s 
 `val` column stores RDF literal values. RDF literals, and Kùzu's Variant data type can store values of different data types.
 For example, consider the following triples in a Turtle file:
 

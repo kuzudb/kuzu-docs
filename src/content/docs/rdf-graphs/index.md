@@ -28,7 +28,7 @@ two node and two relationship tables that acts as a new object in Kùzu's data m
 
 As an example, stating `CREATE/DROP RDFGraph <rdfgraph-name>` when creating or dropping an RDFGraph
 will create or drop **four** underlying tables
-(see [this section](./rdfgraphs-overview/#rdfgraphs-mapping-of-triples-to-property-graph-tables)
+(see [this section](/rdf-graphs/rdfgraphs-overview/#rdfgraphs-mapping-of-triples-to-property-graph-tables)
 for more details on what these tables are).
 RDFGraphs are therefore a specific mapping of your triples into
 Kùzu's native property graph data model, so you can query

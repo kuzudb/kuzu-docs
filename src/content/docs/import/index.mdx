@@ -7,7 +7,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 There are multiple ways to import data in Kùzu. The only prerequisite for inserting data
 into a database is that you first create a graph schema, i.e., the structure of your node and relationship tables.
 
-For small graphs (a few thousand nodes), the `CREATE` and `MERGE` [Cypher clauses](../cypher/data-manipulation-clauses)
+For small graphs (a few thousand nodes), the `CREATE` and `MERGE` [Cypher clauses](/cypher/data-manipulation-clauses)
 can be used to insert nodes and
 relationships. These are similar to SQL's `INSERT` statements, but bear in mind that they are slower than the bulk import
 options shown below. The `CREATE`/`MERGE` clauses are intended to do small additions or updates on a sporadic basis.

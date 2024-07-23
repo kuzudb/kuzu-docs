@@ -122,7 +122,7 @@ make release NUM_THREADS=$env:NUMBER_OF_PROCESSORS
 make test NUM_THREADS=X
 ```
 
-For additional information regarding the tests, please refer to the documentation for [Testing Framework](../testing-framework).
+For additional information regarding the tests, please refer to the documentation for [Testing Framework](/developer-guide/testing-framework).
 
 ### Increase `ulimit` for running tests
 
