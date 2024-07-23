@@ -79,7 +79,7 @@ queries directly on the database by embedding Kùzu in your application, per sce
 
 For high-performance applications that require the architecture shown in scenario 3, we could
 explore other protocols like Bolt or gRPC to communicate between the client and the API server. Reach out
-to us on [GitHub]([https://kuzu](https://github.com/kuzudb/kuzu/issues/new/choose)) if you have such an issue.
+to us on [GitHub](https://github.com/kuzudb/kuzu/issues/new/choose) if you have such an issue.
 :::
 
 ## Commonly asked questions
