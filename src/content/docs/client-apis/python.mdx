@@ -10,3 +10,137 @@ See the following link for the full documentation of the Python client API.
   title="Python API documentation"
   href="https://kuzudb.com/api-docs/python"
 />
+
+## UDF API
+
+Kùzu's Python API supports the registration of User Defined Functions (UDFs),
+allowing you to define custom functions in Python and use them in your Cypher queries. This can
+be helpful when you want to perform custom operations that are hard to express in Cypher, or if
+the necessary function doesn't exist in Cypher.
+
+An example is shown below. We will define a simple UDF that calculates the difference between two numbers,
+and then apply it in a Cypher query.
+
+### Register the UDF
+
+```py
+import kuzu
+
+db = kuzu.Database("test_db")
+conn = kuzu.Connection(db)
+
+# define your function
+def difference(a, b):
+    return a - b
+
+# define the expected type of your parameters
+parameters = [kuzu.Type.INT64, kuzu.Type.INT64]
+
+# define expected type of the returned value
+return_type = kuzu.Type.INT64
+
+# register the UDF
+conn.create_function("difference", difference, parameters, return_type)
+```
+
+Note that in the example above, we explicitly declared the expected types of the parameters and the
+return value in Kùzu, prior to registering the UDF. 
+
+Alternatively, you can simply use Python type annotations to denote the type signature of th
+parameters and return value.
+
+```py
+def difference(a : int, b : int) -> int:
+    return abs(a - b)
+
+conn.create_function("difference", difference)
+```
+
+### Apply the UDF
+
+Once the UDF is registered, you can apply it in a Cypher query. First, let's create some data.
+
+```py
+# create a table
+conn.execute("CREATE NODE TABLE IF NOT EXISTS Item (id INT64, a INT64, b INT64, c INT64, PRIMARY KEY(id))")
+
+# insert some data
+conn.execute("CREATE (i:Item {id: 1}) SET i.a = 134, i.b = 123")
+conn.execute("CREATE (i:Item {id: 2}) SET i.a = 44, i.b = 29")
+conn.execute("CREATE (i:Item {id: 3}) SET i.a = 32, i.b = 68")
+```
+
+We're now ready to apply the UDF in a Cypher query:
+```py
+# run the UDF
+conn.execute("MATCH (i:Item) SET i.c = difference(i.a, i.b)")
+
+# print the results
+result = conn.execute("MATCH (i:Item) RETURN i.id, i.a, i.b, i.c")
+print(result.get_as_df())
+```
+The output should be:
+```
+   i.id  i.a  i.b  i.c
+0     1  134  123   11
+1     2   44   29   15
+2     3   32   68  -36
+```
+
+# Additional parameters
+
+The UDF API's `create_function` provides the following additional parameters:
+
+- `name: str` : The name of the function to be invoked in cypher.
+- `udf: Callable[[...], Any]` : The function to be executed.
+- `params_type: Optional[list[Type | str]]` : A list whose elements can either be `kuzu.Type` or `str`. `kuzu.Type`
+can be used to denote nonnested parameter types, while `str` can be used to denote both nested and nonnested parameter types.
+Details on how to denote types are in the [type notation](#type-notation) section.
+- `return_type: Optional[Type | str]` : Either a `kuzu.Type` enum or `str`. Details on how to denote types are in the [type notation](#type-notation) section.
+- `default_null_handling: Optional[bool]` : True by default. When true, if any one of the inputs is null, function execution is skipped and the output is resolved to null.
+- `catch_exceptions: Optional[bool]` : False by default. When true, if the UDF raises an exception, the output is resolved to null. Otherwise the Exception is rethrown.
+
+### Remove UDF
+
+In case you want to remove the UDF, you can call the `remove_function` method on the connection object.
+
+```py
+# Use existing connection object
+conn.remove_function(difference)
+```
+
+---
+
+## Type notation
+
+### Nested types
+
+When defining a UDF, you can also specify nested types, though in this case, there are some differences
+to the example shown above.
+
+If the parameter is a nested type, you must also provide the children's type information. As such, with nested types,
+it's not valid to use `kuzu.Type`. Instead, a string representation of the type should be given.
+
+- A list of `INT64` would be `"INT64[]"`
+- A map from a `STRING` to a `DOUBLE` would be `"MAP(STRING, DOUBLE)"`.
+
+Note that it's also valid to define child types through Python's type annotations, e.g. `list[int]`,
+or `dict(str, float)`). It is also valid to use string representations to denote non-nested types.
+
+### Python-to-Kùzu type mapping
+
+Below is a table from Python types to a Kùzu `LogicalTypeID`, which will be used to infer types via
+the Python type annotations.
+
+|Python type|Kùzu `LogicalTypeID`|
+|---|---|
+|`bool`|`BOOL`|
+|`int`|`INT64`|
+|`float`|`DOUBLE`|
+|`str`|`STRING`|
+|`datetime`|`TIMESTAMP`|
+|`date`|`DATE`|
+|`timedelta`|`INTERVAL`|
+|`uuid`|`UUID`|
+|`list`|`LIST`|
+|`dict`|`DICT`|

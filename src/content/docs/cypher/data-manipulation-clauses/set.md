@@ -3,6 +3,8 @@ title: Set
 description: Update properties of node or relationship records to new values.
 ---
 
+![](/img/running-example.png)
+
 # Database
 
 # SET 

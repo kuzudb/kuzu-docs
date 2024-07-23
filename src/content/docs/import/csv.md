@@ -16,6 +16,7 @@ end of the the `COPY FROM` clause. The following table shows the configuration p
 | `QUOTE` | Character to start a string quote. | `"` |
 | `ESCAPE` | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
 | `LIST_BEGIN`/`LIST_END` | For the [list data type](https://docs.kuzudb.com/cypher/data-types/list), the delimiters to specify <br/> list begin and list end characters | `[`, `]`|
+| `SKIP` | Number of rows to skip from the input file | `0` |
 | `PARALLEL` | Read csv files in parallel or not | true |
 
 The example below specifies that the CSV delimiter is`|` and also that the header row exists.
@@ -83,6 +84,12 @@ COPY Follows FROM "follows.csv";
 ```
 
 Note that the header wasn't present in the CSV file, hence the `header` parameter is not set.
+
+To skip the first 3 lines of the CSV file, you can use the `SKIP` parameter as follows:
+
+```cypher
+COPY Follows FROM "follows.csv" (SKIP=3);
+```
 
 ## Import multiple files to a single table
 
