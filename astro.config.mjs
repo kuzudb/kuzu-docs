@@ -178,6 +178,7 @@ export default defineConfig({
                         { label: 'Overview', link: '/extensions'},
                         { label: 'HTTP File System (httpfs)', link: '/extensions/httpfs'},
                         { label: 'RDBMS extensions', link: '/extensions/rdbms'},
+                        { label: 'JSON', link: '/extensions/json'},
                     ],
                     autogenerate: { directory: 'reference' },
                 },
