@@ -2,14 +2,14 @@
 title: JSON
 ---
 
-The `json` extension adds support for the `JSON` datatype, including  a set of functions for JSON
+The `json` extension adds support for the `JSON` datatype, including a set of functions for JSON
 access and manipulation, scanning from, and copying to JSON files.
 
 # Data Type
 
 A column can be declared to be JSON data in the exact same way that any other datatype is specified.
 ```sql
-CREATE NODE TABLE tab(JSON col0, JSON col1, JSON col2, PRIMARY KEY col0);
+CREATE NODE TABLE tab(col0 INT64, col1 JSON, col2 JSON, PRIMARY KEY col0);
 ```
 
 Values can be inserted via the `CREATE` statement and passing the JSON document as follows:
