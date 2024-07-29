@@ -1,108 +1,153 @@
 ---
-title: "Concurrency"
+title: "Connecting & Concurrency"
 ---
 
-This section is for developers who want to better understand the concurrency model in Kùzu.
+This section covers the basics of how applications connect to a Kùzu database and then how to do so concurrently.
+Kùzu is a disk-based system and each database is stored under a database directory[^1]. 
+Throughout this documentation, let us suppose you have a Kùzu database in your local directory `./kuzu-db-dir`.
 
-Kùzu implements MVCC ([Multiversion Concurrency Control](https://en.wikipedia.org/wiki/Multiversion_concurrency_control)),
-allowing concurrent read/write access to the database. You can use one of the below configurations
-to concurrently read/write data in Kùzu:
+[^1]: Developing an in-memory version of Kùzu is in our immediate roadmap.
 
-1. **One** `READ_WRITE` process: One process can concurrently _read_ and _write_ to the database.
-2. **Multiple** `READ_ONLY` process: Multiple processes can concurrently _read_ from the database.
-3. **Multiple** `READ_WRITE` processes via API: See the [below section](#option-3-multiple-read_write-processes-via-api).
+### Connecting to Kùzu: Database & Connection objects
+Application processes connect to a Kùzu database in 2 steps before they can start querying it:
 
-To understand this in more detail, it's first important to understand what constitutes a process, and
-subsequently, a connection, in Kùzu.
+**Step 1.** Creating an instance of a `Database` object `db` and passing it the database directory (`./kuzu-db-dir` in our case), and 
+a read-write mode which can be either:
+   - `READ_WRITE` (default); or 
+   - `READ_ONLY`
 
-## Processes and connections
+**Step 2.** Creating a `Connection` object `conn` from the Database object `db`. A Connection object that was created using a 
+`READ_WRITE` Database object can execute queries that do both read (e.g., queries with `MATCH WHERE RETURN` statements) as well as  write operations
+(e.g., queries with `CREATE` or `COPY FROM` statements). In contrast, a Connection object that was created using a 
+`READ_ONLY` Database can only execute queries that do read operations.
 
-Each time you open a `Database` directory in your client language for your application, you are creating
-a new process. This process can then open one or more concurrent connections to the database.
-A `Database` process can be opened in either `READ_WRITE` mode or `READ_ONLY` mode. Within a
-given process, you are free to open multiple connections to the database.
+Then, using `conn`, one can execute Cypher queries against the database stored under `./kuzu-db-dir`.
+Here's a simple example application in Python that demonstrates these 2 steps for creating a `READ_WRITE` Database and a Connection.
+The APIs are similar in other languages:
 
-## Usage
+```python
+import kuzu
+# _
+# Open the database in READ_WRITE mode. The below code is equivalent to:
+# db = kuzu.Database("./kuzu-db-dir", read_only=False)  
+db = kuzu.Database("./kuzu-db-dir") 
+conn = kuzu.Connection(db)
+conn.execute("CREATE (a:Person {name: 'Alice'});")
+```
 
-The following subsections outline some scenarios that illustrate these different configurations.
+### Concurrency limitations when creating multiple Database objects
+Kùzu is an embedded database, i.e., it is a library you embed inside an application process and runs as part
+of this application process instead of a separate process.
+You should think of the Database object as the Kùzu database software.
+Specifically, the Database object contains
+different components of the Kùzu database software, such as its buffer manager, storage manager, transaction manager etc. 
+Several of the components inside a Database object, such as the buffer manager,
+caches parts of the data that is stored on disk. This limits the number of Database objects that can be created
+pointing to the same database directory, either in the same process or across multiple processes. 
+The possible settings are:
+1. One `READ_WRITE` Database object; or
+2. Multiple `READ_ONLY` Database objects.
 
-### Option 1. Single `READ_WRITE` process
+The core of the limitation is this: you cannot have a READ_WRITE Database object `db1` and a separate 
+READ_ONLY or READ_WRITE Database object `db2`, and concurrently query the same database through connections from 
+both `db1` and `db2`. This is not safe. The reason is that if a connection `conn1` from `db1` makes a
+write operation, say deletes some node record, then the`db1` object is able to ensure
+that any cached data in `db1` is refreshed and is accurate. However, it cannot notify other Database objects that may exist
+about the change. So in our example, `db2`'s cache would no longer represent the true state of the 
+data on disk that was cached. This can lead to problems if 
+connections from `db2` try to run queries after db1's modification. Therefore, Kùzu will
+not allow multiple Database objects to be created unless they are all READ_ONLY.
 
-In this scenario, you have a single application process that embeds Kùzu and opens the directory in
-`READ_WRITE` mode. Within this process, you can open multiple concurrent connections, each of which
-can execute queries that can read and write to the database (including manual transactions). See the
-[transactions](/cypher/transaction) section for more details on how concurrent write operations
-are handled.
+The limitation of having either one READ_WRITE Database object or multiple READ_ONLY Database objects applies
+even if these Database objects are created in the same application process. That said, there is often no good reason for
+creating multiple Database instances within the same process (you should instead share the same Database object
+in that process). However, there are common scenarios when you may want to launch
+multiple application processes that connect to the same database directory. For example, you might be developing your own 
+program, say a Jupyter notebook, that connects to `./kuzu-db-dir` and you might want to run the Kùzu CLI on the side
+to also connect to `./kuzu-db-dir`. When you launch Kùzu CLI and point it to
+`./kuzu-db-dir`, Kùzu CLI embeds Kùzu and tries to creates a READ_WRITE Database object. So if your notebook process already
+has created a Database object, this will fail with an error that looks like as follows:
+```angular2html
+IO exception: Could not set lock on file : ./kuzu-db-dir/.lock
+```
+You would have to shut down your notebook process, so that its Database object is destroyed, before the CLI can run.
+
+
+
+### Concurrency when creating multiple Connections from the same Database object
+
+Note that the above limitation about creating multiple Database objects does not mean that you cannot create 
+multiple Connections from the same READ_WRITE Database object and issue concurrent queries. For example,
+you can write a program that creates a single READ_WRITE Database object `db` that points to `./kuzu-db-dir`. 
+Then, you can spawn multiple threads
+T<sub>1</sub>, ..., T<sub>k</sub>, and each T<sub>i</sub> obtains a connection from `db` and concurrently issue
+read or write queries. This is safe. Every read and write statement in Kùzu is wrapped around a transaction
+(either automatically or manually by you). Concurrent transactions that operate on the same database
+`./kuzu-db-dir` are safely executed by Kùzu's transaction manager (i.e., the transaction manager inside `db`),
+again as long as those transactions are issued by connections that were created from the same Database object. 
+See the documentation on [transactions](xxx) for the transactional guarantees that Kùzu provides.
+
+### Pictorial summary of example scenarios
+
+In short, here are the common scenarios you are likely to run Kùzu under:
+
+**Scenario 1 - One process that creates a READ_WRITE Database object:**
+In this scenario, you have a single application process that embeds Kùzu and creates READ_WRITE Database object
+that open the `./kuzu-db-dir` database. Within this process, you can create multiple concurrent connections, each of which
+can execute queries that can read and write to the database, which will be handled safely
+by Kùzu's transaction manager. Pictorially this scenario looks as follows:
 
 <img src="/img/concurrency/kuzu-concurrency-1.svg" width="400"/>
 
-In the example above, the database process is opened in `READ_WRITE` mode, and two connections are opened.
-Two concurrent write operations that use the `CREATE` statement are run within this process.
+For simplicity, in the above image queries
+from `conn1` and `conn2` are executed sequentially but they could be running concurrently as well.
 
-### Option 2. Multiple `READ_ONLY` processes
-
-In cases where you have read-heavy workloads, you can have multiple applications process that embed
-Kùzu and open the same database directory in `READ_ONLY` mode. Each process can have multiple connections
-as well. However, each connection can only execute read-only queries (because the database is opened in
-`READ_ONLY` mode).
+**Scenario 2 - Multiple processes that create READ_ONLY Database objects:**
+In this scenario, you have multiple applications process that embed
+Kùzu and create READ_ONLY Database objects that open the same database directory `./kuzu-db-dir`. 
+Each process can create multiple concurrent connections and issue queries.
+However, each connection can only execute read-only queries (because the database is opened in `READ_ONLY` mode).
+Since the connections and queries are read-only none of the queries can change the actual database files on disk.
+Therefore, even though the queries are coming
+from connections from different Database objects, this is safe and allowed.
 
 <img src="/img/concurrency/kuzu-concurrency-2.svg" />
 
-In the example above, two independent processes are opened in `READ_ONLY` mode, and each process has its
-own connection to the same database. Two separate read queries that use the `MATCH` clause are run
-concurrently.
+### Performing read-write operations from multiple processes
+In certain production settings, you may need to have multiple processes that read and write to the same Kùzu database,
+say again stored under `./kuzu-db-dir`.
+This is the case for example if you have an online application. Say you have a browser application and multiple users 
+use your application from different browsers and each user interaction leads to concurrent read-write queries
+on the same database. To support such scenarios, a common design pattern is this: 
+1. **One API server process** that embeds Kùzu
+   and creates a single READ_WRITE Database object pointing to `./kuzu-db-dir`.
+   The API server is responsible for handling incoming requests from clients, say through HTTP or gRPC. The
+   requests' Cypher queries, which can read and write data to the database, are executed
+   possibly concurrently. 
+2. **Multiple client processes** that connect to the API server and send requests to the API server (again through some protocol, such
+as HTTP or gRPS). You are free to open any number of client processes that issue read or write queries to the API server.
 
-### Option 3. Multiple `READ_WRITE` processes via API
-
-In certain production settings, you may need to have multiple processes reading from the database
-and one process writing to it, all open at the same time. In this case, we highlight a design pattern that enables this without
-risking data corruption. This scenario involves building an API server that embeds Kùzu in `READ_WRITE`
-mode, and then building your application layer on top of this API server.
+Note that in terms of processes that embed Kùzu, this design pattern follows Scenario 1 above as there is actually
+one process that creates a READ_WRITE Database object. To enable users to get up and running with such an architecture, 
+we provide a REST-style [Kùzu API server](https://github.com/kuzudb/api-server) powered by Express.js. 
+Pictorially, this design pattern looks as follows:
 
 <img src="/img/concurrency/kuzu-concurrency-3.svg" />
-
-The example above shows the following components:
-1. **One** API server process that embeds Kùzu and has access to the database directory in `READ_WRITE` mode.
-The API server is responsible to handle incoming requests from clients, say through HTTP or gRPC. The
-requests' Cypher queries, which can read and write data to the database, are parsed and executed
-concurrently, making this similar to scenario 1.
-1. **Multiple** client processes that connect to the API server. You are free to open any number of client
-processes that issue read or write queries to the API server.
-
-To enable users to get up and running with such an architecture, we provide [Kùzu API server](https://github.com/kuzudb/api-server),
-a REST-style API server powered by Express.js.
 
 :::caution[Note]
 There are performance implications of executing queries via a REST API server, because the HTTP
 protocol involves passing query results as JSON over the network. In general, it is faster to execute
-queries directly on the database by embedding Kùzu in your application, per scenarios 1 or 2.
-
-For high-performance applications that require the architecture shown in scenario 3, we could
-explore other protocols like Bolt or gRPC to communicate between the client and the API server. Reach out
-to us on [GitHub](https://github.com/kuzudb/kuzu/issues/new/choose) if you have such an issue.
+queries directly on the database by embedding Kùzu in your application.
 :::
 
-## Commonly asked questions
+### Known Issue: Kùzu Explorer not recognizing the .lock file permissions
 
-In this section, we address some common questions that developers have when working with Kùzu.
-
-##### Q1: Can I embed Kùzu using both `READ_ONLY` and `READ_WRITE` processes in my application?
-
-A: No, when embedding Kùzu in your application, you cannot have both `READ_WRITE` and `READ_ONLY` database processes
-open at any given time. The reason for this restriction is that `READ_WRITE` process can make changes
-to the disk layout, which may or may not be reflected in the buffer manager of other processes, and this
-can lead to data corruption. To avoid this issue, the best practice when embedding Kùzu in your
-application is to use design patterns from one of the three scenarios listed above.
-
-##### Q2: I'm facing issues having a Jupyter notebook and Kùzu Explorer open at the same time. How can I resolve this?
-
-A: You can have the Jupyter notebook open that embeds a Kùzu database in `READ_WRITE` mode, and a `READ_ONLY`
-Kùzu Explorer process open in your browser at the same time. To reflect the most recent writes made
-via the Jupyter notebook, we recommend that you restart the Kùzu Explorer container via the `docker restart <my_container>`.
-command. This will ensure that the Kùzu Explorer process is in sync with the latest changes made by the Jupyter notebook.
-
-If you see an error like "Could not set lock on file : ./db/.lock", it is because the `READ_ONLY` process
-could not acquire a lock on the database directory (which is held by the `READ_WRITE` process, to protect you
-from data corrpution). To resolve this, simply click the `Restart server` button in your Jupyter notebook.
-Restarting the Jupyter notebook server will release the lock file in the database directory, allowing
-you to open other `READ_ONLY` processes that connect to same database.
+Kùzu ensures that multiple Database objects, where one of them is a READ_WRITE instance, are not 
+created by setting some permission flags in a `.lock` file under the database directory. This is a lightweight
+locking mechanism. However, there is a known issue that Kùzu Explorer is not
+able to see the flags put by other processes. The core problem is that Explorer runs as a Docker container
+and the flags are not propagated between the host operating system and the Docker environment. We do not currently
+have a fix to this (do contact us if you know of an easy solution). So if you have a process (or processes) that has 
+opened a Database directory and you concurrently start Kùzu Explorer, you should manually ensure that
+either: (i) both Explorer and your other process  are in READ_ONLY mode; or (ii) you shut down your other
+process first before opening Explorer in READ_WRITE mode.
