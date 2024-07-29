@@ -74,6 +74,48 @@ shows all built-in data types.
 | --- | --- | ---
 | 8 bytes | double precision floating-point number | FLOAT8
 
+## DECIMAL
+
+| Size | Description
+| --- | ---
+| variable | arbitrary fixed precision decimal number
+
+For numbers where exact precision is required, the `DECIMAL` data type can be used. The `DECIMAL` type is
+specified as `DECIMAL(precision, scale)`, where `precision` is the total number of digits and
+`scale` is the number of digits to the right of the decimal point.
+
+Internally, decimals are represented as integers depending on their specified width.
+
+| Precision | Internal | Size (bytes)
+| --- | --- | ---
+| 1-4 | INT16 | 2
+| 5-9 | INT32 | 4
+| 10-18 | INT64 | 8
+| 19-38 | INT128 | 16
+
+You can explicitly cast a number (either integer or float) to a `DECIMAL` as follows:
+
+```cypher
+RETURN CAST(127.3, "DECIMAL(5, 2)") AS result;
+```
+Output:
+```
+----------
+| result |
+----------
+| 127.30 |
+----------
+```
+
+Note that if you attempt to cast with a precision or scale that is too small, an overflow exception
+will be raised:
+```cypher
+RETURN CAST(127.3, "DECIMAL(4, 2)");
+```
+```
+Error: Overflow exception: To Decimal Cast Failed: 127.300000 is not in DECIMAL(4, 2) range
+```
+
 ## BOOLEAN
 
 | Size | Description
@@ -269,8 +311,9 @@ Output:
 
 ## SERIAL
 
-`SERIAL` is a logical data type and usually used for creating an incremental sequence of unique
-identifier column (similar to `AUTO_INCREMENT` supported by some other databases).
+`SERIAL` is a logical data type used for creating an auto-incrementing sequence, typically
+used as a unique column identifier.  identifier (similar to `AUTO_INCREMENT` feature supported
+by some other databases).
 
 Here's how to use `SERIAL` on a primary key column for a CSV file that has the following
 values:
@@ -282,8 +325,8 @@ Carol
 ```
 
 ```cypher
-CREATE NODE TABLE Person(ID SERIAL, name STRING, PRIMARY KEY(ID));
-COPY Person FROM `person.csv`;
+CREATE NODE TABLE Person(id SERIAL, name STRING, PRIMARY KEY(id));
+COPY Person FROM 'person.csv';
 MATCH (a:Person) RETURN a;
 ```
 Output:
@@ -291,11 +334,11 @@ Output:
 -------------------------------------------
 | a                                       |
 -------------------------------------------
-| (label:Person, 3:0, {ID:0, name:Alice}) |
+| (label:Person, 3:0, {id:0, name:Alice}) |
 -------------------------------------------
-| (label:Person, 3:1, {ID:1, name:Bob})   |
+| (label:Person, 3:1, {id:1, name:Bob})   |
 -------------------------------------------
-| (label:Person, 3:2, {ID:2, name:Carol}) |
+| (label:Person, 3:2, {id:2, name:Carol}) |
 -------------------------------------------
 ```
 
@@ -488,3 +531,27 @@ Output:
 ```
 [(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]
 ```
+
+## User-defined types
+
+
+Kùzu allows you to define a customized datatype in the system, by leveraging an existing built-in
+type. The process of creating types involves using the `CREATE TYPE` keyword followed by
+the type name. The `AS` keyword comes next, followed by an existing type in the system. This type
+is useful when you want to create a new type that is more relevant to your business
+logic, or when you want to create an alias for an existing type.
+
+The grammar for creating a user-defined type is as follows:
+
+```cypher
+CREATE TYPE <type_name> AS <existing_type>
+```
+
+Read more about user-defined types by clicking on the card below.
+
+<LinkCard
+  title="User-defined types"
+  href="/cypher/data-types/user-defined-types"
+  description="How to define and use a user-defined type"
+/>
+

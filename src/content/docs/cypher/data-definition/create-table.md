@@ -1,9 +1,9 @@
 ---
-title: Create (statement)
-description: Create tables
+title: Create table
+description: Create tables statement
 ---
 
-## Create node table
+## CREATE NODE TABLE statement
 The following statement defines a table of `User` nodes.
 
 ```cypher
@@ -14,9 +14,10 @@ This adds a `User` table to the catalog of the system with three predefined prop
 
 Kùzu requires a primary key column for node table which can be either a `STRING` or `INT64` property of the node. Kùzu will generate an index to do quick lookups on the primary key (e.g., `name` in the above example). Alternatively, you can use the [`SERIAL`](https://docs.kuzudb.com/cypher/data-types/#serial) data type to generate an auto-increment column as primary key.
 
-## Create relationship table
+## CREATE REL TABLE statement
 
-The following statement adds to the catalog a Follows relationship table between User and User with one date property.
+Once you create node tables, you can define relationships between them using the `CREATE REL TABLE` statement.
+The following statement adds to the catalog a `Follows` relationship table between `User` and `User` with one `date` property on the relationship.
 
 ```cypher
 CREATE REL TABLE Follows(FROM User TO User, since DATE)
