@@ -313,7 +313,7 @@ Output:
 
 `SERIAL` is a logical data type used for creating an auto-incrementing sequence, typically
 used as a unique column identifier.  identifier (similar to `AUTO_INCREMENT` feature supported
-by some other databases).
+by some other databases). `SERIAL` uses `SEQUENCE` under the hood.
 
 Here's how to use `SERIAL` on a primary key column for a CSV file that has the following
 values:
@@ -340,6 +340,16 @@ Output:
 -------------------------------------------
 | (label:Person, 3:2, {id:2, name:Carol}) |
 -------------------------------------------
+```
+
+The following are synonymous:
+```cypher
+CREATE NODE TABLE Person(id SERIAL, PRIMARY KEY(id));
+```
+and
+```cypher
+CREATE SEQUENCE Person_id_serial;
+CREATE NODE TABLE table_name(id INT_64 default nextval('Person_id_serial'), PRIMARY KEY(id));
 ```
 
 ## NODE
