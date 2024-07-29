@@ -114,6 +114,7 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/client-apis/' },
+                        { label: 'Concurrency', link: '/client-apis/concurrency', badge: { text: 'Guide', variant: 'note'} },
                         { label: 'CLI', link: '/client-apis/cli' },
                         { label: 'Python', link: '/client-apis/python' },
                         { label: 'Node.js', link: '/client-apis/nodejs' },
@@ -121,7 +122,7 @@ export default defineConfig({
                         { label: 'Rust', link: '/client-apis/rust' },
                         { label: 'C++', link: '/client-apis/cpp' },
                         { label: 'C', link: '/client-apis/c' },
-                        { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}},
+                        { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}}, 
                     ],
                 },
                 {
