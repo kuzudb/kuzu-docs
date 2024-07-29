@@ -3,8 +3,6 @@ title: Delete
 description: Delete node records from your tables.
 ---
 
-![](/img/running-example.png)
-
 # DELETE
 `DELETE` clause deletes node or relationship records from the table.
 

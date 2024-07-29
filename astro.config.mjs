@@ -1,9 +1,11 @@
-import { defineConfig } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
-import starlight from '@astrojs/starlight';
-import starlightLinksValidator from 'starlight-links-validator';
+import { defineConfig } from "astro/config";
+import sitemap from "@astrojs/sitemap";
+import starlight from "@astrojs/starlight";
+import { rehypeHeadingIds } from '@astrojs/markdown-remark';
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import starlightLinksValidator from "starlight-links-validator";
 
-const site = 'https://docs.kuzudb.com';
+const site = "https://docs.kuzudb.com";
 
 // https://astro.build/config
 export default defineConfig({
