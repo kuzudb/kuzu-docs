@@ -37,7 +37,7 @@ Output:
 
 ### Using `SERIAL` vs `SEQUENCE`
 
-The following are synonymous:
+The following blocks perform the same function:
 ```cypher
 CREATE NODE TABLE Person(id SERIAL, PRIMARY KEY(id));
 ```

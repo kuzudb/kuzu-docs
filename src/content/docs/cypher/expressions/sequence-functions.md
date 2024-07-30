@@ -3,7 +3,7 @@ title: Sequence functions
 description: Sequence functions are used to manipulate sequences.
 ---
 
-The following are functions that can be applied to sequences created with `CREATE SEQUENCE`. The examples are calls made on a sequence created by:
+Below, we list functions that can be applied to sequences created with `CREATE SEQUENCE`. The examples are calls made on a sequence created as follows:
 
 ```cypher
 CREATE SEQUENCE id_sequence START 0 MINVALUE 0;
