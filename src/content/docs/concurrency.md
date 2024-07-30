@@ -2,15 +2,18 @@
 title: "Connections & Concurrency"
 ---
 
-This section covers the basics of how applications connect to a Kùzu database and some best practices
-on how to do so concurrently.
-Kùzu is a disk-based system and each database is stored in a database directory*.
-
-:::note[Note]
-*An in-memory version of Kùzu is in our immediate roadmap.
+:::caution[Note]
+This section is for users who are interested in gaining a deeper understanding of Kùzu's concurrency model
+and some of its limitations. If you are just getting started with Kùzu, you can skip to the [FAQ](#faqs)
+section below to get answers to common questions.
 :::
 
-Throughout this documentation, let's suppose you have a Kùzu database in your local directory `./kuzu-db-dir`.
+In this section, we will go over the basics of how applications connect to a Kùzu database and list some
+best practices on how to do so concurrently.
+
+Kùzu is a disk-based system and each database is stored in a database directory (an in-memory version
+of Kùzu is on our immediate roadmap). Throughout this documentation, let's suppose you have a Kùzu
+database in your local directory `./kuzu-db-dir`.
 
 ## Understand connections
 
@@ -46,7 +49,7 @@ conn.execute("CREATE (a:Person {name: 'Alice'});")
 
 ## Understand concurrency
 
-### Create multiple Database objects
+### Limitations of creating multiple Database objects
 Kùzu is an embedded database, i.e., it is a library you embed inside an application process and runs as part
 of this application process, instead of a separate process.
 You can think of the Database object as the Kùzu database software.
@@ -174,3 +177,35 @@ have a fix to this (do [contact us](mailto:contact@kuzudb.com) if you know of an
 opened a Database directory and yonpmu concurrently start Kùzu Explorer, you should manually ensure that
 either: (i) both Explorer and your other process  are in `READ_ONLY` mode; or (ii) you shut down your other
 process first before opening Explorer in `READ_WRITE` mode.
+
+## FAQs
+
+In this section, we address some commonly asked questions related to concurrency and connections in Kùzu.
+
+##### Can I embed Kùzu using both `READ_ONLY` and `READ_WRITE` processes in my application?
+
+No, when embedding Kùzu in your application, you cannot have both `READ_WRITE` and `READ_ONLY` database processes
+open at any given time (in a safe manner). Technical details for this limitation are described the the sections above.
+
+In short, the reason for this limitation is that at any given time, `READ_WRITE` process can make changes
+to the disk layout, which may or may not be reflected in the buffer manager of other open `READ_ONLY` connections, and this
+can lead to inconsistencies or data corruption. To avoid this issue, the best practice when embedding Kùzu in your
+application is to use design patterns as per one of the scenarios shown pictorially, in the sections above.
+
+##### I'm seeing an error related to lock files when running Kùzu in a Jupyter notebook. How can I resolve this?
+
+Sometimes, when you are working in a Jupyter notebook and building your Kùzu graph while also trying to
+open other processes that connect to the same database directory, you may come across this error:
+
+```
+IO exception: Could not set lock on file : ./db_directory/.lock
+```
+
+The `.lock` file, as described in earlier sections in this page, is present to protect you from inadvertent
+data corruption due to multiple Database instances trying to access the same database directory concurrently.
+To resolve this, simply click the `Restart server` button in your Jupyter notebook (or close the Jupyter
+notebook entirely). Restarting the Jupyter notebook server (or closing it) will release the `.lock` file
+present in the database directory, allowing you to safely connect to the database via another connection,
+for example, a CLI or Kùzu Explorer for graph visualization. In general, it's recommended to only
+open the CLI or Kùzu Explorer *after* you have finished any operations to the database (and closing or
+restarting the Jupyter notebook server).

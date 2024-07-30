@@ -52,7 +52,11 @@ export default defineConfig({
                 },
                 {
                     label: 'Install Kùzu',
-                    link: '/installation',
+                    collapsed: true,
+                    items: [
+                        { label: 'Install Kùzu', link: '/installation', },
+                        { label: 'System requirements', link: '/system-requirements'},
+                    ]
                 },
                 {
                     label: 'Get started',
@@ -114,7 +118,6 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/client-apis/' },
-                        { label: 'Concurrency', link: '/client-apis/concurrency', badge: { text: 'Guide', variant: 'note'} },
                         { label: 'CLI', link: '/client-apis/cli' },
                         { label: 'Python', link: '/client-apis/python' },
                         { label: 'Node.js', link: '/client-apis/nodejs' },
@@ -125,6 +128,7 @@ export default defineConfig({
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}}, 
                     ],
                 },
+                { label: 'Understanding concurrency', link: '/concurrency' },
                 {
                     label: 'Tutorials',
                     collapsed: true,
@@ -170,10 +174,6 @@ export default defineConfig({
                             ]
                         }
                     ]
-                },
-                {
-                    label: 'System requirements',
-                    link: '/system-requirements',
                 },
                 {
                     label: 'Extensions',

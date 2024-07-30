@@ -128,6 +128,16 @@ Error: Overflow exception: To Decimal Cast Failed: 127.300000 is not in DECIMAL(
 | --- | ---
 | fixed | a dictionary or map where keys are of type STRING
 
+## MAP
+
+A `MAP` is a dictionary of key-value pairs where all keys have the same type and all values have the
+same type. Different from `STRUCT`, `MAP` doesn't require the same key to be present in each row.
+Therefore, `MAP` is more suitable when the schema is not pre-determined.
+
+| Data Type | DDL definition
+| --- | --- | 
+| MAP | MAP(STRING, INT64) |
+
 ## UUID
 
 | Size | Description
