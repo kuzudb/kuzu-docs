@@ -7,15 +7,15 @@ statement, described in this section. Different from the `CALL` clause, this sta
 configuration **cannot** be used with other query clauses.
 
 | Option | Description | Default |
-| ----------- | --------------- |
+| ----------- | --------------- | ------ |
 | `THREADS` | number of threads used by execution | system maximum threads |
 | `TIMEOUT` | timeout of query execution in ms | N/A |
 | `VAR_LENGTH_EXTEND_MAX_DEPTH` | maximum depth of recursive extend | 30 |
 | `ENABLE_SEMI_MASK` | enables the semi mask optimization | true |
-| `HOME_DIRECTORY`| system home directory | |
-| `FILE_SEARCH_PATH`| file search path | N/A | |
-| `PROGRESS_BAR` | enable progress bar in CLI  |
-| `PROGRESS_BAR_TIME` | show progress bar after time in ms  |
+| `HOME_DIRECTORY`| system home directory | user home directory |
+| `FILE_SEARCH_PATH`| file search path | N/A |
+| `PROGRESS_BAR` | enable progress bar in CLI  | false | 
+| `PROGRESS_BAR_TIME` | show progress bar after time in ms  | 1000 |
 
 #### Configure execution threads
 ```cypher
