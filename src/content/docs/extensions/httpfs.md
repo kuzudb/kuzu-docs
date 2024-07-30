@@ -153,3 +153,5 @@ Result:
 | Dan   | 25  |
 ---------------
 ```
+
+## TODO: Document skip_unsupported_table?

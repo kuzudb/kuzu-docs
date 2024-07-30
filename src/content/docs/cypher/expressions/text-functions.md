@@ -23,6 +23,7 @@ Scroll the table to the right to see example usage.
 | `array_extract(list, index)` | extracts a single character from string using 1-based index | `array_extract("year", 2)` | `"e"` |
 | `array_slice(list, begin, end)` | slices a string using 1-based index | `array_slice("year", 1, 4)` | `"year"` |
 | `concat(string1, string2, string3, ...)` | concatenates multiple strings | `concat("university", " of", " waterloo")` | `"university of waterloo"` |
+| `contains(string1, string2)`| return true if `string2` is a substring of `string1` | `contains("aa", "a")`| true |
 | `ends_with(string1, string2)` | alias of suffix | `ends_with("best student", "student")` | `true` |
 | `lower(string)` | returns the string in lower case | lower("WaterLoo") | "waterloo" |
 | `lcase(string)` | alias of `lower` | `lcase("UPPER CASE")` | `"upper case"` |
