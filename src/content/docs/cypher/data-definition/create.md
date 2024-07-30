@@ -209,7 +209,43 @@ MATCH (a:Student) RETURN a.id, a.name;
 └───────┴─────────┘
 ```
 
-## Selecting the next value of a sequence
+### Using sequences for properties in relationship tables
+
+You can also use sequences to generate unique values for properties in relationship tables. For example,
+consider you want to create a `Transaction` relationship table with a unique `id` property for each transaction.
+
+First, define the sequence as shown below:
+
+```sql
+CREATE SEQUENCE tx_sequence;
+```
+
+Then, create the `Transaction` relationship table with the `id` property set to the sequence as shown below:
+
+```sql
+CREATE REL TABLE Transaction(FROM User TO User, id INT64 DEFAULT nextval('tx_sequence'), amount INT64);
+```
+
+Then, add the transaction records without specifying an `id` value (these will be set from the sequence).
+
+```sql
+CREATE (a:User)-[r:Transaction]->(b:User) SET r.amount = 100;
+```
+This will create a transaction relationship between two users with the `id` property set from the sequence.
+
+```sql
+MATCH (a:User)-[r:Transaction]->(b:User) RETURN r.id, r.amount;
+```
+```
+┌───────┬─────────┐
+│ r.id  │ r.amount │
+│ INT64 │ INT64    │
+├───────┼─────────┤
+│ 1     │ 100      │
+└───────┴─────────┘
+```
+
+### Selecting the next value of a sequence
 
 To generate the sequence, use the `nextval` command (until this is done, the sequence doesn't exist
 in the database). For the existing `id_sequence`, you can return the next value in the sequence as shown below:
@@ -226,7 +262,7 @@ RETURN nextval('sq') AS nextval;
 └─────────┘
 ```
 
-## Selecting the current value of a sequence
+### Selecting the current value of a sequence
 
 To view the current value of the sequence, use the `currval` command as shown below:
 
