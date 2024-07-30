@@ -348,8 +348,8 @@ CREATE NODE TABLE Person(id SERIAL, PRIMARY KEY(id));
 ```
 and
 ```cypher
-CREATE SEQUENCE Person_id_serial;
-CREATE NODE TABLE table_name(id INT_64 default nextval('Person_id_serial'), PRIMARY KEY(id));
+CREATE SEQUENCE Person_id_serial START 0 MINVALUE 0;
+CREATE NODE TABLE Person(id INT64 default nextval('Person_id_serial'), PRIMARY KEY(id));
 ```
 
 ## NODE

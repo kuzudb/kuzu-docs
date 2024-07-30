@@ -14,6 +14,7 @@ the built-in schema functions:
 | `SHOW_TABLES()` | returns the name, type, comment of all tables in the database |
 | `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database |
 | `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases |
+| `SHOW_SEQUENCES()` | returns the name and properties of all sequences in the database |
 
 ### TABLE_INFO
 
@@ -168,4 +169,34 @@ Output:
 ------------------------------------
 | dbfilewithoutext | DUCKDB        |
 ------------------------------------
+```
+
+### SHOW_SEQUENCES
+
+`SHOW_SEQUENCES` returns the name and properties of all sequences in the database.
+
+| Column        | Description                                                           | Type    |
+| ------------- | --------------------------------------------------------------------- | ------- |
+| name          | name of the sequence                                                  | STRING  |
+| database name | the database the sequence is located in                               | STRING  |
+| start value   | the start value of the sequence                                       | INT64   |
+| increment     | the amount the sequence is incremented by each time                   | INT64   |
+| min value     | the minimum value of the sequence                                     | INT64   |
+| max value     | the maximum value of the sequence                                     | INT64   |
+| cycle         | whether or not the sequence can wrap around when the limit is reached | BOOLEAN |
+
+```cypher
+CALL show_sequences() RETURN *;
+```
+Example output:
+```
+--------------------------------------------------------------------------------------------------------
+| name             | database name | start value | increment | min value | max value           | cycle |
+--------------------------------------------------------------------------------------------------------
+| Person_id_serial | local(kuzu)   | 0           | 1         | 0         | 9223372036854775807 | False |
+--------------------------------------------------------------------------------------------------------
+| Seq2             | local(kuzu)   | 1           | 1         | 1         | 9223372036854775807 | False |
+--------------------------------------------------------------------------------------------------------
+| id_sequence      | local(kuzu)   | 0           | 1         | 0         | 9223372036854775807 | False |
+--------------------------------------------------------------------------------------------------------
 ```
