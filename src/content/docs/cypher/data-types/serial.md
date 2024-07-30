@@ -4,9 +4,8 @@ title: Serial
 
 ## SERIAL
 `SERIAL` is a logical data type used for creating an auto-incrementing sequence, typically
-used as a unique column identifier.  identifier (similar to `AUTO_INCREMENT` feature supported
+used as a unique column identifier (similar to `AUTO_INCREMENT` feature supported
 by some other databases). `SERIAL` uses `SEQUENCE` under the hood.
-
 
 ### Using `SERIAL` as Primary Key Column
 
@@ -41,7 +40,7 @@ The following blocks perform the same function:
 ```cypher
 CREATE NODE TABLE Person(id SERIAL, PRIMARY KEY(id));
 ```
-and
+
 ```cypher
 CREATE SEQUENCE Person_id_serial START 0 MINVALUE 0;
 CREATE NODE TABLE Person(id INT64 default nextval('Person_id_serial'), PRIMARY KEY(id));

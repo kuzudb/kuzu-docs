@@ -364,9 +364,9 @@ Output:
 
 ## SERIAL
 
-`SERIAL` is a logical data type used for creating an auto-incrementing sequence, typically
-used as a unique column identifier.  identifier (similar to `AUTO_INCREMENT` feature supported
-by some other databases). `SERIAL` uses `SEQUENCE` under the hood.
+`SERIAL` is a logical data type used for creating an auto-incrementing sequence of numbers, typically
+used as a unique column identifier, similar to `AUTO_INCREMENT` feature supported
+by some other databases. `SERIAL` uses [`SEQUENCE`](/cypher/data-definition/create#create-sequence) under the hood.
 
 Here's how to use `SERIAL` on a primary key column for a CSV file that has the following
 values:
@@ -395,15 +395,23 @@ Output:
 -------------------------------------------
 ```
 
-The following are synonymous:
+You can use `SERIAL` or `SEQUENCE` (a generalization of `SERIAL`) to generate unique values that
+can serve as primary keys for your node tables.
+
+You can use `SERIAL` to create a sequence as shown below:
 ```cypher
 CREATE NODE TABLE Person(id SERIAL, PRIMARY KEY(id));
 ```
-and
+Alternatively, you can create a `SEQUENCE` using DDL and use it as a default primary key value
+for a column.
+
 ```cypher
 CREATE SEQUENCE Person_id_serial START 0 MINVALUE 0;
 CREATE NODE TABLE Person(id INT64 default nextval('Person_id_serial'), PRIMARY KEY(id));
 ```
+
+See the documentation on [DDL](/cypher/data-definition/create#create-sequence) for a full list
+of options for creating a `SEQUENCE`.
 
 ## NODE
 
