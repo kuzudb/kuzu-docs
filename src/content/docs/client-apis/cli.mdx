@@ -89,3 +89,13 @@ To read and process a file in non-interactive mode, pipe the file content to the
 ---------------------------------------
 | NodeTable: person has been created. |
 ```
+
+## Query progress
+![](./progress_bar.gif)
+You can view the progress of a query by enabling the progress bar. To enable the progress bar, use the following Cypher command:
+
+```cypher
+CALL progress_bar=true;
+```
+
+To further configure the progress bar, see the [configuration](/cypher/configuration) section.
