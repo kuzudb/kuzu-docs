@@ -249,7 +249,7 @@ asyncio.run(main())
 ATTACH [PG_CONNECTION_STRING] AS [alias] (dbtype postgres, skip_unsupported_table = OPTION)
 ```
 
-- `skip_unsupported_table`: Whether kuzu should throw an exception or skip when encountering a table with unsupported datatype. Supported options: TRUE/FALSE.
+- `skip_unsupported_table`: Whether kuzu should throw an exception or skip when encountering a table with unsupported datatype. Supported options: `TRUE` or `FALSE`.
 
 
 The below example shows how the `university` PostgreSQL database can be attached to Kùzu using
@@ -434,7 +434,7 @@ ATTACH [DB_PATH] AS [alias] (dbtype sqlite, skip_unsupported_table = OPTION)
 - `DB_PATH`: Path to the SQLite database instance (can be relative or absolute path)
 - `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used.
   When attaching multiple databases, it's recommended to use aliasing.
-- `skip_unsupported_table`: Whether kuzu should throw an exception or skip when encountering a table with unsupported datatype. Supported options: TRUE/FALSE.
+- `skip_unsupported_table`: Whether kuzu should throw an exception or skip when encountering a table with unsupported datatype. Supported options: `TRUE` or `FALSE`.
 
 
 The below example shows how the `university.db` SQLite database can be attached to Kùzu using
