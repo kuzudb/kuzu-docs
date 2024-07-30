@@ -124,19 +124,61 @@ Error: Overflow exception: To Decimal Cast Failed: 127.300000 is not in DECIMAL(
 
 ## STRUCT
 
-| Size | Description
-| --- | ---
-| fixed | a dictionary or map where keys are of type STRING
+A `STRUCT` is a mapping of key-value pairs where the keys are of the type `STRING`. `STRUCT` is a
+**fixed-size** data type so values with the same `STRUCT` type must contain the same set of key-value pairs.
+You can think of a `STRUCT` column as a nested single column over multiple other columns.
+
+| Data Type | DDL definition |
+| --- | --- |
+| STRUCT | STRUCT(a INT64, b INT64) |
+
+To construct a `STRUCT`, provide a mapping of keys to values as follows:
+
+```cypher
+RETURN {first: 'Adam', last: 'Smith'};
+```
+Output:
+```
+-------------------------------
+| STRUCT_PACK(Adam,Smith)    |
+-------------------------------
+| {FIRST: Adam, LAST: Smith} |
+-------------------------------
+```
+
+Functions that work on `STRUCT`s can be found [here](/cypher/expressions/struct-functions).
 
 ## MAP
 
 A `MAP` is a dictionary of key-value pairs where all keys have the same type and all values have the
-same type. Different from `STRUCT`, `MAP` doesn't require the same key to be present in each row.
-Therefore, `MAP` is more suitable when the schema is not pre-determined.
+same type. `MAP` is similar to `STRUCT` in that it is an ordered list of mappings. However, `MAP` does
+not need to have the same keys present for each row, and is thus more suitable when the schema of an entity
+is unknown beforehand or when the schema varies per row.
 
-| Data Type | DDL definition
-| --- | --- | 
+`MAP`s must have a single type for all keys, and a single type for all values. Additionally, keys of
+a `MAP` do not need to be `STRING`s like they do in a `STRUCT`.
+
+| Data Type | DDL definition |
+| --- | --- |
 | MAP | MAP(STRING, INT64) |
+
+To construct a `MAP`, provide a list of keys and a list of values. The keys and values must be of the same length.
+
+Example:
+
+```cypher
+RETURN map([1, 2], ['a', 'b']) AS m;
+```
+Output:
+```
+--------------
+| m          |
+--------------
+| {1=a, 2=b} |
+--------------
+```
+
+Functions that work on map objects can be found [here](/cypher/expressions/map-functions).
 
 ## UUID
 

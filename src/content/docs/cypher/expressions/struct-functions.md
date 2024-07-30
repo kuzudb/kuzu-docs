@@ -3,9 +3,9 @@ title: Struct Functions
 description: Struct functions are used to create and extract fields from structs.
 ---
 
-Structs are commonly known as dictionaries or key-value pairs. The key is a string and the value
-can be any data type. The following table lists the operators that can be used with structs. The
-following operators work on structs:
+`STRUCT`s are commonly known as dictionaries, mappings or key-value pairs. The key is a `STRING` and the value
+can be any data type. The following table lists the operators that can be used with `STRUCT`s. The
+following operators work on `STRUCT`s:
 
 <div class="scroll-table">
 

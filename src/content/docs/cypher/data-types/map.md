@@ -1,22 +1,31 @@
 ---
 title: Map
-sidebar_position: 15
+description: Map data type in Kuzu
 ---
 
-# MAP
+## MAP
 
-A `MAP` is a dictionary of key-value pairs where all keys have the same type and all values have the same type. Different from `STRUCT`, `MAP` doesn't require the same key to present in each row. Therefore, `MAP` is more suitable when the schema is not determined.
+A `MAP` is a dictionary of key-value pairs where all keys have the same type and all values have the
+same type. `MAP` is similar to `STRUCT` in that it is an ordered list of mappings. However, `MAP` does
+not need to have the same keys present for each row, and is thus more suitable when the schema of an entity
+is unknown beforehand or when the schema varies per row.
 
-Internally, Kùzu process `MAP` as a `STRUCT[LIST]`, more sepcifically, a `STRUCT` with two `LIST` one for keys and the other for values.
+`MAP`s must have a single type for all keys, and a single type for all values. Additionally, keys of
+a `MAP` do not need to be `STRING`s like they do in a `STRUCT`.
 
-| Data Type | DDL definition
-| --- | --- | 
-| MAP | MAP(STRING, INT64) | 
+| Data Type | DDL definition |
+| --- | --- |
+| MAP | MAP(STRING, INT64) |
 
-### `MAP` Creation
+To construct a `MAP`, provide a list of keys and a list of values. The keys and values must be of the same length.
 
-```
+Example:
+
+```cypher
 RETURN map([1, 2], ['a', 'b']) AS m;
+```
+Output:
+```
 --------------
 | m          |
 --------------
@@ -24,16 +33,4 @@ RETURN map([1, 2], ['a', 'b']) AS m;
 --------------
 ```
 
-### `Map` Extraction
-
-```
-RETURN map_extract(map([1, 2], ['a', 'b']),2) AS m;
--------
-| m   |
--------
-| [b] |
--------
-```
-
-
-More map functions can be found at [map-functions](https://docs.kuzudb.com/expressions/map-functions)
+Functions that work on `MAP`s can be found [here](/cypher/expressions/map-functions).
