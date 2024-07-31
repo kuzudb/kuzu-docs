@@ -75,7 +75,7 @@ export default defineConfig({
                         { label: 'Overview', link: '/import' },
                         { label: 'Copy from CSV', link: '/import/csv' },
                         { label: 'Copy from Parquet', link: '/import/parquet' },
-                        { label: 'Copy from NumPy', link: '/import/npy', badge: { text: 'Experimental', variant: 'danger'}},
+                        { label: 'Copy from NumPy', link: '/import/npy' },
                         { label: 'Copy from subquery', link: '/import/copy-from-subquery'},
                         { label: 'Copy from DataFrames', link: '/import/copy-from-dataframe', badge: { text: 'New'}},
                     ]
@@ -128,7 +128,7 @@ export default defineConfig({
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}}, 
                     ],
                 },
-                { label: 'Understanding concurrency', link: '/concurrency' },
+                { label: 'Understand concurrency', link: '/concurrency', badge: { text: 'New'} },
                 {
                     label: 'Tutorials',
                     collapsed: true,
