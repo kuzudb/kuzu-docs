@@ -16,6 +16,7 @@ configuration **cannot** be used with other query clauses.
 | `FILE_SEARCH_PATH`| file search path | N/A |
 | `PROGRESS_BAR` | enable progress bar in CLI  | false | 
 | `PROGRESS_BAR_TIME` | show progress bar after time in ms  | 1000 |
+| `CHECKPOINT_THRESHOLD` | the WAL size threshold at which to automatically trigger a checkpoint | 16777216 |
 
 #### Configure execution threads
 ```cypher
@@ -53,4 +54,9 @@ CALL file_search_path='/kuzu/file';
 #### Configure progress bar
 ```cypher
 CALL progress_bar=true;
+```
+
+#### Configure checkpoint threshold
+```cypher
+CALL checkpoint_threshold=16777216;
 ```
