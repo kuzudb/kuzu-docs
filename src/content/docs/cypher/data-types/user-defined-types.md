@@ -33,7 +33,7 @@ CREATE TYPE BIGINT AS INT64;
 
 You can create an additional user-defined type based on an existing user-defined type as follows:
 ```cypher
-CREATE TYPE LENGTH AS BIGINT;
+CREATE TYPE BIGLENGTH AS BIGINT;
 ```
 
 You can also use the existing user-defined type and cast it to another type:
