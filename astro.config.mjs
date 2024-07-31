@@ -134,7 +134,7 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { 
-                            label: 'Python notebooks',
+                            label: 'Learning resources',
                             link: '/tutorials#python',
                         }
                     ]
