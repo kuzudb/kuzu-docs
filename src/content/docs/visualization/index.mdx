@@ -4,7 +4,7 @@ title: Visualize graphs
 
 import { LinkCard } from '@astrojs/starlight/components';
 
-## Kùzu Explorer
+## What is Kùzu Explorer?
 
 Kùzu Explorer is a browser-based frontend to visualize and explore Kùzu database schemas
 and query results in the form of a graph, table, or JSON. This is a useful tool for exploring
@@ -13,7 +13,7 @@ An example visualization is shown below.
 
 <img src="/img/visualization/query-result-graph-view.png" />
 
-## Launching Explorer
+## Launching Kùzu Explorer
 
 Kùzu Explorer is a web application that is launched from a deployed Docker image.
 Please refer to the [Docker documentation](https://docs.docker.com/get-docker/) for details on how to install and use Docker.
@@ -131,3 +131,31 @@ You can refer to the corresponding cards below for more details.
   title="Settings panel"
   href="/visualization/settings-panel"
 />
+
+## Development build of Kùzu Explorer
+
+If you are working with the nightly build of Kùzu to access the bleeding edge features, the stable
+release of Kùzu Explorer may not be compatible with it due to storage format changes. In this case,
+you can use the development build of Kùzu Explorer, which we also make available on DockerHub.
+
+To install the dev build, you can attach the `dev` tag to the docker command as follows:
+
+```bash
+docker run -p 8000:8000 \
+           -v /absolute/path/to/database:/database \
+           --rm kuzudb/explorer:dev
+```
+
+The dev build of Kùzu Explorer is compatible with the nightly build of Kùzu, but it's not guaranteed to be stable
+(and can contain bugs), so the dev build of Kùzu Explorer is recommended for testing purposes only.
+
+:::caution[Note]
+If you try to use the development build of Kùzu Explorer with the stable (or outdated) release of Kùzu,
+it will produce an error that looks like the following, because the storage formats are not compatible:
+
+```
+ERROR (1): Error getting version of Kùzu: Error: std::bad_alloc
+```
+To resolve this, simply pull the latest version of Kùzu Explorer's dev build from DockerHub, and
+install the latest nightly build of Kùzu.
+:::
