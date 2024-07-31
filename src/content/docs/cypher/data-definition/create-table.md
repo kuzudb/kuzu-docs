@@ -1,14 +1,37 @@
 ---
-title: Create
-description: Create DDL statements
+title: Create table
+description: Create table DDL statements for node and relationship tables
 ---
 
-To construct a graph in Kùzu, you need to first create node and relationship tables. The syntax for each
-is shown in this section. Creating the node and relationship tables is also called "defining the schema"
-of the graph. The Data Definition Language (DDL) in Kùzu provides a set of SQL-like commands that allow
-you to define the structure of your graph and the data types in your node and relationship tables.
+As a first step to creating your database, you need to define your node and directed relationships.
+In the property graph model, nodes and relationships have labels. In Kùzu, every node or
+relationship can have one label. The node and relationships and the predefined properties on them are
+defined through `CREATE NODE TABLE` and `CREATE REL TABLE` statements.
+The choice of using the term "table" over "label" is intentional and explained below.
 
-## Create node table
+:::note[Why are there no "labels"?]
+Kùzu uses the term **table** rather than **label** because, like other GDBMSs, Kùzu is
+ultimately a relational system in the sense that it stores and processes sets of tuples, i.e., tables
+or relations.
+
+In fact, Kùzu's data model can be viewed as a _structured_ property graph model, in
+which you tag your tables as "node" and "relationship" tables depending on their roles in your
+application data. Nodes are generally
+well-suited for representing entities, while relationships are used to represent the
+connections between these entities. Relationships are also the primary means to *join* nodes with each other to
+find paths and patterns in your graph database. So when you sketch out a mental map of your
+nodes/relationships, it is equivalent to defining your records as nodes or relationship tables.
+
+During querying you can bind node records with syntax like `(a:Person)`, and relationships with syntax
+like `(..)-[e:Knows]->(...)`. Similar to table definitions in SQL, node and relationship tables have
+primary keys, a term that is defined in the context of tables: node tables explicitly define
+primary keys as one of their properties, while the primary keys of relationship tables are
+implicitly defined by the primary keys of their `FROM` and `TO` node records. Furthermore
+(similar to relational systems), properties can be thought of as equivalent to columns in a table,
+justifying our choice of using the term "table" in our design of the system.
+:::
+
+## Create a node table
 
 To create a node table, use the `CREATE NODE TABLE` statement as shown below:
 
@@ -51,8 +74,7 @@ CREATE NODE TABLE IF NOT EXISTS User (name STRING, age INT64 DEFAULT 0, reg_date
 This tells Kùzu to do nothing when
 the given table name already exists in the database.
 
-
-## Create relationship table
+## Create a relationship table
 
 Once you create node tables, you can define relationships between them using the `CREATE REL TABLE` statement.
 The following statement adds to the catalog a `Follows` relationship table between `User` and `User` with one `date` property on the relationship.
@@ -144,139 +166,3 @@ MATCH (a:User)-[:Knows_User_User|:Knows_User_city]->(b) RETURN *;
 
 As you can imagine, the more relationships you want to selectively query on, the more useful relationship table groups become.
 
-## Create SEQUENCE
-
-The `CREATE SEQUENCE` statement creates a new sequence number generator.
-You can think of `SEQUENCE` as a generalization of the `SERIAL` data type, where you can impose
-conditions on the numbers generated in the sequence.
-
-The following query creates a sequence named `Seq`.
-
-```sql
-CREATE SEQUENCE Seq;
-CREATE SEQUENCE Seq2 INCREMENT 1 MINVALUE 1 NO MAXVALUE START 1 NO CYCLE;
-```
-
-The following optional arguments can be provided when creating a sequence:
-
-<div class="scroll-table">
-
-| Option | Description |
---- | ---
-`INCREMENT [ BY ] <increment>` | Value added to the sequence each time it is incremented.<li>Default `1`.
-`[ NO ] MINVALUE <minvalue>` | Minimum value the sequence can generate.<li>If `NO MINVALUE` is specified, the default value will be used.<li>Default for ascending sequences is 1.<li>Default for descending sequences is the minimum value of `INT64`.
-`[ NO ] MAXVALUE <maxvalue>` | Maximum value the sequence can generate.<li>If `NO MAXVALUE` is specified, the default value will be used.<li>Default for ascending sequences is the maximum value of `INT64`.<li>Default for descending sequences `-1`.
-`START [ WITH ] <start>` | Starting value for the sequence.<li>Default is `minvalue` for ascending sequences and `maxvalue` for descending sequences.
-`[ NO ] CYCLE` | Whether or not the sequence should wrap when `maxvalue` and `minvalue` are reached for ascending and descending sequences respectively.<li>If `CYCLE`, the next generated value after the limit will then be the `minvalue` or `maxvalue`, respectively.<li>If `NO CYCLE`, which is the default, any further increments to the sequence will error out.
-
-</div>
-
-### Using sequences for primary keys
-
-You can use a sequence to generate unique primary keys for your node tables. For example, consider
-you want to create a `Student` node table whose IDs start from 10 and have an increment of 10.
-
-First, define the sequence as shown below:
-
-```sql
-CREATE SEQUENCE id_sequence START 10 INCREMENT 10;
-```
-
-Then, create the `Student` node table with the `id` property set to the sequence as shown below:
-
-```sql
-CREATE NODE TABLE Student (id INT64 DEFAULT nextval('id_sequence'), name STRING, PRIMARY KEY(id));
-```
-
-Then, add the student records without specifying an `id` value (these will be set from the sequence).
-
-```sql
-CREATE (a:Student) SET a.name = "Karissa";
-CREATE (b:Student) SET b.name = "Rhea";
-```
-Returning the values from the table will show the `id` values generated from the sequence.
-
-```sql
-MATCH (a:Student) RETURN a.id, a.name;
-```
-```
-┌───────┬─────────┐
-│ s.id  │ s.name  │
-│ INT64 │ STRING  │
-├───────┼─────────┤
-│ 10    │ Karissa │
-│ 20    │ Rhea    │
-└───────┴─────────┘
-```
-
-### Using sequences for properties in relationship tables
-
-You can also use sequences to generate unique values for properties in relationship tables. For example,
-consider you want to create a `Transaction` relationship table with a unique `id` property for each transaction.
-
-First, define the sequence as shown below:
-
-```sql
-CREATE SEQUENCE tx_sequence;
-```
-
-Then, create the `Transaction` relationship table with the `id` property set to the sequence as shown below:
-
-```sql
-CREATE REL TABLE Transaction(FROM User TO User, id INT64 DEFAULT nextval('tx_sequence'), amount INT64);
-```
-
-Then, add the transaction records without specifying an `id` value (these will be set from the sequence).
-
-```sql
-CREATE (a:User)-[r:Transaction]->(b:User) SET r.amount = 100;
-```
-This will create a transaction relationship between two users with the `id` property set from the sequence.
-
-```sql
-MATCH (a:User)-[r:Transaction]->(b:User) RETURN r.id, r.amount;
-```
-```
-┌───────┬─────────┐
-│ r.id  │ r.amount │
-│ INT64 │ INT64    │
-├───────┼─────────┤
-│ 1     │ 100      │
-└───────┴─────────┘
-```
-
-### Selecting the next value of a sequence
-
-To generate the sequence, use the `nextval` command (until this is done, the sequence doesn't exist
-in the database). For the existing `id_sequence`, you can return the next value in the sequence as shown below:
-
-```sql
-RETURN nextval('sq') AS nextval;
-```
-```
-┌─────────┐
-│ nextval │
-│ INT64   │
-├─────────┤
-│ 30      │
-└─────────┘
-```
-
-### Selecting the current value of a sequence
-
-To view the current value of the sequence, use the `currval` command as shown below:
-
-```sql
-RETURN currval('sq') AS currval;
-```
-```
-┌─────────┐
-│ nextval │
-│ INT64   │
-├─────────┤
-│ 30      │
-└─────────┘
-```
-
-Note that the `nextval` function must already have been called before, otherwise the sequence does
-not yet exist and a Catalog error will be thrown to indicate this.
