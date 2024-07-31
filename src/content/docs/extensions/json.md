@@ -60,42 +60,52 @@ LOAD FROM 'data.json' RETURN *;
 ```
 Output:
 ```
----------------------------------
-| a      | b       | c          |
----------------------------------
-| 1      | [1,2,3] | 2024-01-18 |
----------------------------------
-| -324   | [-10]   | 2000-01-01 |
----------------------------------
-| 222222 |         |            |
----------------------------------
+┌────────┬─────────┬────────────┐
+│ a      │ b       │ c          │
+│ INT64  │ STRING  │ STRING     │
+├────────┼─────────┼────────────┤
+│ 1      │ [1,2,3] │ 2024-07-18 │
+│ -324   │ [-10]   │ 2000-01-01 │
+│ 222222 │         │            │
+└────────┴─────────┴────────────┘
 ```
 
-Note that column `c` will be interpreted as a `STRING`, and not `DATE` by default. To enforce the
-datatype, use `LOAD WITH HEADERS` feature.
+In the above case, because we loosely scanned the file with no enforcement of types, column `c`
+will be interpreted as a `STRING`, and not `DATE` by default. To enforce the datatype during scanning,
+use the `LOAD WITH HEADERS` feature.
 
 Example:
 ```cypher
 LOAD WITH HEADERS (a INT128, b STRING[], c DATE) FROM 'data.json' RETURN *;
 ```
+Output:
+```
+┌────────┬──────────┬────────────┐
+│ a      │ b        │ c          │
+│ INT128 │ STRING[] │ DATE       │
+├────────┼──────────┼────────────┤
+│ 1      │ [1,2,3]  │ 2024-07-18 │
+│ -324   │ [-10]    │ 2000-01-01 │
+│ 222222 │          │            │
+└────────┴──────────┴────────────┘
+```
 
-For more loading options, see [`COPY FROM`](#copy-from) below.
+Other optional parameters in `LOAD FROM` are identical to the [`COPY FROM`](#copy-from) feature, shown below.
 
 ### `COPY FROM`
 
-This feature allows you to copy data from a JSON file into a table.
+This feature allows you to copy data from a JSON file into a node or relationship table.
 
-Example Usage:
+Example:
 ```sql
-CREATE NODE TABLE tab(a INT64, b STRING[], c DATE, PRIMARY KEY (a));
-
-COPY tab FROM 'data.json';
+CREATE NODE TABLE Example (a INT64, b STRING[], c DATE, PRIMARY KEY (a));
+COPY Example FROM 'data.json';
 ```
 
-Copy from supports the following parameters:
+The following optional parameters are supported:
 
 |Name|Description|
-|-|-|
+|---|---|
 |`format`|`"array"` or `"unstructured"`. Array will read from documents whose roots are arrays, unstructured will read from files with multiple documents. Default value is `"array"`.
 |`maximum_depth`|Default value is `-1`. Used by the type inference system to determine how "deep" into the json document to go to infer types. Give a value of `-1` to declare no limit.
 |`sample_size`|Default value `-1`. Used by the type inference system to determine the number of elements used to infer the json type. Give a value of `-1` to declare no limit.
@@ -106,10 +116,10 @@ This feature allows you to copy data from an existing table in Kùzu to a JSON f
 
 Example usage:
 ```sql
-CREATE NODE TABLE tab(a INT64, b STRING[], c DATE, PRIMARY KEY(a));
-CREATE (:tab {a: 1, b: ["a", "b", "c"], c: date("2024-07-18")});
-CREATE (:tab {a: -10000, b: ["asdf"], c: NULL});
-COPY (match (t:tab) return t.*) TO 'data2.json';
+CREATE NODE TABLE Example2 (a INT64, b STRING[], c DATE, PRIMARY KEY(a));
+CREATE (:Example2 {a: 1, b: ["a", "b", "c"], c: date("2024-07-18")});
+CREATE (:Example2 {a: -10000, b: ["asdf"], c: NULL});
+COPY (match (t:Example2) return t.*) TO 'data2.json';
 ```
 
 The output in the file `data2.json` looks like the following:
@@ -197,4 +207,3 @@ Output:
 [1,2,3]
 "ab"
 ```
-
