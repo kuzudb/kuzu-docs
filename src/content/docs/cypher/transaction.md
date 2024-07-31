@@ -55,6 +55,6 @@ CHECKPOINT;
 ```
 
 By default, checkpoint happens automatically at the end of a write transaction when WAL file size goes beyond the `CHECKPOINT_THRESHOLD` (see [Configuration](/cypher/configuration)) and there is no active transactions in the system.
-This statement is used to manually trigger checkpoint actions in the system.
 
-Note that checkpoint can only happen when there is no active transactions in the system, and we don't allow forcing checkpointing yet.
+This statement is used to manually trigger checkpoint actions in the system.
+Note that checkpoint can only happen when there is no active transactions in the system, and we don't allow forcing checkpointing yet. Thus when there are still active transactions around in the system, calling this statement will result in errors.
