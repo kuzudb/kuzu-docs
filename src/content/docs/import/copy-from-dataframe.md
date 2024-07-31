@@ -1,5 +1,5 @@
 ---
-title: "Copy from DataFrame and Arrow tables"
+title: "Copy from DataFrame"
 ---
 
 You can copy from Pandas or Polars DataFrames directly into Kùzu using the `COPY FROM` command.
@@ -34,7 +34,7 @@ conn.execute("COPY Person FROM df")
 ## Polars
 
 You can utilize an existing Polars DataFrame to copy data directly into Kùzu. This leverages
-the underlying PyArrow layer, so you can also use Arrow tables as shown in the next section.
+the underlying PyArrow interface, so you can also use Arrow tables as shown in the next section.
 
 ```python
 import kuzu
@@ -55,7 +55,8 @@ conn.execute("COPY Person FROM df")
 
 ## Arrow tables
 
-You can utilize an existing PyArrow table to copy data directly into Kùzu.
+You can utilize an existing in-memory PyArrow table to copy data directly into Kùzu. This is what
+the Polars DataFrame example above leverages under the hood.
 
 ```python
 import kuzu
@@ -64,12 +65,12 @@ import pyarrow as pa
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
+conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+
 pa_table = pa.table({
     "name": ["Adam", "Karissa", "Zhang"],
     "age": [30, 40, 50]
 })
-
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
 
 conn.execute("COPY Person FROM pa_table")
 ```
