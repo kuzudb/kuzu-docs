@@ -2,26 +2,37 @@
 title: JSON
 ---
 
+## Usage
+
 The `json` extension adds support for the `JSON` datatype, including a set of functions for JSON
 access and manipulation, scanning from, and copying to JSON files.
 
-# Data Type
+You can install the JSON extension by running the following command:
+
+```sql
+INSTALL json;
+LOAD EXTENSION json;
+```
+
+## JSON strings
 
 A column can be declared to be JSON data in the exact same way that any other datatype is specified.
 ```sql
-CREATE NODE TABLE tab(col0 INT64, col1 JSON, col2 JSON, PRIMARY KEY col0);
+CREATE NODE TABLE Example (col0 INT64, col1 JSON, col2 JSON, PRIMARY KEY(col0));
 ```
 
-Values can be inserted via the `CREATE` statement and passing the JSON document as follows:
+Values can be inserted via the `CREATE` statement and passing in JSON documents as a JSON string:
 
 ```cypher
-CREATE (:tab {col0: "123", col1: '{"a": [1, 2, 3]}', col2: '[9.5, 10.5, 11.5]'});
+CREATE (:Example {col0: 123, col1: '{"a": [1, 2, 3]}', col2: '[9.5, 10.5, 11.5]'});
 ```
 
-> Note that the json datatype is physically stored as a `STRING`, meaning the type signature of
-> individual values is not enforced.
+:::caution[Note]
+Note that the JSON datatype is physically stored in Kùzu as a `STRING`, meaning the type signature of
+individual values is not enforced.
+:::
 
-## JSON file support
+## JSON files
 
 JSON files can be interacted with using [`LOAD FROM`](/cypher/query-clauses/load-from),
 [`COPY FROM`](/import/copy-from-query-results), and [`COPY TO`](/export).
@@ -33,17 +44,17 @@ Without type information, the structure will be inferred through the same mechan
 `json_structure` function described later uses. To declare type information, you can use `LOAD WITH HEADERS`
 like you would for CSV files.
 
-Example:
-
-Consider that you have a file `data.json` as follows:
 ```json
+// data.json
 [
     {"a": 1, "b": [1, 2, 3], "c": "2024-07-18"},
     {"a": -324, "b": [-10], "c": "2000-01-01"},
     {"a": 222222, "b": null}
 ]
 ```
-To scan the file, you can do the following:
+
+To scan the file above, you can do the following:
+
 ```cypher
 LOAD FROM 'data.json' RETURN *;
 ```

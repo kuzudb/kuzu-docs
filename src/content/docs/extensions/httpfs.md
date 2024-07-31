@@ -11,7 +11,7 @@ When using object storage via the S3 API, the extension supports reading, writin
 `httpfs` is an official extension developed and maintained by Kùzu.
 It can be installed and loaded using the following commands:
 
-```cypher
+```sql
 INSTALL httpfs;
 LOAD EXTENSION httpfs;
 ```
