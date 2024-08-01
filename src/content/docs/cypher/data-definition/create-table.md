@@ -63,17 +63,6 @@ In the above example, the `age` property is set to a default value of `0` rather
 `name` and `reg_date` properties do not have default values, so they will be `NULL` if not provided
 during data insertion.
 
-### IF NOT EXISTS
-
-If the given table name already exists in the database, by default, Kùzu throws an exception when you try to
-create it. To avoid the exception being raised, use the `IF NOT EXISTS` clause as follows:
-
-```sql
-CREATE NODE TABLE IF NOT EXISTS User (name STRING, age INT64 DEFAULT 0, reg_date DATE, PRIMARY KEY (name))
-```
-This tells Kùzu to do nothing when
-the given table name already exists in the database.
-
 ## Create a relationship table
 
 Once you create node tables, you can define relationships between them using the `CREATE REL TABLE` statement.
@@ -167,7 +156,9 @@ MATCH (a:User)-[:Knows_User_User|:Knows_User_city]->(b) RETURN *;
 As you can imagine, the more relationships you want to selectively query on, the more useful relationship table groups become.
 
 ## IF NOT EXISTS
-If the given table name already exists in the database, Kùzu throws an exception when you try to create it. To avoid the exception being raised, use the `IF NOT EXISTS` clause. This tells Kùzu to do nothing when
+
+If the given table name already exists in the database, Kùzu throws an exception when you try to create it.
+To avoid the exception being raised, use the `IF NOT EXISTS` clause. This tells Kùzu to do nothing when
 the given table name already exists in the database.
 
 Example:
@@ -176,3 +167,4 @@ CREATE NODE TABLE IF NOT EXISTS UW(ID INT64, PRIMARY KEY(ID))
 ```
 This query tells Kùzu to only create the `UW` table if it doesn't exist.
 
+The same applies to relationship tables as well.
