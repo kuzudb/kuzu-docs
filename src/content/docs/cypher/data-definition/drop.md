@@ -41,15 +41,6 @@ DROP TABLE User
 -------------------------------------
 ```
 
-## IF EXISTS
-
-Alternatively, you can avoid the exception being raised by using the `IF EXISTS` clause. This instructs
-Kùzu to do nothing when the given table name does not exist in the database.
-
-```sql
-DROP TABLE IF EXISTS User
-```
-
 ## Drop SEQUENCE
 
 You can drop a `SEQUENCE` similar to the way you drop a table:
