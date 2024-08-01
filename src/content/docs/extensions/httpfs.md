@@ -155,8 +155,8 @@ Result:
 ```
 
 #### Local cache for remote files
-Remote file system calls can be expensive and highly dependent on the user's network condition(bandwidth, latency). Queries involve large number of file operations (read,write,glob) can be slow. To expedite such queries, we introduce a new option: `HTTP_CACHE_FILE`.
-Local file cache is initialized when kuzu requests the file for the first time. Subsequence remote file operations will be translated as local file operation on the cache file.
+Remote file system calls can be expensive and highly dependent on the user's network (bandwidth, latency, etc.). Queries that involve large number of file operations (read, write, glob) can be slow. To expedite such queries, we introduce a new caching option: `HTTP_CACHE_FILE`.
+A local file cache is initialized when Kùzu requests the file for the first time. Subsequence remote file operations will then be treated as local file operations on the cache file.
 Example:
 ```
 CALL HTTP_CACHE_FILE=TRUE;
