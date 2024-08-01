@@ -114,6 +114,7 @@ export default defineConfig({
                         { label: 'Macros', link: '/cypher/macro' },
                         { label: 'Transactions', link: '/cypher/transaction' },
                         { label: 'Connection configuration', link: '/cypher/configuration' },
+                        { label: 'List of reserved keywords', link: '/cypher/reserved-keywords' },
                     ],
                     autogenerate: { directory: 'reference' },
                 },
