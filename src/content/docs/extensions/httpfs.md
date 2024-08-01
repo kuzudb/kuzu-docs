@@ -154,7 +154,7 @@ Result:
 ---------------
 ```
 
-#### Local cache for remote files
+### Local cache for remote files
 Remote file system calls can be expensive and highly dependent on the user's network (bandwidth, latency, etc.). Queries that involve large number of file operations (read, write, glob) can be slow. To expedite such queries, we introduce a new caching option: `HTTP_CACHE_FILE`.
 A local file cache is initialized when Kùzu requests the file for the first time. Subsequence remote file operations will then be treated as local file operations on the cache file.
 Example:
