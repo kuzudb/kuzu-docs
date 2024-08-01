@@ -8,13 +8,14 @@ the built-in schema functions:
 
 | Function | Description |
 | ----------- | --------------- |
-| `TABLE_INFO('tableName')` | returns metadata information of the given table |
 | `CURRENT_SETTING('setting')` | returns the value of the given setting |
 | `DB_VERSION()` | returns the version of Kùzu |
 | `SHOW_TABLES()` | returns the name, type, comment of all tables in the database |
 | `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database |
 | `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases |
-| `SHOW_SEQUENCES()` | returns the name and properties of all sequences in the database |
+| `SHOW_SEQUENCES()`| returns all sequence in the database |
+| `SHOW_FUNCTIONS()` | returns all registered functions in the database |
+| `TABLE_INFO('tableName')` | returns metadata information of the given table |
 
 ### TABLE_INFO
 
