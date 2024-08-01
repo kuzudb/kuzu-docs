@@ -181,7 +181,8 @@ export default defineConfig({
                     items: [
                         { label: 'Overview', link: '/extensions'},
                         { label: 'HTTP File System (httpfs)', link: '/extensions/httpfs'},
-                        { label: 'Relational database extensions', link: '/extensions/rdbms'},
+                        { label: 'Remote RDBMS extensions', link: '/extensions/rdbms'},
+                        { label: 'Remote Kùzu extension', link: '/extensions/remote-kuzu'},
                         { label: 'JSON', link: '/extensions/json'},
                     ],
                     autogenerate: { directory: 'reference' },

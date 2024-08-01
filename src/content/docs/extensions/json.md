@@ -1,5 +1,5 @@
 ---
-title: JSON
+title: JSON extension
 ---
 
 ## Usage
