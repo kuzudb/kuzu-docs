@@ -37,17 +37,17 @@ To declare type information, you can use `LOAD WITH HEADERS` like you would for 
     "info": {
       "height": 1.81,
       "age": 71,
-      "previousUsernames": [ "theBuilder", "theMinion" ]
+      "previous_usernames": [ "the_builder", "the_minion" ]
     }
   },
   {
     "id": 0,
     "name": "Alice",
-    "registryDate": "2024-07-31",
+    "registry_date": "2024-07-31",
     "info": {
       "height": 1.68,
       "age": 45,
-      "previousUsernames": [ "obviouslyAlice", "definitelyNotAlice" ]
+      "previous_usernames": [ "alice123", "alice_34425" ]
     }
   }
 ]
@@ -61,34 +61,34 @@ LOAD FROM 'people.json' RETURN *;
 Output:
 ```
 ┌───────┬─────────┬──────────────┬─────────────────────────────────────────────────────────────────────────────────────┐
-│ id    │ name    │ registryDate │ info                                                                                │
-│ UINT8 │ STRING  │ STRING       │ STRUCT(height DOUBLE, age UINT8, previousUsernames STRING[])                        │
+│ id    │ name    │ registry_date │ info                                                                                │
+│ UINT8 │ STRING  │ STRING       │ STRUCT(height DOUBLE, age UINT8, previous_usernames STRING[])                        │
 ├───────┼─────────┼──────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
 │ 2     │ Gregory │              │                                                                                     │
-│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previousUsernames: [theBuilder,theMinion]}              │
-│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previousUsernames: [obviouslyAlice,definitelyNotAlice]} │
+│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]}              │
+│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]} │
 └───────┴─────────┴──────────────┴─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 Note that the resulting schema will be the union of the schema of all the objects in the json file.
 
-In the above case, because we loosely scanned the file with no enforcement of types, column `registryDate`
+In the above case, because we loosely scanned the file with no enforcement of types, column `registry_date`
 will be interpreted as a `STRING`, and not `DATE` by default. To enforce the datatype during scanning,
 use the `LOAD WITH HEADERS` feature.
 
 Example:
 ```cypher
-LOAD WITH HEADERS (id INT64, name STRING, registryDate DATE, info STRUCT(height DOUBLE, age INT64, previousUsernames STRING[])) FROM 'people.json' RETURN *;
+LOAD WITH HEADERS (id INT64, name STRING, registry_date DATE, info STRUCT(height DOUBLE, age INT64, previous_usernames STRING[])) FROM 'people.json' RETURN *;
 ```
 Output:
 ```
 ┌───────┬─────────┬──────────────┬─────────────────────────────────────────────────────────────────────────────────────┐
 │ id    │ name    │ registryDate │ info                                                                                │
-│ INT64 │ STRING  │ DATE         │ STRUCT(height DOUBLE, age INT64, previousUsernames STRING[])                        │
+│ INT64 │ STRING  │ DATE         │ STRUCT(height DOUBLE, age INT64, previous_usernames STRING[])                        │
 ├───────┼─────────┼──────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
 │ 2     │ Gregory │              │                                                                                     │
-│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previousUsernames: [theBuilder,theMinion]}              │
-│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previousUsernames: [obviouslyAlice,definitelyNotAlice]} │
+│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]}              │
+│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]} │
 └───────┴─────────┴──────────────┴─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -114,7 +114,7 @@ Given a 'people-unstructured.json' file in the following form:
     "info": {
         "height": 1.81,
         "age": 71,
-        "previousUsernames": [ "theBuilder", "theMinion" ]
+        "previous_usernames": [ "the_builder", "the_minion" ]
     }
 }
 {
@@ -124,12 +124,12 @@ Given a 'people-unstructured.json' file in the following form:
     "info": {
         "height": 1.68,
         "age": 45,
-        "previousUsernames": [ "obviouslyAlice", "definitelyNotAlice" ]
+        "previous_usernames": [ "alice123", "alice_34425" ]
     }
 }
 ```
 
-That is, the file contains multiple json objects instead of objects wrapped in an array, then the
+That is, the file contains multiple JSON objects instead of objects wrapped in an array, then the
 `format='unstructured'` option should be used to scan the file.
 
 ```cypher
@@ -182,8 +182,8 @@ and assume everything is a `STRING`
 │ STRING │ STRING  │ STRING                                                                               │ STRING       │
 ├────────┼─────────┼──────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
 │ 2      │ Gregory │                                                                                      │              │
-│ 1      │ Bob     │ {"height":1.81,"age":71,"previousUsernames":["theBuilder","theMinion"]}              │              │
-│ 0      │ Alice   │ {"height":1.68,"age":45,"previousUsernames":["obviouslyAlice","definitelyNotAlice"]} │ 2024-07-31   │
+│ 1      │ Bob     │ {"height":1.81,"age":71,"previous_usernames":["the_builder","the_minion"]}              │              │
+│ 0      │ Alice   │ {"height":1.68,"age":45,"previous_usernames":["alice123","alice_34425"]} │ 2024-07-31   │
 └────────┴─────────┴──────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
 ```
 
@@ -193,7 +193,7 @@ This feature allows you to copy data from a JSON file into a node or relationshi
 
 Example:
 ```sql
-CREATE NODE TABLE Person (id SERIAL, name STRING, info STRUCT(height DOUBLE, age INT64, registryDate DATE previousUsernames STRING[]), PRIMARY KEY(id));
+CREATE NODE TABLE Person (id SERIAL, name STRING, info STRUCT(height DOUBLE, age INT64, registry_date DATE, previous_usernames STRING[]), PRIMARY KEY(id));
 COPY Person FROM 'people.json';
 ```
 
@@ -205,18 +205,18 @@ This feature allows you to copy data from an existing table in Kùzu to a JSON f
 
 Example usage:
 ```sql
-CREATE NODE TABLE Person (id SERIAL, name STRING, info STRUCT(height DOUBLE, age INT64, previousUsernames STRING[]), PRIMARY KEY(id));
-CREATE (:Person {name: "Alice", info: {height: 1.68, age: 45, previousUsernames: ["obviouslyAlice", "definitelyNotAlice"]}});
-CREATE (:Person {name: "Bob", info: {height: 1.81, age: 71, previousUsernames: ["theBuilder", "theMinion"]}});
-CREATE (:Person {name: "Gregory", info: {height: 1.73, age: 22, previousUsernames: ["gregory7"]}});
+CREATE NODE TABLE Person (id SERIAL, name STRING, info STRUCT(height DOUBLE, age INT64, previous_usernames STRING[]), PRIMARY KEY(id));
+CREATE (:Person {name: "Alice", info: {height: 1.68, age: 45, previous_usernames: ["alice123", "alice_34425"]}});
+CREATE (:Person {name: "Bob", info: {height: 1.81, age: 71, previous_usernames: ["the_builder", "the_minion"]}});
+CREATE (:Person {name: "Gregory", info: {height: 1.73, age: 22, previous_usernames: ["gregory7"]}});
 COPY (match (p:Person) return p.*) to 'people-output.json';
 ```
 
 The output in the file `people.json-output` looks like the following:
 ```json
 [
-{"p.id":0,"p.name":"Alice","p.info":{"height":1.68,"age":45,"previousUsernames":["obviouslyAlice","definitelyNotAlice"]}},
-{"p.id":1,"p.name":"Bob","p.info":{"height":1.81,"age":71,"previousUsernames":["theBuilder","theMinion"]}},
-{"p.id":2,"p.name":"Gregory","p.info":{"height":1.73,"age":22,"previousUsernames":["gregory7"]}}
+{"p.id":0,"p.name":"Alice","p.info":{"height":1.68,"age":45,"previous_usernames":["alice123","alice_34425"]}},
+{"p.id":1,"p.name":"Bob","p.info":{"height":1.81,"age":71,"previous_usernames":["the_builder","the_minion"]}},
+{"p.id":2,"p.name":"Gregory","p.info":{"height":1.73,"age":22,"previous_usernames":["gregory7"]}}
 ]
 ```
