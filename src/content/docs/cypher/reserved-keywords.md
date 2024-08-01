@@ -5,7 +5,7 @@ title: "List of Reserved Keywords"
 In this section, we document the list of reserved keywords, and whether or not it complies with Postgres (i.e., if it is also a reserved keyword in Postgres).
 In the table below, N/A means the keyword doesn't exist in PG.
 
-|Keyword|Status|Yes with Postgres?|
+|Keyword|Status|Complies with Postgres?|
 |-|-|-|
 |ADD|Not Reserved ✅|Yes|
 |ALL|Reserved 🛑|Yes|
