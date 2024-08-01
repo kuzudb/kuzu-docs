@@ -163,7 +163,7 @@ export default defineConfig({
                         { label: 'Build Kùzu from source', link: '/developer-guide' },
                         { label: 'Performance debugging', link: '/developer-guide/performance-debugging' },
                         { label: 'Testing framework', link: '/developer-guide/testing-framework' },
-                        { label: 'Join order hints', link: '/developer-guide/hint-join-order' },
+                        { label: 'Join order hints', link: '/developer-guide/join-order-hint' },
                         { 
                             label: 'Database internals',
                             items: [
