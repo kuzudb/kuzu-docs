@@ -74,12 +74,12 @@ RETURN age, name LIMIT 3;
 ```
 
 ### Enforce Schema
-By default, Kùzu will infer the column names and data types from the scan source automatically, 
-- for parquet, pandas, polars & pyarrow, column names and data types are always available in the data source.
-- for csv, we use header as schema if available, otherwise we fallback naming to `column0, column1, ...` and assume all data types are `STRING`
-- for json, we use keys as column names, and infer a common data type from all values under the key.
+By default, Kùzu will infer the column names and data types from the scan source automatically.
+- For Parquet, Pandas, Polars and PyArrow, column names and data types are always available in the data source
+- For CSV, we use header as schema if available, otherwise we fallback naming to `column0, column1, ...` and assume all data types are `STRING`
+- For json, we use keys as column names, and infer a common data type from each key's values
 
-To enforce specific column names and data types when readi, you can use the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
+To enforce specific column names and data types when reading, you can use the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
 
 The following query will bind first column `name` to the STRING type and second column `age` to the INT64 type.
 You can combine this with a `WHERE` clause to filter the data as needed.
