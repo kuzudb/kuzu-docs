@@ -57,3 +57,14 @@ You can drop a `SEQUENCE` similar to the way you drop a table:
 ```sql
 DROP SEQUENCE sequence_name;
 ```
+
+## IF EXISTS
+If the given table does not exist in the database, Kùzu throws an exception when you try to drop it.
+To avoid the exception being raised, use the `IF EXISTS` clause. This instructs Kùzu to do nothing when
+the given table name does not exist in the database.
+
+Example:
+```sql
+DROP TABLE IF EXISTS UW
+```
+This query tells Kùzu to drop the `UW` table only if it exists.
