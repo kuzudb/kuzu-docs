@@ -154,4 +154,11 @@ Result:
 ---------------
 ```
 
-## TODO: Document skip_unsupported_table?
+#### Local cache for remote files
+Remote file system calls can be expensive and highly dependent on the user's network condition(bandwidth, latency). Queries involve large number of file operations (read,write,glob) can be slow. To expedite such queries, we introduce a new option: `HTTP_CACHE_FILE`.
+Local file cache is initialized when kuzu requests the file for the first time. Subsequence remote file operations will be translated as local file operation on the cache file.
+Example:
+```
+CALL HTTP_CACHE_FILE=TRUE;
+```
+Enables the local cache for remote files.
