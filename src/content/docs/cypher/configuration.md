@@ -1,5 +1,6 @@
 ---
 title: Configuration
+description: "Connection and database configuration"
 ---
 
 The configuration of a Kùzu database or a connection to the database can be changed through a standalone `CALL`
