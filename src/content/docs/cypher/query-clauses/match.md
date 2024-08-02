@@ -284,8 +284,8 @@ and both queries output:
 ```
 
 ## Match recursive relationships
-You can also find paths that are of variable length between node records. Variable-length relationships
-are sometimes known as recursive patterns or recursive joins. Specifically, you can find variable-hop
+You can also find recursive relationships (that are of variable length) between node records.
+Specifically, you can find variable-length
 connections between nodes by specifying in the relationship patterns,
 e.g., `-[:Label*min..max]->`, where `min` and `max` specify the minimum and the maximum number of hops[^2].
 The following query finds all Users that "Adam" follows within 1 to 2 hops and returns their names as well as length of the path.
@@ -337,7 +337,7 @@ Output:
 
 ### Return recursive relationships
 
-A recursive relationship has logical data type `RECURSIVE RELATIONSHIP` and is physically represented as `STURCT{LIST[NODE], LIST[RELATIONSHIP]}`. Returning a recursive relationship will return all properties 
+A recursive relationship has the logical data type `RECURSIVE_REL` and is physically represented as `STURCT{LIST[NODE], LIST[REL]}`. Returning a recursive relationship will return all properties 
 ```cypher
 MATCH (a:User)-[e:Follows*1..2]->(b:User) 
 WHERE a.name = 'Adam'
@@ -361,7 +361,7 @@ Output:
 #### Filter recursive relationships
 We also support running predicates on recursive relationships to constrain the relationship being traversed.
 
-The following query finds name of users and the number of path that are followed between 1 - 2 hops from Adam by person with age more than 45 and before 2022.
+The following query finds name of users and the number of path that are followed between 1-2 hops from Adam by person with age more than 45 and before 2022.
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2 (r, n | WHERE r.since < 2022 AND n.age > 45) ]->(b:User)
 WHERE a.name = 'Adam' 
@@ -512,7 +512,7 @@ Output:
 ```
 
 ### Extracting nodes and relationships from a path
-Named path has logical data type [`RECURSIVE RELATIONSHIP`](/cypher/data-types/#path). Users can access nodes and relationships within a path through `nodes(p)` and `rels(p)` function calls.
+A named path has the logical data type [`RECURSIVE_REL`](/cypher/data-types/#recursive-rel). You can access nodes and relationships within a named path through `nodes(p)` and `rels(p)` function calls.
 
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2]->(:User) 

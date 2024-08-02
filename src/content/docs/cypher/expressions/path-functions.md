@@ -1,6 +1,6 @@
 ---
 title: Recursive relationship functions
-description: Recursive relationship functions are used to manipulate a recursive relationship.
+description: Functions that are used to manipulate recursive relationships
 ---
 
 | Function | Description |
@@ -8,7 +8,7 @@ description: Recursive relationship functions are used to manipulate a recursive
 | `NODES`| returns all nodes from a recursive relationship |
 | `RELS` | returns all rels from a recursive relationship |
 | `PROPERTIES` | return given property from nodes/relationships |
-| `IS_TRAIL` | check if path contains repeated relelationships |
+| `IS_TRAIL` | check if path contains repeated relationships |
 | `IS_ACYCLIC` | check if path contains repeated nodes |
 
 ### NODES
@@ -17,7 +17,7 @@ Returns all nodes from path.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `RECURSIVE RELATIONSHIP` | `LIST[NODE]` |
+| `RECURSIVE_REL` | `LIST[NODE]` |
 
 
 ```cypher
@@ -41,11 +41,11 @@ Output:
 ```
 ### RELS
 
-Returns all relationships from path.
+Returns all relationships from a recursive relationship.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `RECURSIVE RELATIONSHIP` | `LIST[RELELATIONSHIP]` |
+| `RECURSIVE_REL` | `LIST[REL]` |
 
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2]->(:User) 
@@ -69,11 +69,11 @@ Output:
 
 ### PROPERTIES
 
-Return given property from nodes/relelationships.
+Return given property from nodes/relationships.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `LIST[NODE/RELATIONSHIP]`, `STRING` | `LIST[ANY]` |
+| `LIST[NODE/REL]`, `STRING` | `LIST[ANY]` |
 
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2]->(:User) 
@@ -101,7 +101,7 @@ Check if a recursive relationship contains repeated relationships.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `RECURSIVE RELATIONSHIP` | `BOOLEAN` |
+| `RECURSIVE_REL` | `BOOLEAN` |
 
 ```cypher
 MATCH p = (a:User)-[:Follows*2..2]-(b:User) 
@@ -131,7 +131,7 @@ Check if a recursive relationship contains repeated nodes.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `RECURSIVE RELATIONSHIP` | `BOOLEAN` |
+| `RECURSIVE_REL` | `BOOLEAN` |
 
 ```cypher
 MATCH p = (a:User)-[:Follows*2..2]-(b:User) 

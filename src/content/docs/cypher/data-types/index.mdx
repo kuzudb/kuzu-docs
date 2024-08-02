@@ -431,17 +431,17 @@ Output:
 ----------------------------------------------------
 ```
 
-## RELATIONSHIP
+## REL
 
 | Size | Description
 | --- | ---
 | fixed | represents a relationship in a graph
 
-`RELATIONSHIP` is a logical type. Internally, `RELATIONSHIP` is processed as `STRUCT` type. A `RELATIONSHIP` always contains a
+`REL` is a logical type that represents a relationship (i.e., an edge). Internally, `REL` is processed as `STRUCT` type. A `REL` always contains a
 src ID field with key `_SRC`, a dst ID field with key `_DST`, an internal ID field with key `_ID`
 and a label field with key `_LABEL`. The rest fields are rel properties.
 
-Here's how to return `RELATIONSHIP` column:
+Here's how to return a relationship column that's of type `REL`:
 ```cypher
 MATCH (a:User)-[e:Follows]->(b:User)
 RETURN e;
@@ -553,13 +553,13 @@ the following two triples:
 ----------------------------------------------------------------------------------
 ```
 
-## RECURSIVE RELATIONSHIP
+## RECURSIVE_REL
 
-`RECURSIVE RELATIONSHIP` is a logical type. Internally, `RECURSIVE RELATIONSHIP` is processed as `STRUCT` type, more specifically, a
-`STRUCT{LIST[NODE], LIST[RELATIONSHIP]}`. A `RECURSIVE RELATIONSHIP` always contains a nodes field with the key `_NODES` and a
+`RECURSIVE_REL` is a logical type that represents recursive relationships. i.e., paths of arbitrary lengths. Internally, `RECURSIVE_REL` is processed as `STRUCT` type, more specifically, a
+`STRUCT{LIST[NODE], LIST[REL]}`. A `RECURSIVE_REL` always contains a nodes field with the key `_NODES` and a
 relationships field with the key `_RELS`.
 
-#### Return `RECURSIVE RELATIONSHIP` column
+#### Return a column that's of type `RECURSIVE_REL`
 ```cypher
 MATCH p = (a:User)-[:Follows]->(b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
