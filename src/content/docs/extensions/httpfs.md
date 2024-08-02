@@ -3,7 +3,7 @@ title: HTTP File System (httpfs)
 ---
 
 The `httpfs` extension extends the Kùzu file system by allowing reading from/writing to files hosted on
-remote file systems. Over plain HTTP(S) the extension only supports reading files.
+remote file systems. Over plain HTTP(S), the extension only supports reading files.
 When using object storage via the S3 API, the extension supports reading, writing and globbing files.
 
 # Usage
@@ -20,7 +20,7 @@ LOAD EXTENSION httpfs;
 `httpfs` allows users to read from a file hosted on a http(s) server in the same way as from a local file.
 Example:
 
-```cypher
+```sql
 LOAD FROM "https://raw.githubusercontent.com/kuzudb/extension/main/dataset/test/city.csv" 
 RETURN *;
 ```
@@ -57,14 +57,14 @@ Supported options:
 | Feature | Required S3 API features |
 |----------|----------|
 | Public file reads | HTTP Range request |
-| Private file reads | secret key authentication|
+| Private file reads | Secret key authentication|
 | File glob | ListObjectV2 |
 | File writes | Multipart upload |
 
 ## Reading from S3:
 Reading from S3 is as simple as reading from regular files:
 
-```cypher
+```sql
 LOAD FROM 's3://kuzu-test/follows.parquet'
 RETURN *;
 ```
@@ -74,7 +74,7 @@ RETURN *;
 Globbing is implemented using the S3 [ListObjectV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html)
 API, and allows the user to glob files as they would in their local filesystem.
 
-```cypher
+```sql
 CREATE NODE TABLE tableOfTypes (
     id INT64,
     int64Column INT64,
@@ -94,10 +94,12 @@ COPY tableOfTypes FROM "s3://kuzu-dataset-us/glob-test/types_50k_*.parquet"
 
 Writing to S3 uses the AWS [multipart upload API](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html).
 
-```cypher
+```sql
 COPY (
-    MATCH (p:Location) RETURN p.*
-) TO 's3://kuzu-dataset-us/output/location.parquet'
+    MATCH (p:Location)
+    RETURN p.*
+)
+TO 's3://kuzu-dataset-us/output/location.parquet'
 ```
 
 ## AWS credential management
@@ -113,31 +115,31 @@ Supported environments are:
 | AWS S3 default region | S3_REGION |
 
 ## Local cache for remote files
-Remote file system calls can be expensive and highly dependent on the user's network condition(bandwidth, latency). 
-Queries involve large number of file operations (read,write,glob) can be slow. 
+Remote file system calls can be expensive and highly dependent on the user's network conditions (bandwidth, latency). 
+Queries involving a large number of file operations (read, write, glob) can be slow. 
 To expedite such queries, we introduce a new option: `HTTP_CACHE_FILE`.
-Local file cache is initialized when kuzu requests the file for the first time. 
+A local file cache is initialized when Kùzu requests the file for the first time. 
 Subsequent remote file operations will be translated as local file operation on the cache file.
 For example the below `CALL` statement enables the local cache for remote files:
-```
+```sql
 CALL HTTP_CACHE_FILE=TRUE;
 ```
-:::caution[Note]
+:::note[Tip]
 Cached files are visible per transaction. Therefore, if you have
 set `HTTP_CACHE_FILE=TRUE` and then run a `LOAD FROM` statement on a remote file, say
 `LOAD FROM "https://.../test/city.csv RETURN *;"`, then this file will be downloaded first
-and then scanned locally from the dowloaded file. If you run the same `LOAD FROM` statement again,
-it will be downloaded again remotely. This is because the second statement is executed as a separate 
+and then scanned locally from the downloaded file. If you run the same `LOAD FROM` statement again,
+it will be downloaded again from the remote URL. This is because the second statement is executed as a separate 
 transaction and we do not know if the already downloaded remote file has changed since the last time Kùzu
 downloaded it. 
 
-If you need to scan a remote file multiple times and benefit from the caching across multiple scans,
+If you need to scan the same remote file multiple times and benefit from caching across multiple scans,
 you can run all the `LOAD FROM` statements in the same transaction. Here is an example:
 
 ```sql
 BEGIN TRANSACTION;
-LOAD FROM "https://.../test/city.csv RETURN *;
-LOAD FROM "https://.../test/city.csv RETURN *;
+LOAD FROM "https://.../test/city.csv" RETURN *;
+LOAD FROM "https://.../test/city.csv" RETURN *;
 COMMIT;
 ```
 Now the second `LOAD FROM` statement will run much faster because the file is already downloaded and cached and
