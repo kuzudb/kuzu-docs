@@ -10,6 +10,7 @@ description: Functions that are used to manipulate recursive relationships
 | `PROPERTIES` | return given property from nodes/relationships |
 | `IS_TRAIL` | check if path contains repeated relationships |
 | `IS_ACYCLIC` | check if path contains repeated nodes |
+| `LENGTH` | returns the length of each relationship in recursive relationship |
 
 ### NODES
 
@@ -153,4 +154,26 @@ Output:
 ---------------------------------------------
 | [Adam,Zhang,Noura]        | True          |
 ---------------------------------------------
+```
+
+### LENGTH
+
+Return the length of each relationship in a recursive relationship.
+
+```cypher
+MATCH p = (a:User)-[f:Follows*1..2]-(b:User) 
+RETURN LENGTH(p);
+```
+```
+----------------
+| LENGTH(p)    |
+----------------
+| 1            |
+----------------
+| 2            |
+----------------
+| 1            |
+----------------
+| 2            |
+----------------
 ```
