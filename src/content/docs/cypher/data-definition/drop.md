@@ -43,21 +43,6 @@ DROP TABLE User
 -------------------------------------
 ```
 
-## Drop a sequence
-
-Consider the following sequence:
-
-```sql
-CREATE SEQUENCE Seq;
-```
-
-You can drop a `SEQUENCE` as follows:
-
-```sql
-DROP SEQUENCE Seq;
-```
-Once dropped, the sequence is no longer available in the database.
-
 ## Drop if exists
 If the given table does not exist in the database, Kùzu throws an exception when you try to drop it.
 To avoid the exception being raised, use the `IF EXISTS` clause. This instructs Kùzu to do nothing when
@@ -68,9 +53,3 @@ Example:
 DROP TABLE IF EXISTS UW
 ```
 This query tells Kùzu to drop the `UW` table only if it exists.
-
-You can also drop a sequence if it exists as follows:
-
-```sql
-DROP SEQUENCE IF EXISTS Seq;
-```

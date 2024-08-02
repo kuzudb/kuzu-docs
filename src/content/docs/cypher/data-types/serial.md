@@ -5,7 +5,7 @@ title: Serial
 ## SERIAL
 `SERIAL` is a logical data type used for creating an auto-incrementing sequence of numbers, typically
 used as a unique column identifier, similar to `AUTO_INCREMENT` feature supported
-by some other databases. `SERIAL` uses [`SEQUENCE`](/cypher/data-definition/create#create-sequence) under the hood.
+by some other databases. 
 
 ### Using `SERIAL` as Primary Key Column
 
@@ -41,16 +41,4 @@ scenario where you want to generate a unique transaction ID for each transfer be
 
 ```cypher
 CREATE REL TABLE Transfer (from User to User, trx_id SERIAL);
-```
-
-### Using `SERIAL` vs `SEQUENCE`
-
-The following blocks perform the same function:
-```cypher
-CREATE NODE TABLE Person(id SERIAL, PRIMARY KEY(id));
-```
-
-```cypher
-CREATE SEQUENCE Person_id_serial START 0 MINVALUE 0;
-CREATE NODE TABLE Person(id INT64 default nextval('Person_id_serial'), PRIMARY KEY(id));
 ```
