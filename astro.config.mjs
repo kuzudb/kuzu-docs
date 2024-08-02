@@ -187,7 +187,7 @@ export default defineConfig({
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kùzu databases', link: '/extensions/attach/kuzu' },
-                                { label: 'External RDBMSs ', link: '/extensions/attach/rdbms' },
+                                { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json'},
