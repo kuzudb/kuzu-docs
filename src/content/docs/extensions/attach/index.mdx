@@ -1,0 +1,12 @@
+---
+title: Attaching to external databases
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Kùzu supports attaching/detaching to two types of external databases:
+    - [External Kùzu databases](/extensions/attach/kuzu): You can attach to an external Kùzu database (possibly in a remote file system) and query
+      that database in read-only mode in Cypher.
+    - [External RDBMSs](/extensions/attach/rdbms): You can attach to several RDBMSs, such as Postgres, DuckDB, and Sqlite,
+     and scan their tables with the `LOAD FROM` statement. This can simplify copying data from these sources into Kùzu and
+     can also provide a basic functionality to do joint querying of the RDBMS and your local Kùzu database (or an external Kùzu databse you attached to).

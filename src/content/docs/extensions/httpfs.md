@@ -113,10 +113,33 @@ Supported environments are:
 | AWS S3 default region | S3_REGION |
 
 ## Local cache for remote files
-Remote file system calls can be expensive and highly dependent on the user's network (bandwidth, latency, etc.). Queries that involve large number of file operations (read, write, glob) can be slow. To expedite such queries, we introduce a new caching option: `HTTP_CACHE_FILE`.
-A local file cache is initialized when Kùzu requests the file for the first time. Subsequence remote file operations will then be treated as local file operations on the cache file.
-Example:
-```sql
+Remote file system calls can be expensive and highly dependent on the user's network condition(bandwidth, latency). 
+Queries involve large number of file operations (read,write,glob) can be slow. 
+To expedite such queries, we introduce a new option: `HTTP_CACHE_FILE`.
+Local file cache is initialized when kuzu requests the file for the first time. 
+Subsequent remote file operations will be translated as local file operation on the cache file.
+For example the below `CALL` statement enables the local cache for remote files:
+```
 CALL HTTP_CACHE_FILE=TRUE;
 ```
-Enables the local cache for remote files.
+:::caution[Note]
+Cached files are visible per transaction. Therefore, if you have
+set `HTTP_CACHE_FILE=TRUE` and then run a `LOAD FROM` statement on a remote file, say
+`LOAD FROM "https://.../test/city.csv RETURN *;"`, then this file will be downloaded first
+and then scanned locally from the dowloaded file. If you run the same `LOAD FROM` statement again,
+it will be downloaded again remotely. This is because the second statement is executed as a separate 
+transaction and we do not know if the already downloaded remote file has changed since the last time Kùzu
+downloaded it. 
+
+If you need to scan a remote file multiple times and benefit from the caching across multiple scans,
+you can run all the `LOAD FROM` statements in the same transaction. Here is an example:
+
+```sql
+BEGIN TRANSACTION;
+LOAD FROM "https://.../test/city.csv RETURN *;
+LOAD FROM "https://.../test/city.csv RETURN *;
+COMMIT;
+```
+Now the second `LOAD FROM` statement will run much faster because the file is already downloaded and cached and
+the second scan is within the same transaction as the first one.
+:::
