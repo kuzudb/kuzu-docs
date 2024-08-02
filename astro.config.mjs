@@ -113,6 +113,7 @@ export default defineConfig({
                         { label: 'Subqueries', link: '/cypher/subquery' },
                         { label: 'Macros', link: '/cypher/macro' },
                         { label: 'Transactions', link: '/cypher/transaction' },
+                        { label: 'Attach/Detach To External Databases', link: '/cypher/attach' },
                         { label: 'Connection configuration', link: '/cypher/configuration' },
                     ],
                     autogenerate: { directory: 'reference' },
@@ -181,8 +182,14 @@ export default defineConfig({
                     items: [
                         { label: 'Overview', link: '/extensions'},
                         { label: 'HTTP File System (httpfs)', link: '/extensions/httpfs'},
-                        { label: 'Remote RDBMS extensions', link: '/extensions/rdbms'},
-                        { label: 'Remote Kùzu extension', link: '/extensions/remote-kuzu'},
+                        {
+                            label: 'External databases',
+                            items: [
+                                { label: 'Overview', link: '/extensions/attach' },
+                                { label: 'External Kùzu databases', link: '/extensions/attach/kuzu' },
+                                { label: 'External RDBMSs ', link: '/extensions/attach/rdbms' },
+                            ]
+                        },
                         { label: 'JSON', link: '/extensions/json'},
                     ],
                     autogenerate: { directory: 'reference' },
