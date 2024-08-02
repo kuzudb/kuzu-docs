@@ -78,23 +78,57 @@ Set maximum width in characters for display. Defaults to terminal width if unabl
 
 ## Interrupt shell
 
-To interrupt a running query, use `Ctrl + C` in CLI. Note: We currently don't support interrupting a
-running `COPY` statement.
+To interrupt a running query, use `Ctrl + C` in CLI. Note: We currently don't support interrupting a running `COPY` statement.
 
 ## Non-interactive usage
-To read and process a file in non-interactive mode, pipe the file content to the CLI.
+
+You can also read and process a file in non-interactive mode via the CLI.
+Consider that you have the following DDL file:
+
+```cypher
+// schema.cypher
+CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name));
+COPY Person FROM 'person.csv';
+```
+
+Pipe the file content to the CLI as follows:
 
 ```bash
-./kuzu testdb < tinysnb/schema.cypher
----------------------------------------
-| outputMsg                           |
----------------------------------------
-| NodeTable: person has been created. |
+./kuzu testdb < schema.cypher
+```
+```
+Opened the database at path: ./test_db in read-write mode.
+Enter ":help" for usage hints.
+┌────────────────────────────────┐
+│ result                         │
+│ STRING                         │
+├────────────────────────────────┤
+│ Table Person has been created. │
+└────────────────────────────────┘
+(1 tuple)
+(1 column)
+Time: 0.04ms (compiling), 0.82ms (executing)
+┌────────────────────────────────────────────────┐
+│ result                                         │
+│ STRING                                         │
+├────────────────────────────────────────────────┤
+│ 4 tuples have been copied to the Person table. │
+└────────────────────────────────────────────────┘
+(1 tuple)
+(1 column)
+Time: 0.09ms (compiling), 11.75ms (executing)
 ```
 
 ## Query progress
+
+For queries that might take a significant amount of time to execute, a progress bar can be enabled that displays
+the number of pipelines that have been executed (each query is broken down into one or more pipelines), 
+as well as the percentage of the data processed in a pipeline. This gives an estimate for how much of a pipeline
+has executed.
+
 ![](./progress_bar.gif)
-You can view the progress of a query by enabling the progress bar. To enable the progress bar, use the following Cypher command:
+
+The progress bar is not enabled by default. To enable the progress bar, use the following command:
 
 ```cypher
 CALL progress_bar=true;
