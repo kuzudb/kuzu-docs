@@ -14,6 +14,10 @@ CREATE SEQUENCE Seq;
 CREATE SEQUENCE Seq2 INCREMENT 1 MINVALUE 1 NO MAXVALUE START 1 NO CYCLE;
 ```
 
+You can also drop an existing sequence using the `DROP SEQUENCE` statement. See the
+[DROP SEQUENCE](/cypher/data-definition/drop#drop-sequence)
+documentation for more information.
+
 The following optional arguments can be provided when creating a sequence:
 
 <div class="scroll-table">
@@ -27,6 +31,69 @@ The following optional arguments can be provided when creating a sequence:
 `[ NO ] CYCLE` | Whether or not the sequence should wrap when `maxvalue` and `minvalue` are reached for ascending and descending sequences respectively.<li>If `CYCLE`, the next generated value after the limit will then be the `minvalue` or `maxvalue`, respectively.<li>If `NO CYCLE`, which is the default, any further increments to the sequence will error out.
 
 </div>
+
+## Sequence functions
+
+Below, we summarize the existing functions that can operate on sequence objects.
+
+### Selecting the next value of a sequence
+
+To generate the sequence, use the `nextval` command (until this is done, the sequence doesn't exist
+in the database). For the existing `id_sequence`, you can return the next value in the sequence as shown below:
+
+```sql
+RETURN nextval('sq') AS nextval;
+```
+```
+┌─────────┐
+│ nextval │
+│ INT64   │
+├─────────┤
+│ 30      │
+└─────────┘
+```
+
+### Selecting the current value of a sequence
+
+To view the current value of the sequence, use the `currval` command as shown below:
+
+```sql
+RETURN currval('sq') AS currval;
+```
+```
+┌─────────┐
+│ nextval │
+│ INT64   │
+├─────────┤
+│ 30      │
+└─────────┘
+```
+
+Note that the `nextval` function must already have been called before, otherwise the sequence does
+not yet exist and a Catalog error will be thrown to indicate this.
+
+## Show available sequences
+
+Once you generate a sequence, you can view all available sequences in the database using the
+`CALL` clause as shown below:
+
+```
+kuzu> CREATE SEQUENCE Seq;
+kuzu> CALL SHOW_SEQUENCES() RETURN *;
+┌────────┬───────────────┬─────────────┬───────────┬───────────┬─────────────────────┬───────┐
+│ name   │ database name │ start value │ increment │ min value │ max value           │ cycle │
+│ STRING │ STRING        │ INT64       │ INT64     │ INT64     │ INT64               │ BOOL  │
+├────────┼───────────────┼─────────────┼───────────┼───────────┼─────────────────────┼───────┤
+│ Seq    │ local(kuzu)   │ 1           │ 1         │ 1         │ 9223372036854775807 │ False │
+└────────┴───────────────┴─────────────┴───────────┴───────────┴─────────────────────┴───────┘
+```
+
+To see the full list of available arguments to the `SHOW_SEQUENCES()` function, see
+[this page](/cypher/query-clauses/call#show_sequences).
+
+## Usage
+
+In this section, we list some common ways you can use sequences in your database.
 
 ### Using sequences for primary keys
 
@@ -105,43 +172,3 @@ MATCH (a:User)-[r:Transaction]->(b:User) RETURN r.id, r.amount;
 │ 1     │ 100      │
 └───────┴─────────┘
 ```
-
-## Sequence functions
-
-Below, we summarize the existing functions that can operate on sequence objects.
-
-### Selecting the next value of a sequence
-
-To generate the sequence, use the `nextval` command (until this is done, the sequence doesn't exist
-in the database). For the existing `id_sequence`, you can return the next value in the sequence as shown below:
-
-```sql
-RETURN nextval('sq') AS nextval;
-```
-```
-┌─────────┐
-│ nextval │
-│ INT64   │
-├─────────┤
-│ 30      │
-└─────────┘
-```
-
-### Selecting the current value of a sequence
-
-To view the current value of the sequence, use the `currval` command as shown below:
-
-```sql
-RETURN currval('sq') AS currval;
-```
-```
-┌─────────┐
-│ nextval │
-│ INT64   │
-├─────────┤
-│ 30      │
-└─────────┘
-```
-
-Note that the `nextval` function must already have been called before, otherwise the sequence does
-not yet exist and a Catalog error will be thrown to indicate this.

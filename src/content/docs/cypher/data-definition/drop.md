@@ -3,6 +3,8 @@ title: Drop
 description: Drop DDL statement
 ---
 
+## Drop a table
+
 Dropping a table removes the table and all its data from the database.
 
 :::caution[Note]
@@ -41,15 +43,22 @@ DROP TABLE User
 -------------------------------------
 ```
 
-## Drop SEQUENCE
+## Drop a sequence
 
-You can drop a `SEQUENCE` similar to the way you drop a table:
+Consider the following sequence:
 
 ```sql
-DROP SEQUENCE sequence_name;
+CREATE SEQUENCE Seq;
 ```
 
-## IF EXISTS
+You can drop a `SEQUENCE` as follows:
+
+```sql
+DROP SEQUENCE Seq;
+```
+Once dropped, the sequence is no longer available in the database.
+
+## Drop if exists
 If the given table does not exist in the database, Kùzu throws an exception when you try to drop it.
 To avoid the exception being raised, use the `IF EXISTS` clause. This instructs Kùzu to do nothing when
 the given table name does not exist in the database.
@@ -59,3 +68,9 @@ Example:
 DROP TABLE IF EXISTS UW
 ```
 This query tells Kùzu to drop the `UW` table only if it exists.
+
+You can also drop a sequence if it exists as follows:
+
+```sql
+DROP SEQUENCE IF EXISTS Seq;
+```
