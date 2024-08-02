@@ -72,7 +72,7 @@ from an external Kùzu database switches your Kùzu database to become the local
 
 ## Using local cache for remote files
 
-When connecting to remote external Kùzu database, say the `'s3://kuzu-example/university`  database in our example above, 
+When connecting to a remote external Kùzu database, say the `'s3://kuzu-example/university`  database in our example above, 
 you would use the `httpfs` extension. When querying this remote database in Cypher, Kùzu will make HTTPS calls to the 
 remote server to query this database. Similar to how you can speed up `LOAD FROM` queries using the [local httpfs cache](/extensions/httpfs#local-cache-for-remote-files) 
 for scanning remote files, you can also speed up your Cypher queries by using the local httpfs cache.
