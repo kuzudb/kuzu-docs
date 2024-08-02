@@ -16,6 +16,7 @@ RETURN *;
 The system optimizer has its freedom to generate a query plan that finds all edges from `a` to `b` using forward adjacency list or from `b` to `a` using a backward adjacency list. Both query plans are semantically equivalent and generate the same query result. There is, however, a potential performance difference because `a` and `b` may have different cardinalities.
 
 To enforce a particular join order (you may want to do this for experimental purposes, or when the optimizer provides a sub-optimal plan), use `HINT` and write a join order with the following rules:
+- Join hints work within the scope of a single `MATCH` pattern. Hints across different join patterns is not supported.
 - All node/relationship variable must be named and appear in the join order
 - The join order is a binary tree where the tree node is either a variable or a sub-join order tree enclosed in parentheses
 

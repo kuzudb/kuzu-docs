@@ -437,11 +437,11 @@ Output:
 | --- | ---
 | fixed | represents a relationship in a graph
 
-`REL` is a logical type. Internally, `REL` is processed as `STRUCT` type. A `REL` always contains a
+`REL` is a logical type that represents a relationship (i.e., an edge). Internally, `REL` is processed as `STRUCT` type. A `REL` always contains a
 src ID field with key `_SRC`, a dst ID field with key `_DST`, an internal ID field with key `_ID`
 and a label field with key `_LABEL`. The rest fields are rel properties.
 
-Here's how to return `REL` column:
+Here's how to return a relationship column that's of type `REL`:
 ```cypher
 MATCH (a:User)-[e:Follows]->(b:User)
 RETURN e;
@@ -553,13 +553,13 @@ the following two triples:
 ----------------------------------------------------------------------------------
 ```
 
-## PATH
+## RECURSIVE_REL
 
-`PATH` is a logical type. Internally, `PATH` is processed as `STRUCT` type, more specifically, a
-`STRUCT{LIST[NODE], LIST[REL]}`. A `PATH` always contains a nodes field with the key `_NODES` and a
+`RECURSIVE_REL` is a logical type that represents recursive relationships. i.e., paths of arbitrary lengths. Internally, `RECURSIVE_REL` is processed as `STRUCT` type, more specifically, a
+`STRUCT{LIST[NODE], LIST[REL]}`. A `RECURSIVE_REL` always contains a nodes field with the key `_NODES` and a
 relationships field with the key `_RELS`.
 
-#### Return `PATH` column
+#### Return a column that's of type `RECURSIVE_REL`
 ```cypher
 MATCH p = (a:User)-[:Follows]->(b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
@@ -570,7 +570,7 @@ Output:
 {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]}
 ```
 
-#### Access all nodes on a path
+#### Access all nodes on a recursive relationship
 ```cypher
 MATCH p = (a:User)-[:Follows]->(b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
@@ -581,7 +581,7 @@ Output:
 [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}]
 ```
 
-#### Access all rels on a path
+#### Access all relationships on a recursive relationship
 ```cypher
 MATCH p = (a:User)-[:Follows]->(b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
