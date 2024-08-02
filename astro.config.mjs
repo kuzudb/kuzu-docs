@@ -114,7 +114,7 @@ export default defineConfig({
                         { label: 'Macros', link: '/cypher/macro' },
                         { label: 'Transactions', link: '/cypher/transaction' },
                         { label: 'Attach/Detach To External Databases', link: '/cypher/attach' },
-                        { label: 'Connection configuration', link: '/cypher/configuration' },
+                        { label: 'Configuration', link: '/cypher/configuration' },
                     ],
                     autogenerate: { directory: 'reference' },
                 },

@@ -1,11 +1,13 @@
 ---
-title: Connection configuration
+title: Configuration
+description: "Connection and database configuration"
 ---
 
-The configuration of a connection to Kùzu database can be changed through a standalone `CALL`
+The configuration of a Kùzu database or a connection to the database can be changed through a standalone `CALL`
 statement, described in this section. Different from the `CALL` clause, this statement of changing
 configuration **cannot** be used with other query clauses.
 
+### Connection configuration
 | Option | Description | Default |
 | ----------- | --------------- | ------ |
 | `THREADS` | number of threads used by execution | system maximum threads |
@@ -14,9 +16,15 @@ configuration **cannot** be used with other query clauses.
 | `ENABLE_SEMI_MASK` | enables the semi mask optimization | true |
 | `HOME_DIRECTORY`| system home directory | user home directory |
 | `FILE_SEARCH_PATH`| file search path | N/A |
-| `PROGRESS_BAR` | enable progress bar in CLI  | false | 
+| `PROGRESS_BAR` | enable progress bar in CLI  | false |
 | `PROGRESS_BAR_TIME` | show progress bar after time in ms  | 1000 |
 | `CHECKPOINT_THRESHOLD` | the WAL size threshold at which to automatically trigger a checkpoint | 16777216 |
+
+### Database configuration
+| Option | Description | Default |
+| ----------- | --------------- | ------ |
+| `CHECKPOINT_THRESHOLD` | the WAL size threshold at which to automatically trigger a checkpoint | 16777216 |
+
 
 #### Configure execution threads
 ```cypher
