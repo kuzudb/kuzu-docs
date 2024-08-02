@@ -283,7 +283,7 @@ and both queries output:
 --------------------------------------------------------------------
 ```
 
-## Match variable length/recursive relationships
+## Match recursive relationships
 You can also find paths that are of variable length between node records. Variable-length relationships
 are sometimes known as recursive patterns or recursive joins. Specifically, you can find variable-hop
 connections between nodes by specifying in the relationship patterns,
@@ -335,9 +335,9 @@ Output:
 - Karissa is found through `Noura <- User -> Karissa`
 - Kitchener is found through `Noura <- User -> Kitchener`
 
-### Return variable length/recursive relationships
+### Return recursive relationships
 
-A variable length relationship is a `STURCT{LIST[NODE], LIST[REL]}`. Returning a variable length relationship will return all properties 
+A recursive relationship has logical data type `RECURSIVE RELATIONSHIP` and is physically represented as `STURCT{LIST[NODE], LIST[RELATIONSHIP]}`. Returning a recursive relationship will return all properties 
 ```cypher
 MATCH (a:User)-[e:Follows*1..2]->(b:User) 
 WHERE a.name = 'Adam'
@@ -358,8 +358,8 @@ Output:
 ----------------------------------------------------------------------------------------------
 ```
 
-#### Filter variable length/recursive relationships
-We also support running predicates on recursive patterns to constrain the relationship being traversed.
+#### Filter recursive relationships
+We also support running predicates on recursive relationships to constrain the relationship being traversed.
 
 The following query finds name of users and the number of path that are followed between 1 - 2 hops from Adam by person with age more than 45 and before 2022.
 ```cypher
@@ -382,9 +382,9 @@ Our filter grammar is similar to that used by [Memgraph](https://memgraph.com/do
 for example, in Cypher list comprehensions. The first variable represents intermediate relationships and the second one represents intermediate nodes.
 
 ### Project properties of intermediate nodes/relationships
-You can project a subset of properties for the intermediate nodes and relationships that bind within a variable length
+You can project a subset of properties for the intermediate nodes and relationships that bind within a recursive
 relationship. You can define the projection list of intermediate nodes and relationships within two curly brackets `{}` `{}` at 
-the end of the variable length pattern. The first `{}` is used for projecting relationship properties and the second `{}` for 
+the end of the recursive relationship. The first `{}` is used for projecting relationship properties and the second `{}` for 
 node properties. Currently, Kùzu only supports directly projecting properties and not of expressions using
 the properties. Projecting properties of intermediate nodes and relationships can improve both performance and memory footprint.
 
@@ -459,7 +459,7 @@ There are two interpretations when the lower bound is greater than 1:
 
 ## Named paths
 Kùzu treats paths as a first-class citizen, so users can assign a named variable to a path (i.e. connected graph ) and use it later on.
- 
+
 The following query returns all paths between `Adam` and `Karissa`.
 ```cypher
 MATCH p = (a:User)-[:Follows]->(b:User) 
@@ -512,7 +512,7 @@ Output:
 ```
 
 ### Extracting nodes and relationships from a path
-Internally `PATH` is processed as a `STRUCT{LIST[NODE], LIST[REL]}` see [`PATH data type`](/cypher/data-types/#path) for details. Users can access nodes and relationships within a path through `nodes(p)` and `rels(p)` function calls.
+Named path has logical data type [`RECURSIVE RELATIONSHIP`](/cypher/data-types/#path). Users can access nodes and relationships within a path through `nodes(p)` and `rels(p)` function calls.
 
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2]->(:User) 
@@ -533,7 +533,7 @@ Output:
 | [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
 --------------------------------------------------------------------------------------------
 ```
-More path functions can be found [here](/cypher/expressions/path-functions).
+More recursive relationship functions can be found [here](/cypher/expressions/path-functions).
 
 [^1]: `MATCH` is similar to the `FROM` clause of SQL, where the list of tables that need to be joined are specified. 
 [^2]: Max number of hop will be set to 30 if omitted. You can change the configuration through `SET` statement.
