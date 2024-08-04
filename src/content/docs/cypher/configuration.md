@@ -4,7 +4,7 @@ description: "Connection and database configuration"
 ---
 
 The configuration of a Kùzu database or a connection to the database can be changed through a standalone `CALL`
-statement, described in this section. Different from the `CALL` clause, this statement of changing
+statement, described in this section. Different from the [`CALL` clause](/cypher/query-clauses/call), which is used for executing schema functions, this statement of changing
 configuration **cannot** be used with other query clauses.
 
 ### Connection configuration

@@ -3,7 +3,11 @@ title: Call
 description: CALL clause is a reading clause used for executing schema functions.
 ---
 
-The `CALL` clause is used for executing schema functions. The following tables lists
+`CALL` can be used both as a statement and a clause.
+
+The `CALL` statement is used to change connection or database configuration, and **cannot** be used with other query clauses. Please see [Configuration](/cypher/configuration) for more details.
+
+The `CALL` clause is used for executing schema functions and **can** be used with other query clauses. The following tables lists
 the built-in schema functions:
 
 | Function | Description |
