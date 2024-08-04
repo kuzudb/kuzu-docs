@@ -4,12 +4,13 @@ title: JSON extension
 
 ## Usage
 
-The `json` extension adds support for the `JSON` datatype, including a set of functions for JSON
-access and manipulation, scanning from, and copying to JSON files.
+The `json` extension adds support for a set of functions for JSON
+access and manipulation, scanning from, and copying to JSON files. *This extension currently does not
+support storing Json files natively in Kùzu as a node or relationship property.*
 
 You can install the JSON extension by running the following command:
 
-```sql
+```
 INSTALL json;
 LOAD EXTENSION json;
 ```
@@ -61,12 +62,12 @@ LOAD FROM 'people.json' RETURN *;
 Output:
 ```
 ┌───────┬─────────┬──────────────┬─────────────────────────────────────────────────────────────────────────────────────┐
-│ id    │ name    │ registry_date │ info                                                                                │
-│ UINT8 │ STRING  │ STRING       │ STRUCT(height DOUBLE, age UINT8, previous_usernames STRING[])                        │
+│ id    │ name    │ registry_date │ info                                                                               │
+│ UINT8 │ STRING  │ STRING       │ STRUCT(height DOUBLE, age UINT8, previous_usernames STRING[])                       │
 ├───────┼─────────┼──────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
 │ 2     │ Gregory │              │                                                                                     │
-│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]}              │
-│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]} │
+│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]}           │
+│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]}             │
 └───────┴─────────┴──────────────┴─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -84,11 +85,11 @@ Output:
 ```
 ┌───────┬─────────┬──────────────┬─────────────────────────────────────────────────────────────────────────────────────┐
 │ id    │ name    │ registryDate │ info                                                                                │
-│ INT64 │ STRING  │ DATE         │ STRUCT(height DOUBLE, age INT64, previous_usernames STRING[])                        │
+│ INT64 │ STRING  │ DATE         │ STRUCT(height DOUBLE, age INT64, previous_usernames STRING[])                       │
 ├───────┼─────────┼──────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
 │ 2     │ Gregory │              │                                                                                     │
-│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]}              │
-│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]} │
+│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]}           │
+│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]}             │
 └───────┴─────────┴──────────────┴─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -182,8 +183,8 @@ and assume everything is a `STRING`
 │ STRING │ STRING  │ STRING                                                                               │ STRING       │
 ├────────┼─────────┼──────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
 │ 2      │ Gregory │                                                                                      │              │
-│ 1      │ Bob     │ {"height":1.81,"age":71,"previous_usernames":["the_builder","the_minion"]}              │              │
-│ 0      │ Alice   │ {"height":1.68,"age":45,"previous_usernames":["alice123","alice_34425"]} │ 2024-07-31   │
+│ 1      │ Bob     │ {"height":1.81,"age":71,"previous_usernames":["the_builder","the_minion"]}           │              │
+│ 0      │ Alice   │ {"height":1.68,"age":45,"previous_usernames":["alice123","alice_34425"]}             │ 2024-07-31   │
 └────────┴─────────┴──────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
 ```
 

@@ -77,7 +77,9 @@ RETURN age, name LIMIT 3;
 By default, Kùzu will infer the column names and data types from the scan source automatically.
 - For Parquet, Pandas, Polars and PyArrow, column names and data types are always available in the data source
 - For CSV, we use header names as properties if available, otherwise we fallback naming to `column0, column1, ...`. We also assume that all data types are `STRING` if no data type information is available in the header
-- For JSON, we use keys as column names, and infer a common data type from each key's values
+- For JSON, we use keys as column names, and infer a common data type from each key's values. To use `LOAD FROM` with JSON, you need
+to have the [JSON extension](/extensions/json) installed. More details on using `LOAD FROM` with JSON files is provided 
+on the documentation page for the [JSON extension](/extensions/json).
 
 To enforce specific column names and data types when reading, you can use the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
 
@@ -256,3 +258,7 @@ age: int64
 name: [["Adam","Karissa","Zhang"]]
 age: [[30,40,50]]
 ```
+
+### JSON
+Kùzu can scan JSON files using `LOAD FROM. 
+All JSON-related features are part of the JSON extension. See the documentation on the [JSON extension](/extensions/json#load-from) for details.
