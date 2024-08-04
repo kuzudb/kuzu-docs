@@ -638,3 +638,18 @@ The following result is obtained:
 :::tip[Congratulations]
 You've now created and queried your first graph in Kùzu!
 :::
+
+## In-memory Mode
+Kùzu supports both on-disk and in-memory mode.
+
+When the database path is omitted, or specified as empty or `:memory:`, Kùzu will be open under in-memory mode.
+Otherwise, it will be open under on-disk mode.
+
+Under on-disk mode, all data will be persistent on disk. All transactions are logged in WAL, in which changes will be merged into database files during checkpoint.
+While under the in-memory mode, there is no writes to WAL, no data is persistent to disk and `CHECKPOINT` will do nothing. 
+All data are lost when the process finishes.
+
+Compared to on-disk mode, there are several restrictions on the in-memory mode:
+- The database cannot be open as read-only.
+- When use [Httpfs](/extensions/httpfs) extension, we don't support file cache.
+- [Attaching](/extensions/attach) an in-memory database is not allowed.
