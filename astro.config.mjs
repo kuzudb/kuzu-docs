@@ -78,6 +78,7 @@ export default defineConfig({
                         { label: 'Copy from NumPy', link: '/import/npy' },
                         { label: 'Copy from subquery', link: '/import/copy-from-subquery'},
                         { label: 'Copy from DataFrames', link: '/import/copy-from-dataframe', badge: { text: 'New'}},
+                        { label: 'Copy from JSON', link: '/import/json' },
                     ]
                 },
                 {
@@ -87,6 +88,7 @@ export default defineConfig({
                         { label: 'Overview', link: '/export' },
                         { label: 'Copy to CSV', link: '/export/csv' },
                         { label: 'Copy to Parquet', link: '/export/parquet' },
+                        { label: 'Copy to JSON', link: '/export/json' },
                     ]
                 },
                 {
