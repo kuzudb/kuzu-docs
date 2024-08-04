@@ -10,7 +10,7 @@ support storing Json files natively in Kùzu as a node or relationship property.
 
 You can install the JSON extension by running the following command:
 
-```
+```sql
 INSTALL json;
 LOAD EXTENSION json;
 ```
