@@ -3,7 +3,7 @@ title: Call
 description: CALL clause is a reading clause used for executing schema functions.
 ---
 
-`CALL` can be used both as a statement and a clause.
+`CALL` can be used both as a statement and a clause but with different semantics.
 
 The `CALL` statement is used to change connection or database configuration, and **cannot** be used with other query clauses. Please see [Configuration](/cypher/configuration) for more details.
 
