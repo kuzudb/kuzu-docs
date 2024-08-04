@@ -10,7 +10,7 @@ join algorithm used by the system.
 ## HINT and JOIN clauses
 
 We explain the `HINT` clause through an example. Consider the following query:
-```
+```cypher
 MATCH (a:person)-[e:LivesIn]->(b:City)
 WHERE b.ID = 0
 RETURN *;
@@ -29,7 +29,7 @@ by using the `HINT` clause and writing a join order. This works as follows:
 - The join order is a binary tree, expressed through the structure of the parentheses inside the `HINT` clause. Every sub-tree in the plan specified by `HINT` must be connected.
 
 As an example, the below hint enforces a query plan that scans edges using backward adjacency lists from `b`:
-```
+```cypher
 MATCH (a)-[e]->(b)
 WHERE b.ID = 0
 HINT a JOIN (e JOIN b)
@@ -75,7 +75,8 @@ For example, in the following triangle query,  Kùzu will compute `(a JOIN e1)`,
 Then for each `(a, e1, b)` tuple, the Kùzu's WCOJ operator will find the forward adjacency list for `e2` and `e3` and intersect them to
 produce  `(a, e1, b, e2, e3, c)` outputs.
 ```cypher
-MATCH (a:person)<-[e1:knows]-(b:person)-[e2:knows]->(c:person), (a)-[e3:knows]->(c)
+MATCH (a:person)<-[e1:knows]-(b:person)-[e2:knows]->(c:person),
+      (a)-[e3:knows]->(c)
 HINT (((a JOIN e1) JOIN b) MULTI_JOIN e2 MULTI_JOIN e3) JOIN c
 RETURN COUNT(*)
 ```
