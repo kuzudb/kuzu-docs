@@ -100,11 +100,12 @@ RETURN CAST(127.3, "DECIMAL(5, 2)") AS result;
 ```
 Output:
 ```
-----------
-| result |
-----------
-| 127.30 |
-----------
+┌───────────────┐
+│ result        │
+│ DECIMAL(5, 2) │
+├───────────────┤
+│ 127.30        │
+└───────────────┘
 ```
 
 Note that if you attempt to cast with a precision or scale that is too small, an overflow exception
@@ -140,11 +141,12 @@ RETURN UUID('A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11') as result;
 
 Output:
 ```
----------------------------------------------
-| result                                    |
----------------------------------------------
-| a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11      |
----------------------------------------------
+┌──────────────────────────────────────┐
+│ result                               │
+│ UUID                                 │
+├──────────────────────────────────────┤
+│ a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11 │
+└──────────────────────────────────────┘
 ```
 
 ## STRING
@@ -164,11 +166,12 @@ RETURN 'Зарегистрируйтесь, σπαθιοῦ, Yen [jɛn], kΩ' AS
 Output:
 
 ```
----------------------------------------------
-| str                                       |
----------------------------------------------
-| Зарегистрируйтесь, σπαθιοῦ, Yen [jɛn], kΩ |
----------------------------------------------
+┌───────────────────────────────────────────┐
+│ str                                       │
+│ STRING                                    │
+├───────────────────────────────────────────┤
+│ Зарегистрируйтесь, σπ...                  │
+└───────────────────────────────────────────┘
 ```
 
 ## NULL
@@ -190,11 +193,12 @@ RETURN 3 = null;
 ```
 Output:
 ```
-------------
-| 3 = null |
-------------
-|          |
-------------
+┌────────────┐
+│ EQUALS(3,) │
+│ BOOL       │
+├────────────┤
+│            │
+└────────────┘
 ```
 
 Compare `NULL` with `NULL`:
@@ -203,11 +207,12 @@ RETURN null = null;
 ```
 Output:
 ```
----------------
-| null = null |
----------------
-|             |
----------------
+┌───────────┐
+│ EQUALS(,) │
+│ BOOL      │
+├───────────┤
+│           │
+└───────────┘
 ```
 Kùzu's CLI returns an empty cell to indicate nulls.
 
@@ -225,11 +230,12 @@ RETURN date('2022-06-06') as x;
 ```
 Output:
 ```
---------------
-| x          |
---------------
-| 2022-06-06 |
---------------
+┌────────────┐
+│ x          │
+│ DATE       │
+├────────────┤
+│ 2022-06-06 │
+└────────────┘
 ```
 
 ## TIMESTAMP
@@ -250,11 +256,12 @@ RETURN timestamp("1970-01-01 00:00:00.004666-10") as x;
 ```
 Output:
 ```
-------------------------------
-| x                          |
-------------------------------
-| 1970-01-01 10:00:00.004666 |
-------------------------------
+┌────────────────────────────┐
+│ x                          │
+│ TIMESTAMP                  │
+├────────────────────────────┤
+│ 1970-01-01 10:00:00.004666 │
+└────────────────────────────┘
 ```
 
 ## INTERVAL
@@ -273,11 +280,12 @@ RETURN interval("1 year 2 days") as x;
 ```
 Output:
 ```
------------------
-| x             |
------------------
-| 1 year 2 days |
------------------
+┌───────────────┐
+│ x             │
+│ INTERVAL      │
+├───────────────┤
+│ 1 year 2 days │
+└───────────────┘
 ```
 
 ## STRUCT
@@ -298,11 +306,12 @@ RETURN {first: 'Adam', last: 'Smith'};
 
 Output:
 ```
--------------------------------
-| STRUCT_PACK(Adam,Smith)    |
--------------------------------
-| {FIRST: Adam, LAST: Smith} |
--------------------------------
+┌───────────────────────────────────┐
+│ STRUCT_PACK(first,last)           │
+│ STRUCT(first STRING, last STRING) │
+├───────────────────────────────────┤
+│ {first: Adam, last: Smith}        │
+└───────────────────────────────────┘
 ```
 
 You can extract a value from a `STRUCT` using the dot notation:
@@ -313,11 +322,12 @@ RETURN full_name.first AS first_name;
 ```
 Output:
 ```
--------------
-| first_name |
--------------
-| Adam |
--------------
+┌────────────┐
+│ first_name │
+│ STRING     │
+├────────────┤
+│ Adam       │
+└────────────┘
 ```
 
 Alternatively you can use the `struct_extract()` function
@@ -351,11 +361,12 @@ RETURN map([1, 2], ['a', 'b']) AS m;
 ```
 Output:
 ```
---------------
-| m          |
---------------
-| {1=a, 2=b} |
---------------
+┌────────────────────┐
+│ m                  │
+│ MAP(INT64, STRING) │
+├────────────────────┤
+│ {1=a, 2=b}         │
+└────────────────────┘
 ```
 
 Functions that work on map objects can be found [here](/cypher/expressions/map-functions).
@@ -389,13 +400,13 @@ COPY demo from "demo.csv";
 MATCH (d:demo) RETURN d.b;
 ```
 ```
--------
-| d.b |
--------
-| 1   |
--------
-| aa  |
--------
+┌──────────────────────────────┐
+│ d.b                          │
+│ UNION(num INT64, str STRING) │
+├──────────────────────────────┤
+│ 1                            │
+│ aa                           │
+└──────────────────────────────┘
 ```
 
 Functions that work on `UNION` data types can be found [here](/cypher/expressions/union-functions).
@@ -416,11 +427,12 @@ RETURN BLOB('\\xBC\\xBD\\xBA\\xAA') as result;
 ```
 Output:
 ```
----------------------------------------------
-| result                                    |
----------------------------------------------
-| \xBC\xBD\xBA\xAA                          |
----------------------------------------------
+┌──────────────────┐
+│ result           │
+│ BLOB             │
+├──────────────────┤
+│ \xBC\xBD\xBA\xAA │
+└──────────────────┘
 ```
 
 ## SERIAL
@@ -436,24 +448,25 @@ by some other databases.
 Alice
 Bob
 Carol
+Dan
 ```
 
 ```cypher
 CREATE NODE TABLE Person(id SERIAL, name STRING, PRIMARY KEY(id));
 COPY Person FROM 'person.csv';
-MATCH (a:Person) RETURN a;
+MATCH (a:Person) RETURN a.*;
 ```
 Output:
 ```
--------------------------------------------
-| a                                       |
--------------------------------------------
-| (label:Person, 3:0, {id:0, name:Alice}) |
--------------------------------------------
-| (label:Person, 3:1, {id:1, name:Bob})   |
--------------------------------------------
-| (label:Person, 3:2, {id:2, name:Carol}) |
--------------------------------------------
+┌────────┬────────┐
+│ a.id   │ a.name │
+│ SERIAL │ STRING │
+├────────┼────────┤
+│ 0      │ Alice  │
+│ 1      │ Bob    │
+│ 2      │ Carol  │
+│ 3      │ Dan    │
+└────────┴────────┘
 ```
 
 #### Using `SERIAL` for properties in relationship tables
@@ -474,24 +487,26 @@ CREATE REL TABLE Transfer (from User to User, trx_id SERIAL);
 `NODE` is a logical data type. Internally, `NODE` is processed as `STRUCT` type. A `NODE` always contains
 an internal ID field with key `_ID` and a label field with key `_LABEL`. The rest fields are node properties.
 
-Here's how to return `NODE` column:
+Here's how to return `NODE` column for a file `person.csv`:
+```
+
+```
 ```cypher
-MATCH (a:User)
-RETURN a;
+CREATE NODE TABLE Person(id SERIAL, name STRING, age INT64, PRIMARY KEY(id));
+COPY Person FROM 'person.csv';
+MATCH (a:Person) RETURN a;
 ```
 Output:
 ```
-----------------------------------------------------
-| a                                                |
-----------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30}    |
-----------------------------------------------------
-| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} |
-----------------------------------------------------
-| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}   |
-----------------------------------------------------
-| {_ID: 0:3, _LABEL: User, name: Noura, age: 25}   |
-----------------------------------------------------
+┌─────────────────────────────────────────────────────────┐
+│ a                                                       │
+│ NODE                                                    │
+├─────────────────────────────────────────────────────────┤
+│ {_ID: 0:0, _LABEL: Person, id: 0, name: Alice, age: 30} │
+│ {_ID: 0:1, _LABEL: Person, id: 1, name: Bob, age: 20}   │
+│ {_ID: 0:2, _LABEL: Person, id: 2, name: Carol, age: 25} │
+│ {_ID: 0:3, _LABEL: Person, id: 3, name: Dan, age: 28}   │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## REL
@@ -506,22 +521,20 @@ and a label field with key `_LABEL`. The rest fields are rel properties.
 
 Here's how to return a relationship column that's of type `REL`:
 ```cypher
-MATCH (a:User)-[e:Follows]->(b:User)
-RETURN e;
+MATCH (a:Person)-[r:Follows]->(b:Person)
+RETURN r;
 ```
 Output:
 ```
----------------------------------------------------------
-| e                                                     |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) |
----------------------------------------------------------
-| (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) |
----------------------------------------------------------
-| (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) |
----------------------------------------------------------
+┌───────────────────────────────────────────────┐
+│ r                                             │
+│ REL                                           │
+├───────────────────────────────────────────────┤
+│ (0:0)-{_LABEL: Follows, _ID: 1:0, since: 2... │
+│ (0:1)-{_LABEL: Follows, _ID: 1:1, since: 2... │
+│ (0:2)-{_LABEL: Follows, _ID: 1:2, since: 2... │
+│ (0:3)-{_LABEL: Follows, _ID: 1:3, since: 2... │
+└───────────────────────────────────────────────┘
 ```
 
 ## RECURSIVE_REL
@@ -543,24 +556,34 @@ Output:
 
 #### Access all nodes on a recursive relationship
 ```cypher
-MATCH p = (a:User)-[:Follows]->(b:User) 
-WHERE a.name = 'Adam' AND b.name = 'Karissa' 
+MATCH p = (a:Person)-[:Follows]->(b:Person) 
+WHERE a.name = 'Alice' AND b.name = 'Bob' 
 RETURN nodes(p);
 ```
 Output:
 ```
-[{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}]
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ NODES(p)                                                                        │
+│ NODE[]                                                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ [{_ID: 0:0, _LABEL: Person, name: Alice},{_ID: 0:1, _LABEL: Person, name: Bob}] │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 #### Access all relationships on a recursive relationship
 ```cypher
-MATCH p = (a:User)-[:Follows]->(b:User) 
-WHERE a.name = 'Adam' AND b.name = 'Karissa' 
+MATCH p = (a:Person)-[:Follows]->(b:Person) 
+WHERE a.name = 'Alice' AND b.name = 'Bob' 
 RETURN rels(p);
 ```
 Output:
 ```
-[(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]
+┌─────────────────────────────────────────────────────────┐
+│ RELS(p)                                                 │
+│ REL[]                                                   │
+├─────────────────────────────────────────────────────────┤
+│ [(0:0)-{_LABEL: Follows, _ID: 1:0, since: 2024}->(0:1)] │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## LIST and ARRAY
@@ -584,6 +607,7 @@ When working with RDFGraphs, the [Literals node table](/rdf-graphs/rdfgraphs-ove
 For example, consider the following triples in a Turtle file:
 
 ```turtle
+// example.ttl
 @prefix kz: <http://kuzu.io/rdf-ex#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -600,15 +624,14 @@ RETURN a.iri, p.iri, o.val;
 ```
 Output:
 ```
--------------------------------------------------------------------------------------------------
-| a.iri                          | p.iri                                           | o.val      |
--------------------------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#Waterloo | http://kuzu.io/rdf-ex#altitude1                 | 329.000000 |
--------------------------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#Waterloo | http://kuzu.io/rdf-ex#population                | 10000      |
--------------------------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#Waterloo | http://kuzu.io/rdf-ex#name                      | Waterloo   |
--------------------------------------------------------------------------------------------------
+┌────────────────────────────────┬──────────────────────────────────┬─────────────┐
+│ a.iri                          │ p.iri                            │ o.val       │
+│ STRING                         │ STRING                           │ RDF_VARIANT │
+├────────────────────────────────┼──────────────────────────────────┼─────────────┤
+│ http://kuzu.io/rdf-ex#Waterloo │ http://kuzu.io/rdf-ex#altitude1  │ 329.000000  │
+│ http://kuzu.io/rdf-ex#Waterloo │ http://kuzu.io/rdf-ex#population │ 10000       │
+│ http://kuzu.io/rdf-ex#Waterloo │ http://kuzu.io/rdf-ex#name       │ Waterloo    │
+└────────────────────────────────┴──────────────────────────────────┴─────────────┘
 ```
 In the output above the data types of the values in `o.val` are as follows:
 - `329.000000` is a double
@@ -648,10 +671,12 @@ The `DATE` type needs to be cast explicitly as in `CAST("2024-01-01", "DATE")`wh
 can be provided as is. This is because `DATE` is not an automatically inferred data type. The above two `CREATE` statements will create 
 the following two triples:
 ```
-----------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#foo | http://kuzu.io/rdf-ex#doublepredicate | 4.400000   |
-----------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#foo | http://kuzu.io/rdf-ex#datepredicate   | 2024-01-01 |
-----------------------------------------------------------------------------------
+┌────────────────────────────────┬───────────────────────────────────────┬─────────────┐
+│ a.iri                          │ p.iri                                 │ o.val       │
+│ STRING                         │ STRING                                │ RDF_VARIANT │
+├────────────────────────────────┼───────────────────────────────────────┼─────────────┤
+│ http://kuzu.io/rdf-ex#foo      │ http://kuzu.io/rdf-ex#doublepredicate │ 4.400000    │
+│ http://kuzu.io/rdf-ex#foo      │ http://kuzu.io/rdf-ex#datepredicate   │ 2024-01-01  │
+└────────────────────────────────┴───────────────────────────────────────┴─────────────┘
 ```
 
