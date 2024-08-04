@@ -133,7 +133,7 @@ export default defineConfig({
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}}, 
                     ],
                 },
-                { label: 'Understand concurrency', link: '/concurrency', badge: { text: 'New'} },
+                { label: 'Connections & concurrency', link: '/concurrency', badge: { text: 'New'} },
                 {
                     label: 'Tutorials',
                     collapsed: true,
