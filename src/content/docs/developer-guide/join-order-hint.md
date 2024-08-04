@@ -80,6 +80,8 @@ HINT (((a JOIN e1) JOIN b) MULTI_JOIN e2 MULTI_JOIN e3) JOIN c
 RETURN COUNT(*)
 ```
 
-*Note: If in your `HINT` you use `MULTI_JOIN` with a single relation, i.e., when k-1 is 1, then this will not produce
+:::note[Note]
+If in your `HINT` you use `MULTI_JOIN` with a single relation, i.e., when k-1 is 1, then this will not produce
 a plan with a WCOJ operator because to perform intersections, there needs to be at least 2 sets of adjacency lists to intersect.
 Instead `MULTI_JOIN` will be treated as JOIN.
+:::
