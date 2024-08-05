@@ -188,11 +188,11 @@ export default defineConfig({
                             label: 'External databases',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
-                                { label: 'External Kùzu databases', link: '/extensions/attach/kuzu' },
+                                { label: 'External Kùzu databases', link: '/extensions/attach/kuzu', badge: { text: 'New'}  },
                                 { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
                             ]
                         },
-                        { label: 'JSON', link: '/extensions/json'},
+                        { label: 'JSON', link: '/extensions/json', badge: { text: 'New'} },
                     ],
                     autogenerate: { directory: 'reference' },
                 },
