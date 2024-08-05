@@ -3,17 +3,20 @@ title: Call
 description: CALL clause is a reading clause used for executing schema functions.
 ---
 
-The `CALL` clause is used for executing schema functions. The following tables lists
-the built-in schema functions:
+The `CALL` clause is used for executing schema functions. This way of using `CALL` needs to be followed
+with other query clauses, such as `RETURN` (see below for many examples) and is 
+different from the standalone [`CALL` statement](/cypher/configuration) used for changing configuration.
+The following tables lists the built-in schema functions you can use with the `CALL` clause:
 
 | Function | Description |
 | ----------- | --------------- |
-| `TABLE_INFO('tableName')` | returns metadata information of the given table |
 | `CURRENT_SETTING('setting')` | returns the value of the given setting |
 | `DB_VERSION()` | returns the version of Kùzu |
 | `SHOW_TABLES()` | returns the name, type, comment of all tables in the database |
 | `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database |
 | `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases |
+| `SHOW_FUNCTIONS()` | returns all registered functions in the database |
+| `TABLE_INFO('tableName')` | returns metadata information of the given table |
 
 ### TABLE_INFO
 

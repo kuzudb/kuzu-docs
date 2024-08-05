@@ -2,6 +2,8 @@
 title: Shell Panel
 ---
 
+## Query editor
+
 Using the Shell Panel, you can interactively issue queries to your loaded database
 and visualize the results in several different views. You issue queries by using
 the canvases on your screen, which have a red X and green play icon on the left side.
@@ -32,3 +34,18 @@ Finally query results can be output in JSON format as shown below by clicking th
 left hand side of a canvas.
 
 <img src="/img/visualization/query-result-json-view.png" />
+
+## Query progress
+
+For queries that might take a significant amount of time to execute, a progress bar can be enabled that displays
+the number of pipelines that have been executed (each query is broken down into one or more pipelines), 
+as well as the percentage of the data processed in a pipeline. This gives an estimate for how much of a pipeline
+has executed.
+
+The progress bar is not enabled by default. To enable the progress bar, use the following command:
+
+```cypher
+CALL progress_bar=true;
+```
+
+To further configure the progress bar, see the [configuration](/cypher/configuration) section.

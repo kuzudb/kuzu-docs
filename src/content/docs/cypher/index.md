@@ -23,7 +23,35 @@ query languages, most of its semantics can be understood as mappings to relation
 for selections, joins, projections and aggregations.
 
 Kùzu implements openCypher's[^1] standard predicates and expressions. The following sections in this
-chapter covers all Cypher clauses, expressions and functions implemented in Kùzu.
+chapter covers all Cypher statements, clauses, expressions and functions implemented in Kùzu.
+
+## Statements vs. clauses
+
+In Cypher, a statement is a complete query that can be executed on its own. A statement can contain one or more
+clauses, and can span multiple lines. The end of a statement is marked with a semicolon `;`, and the
+query parser looks for this symbol to know when a statement is complete.
+
+A clause is a part of a statement that performs a specific operation. For example, the `MATCH` clause
+is used to find patterns in the graph, the `RETURN` clause is used to specify what subset of the matched
+data to return, and so on.
+
+### Multi-line statements
+
+You can execute multiple query statements sequentially in the CLI, rather than
+executing them one by one. To run a multi-line statements, simply end each valid statement you want
+to execute with a semicolon `;`. For example:
+
+```cypher
+MATCH (p1:Person)
+WHERE p1.age <= 18
+RETURN p1.name AS non_adult;
+
+MATCH (p2:Person)
+WHERE p2.age > 18
+RETURN p2.name AS adult;
+```
+When you copy-paste the above blocks into the Kùzu CLI and press Enter, it will execute each block
+sequentially, so you don't have to send individual queries one at a time.
 
 ---
 

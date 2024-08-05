@@ -48,10 +48,21 @@ Importing from NumPy is a specific use case that allows you to import numeric da
 ## `COPY FROM` subquery results
 
 You can copy data from a subquery's results into a node or relationship table.
-This is useful when you need to transform data before inserting it into the database, or if you want
-to copy data from a `LOAD FROM` scan operation on another data format.
+This is useful when you need to modify existing data and re-insert it into the database, or if youw
+want to copy data from a `LOAD FROM` scan operation on another data format.
 
 <LinkCard
   title="Import results from a subquery"
-  href="/import/copy-from-query-results"
+  href="/import/copy-from-subquery"
+/>
+
+## `COPY FROM` DataFrames
+
+You can copy data from a Pandas or Polars DataFrame into a node or relationship table. This is useful 
+when you are already doing your data transformations in either Pandas or Polars DataFrames and want to
+directly insert results from their columns into a Kùzu table.
+
+<LinkCard
+  title="Import results from a DataFrame"
+  href="/import/copy-from-dataframe"
 />

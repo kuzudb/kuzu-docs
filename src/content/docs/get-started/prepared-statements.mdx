@@ -7,16 +7,14 @@ we can also have Cypher injection in graph databases. This is when a user can ma
 to execute arbitrary code that can threaten the integrity of the data. As a best practice, it's
 generally to provide parameters to your Cypher queries instead of using string literals in your code.
 
-In this guide, we'll show how to run prepared Cypher statements with parameters in Kùzu.
+This section shows to run *prepared* Cypher statements with parameters while working with a client
+API in Kùzu.
 
 ## Why use parameters?
 
-In addition to security, you may want to use parameters in your Cypher queries for greater flexibility
-and dynamically adding data to your graph.
-
 Consider a scenario where you want to retrieve all persons in a database who are older than a certain age.
 Instead of hardcoding the age value into a Cypher query, it would make more sense to pass it as a parameter
-to the query, so that the same query can be run with different values.
+to the query, so that the same query can be reused for other values.
 
 Another situation where parameters are useful is when you want to loop through a list of records and
 write each record to the database. Because records may have differnt values for a given property, it's
@@ -24,8 +22,8 @@ a good idea to use parameters to provide the values dynamically.
 
 ## Syntax
 
-Parameterized variables in Cypher are marked using the `$` symbol. The following query asks for only
-persons who are between a minimum and maximum age in the database. The below example in Python shows
+Parameterized variables in Cypher are marked using the `$` symbol. The below query asks for only
+persons who are between a minimum and maximum age in the database. In the Python API, the example shows
 how to specify the parameters as a dictionary in the `parameters` argument of the `execute` method
 of the connection object.
 
@@ -48,12 +46,12 @@ conn.execute(
 )
 ```
 
-The act of using parameters in your queries is known as running **prepared statements**.
+If you're working with other client APIs, similar principles apply.
 
 #### ❌ Not recommended
 
 Although it's possible to pass the `min_age` and `max_age` variables directly into the query as
-string literals, this is strongly discouraged in practice.
+string literals, this is **strongly** discouraged in practice.
 
 ```py
 min_age = 18

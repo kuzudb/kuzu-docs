@@ -1,17 +1,16 @@
 ---
-title: Path functions
-description: Path functions are used to manipulate path.
+title: Recursive relationship functions
+description: Functions that are used to manipulate recursive relationships
 ---
-
-Path functions are used to manipulate paths, which are a sequence of nodes and relationships.
 
 | Function | Description |
 | ----------- | ----------- |
-| `NODES`| returns all nodes from path |
-| `RELS` | returns all rels from path |
-| `PROPERTIES` | return given property from nodes/rels |
-| `IS_TRAIL` | check if path contains repeated rels |
+| `NODES`| returns all nodes from a recursive relationship |
+| `RELS` | returns all rels from a recursive relationship |
+| `PROPERTIES` | return given property from nodes/relationships |
+| `IS_TRAIL` | check if path contains repeated relationships |
 | `IS_ACYCLIC` | check if path contains repeated nodes |
+| `LENGTH` | returns the number of relationships (path length) in a recursive relationship |
 
 ### NODES
 
@@ -19,7 +18,7 @@ Returns all nodes from path.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `PATH` | `LIST[NODE]` |
+| `RECURSIVE_REL` | `LIST[NODE]` |
 
 
 ```cypher
@@ -43,11 +42,11 @@ Output:
 ```
 ### RELS
 
-Returns all rels from path.
+Returns all relationships from a recursive relationship.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `PATH` | `LIST[REL]` |
+| `RECURSIVE_REL` | `LIST[REL]` |
 
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2]->(:User) 
@@ -71,7 +70,7 @@ Output:
 
 ### PROPERTIES
 
-Return given property from nodes/rels.
+Return given property from nodes/relationships.
 
 | Input type | Output type |
 | ----------- | ----------- |
@@ -99,11 +98,11 @@ Output:
 
 ### IS_TRAIL
 
-Check if path contains repeated relationships.
+Check if a recursive relationship contains repeated relationships.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `PATH` | `BOOLEAN` |
+| `RECURSIVE_REL` | `BOOLEAN` |
 
 ```cypher
 MATCH p = (a:User)-[:Follows*2..2]-(b:User) 
@@ -129,11 +128,11 @@ Output
 
 ### IS_ACYCLIC
 
-Check if path contains repeated nodes.
+Check if a recursive relationship contains repeated nodes.
 
 | Input type | Output type |
 | ----------- | ----------- |
-| `PATH` | `BOOLEAN` |
+| `RECURSIVE_REL` | `BOOLEAN` |
 
 ```cypher
 MATCH p = (a:User)-[:Follows*2..2]-(b:User) 
@@ -156,3 +155,28 @@ Output:
 | [Adam,Zhang,Noura]        | True          |
 ---------------------------------------------
 ```
+
+### LENGTH
+
+Return the number of relationships (path length) in a recursive relationship.
+
+```cypher
+MATCH p = (a:User)-[f:Follows*1..2]->(b:User) 
+RETURN LENGTH(p);
+```
+```
+----------------
+| LENGTH(p)    |
+----------------
+| 1            |
+----------------
+| 2            |
+----------------
+| 1            |
+----------------
+| 2            |
+----------------
+```
+
+The `LENGTH` function when applied to a recursive relationship is shorthand for `SIZE(rels(p))`,
+which also returns the same result.

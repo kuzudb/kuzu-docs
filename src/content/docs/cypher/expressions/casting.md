@@ -1,14 +1,23 @@
 ---
-title: Casting Functions
-description: Casting functions are used to cast values from one type to another.
+title: Casting
+description: Casting is the act of converting a value that is of one particular data type to another data type.
 ---
 
-Kùzu supports casting values to different data types via an explicit casting `CAST(source, type)` function.
+Casting refers to the operation of converting a value that is of one particular data type, to another data type.
+This is done in Kùzu using the `CAST` function.
+
+There are two ways to utilize the `CAST` function. The syntax for either approach is below:
+
+- `CAST(source, "type:)`: In this approach, you pass in the source value as an argument to the `CAST` function, and the target data type as a string argument.
+- `CAST(source AS type)`: In this approach, you use the `AS` keyword to cast the provided value to the target data type.
 
 A floating-point number can be cast to an integer:
 
 ```cypher
+// This works
 RETURN CAST(2.3, "INT8") AS l;
+// This also works
+RETURN CAST(2.3 AS INT8) AS l;
 ```
 Returns:
 ```
@@ -25,7 +34,7 @@ if the input's value is not suitable to cast. For example, casting the `STRING` 
 `INT` is well defined -- you cannot cast `"abc"` to `INT`, but you can cast `"12"` to `INT`.
 
 ```cypher
-RETURN CAST("12", "INT") AS l;
+RETURN CAST("12" AS INT) AS l;
 ```
 Returns:
 ```
@@ -38,7 +47,7 @@ Returns:
 A string array can be cast to an integer array as follows:
 
 ```cypher
-RETURN CAST("[1,2,3]", "INT[]") AS l;
+RETURN CAST("[1,2,3]" AS INT[]) AS l;
 ```
 Returns:
 ```

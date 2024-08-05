@@ -74,17 +74,54 @@ shows all built-in data types.
 | --- | --- | ---
 | 8 bytes | double precision floating-point number | FLOAT8
 
+## DECIMAL
+
+| Size | Description
+| --- | ---
+| variable | arbitrary fixed precision decimal number
+
+For numbers where exact precision is required, the `DECIMAL` data type can be used. The `DECIMAL` type is
+specified as `DECIMAL(precision, scale)`, where `precision` is the total number of digits and
+`scale` is the number of digits to the right of the decimal point.
+
+Internally, decimals are represented as integers depending on their specified width.
+
+| Precision | Internal | Size (bytes)
+| --- | --- | ---
+| 1-4 | INT16 | 2
+| 5-9 | INT32 | 4
+| 10-18 | INT64 | 8
+| 19-38 | INT128 | 16
+
+You can explicitly cast a number (either integer or float) to a `DECIMAL` as follows:
+
+```cypher
+RETURN CAST(127.3, "DECIMAL(5, 2)") AS result;
+```
+Output:
+```
+┌───────────────┐
+│ result        │
+│ DECIMAL(5, 2) │
+├───────────────┤
+│ 127.30        │
+└───────────────┘
+```
+
+Note that if you attempt to cast with a precision or scale that is too small, an overflow exception
+will be raised:
+```cypher
+RETURN CAST(127.3, "DECIMAL(4, 2)");
+```
+```
+Error: Overflow exception: To Decimal Cast Failed: 127.300000 is not in DECIMAL(4, 2) range
+```
+
 ## BOOLEAN
 
 | Size | Description
 | --- | ---
 | 1 byte | true/false
-
-## STRUCT
-
-| Size | Description
-| --- | ---
-| fixed | a dictionary or map where keys are of type STRING
 
 ## UUID
 
@@ -104,11 +141,12 @@ RETURN UUID('A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11') as result;
 
 Output:
 ```
----------------------------------------------
-| result                                    |
----------------------------------------------
-| a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11      |
----------------------------------------------
+┌──────────────────────────────────────┐
+│ result                               │
+│ UUID                                 │
+├──────────────────────────────────────┤
+│ a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11 │
+└──────────────────────────────────────┘
 ```
 
 ## STRING
@@ -128,11 +166,12 @@ RETURN 'Зарегистрируйтесь, σπαθιοῦ, Yen [jɛn], kΩ' AS
 Output:
 
 ```
----------------------------------------------
-| str                                       |
----------------------------------------------
-| Зарегистрируйтесь, σπαθιοῦ, Yen [jɛn], kΩ |
----------------------------------------------
+┌───────────────────────────────────────────┐
+│ str                                       │
+│ STRING                                    │
+├───────────────────────────────────────────┤
+│ Зарегистрируйтесь, σπ...                  │
+└───────────────────────────────────────────┘
 ```
 
 ## NULL
@@ -154,11 +193,12 @@ RETURN 3 = null;
 ```
 Output:
 ```
-------------
-| 3 = null |
-------------
-|          |
-------------
+┌────────────┐
+│ EQUALS(3,) │
+│ BOOL       │
+├────────────┤
+│            │
+└────────────┘
 ```
 
 Compare `NULL` with `NULL`:
@@ -167,11 +207,12 @@ RETURN null = null;
 ```
 Output:
 ```
----------------
-| null = null |
----------------
-|             |
----------------
+┌───────────┐
+│ EQUALS(,) │
+│ BOOL      │
+├───────────┤
+│           │
+└───────────┘
 ```
 Kùzu's CLI returns an empty cell to indicate nulls.
 
@@ -189,11 +230,12 @@ RETURN date('2022-06-06') as x;
 ```
 Output:
 ```
---------------
-| x          |
---------------
-| 2022-06-06 |
---------------
+┌────────────┐
+│ x          │
+│ DATE       │
+├────────────┤
+│ 2022-06-06 │
+└────────────┘
 ```
 
 ## TIMESTAMP
@@ -214,11 +256,12 @@ RETURN timestamp("1970-01-01 00:00:00.004666-10") as x;
 ```
 Output:
 ```
-------------------------------
-| x                          |
-------------------------------
-| 1970-01-01 10:00:00.004666 |
-------------------------------
+┌────────────────────────────┐
+│ x                          │
+│ TIMESTAMP                  │
+├────────────────────────────┤
+│ 1970-01-01 10:00:00.004666 │
+└────────────────────────────┘
 ```
 
 ## INTERVAL
@@ -237,12 +280,136 @@ RETURN interval("1 year 2 days") as x;
 ```
 Output:
 ```
------------------
-| x             |
------------------
-| 1 year 2 days |
------------------
+┌───────────────┐
+│ x             │
+│ INTERVAL      │
+├───────────────┤
+│ 1 year 2 days │
+└───────────────┘
 ```
+
+## STRUCT
+
+A `STRUCT` is a mapping of key-value pairs where the keys are of the type `STRING`. `STRUCT` is a
+**fixed-size** data type so values with the same `STRUCT` type must contain the same set of key-value pairs.
+You can think of a `STRUCT` column as a nested single column over multiple other columns.
+
+| Data Type | DDL definition |
+| --- | --- |
+| STRUCT | STRUCT(a INT64, b INT64) |
+
+To construct a `STRUCT`, provide a mapping of keys to values as follows:
+
+```cypher
+RETURN {first: 'Adam', last: 'Smith'};
+```
+
+Output:
+```
+┌───────────────────────────────────┐
+│ STRUCT_PACK(first,last)           │
+│ STRUCT(first STRING, last STRING) │
+├───────────────────────────────────┤
+│ {first: Adam, last: Smith}        │
+└───────────────────────────────────┘
+```
+
+You can extract a value from a `STRUCT` using the dot notation:
+
+```cypher
+WITH {first: 'Adam', last: 'Smith'} AS full_name
+RETURN full_name.first AS first_name;
+```
+Output:
+```
+┌────────────┐
+│ first_name │
+│ STRING     │
+├────────────┤
+│ Adam       │
+└────────────┘
+```
+
+Alternatively you can use the `struct_extract()` function
+```cypher
+WITH {first:'Adam', last: 'Smith'} AS full_name
+RETURN struct_extract(full_name, 'first') AS first_name;
+```
+
+Functions that work on `STRUCT`s can be found [here](/cypher/expressions/struct-functions).
+
+## MAP
+
+A `MAP` is a dictionary of key-value pairs where all keys have the same type and all values have the
+same type. `MAP` is similar to `STRUCT` in that it is an ordered list of mappings. However, `MAP` does
+not need to have the same keys present for each row, and is thus more suitable when the schema of an entity
+is unknown beforehand or when the schema varies per row.
+
+`MAP`s must have a single type for all keys, and a single type for all values. Additionally, keys of
+a `MAP` do not need to be `STRING`s like they do in a `STRUCT`.
+
+| Data Type | DDL definition |
+| --- | --- |
+| MAP | MAP(STRING, INT64) |
+
+To construct a `MAP`, provide a list of keys and a list of values. The keys and values must be of the same length.
+
+Example:
+
+```cypher
+RETURN map([1, 2], ['a', 'b']) AS m;
+```
+Output:
+```
+┌────────────────────┐
+│ m                  │
+│ MAP(INT64, STRING) │
+├────────────────────┤
+│ {1=a, 2=b}         │
+└────────────────────┘
+```
+
+Functions that work on map objects can be found [here](/cypher/expressions/map-functions).
+
+## UNION
+
+Similar to C++ `std::variant`, `UNION` is a nested data type that is capable of holding multiple
+alternative values with different types. The value under key `"tag"` is considered as the value being
+currently hold by the `UNION`.
+
+Internally, `UNION` are implemented as `STRUCT` with `"tag"` as one of its keys.
+
+| Data Type | DDL definition
+| --- | --- | 
+| UNION | UNION(price FLOAT, note STRING) | 
+
+Consider the following CSV file:
+```
+// demo.csv
+1
+aa
+```
+
+Example
+```cypher
+CREATE NODE TABLE demo(a SERIAL, b UNION(num INT64, str STRING), PRIMARY KEY(a));
+COPY demo from "demo.csv";
+```
+
+```cypher
+MATCH (d:demo) RETURN d.b;
+```
+```
+┌──────────────────────────────┐
+│ d.b                          │
+│ UNION(num INT64, str STRING) │
+├──────────────────────────────┤
+│ 1                            │
+│ aa                           │
+└──────────────────────────────┘
+```
+
+Functions that work on `UNION` data types can be found [here](/cypher/expressions/union-functions).
 
 ## BLOB
 
@@ -260,43 +427,55 @@ RETURN BLOB('\\xBC\\xBD\\xBA\\xAA') as result;
 ```
 Output:
 ```
----------------------------------------------
-| result                                    |
----------------------------------------------
-| \xBC\xBD\xBA\xAA                          |
----------------------------------------------
+┌──────────────────┐
+│ result           │
+│ BLOB             │
+├──────────────────┤
+│ \xBC\xBD\xBA\xAA │
+└──────────────────┘
 ```
 
 ## SERIAL
 
-`SERIAL` is a logical data type and usually used for creating an incremental sequence of unique
-identifier column (similar to `AUTO_INCREMENT` supported by some other databases).
+`SERIAL` is a logical data type used for creating an auto-incrementing sequence of numbers, typically
+used as a unique column identifier, similar to `AUTO_INCREMENT` feature supported
+by some other databases. 
 
-Here's how to use `SERIAL` on a primary key column for a CSV file that has the following
-values:
+#### Using `SERIAL` as primary key column in node tables
+
 ```
 // person.csv
 Alice
 Bob
 Carol
+Dan
 ```
 
 ```cypher
-CREATE NODE TABLE Person(ID SERIAL, name STRING, PRIMARY KEY(ID));
-COPY Person FROM `person.csv`;
-MATCH (a:Person) RETURN a;
+CREATE NODE TABLE Person(id SERIAL, name STRING, PRIMARY KEY(id));
+COPY Person FROM 'person.csv';
+MATCH (a:Person) RETURN a.*;
 ```
 Output:
 ```
--------------------------------------------
-| a                                       |
--------------------------------------------
-| (label:Person, 3:0, {ID:0, name:Alice}) |
--------------------------------------------
-| (label:Person, 3:1, {ID:1, name:Bob})   |
--------------------------------------------
-| (label:Person, 3:2, {ID:2, name:Carol}) |
--------------------------------------------
+┌────────┬────────┐
+│ a.id   │ a.name │
+│ SERIAL │ STRING │
+├────────┼────────┤
+│ 0      │ Alice  │
+│ 1      │ Bob    │
+│ 2      │ Carol  │
+│ 3      │ Dan    │
+└────────┴────────┘
+```
+
+#### Using `SERIAL` for properties in relationship tables
+
+You can create relationship tables that have a `SERIAL` property column. For example, consider a
+scenario where you want to auto-generate a unique transaction ID for each transfer between users.
+
+```cypher
+CREATE REL TABLE Transfer (from User to User, trx_id SERIAL);
 ```
 
 ## NODE
@@ -308,24 +487,26 @@ Output:
 `NODE` is a logical data type. Internally, `NODE` is processed as `STRUCT` type. A `NODE` always contains
 an internal ID field with key `_ID` and a label field with key `_LABEL`. The rest fields are node properties.
 
-Here's how to return `NODE` column:
+Here's how to return `NODE` column for a file `person.csv`:
+```
+
+```
 ```cypher
-MATCH (a:User)
-RETURN a;
+CREATE NODE TABLE Person(id SERIAL, name STRING, age INT64, PRIMARY KEY(id));
+COPY Person FROM 'person.csv';
+MATCH (a:Person) RETURN a;
 ```
 Output:
 ```
-----------------------------------------------------
-| a                                                |
-----------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30}    |
-----------------------------------------------------
-| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} |
-----------------------------------------------------
-| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}   |
-----------------------------------------------------
-| {_ID: 0:3, _LABEL: User, name: Noura, age: 25}   |
-----------------------------------------------------
+┌─────────────────────────────────────────────────────────┐
+│ a                                                       │
+│ NODE                                                    │
+├─────────────────────────────────────────────────────────┤
+│ {_ID: 0:0, _LABEL: Person, id: 0, name: Alice, age: 30} │
+│ {_ID: 0:1, _LABEL: Person, id: 1, name: Bob, age: 20}   │
+│ {_ID: 0:2, _LABEL: Person, id: 2, name: Carol, age: 25} │
+│ {_ID: 0:3, _LABEL: Person, id: 3, name: Dan, age: 28}   │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## REL
@@ -334,28 +515,75 @@ Output:
 | --- | ---
 | fixed | represents a relationship in a graph
 
-`REL` is a logical type. Internally, `REL` is processed as `STRUCT` type. A `REL` always contains a
+`REL` is a logical type that represents a relationship (i.e., an edge). Internally, `REL` is processed as `STRUCT` type. A `REL` always contains a
 src ID field with key `_SRC`, a dst ID field with key `_DST`, an internal ID field with key `_ID`
 and a label field with key `_LABEL`. The rest fields are rel properties.
 
-Here's how to return `REL` column:
+Here's how to return a relationship column that's of type `REL`:
 ```cypher
-MATCH (a:User)-[e:Follows]->(b:User)
-RETURN e;
+MATCH (a:Person)-[r:Follows]->(b:Person)
+RETURN r;
 ```
 Output:
 ```
----------------------------------------------------------
-| e                                                     |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) |
----------------------------------------------------------
-| (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) |
----------------------------------------------------------
-| (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) |
----------------------------------------------------------
+┌───────────────────────────────────────────────┐
+│ r                                             │
+│ REL                                           │
+├───────────────────────────────────────────────┤
+│ (0:0)-{_LABEL: Follows, _ID: 1:0, since: 2... │
+│ (0:1)-{_LABEL: Follows, _ID: 1:1, since: 2... │
+│ (0:2)-{_LABEL: Follows, _ID: 1:2, since: 2... │
+│ (0:3)-{_LABEL: Follows, _ID: 1:3, since: 2... │
+└───────────────────────────────────────────────┘
+```
+
+## RECURSIVE_REL
+
+`RECURSIVE_REL` is a logical type that represents recursive relationships. i.e., paths of arbitrary lengths. Internally, `RECURSIVE_REL` is processed as `STRUCT` type, more specifically, a
+`STRUCT{LIST[NODE], LIST[REL]}`. A `RECURSIVE_REL` always contains a nodes field with the key `_NODES` and a
+relationships field with the key `_RELS`.
+
+#### Return a column that's of type `RECURSIVE_REL`
+```cypher
+MATCH p = (a:User)-[:Follows]->(b:User) 
+WHERE a.name = 'Adam' AND b.name = 'Karissa' 
+RETURN p;
+```
+Output:
+```
+{_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]}
+```
+
+#### Access all nodes on a recursive relationship
+```cypher
+MATCH p = (a:Person)-[:Follows]->(b:Person) 
+WHERE a.name = 'Alice' AND b.name = 'Bob' 
+RETURN nodes(p);
+```
+Output:
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ NODES(p)                                                                        │
+│ NODE[]                                                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ [{_ID: 0:0, _LABEL: Person, name: Alice},{_ID: 0:1, _LABEL: Person, name: Bob}] │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Access all relationships on a recursive relationship
+```cypher
+MATCH p = (a:Person)-[:Follows]->(b:Person) 
+WHERE a.name = 'Alice' AND b.name = 'Bob' 
+RETURN rels(p);
+```
+Output:
+```
+┌─────────────────────────────────────────────────────────┐
+│ RELS(p)                                                 │
+│ REL[]                                                   │
+├─────────────────────────────────────────────────────────┤
+│ [(0:0)-{_LABEL: Follows, _ID: 1:0, since: 2024}->(0:1)] │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## LIST and ARRAY
@@ -365,13 +593,13 @@ Kùzu supports two list-like data types: (i) variable-length lists, simply calle
 
 <LinkCard
   title="LIST and ARRAY"
-  href="/cypher/data-types/list"
+  href="/cypher/data-types/list-and-array"
   description="Example usage of LIST and ARRAY data types"
 />
 
 ## VARIANT
 
-Variant is a data type that can store values of various data types (similar to the `sql_variant` data type of SQLServer).
+`VARIANT` is a data type that can store values of various data types (similar to the `sql_variant` data type of SQLServer).
 Currently it can only be used to store [RDF literals](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal) in [RDFGraphs](/rdf-graphs). 
 That is, you cannot create a regular node or relationship table that holds a column of type VARIANT.
 When working with RDFGraphs, the [Literals node table](/rdf-graphs/rdfgraphs-overview#rdfgraphs-mapping-of-triples-to-property-graph-tables)'s 
@@ -379,6 +607,7 @@ When working with RDFGraphs, the [Literals node table](/rdf-graphs/rdfgraphs-ove
 For example, consider the following triples in a Turtle file:
 
 ```turtle
+// example.ttl
 @prefix kz: <http://kuzu.io/rdf-ex#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -395,96 +624,59 @@ RETURN a.iri, p.iri, o.val;
 ```
 Output:
 ```
--------------------------------------------------------------------------------------------------
-| a.iri                          | p.iri                                           | o.val      |
--------------------------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#Waterloo | http://kuzu.io/rdf-ex#altitude1                 | 329.000000 |
--------------------------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#Waterloo | http://kuzu.io/rdf-ex#population                | 10000      |
--------------------------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#Waterloo | http://kuzu.io/rdf-ex#name                      | Waterloo   |
--------------------------------------------------------------------------------------------------
+┌────────────────────────────────┬──────────────────────────────────┬─────────────┐
+│ a.iri                          │ p.iri                            │ o.val       │
+│ STRING                         │ STRING                           │ RDF_VARIANT │
+├────────────────────────────────┼──────────────────────────────────┼─────────────┤
+│ http://kuzu.io/rdf-ex#Waterloo │ http://kuzu.io/rdf-ex#altitude1  │ 329.000000  │
+│ http://kuzu.io/rdf-ex#Waterloo │ http://kuzu.io/rdf-ex#population │ 10000       │
+│ http://kuzu.io/rdf-ex#Waterloo │ http://kuzu.io/rdf-ex#name       │ Waterloo    │
+└────────────────────────────────┴──────────────────────────────────┴─────────────┘
 ```
-In the output above the data types of the values in `o.val` are as follows (data types are not rendered in Kùzu cli's output)
-- 329.000000 is a double
-- 10000 is an integer
-- "Waterloo" is a string
+In the output above the data types of the values in `o.val` are as follows:
+- `329.000000` is a double
+- `10000` is an integer
+- `"Waterloo"` is a string
 
 These different types are stored under the same column `val` of the `Literals` node table.
-The following Kùzu data types can be stored in a Variant column. You can use the `cast` function to cast a value to a 
-specific data type before storing it in a Variant column (as will be demonstrated in the `CREATE` statement 
+The following Kùzu data types can be stored in a `VARIANT` column. You can use the `CAST` function to cast a value to a 
+specific data type before storing it in a `VARIANT` column (as will be demonstrated in the `CREATE` statement 
 examples momentarily).
 
 | Kùzu Data Type | CAST Function Example |
 |----------------|-----------------------|
-| INT8           | cast(2, "INT8")       |
-| INT16          | cast(2, "INT16")      |
-| INT32          | cast(2, "INT32")      | 
-| INT64          | cast(2, "INT64")      |
-| UINT8          | cast(2, "UINT8")      |
-| UINT16         | cast(2, "UINT16")     |
-| UINT32         | cast(2, "UINT32")     | 
-| UINT64         | cast(2, "UINT64")     |
-| DOUBLE         | cast(4.4, "DOUBLE")   |
-| FLOAT          | cast(4.4, "FLOAT")    |
-| BLOB           | cast("\\xB2", "BLOB") |
-| BOOL           | cast("true", "BOOL")  |
-| STRING         | cast(123, "STRING")   |
-| DATE           | cast("2024-01-01", "DATE") |
-| TIMESTAMP      | cast("2024-01-01 11:25:30Z+00:00", "TIMESTAMP") |
-| INTERVAL       | cast("1 year", "INTERVAL") |
+| INT8           | `CAST(2, "INT8")`       |
+| INT16          | `CAST(2, "INT16")`      |
+| INT32          | `CAST(2, "INT32")`      | 
+| INT64          | `CAST(2, "INT64")`      |
+| UINT8          | `CAST(2, "UINT8") `     |
+| UINT16         | `CAST(2, "UINT16")`     |
+| UINT32         | `CAST(2, "UINT32")`     | 
+| UINT64         | `CAST(2, "UINT64")`     |
+| DOUBLE         | `CAST(4.4, "DOUBLE")`   |
+| FLOAT          | `CAST(4.4, "FLOAT")`    |
+| BLOB           | `CAST("\\xB2", "BLOB")` |
+| BOOL           | `CAST("true", "BOOL")`  |
+| STRING         | `CAST(123, "STRING")`   |
+| DATE           | `CAST("2024-01-01", "DATE")` |
+| TIMESTAMP      | `CAST("2024-01-01 11:25:30Z+00:00", "TIMESTAMP")` |
+| INTERVAL       | `CAST("1 year", "INTERVAL")` |
 
-For example, the below code adds new triples into an RDFGraph with type date and float, respectively:
+For example, the below code adds new triples into an RDFGraph with type `DATE` and `FLOAT`, respectively:
 ```cypher
-CREATE (a:UniKG_r {iri:"http://kuzu.io/rdf-ex#foo"})-[p:UniKG_lt {iri:"http://kuzu.io/rdf-ex#datepredicate"}]->(o:UniKG_l {val:cast("2024-01-01", "DATE")});
+CREATE (a:UniKG_r {iri:"http://kuzu.io/rdf-ex#foo"})-[p:UniKG_lt {iri:"http://kuzu.io/rdf-ex#datepredicate"}]->(o:UniKG_l {val:CAST("2024-01-01", "DATE")});
 CREATE (a:UniKG_r {iri:"http://kuzu.io/rdf-ex#foo"})-[p:UniKG_lt {iri:"http://kuzu.io/rdf-ex#doublepredicate"}]->(o:UniKG_l {val:4.4});
 ```
-Above, DATE type needs to be cast explicitly as in "cast("2024-01-01", "DATE")" while 4.4, which is of type DOUBLE, 
-can be provided as is. This is because DATE is not an automatically inferred data type. The above two CREATE statements will create 
+The `DATE` type needs to be cast explicitly as in `CAST("2024-01-01", "DATE")`while `4.4`, which is of type `DOUBLE`, 
+can be provided as is. This is because `DATE` is not an automatically inferred data type. The above two `CREATE` statements will create 
 the following two triples:
 ```
-----------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#foo | http://kuzu.io/rdf-ex#doublepredicate | 4.400000   |
-----------------------------------------------------------------------------------
-| http://kuzu.io/rdf-ex#foo | http://kuzu.io/rdf-ex#datepredicate   | 2024-01-01 |
-----------------------------------------------------------------------------------
+┌────────────────────────────────┬───────────────────────────────────────┬─────────────┐
+│ a.iri                          │ p.iri                                 │ o.val       │
+│ STRING                         │ STRING                                │ RDF_VARIANT │
+├────────────────────────────────┼───────────────────────────────────────┼─────────────┤
+│ http://kuzu.io/rdf-ex#foo      │ http://kuzu.io/rdf-ex#doublepredicate │ 4.400000    │
+│ http://kuzu.io/rdf-ex#foo      │ http://kuzu.io/rdf-ex#datepredicate   │ 2024-01-01  │
+└────────────────────────────────┴───────────────────────────────────────┴─────────────┘
 ```
 
-## PATH
-
-`PATH` is a logical type. Internally, `PATH` is processed as `STRUCT` type, more specifically, a
-`STRUCT{LIST[NODE], LIST[REL]}`. A `PATH` always contains a nodes field with the key `_NODES` and a
-relationships field with the key `_RELS`.
-
-#### Return `PATH` column
-```cypher
-MATCH p = (a:User)-[:Follows]->(b:User) 
-WHERE a.name = 'Adam' AND b.name = 'Karissa' 
-RETURN p;
-```
-Output:
-```
-{_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]}
-```
-
-#### Access all nodes on a path
-```cypher
-MATCH p = (a:User)-[:Follows]->(b:User) 
-WHERE a.name = 'Adam' AND b.name = 'Karissa' 
-RETURN nodes(p);
-```
-Output:
-```
-[{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}]
-```
-
-#### Access all rels on a path
-```cypher
-MATCH p = (a:User)-[:Follows]->(b:User) 
-WHERE a.name = 'Adam' AND b.name = 'Karissa' 
-RETURN rels(p);
-```
-Output:
-```
-[(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]
-```

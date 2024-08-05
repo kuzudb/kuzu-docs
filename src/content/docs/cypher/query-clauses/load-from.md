@@ -10,7 +10,7 @@ perform simple transformation tasks like rearranging column order.
 `LOAD FROM` is designed to be used in the exact same way as `MATCH`, meaning that it can be followed
 by arbitrary clauses like `CREATE`, `WHERE`, `RETURN`, and so on.
 
-## LOAD FROM
+## Example usage
 
 Some example usage for the `LOAD FROM` clause is shown below.
 
@@ -27,6 +27,13 @@ RETURN COUNT(*);
 ----------------
 ```
 
+To skip the first 2 lines of the CSV file, you can use the `SKIP` parameter as follows:
+
+```cypher
+LOAD FROM "user.csv" (header = true, skip = 2)
+RETURN *;
+```
+
 ### Create nodes from input file
 ```cypher
 LOAD FROM "user.csv" (header = true)
@@ -41,8 +48,6 @@ MATCH (u:User) RETURN u;
 | {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} |
 ----------------------------------------------------
 | {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}   |
-----------------------------------------------------
-| {_ID: 0:3, _LABEL: User, name: Noura, age: 25}   |
 ----------------------------------------------------
 ```
 
@@ -69,15 +74,24 @@ RETURN age, name LIMIT 3;
 ```
 
 ### Enforce Schema
-To enforce a specific schema and data types when reading from CSV, you can use the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
+By default, Kùzu will infer the column names and data types from the scan source automatically.
+- For Parquet, Pandas, Polars and PyArrow, column names and data types are always available in the data source
+- For CSV, we use header names as properties if available, otherwise we fallback naming to `column0, column1, ...`. We also assume that all data types are `STRING` if no data type information is available in the header
+- For JSON, we use keys as column names, and infer a common data type from each key's values. To use `LOAD FROM` with JSON, you need
+to have the [JSON extension](/extensions/json) installed. More details on using `LOAD FROM` with JSON files is provided 
+on the documentation page for the [JSON extension](/extensions/json).
 
-The following query will bind first column `name` to the STRING type and second column `age` to the INT64 type.
+To enforce specific column names and data types when reading, you can use the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
+
+The following query will first bind the column `name` to the `STRING` type and second column `age` to the `INT64` type.
 You can combine this with a `WHERE` clause to filter the data as needed.
 
 ```cypher
 LOAD WITH HEADERS (name STRING, age INT64) FROM "user.csv" (header = true)
 WHERE name =~ 'Adam*'
 RETURN name, age;
+```
+```
 --------------
 | name | age |
 --------------
@@ -130,8 +144,6 @@ LOAD FROM "user.csv" (header = true) RETURN *;
 -----------------
 | Zhang   | 50  |
 -----------------
-| Noura   | 25  |
------------------
 ```
 
 ### Parquet
@@ -150,16 +162,13 @@ LOAD FROM "user.parquet" RETURN *;
 ----------------
 | Zhang   | 50 |
 ----------------
-| Noura   | 25 |
-----------------
 ```
 
 ### Pandas
 
-Kùzu allows zero-copy access to Pandas DataFrames. The data types within a Pandas DataFrame will be used to infer the schema of the data.
-
-Because Pandas is a Python-only DataFrame library, the following example is for Python users. We first create a Pandas
-DataFrame as follows:
+Kùzu allows zero-copy access to Pandas DataFrames. The data types within a Pandas DataFrame will be
+used to infer the schema of the data. The Pandas DataFrame can be scanned using the `LOAD FROM`
+clause just like we would from an external file.
 
 ```py
 # main.py
@@ -170,27 +179,86 @@ db = kuzu.Database("persons")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
-    "name": ["Adam", "Karissa", "Zhang", "Noura"],
-    "age": [30, 40, 50, 25]
+    "name": ["Adam", "Karissa", "Zhang"],
+    "age": [30, 40, 50]
 })
-```
 
-The Pandas DataFrame can be scanned using the `LOAD FROM` clause just like we would from
-an external file. The data access occurs in a zero-copy manner, meaning that Kùzu natively scans
-the underlying Pandas data objects.
-
-```py
 result = conn.execute("LOAD FROM df RETURN *;")
 print(result.get_as_df())
-
-# Result
+```
+```
       name  age
 0     Adam   30
 1  Karissa   40
 2    Zhang   50
-3    Noura   25
 ```
 
 :::note[Note]
 Pandas can use either a NumPy or Arrow backend - Kùzu can natively scan from either backend.
 :::
+
+### Polars
+
+Kùzu can also scan Polars DataFrames via the underlying PyArrow layer.
+
+```python
+import kuzu
+import polars as pl
+
+db = kuzu.Database("tmp")
+conn = kuzu.Connection(db)
+
+df = pl.DataFrame({
+    "name": ["Adam", "Karissa", "Zhang"],
+    "age": [30, 40, 50]
+})
+
+res = conn.execute("LOAD FROM df RETURN *")
+print(res.get_as_pl())
+```
+```
+shape: (3, 2)
+┌─────────┬─────┐
+│ name    ┆ age │
+│ ---     ┆ --- │
+│ str     ┆ i64 │
+╞═════════╪═════╡
+│ Adam    ┆ 30  │
+│ Karissa ┆ 40  │
+│ Zhang   ┆ 50  │
+└─────────┴─────┘
+```
+
+
+### Arrow tables
+
+You can scan an existing PyArrow table as follows:
+
+```python
+import kuzu
+import pyarrow as pa
+
+db = kuzu.Database("tmp")
+conn = kuzu.Connection(db)
+
+pa_table = pa.table({
+    "name": ["Adam", "Karissa", "Zhang"],
+    "age": [30, 40, 50]
+})
+print(pa_table)
+
+res = conn.execute("LOAD FROM pa_table RETURN *")
+print(res.get_as_arrow())
+```
+```
+pyarrow.Table
+name: string
+age: int64
+----
+name: [["Adam","Karissa","Zhang"]]
+age: [[30,40,50]]
+```
+
+### JSON
+Kùzu can scan JSON files using `LOAD FROM. 
+All JSON-related features are part of the JSON extension. See the documentation on the [JSON extension](/extensions/json#load-from) for details.
