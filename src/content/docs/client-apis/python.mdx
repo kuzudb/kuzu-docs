@@ -470,19 +470,16 @@ conn.execute("CREATE (i:Item {id: 3}) SET i.a = 32, i.b = 68")
 
 We're now ready to apply the UDF in a Cypher query:
 ```py
-# run the UDF
-conn.execute("MATCH (i:Item) SET i.c = difference(i.a, i.b)")
-
-# print the results
-result = conn.execute("MATCH (i:Item) RETURN i.id, i.a, i.b, i.c")
+# apply the UDF and print the results
+result = conn.execute("MATCH (i:Item) RETURN i.a AS a, i.b AS b, difference (i.a, i.b) AS difference")
 print(result.get_as_df())
 ```
 The output should be:
 ```
-   i.id  i.a  i.b  i.c
-0     1  134  123   11
-1     2   44   29   15
-2     3   32   68  -36
+     a    b  difference
+0  134  123          11
+1   44   29          15
+2   32   68         -36
 ```
 
 ### Remove UDF
@@ -493,6 +490,3 @@ In case you want to remove the UDF, you can call the `remove_function` method on
 # Use existing connection object
 conn.remove_function(difference)
 ```
-
----
-
