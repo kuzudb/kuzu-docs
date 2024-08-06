@@ -1,6 +1,6 @@
 services:
   kuzu-docs-server:
-    image: kuzudb/dev-docs:latest
+    image: kuzudb/dev-docs
     pull_policy: always
     ports:
       - "8082:8082"
