@@ -260,6 +260,3 @@ conn->createVectorizedFunction("addDate", std::vector<LogicalTypeID>{LogicalType
 // Issue a query using the UDF.
 conn->query("MATCH (p:person) return addDate(p.birthdate, p.age)");
 ```
-## Linking
-
-See the [C API Documentation](/client-apis/c#linking) for details as linking to the C++ API is more or less identical.
