@@ -21,9 +21,12 @@ Kùzu implements a _structured_ property graph model and requires a pre-defined 
 ## Quick start
 
 Because Kùzu is an embedded database, there are no servers to set up -- you can simply import
-the `kuzu` module in your preferred client library and begin interacting with the database. Cypher queries
-can be passed as string literals to the `execute` (or equivalent) method in the respective client,
-or run directly in the Kùzu CLI shell.
+the `kuzu` module in your preferred client library and begin interacting with the database by creating
+a Database object in your client API of choice. Cypher queries can be passed as string literals to
+the `execute` (or equivalent) method in the respective client, or run in the Kùzu CLI shell.
+
+The examples below create on-disk databases. Kùzu also supports in-memory mode,
+which is described further [below](#in-memory-mode).
 
 <Tabs>
 <TabItem label="Python">
@@ -165,7 +168,7 @@ f.since: [[2020,2020,2021,2022]]
 const kuzu = require("kuzu");
 
 (async () => {
-  // Create an empty database and connect to it
+  // Create an empty on-disk database and connect to it
   const db = new kuzu.Database("./demo_db");
   const conn = new kuzu.Connection(db);
 
@@ -233,6 +236,7 @@ import com.kuzudb.*;
 public class Main {
 
     public static void main(String[] args) throws KuzuObjectRefDestroyedException {
+        // Create an empty on-disk database
         String db_path = "./testdb";
         KuzuDatabase db = new KuzuDatabase(db_path, 0);
         KuzuConnection conn = new KuzuConnection(db);
@@ -315,7 +319,7 @@ The `main.rs` file contains the following code:
 use kuzu::{Connection, Database, Error, SystemConfig};
 
 fn main() -> Result<(), Error> {
-    // Create an empty database and connect to it
+    // Create an empty on-disk database and connect to it
     let db = Database::new("./demo_db", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
@@ -386,7 +390,7 @@ using namespace kuzu::main;
 using namespace std;
 
 int main() {
-    // Create an empty database.
+    // Create an empty on-disk database.
     SystemConfig systemConfig;
     auto database = make_unique<Database>("test", systemConfig);
 
@@ -487,7 +491,7 @@ int main()
 {
     // Create kuzu system config with 512MB buffer pool size and 2 threads.
     kuzu_system_config config = {.buffer_pool_size = 512 * 1024 * 1024, .max_num_threads = 2, .enable_compression = true, .read_only = false};
-    // Create an empty database.
+    // Create an empty on-disk database.
     kuzu_database *db = kuzu_database_init("test", config);
 
     // Connect to the database.
@@ -638,3 +642,24 @@ The following result is obtained:
 :::tip[Congratulations]
 You've now created and queried your first graph in Kùzu!
 :::
+
+## In-memory mode
+
+Kùzu supports both on-disk and in-memory modes of operation. When you create a new Database instance
+in your client API of choice, you have two options:
+- If you specify a database path, Kùzu will be opened under **on-disk** mode
+- If you omit the database path, i.e. leave it as empty, or specify it as `:memory:`, Kùzu will be opened under **in-memory** mode
+
+By default, Kùzu will be opened under on-disk mode, as it's designed to scale to very large graphs.
+
+:::note[Note]
+- When operating under on-disk mode, all data will be persisted to disk. All transactions are logged
+in the Write-Ahead Log (WAL), in which any changes will be merged into the database files during checkpoints.
+- When operating under in-memory mode, there are **no writes to the WAL**, and no data is persisted to
+disk (so `CHECKPOINT` will do nothing). All data is lost when the process finishes.
+:::
+
+In comparison to on-disk mode, there are a few restrictions when operating under in-memory mode:
+- The database cannot be opened as read-only (only read-write processes are allowed)
+- When using the [httpfs](/extensions/httpfs) extension, we do not support remote file caching
+- [Attaching](/extensions/attach) an in-memory database is not allowed
