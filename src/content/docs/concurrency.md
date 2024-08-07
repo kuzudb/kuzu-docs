@@ -11,10 +11,9 @@ section below to get answers to common questions.
 In this section, we will go over the basics of how applications connect to a Kùzu database and list some
 best practices on how to do so concurrently.
 
-When you open Kùzu under on-disk mode, your data and the underlying database files are stored in a
-local database directory. Kùzu also offers an in-memory mode, where no data is persisted to disk.
-Throughout this documentation, let’s suppose you open a Kùzu database that's on-disk, and whose files
-are in a directory named `./kuzu-db-dir`.
+Kùzu is a disk-based system and each database is stored in a database directory (an in-memory version
+of Kùzu is on our immediate roadmap). Throughout this documentation, let's suppose you have a Kùzu
+database in your local directory `./kuzu-db-dir`.
 
 ## Understand connections
 
