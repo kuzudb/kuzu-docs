@@ -9,8 +9,8 @@ based on [openCypher](https://opencypher.org/resources/).
 
 ## Parsing
 
-The query parser looks for an input `STRING` that consists of unicode characters. The parser is case-insensitive
-and ignores leading and trailing whitespaces. You can use characters non-English languages.
+The query parser looks for an input `STRING` that consists of ASCII or unicode characters. The parser is case-insensitive
+and ignores leading and trailing whitespaces. You can use characters from non-English languages.
 To use special characters or unicode characters as identifiers, you can escape them by encapsulating
 them in backticks \`, such as \``Ψ`\`.
 
