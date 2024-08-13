@@ -107,6 +107,7 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/cypher'},
+                        { label: 'Syntax', link: '/cypher/syntax'},
                         { label: 'Data types', link: '/cypher/data-types'},
                         { label: 'Query clauses', link: '/cypher/query-clauses' },
                         { label: 'Functions, expressions & operators', link: '/cypher/expressions' },
