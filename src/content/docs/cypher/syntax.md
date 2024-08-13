@@ -19,7 +19,7 @@ them in backticks \`, such as \``Ψ`\`.
 CREATE NODE TABLE `B\u00fccher` (title STRING, price INT64, PRIMARY KEY (title))
 CREATE (n:`B\u00fccher` {title: 'Der Thron der Sieben Königreiche'}) SET n.price = 20
 // Query using the unicode representation of the table name
-MATCH (n:`Bücher`) RETURN label(n)
+MATCH (n:Bücher) RETURN label(n)
 ```
 ```
 ┌─────────┐
