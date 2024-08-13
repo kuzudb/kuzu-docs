@@ -9,15 +9,15 @@ based on [openCypher](https://opencypher.org/resources/).
 
 ## Parsing
 
-The query parser looks for an input `STRING` that consists of ASCII or unicode characters. The parser is case-insensitive
-and ignores leading and trailing whitespaces. You can use characters from non-English languages.
-To use special characters or unicode characters as identifiers, you can escape them by encapsulating
-them in backticks \`, such as \``Ψ`\`.
+### Encoding
+
+The Cypher query parser looks for an input `STRING` that consists of ASCII or unicode characters from non-English
+languages. An example is shown below for creating and querying from a node table of German books.
 
 ```cypher
 // Create a node table of books in German
-CREATE NODE TABLE `B\u00fccher` (title STRING, price INT64, PRIMARY KEY (title))
-CREATE (n:`B\u00fccher` {title: 'Der Thron der Sieben Königreiche'}) SET n.price = 20
+CREATE NODE TABLE Bücher (title STRING, price INT64, PRIMARY KEY (title))
+CREATE (n:Bücher {title: 'Der Thron der Sieben Königreiche'}) SET n.price = 20
 // Query using the unicode representation of the table name
 MATCH (n:Bücher) RETURN label(n)
 ```
@@ -30,14 +30,40 @@ MATCH (n:Bücher) RETURN label(n)
 └─────────┘
 ```
 
-Breaking a query into multiple lines is allowed (and recommended for readability reasons), and the
-parser ignores leading and trailing whitespaces. You can explicitly mark the end of a query with a semicolon `;`.
+### Escaping
+
+To use special characters in identifiers, you can escape them by encapsulating the identifier in backticks \`.
+An example is shown below for creating a node table of house names that contain special characters.
+
+```cypher
+// Create a node table of house names that contain special characters
+CREATE NODE TABLE `HouseΨ` (id INT64, member STRING, PRIMARY KEY (id))
+CREATE (n:`HouseΨ` {id: 1}) SET n.member = 'Alice'
+// Query on the unicode table name
+MATCH (n:`HouseΨ`) RETURN n.*
+```
+```
+┌───────┬──────────┐
+│ n.id  │ n.member │
+│ INT64 │ STRING   │
+├───────┼──────────┤
+│ 1     │ Alice    │
+└───────┴──────────┘
+```
+
+### Multiline statements and termination
+
+Breaking a query into multiple lines is allowed (and recommended for readability reasons). The query
+parser ignores leading and trailing whitespaces.
 
 ```cypher
 MATCH (a:Person)
 WHERE a.age < 30
 RETURN a.*;
 ```
+
+Termination is always indicated by a semicolon `;`, and the parser looks for this symbol to
+know when a statement is complete.
 
 ## Clauses
 
