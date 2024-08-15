@@ -38,6 +38,8 @@ $ ./kuzu -h
       -r, --read_only, --readonly       Open database at read-only mode.
       -p, --path_history                Path to directory for shell history
       -v, --version                     Display current database version
+      -i, --init                        Path to file with script to run on
+                                        startup
       "--" can be used to terminate flag options and force all following
       arguments to be treated as positional options
 ```
@@ -45,7 +47,8 @@ $ ./kuzu -h
 ## Shell commands
 
 Once you start the shell, you can issue Cypher queries as shown in the [get started](/get-started)
-section, or call any of the shell commands listed below.
+section, or call any of the shell commands listed below. Frequently used configurations can be stored in the `.kuzurc` file,
+which is executed on startup of the CLI client. See the [startup commands](#startup-commands) section below for more details.
 
 #### `:help`
 Show built-in command list within the Kùzu shell.
@@ -135,3 +138,28 @@ CALL progress_bar=true;
 ```
 
 To further configure the progress bar, see the [configuration](/cypher/configuration) section.
+
+## Startup commands
+
+On startup, the CLI will look for a file named `.kuzurc` and execute all commands in the file, including all commands and Cypher statements.
+This file can be used to set up the shell environment, such as setting the maximum number of rows to display or changing the mode.
+You can also point to a different initialization file using the `--init` flag.
+
+For example, the following `.kuzurc` file sets the output mode to `csv` and turns query statistics off:
+
+```cypher
+// .kuzurc
+:mode csv
+:stats off
+```
+
+This outputs: 
+```bash
+$ ./kuzu testdb
+-- Loading resources from .kuzurc
+mode set as csv
+stats set as off
+Opened the database at path: testdb in read-write mode.
+Enter ":help" for usage hints.
+kuzu> 
+```
