@@ -11,16 +11,17 @@ section below to get answers to common questions.
 In this section, we will go over the basics of how applications connect to a Kùzu database and list some
 best practices on how to do so concurrently.
 
-Kùzu is a disk-based system and each database is stored in a database directory (an in-memory version
-of Kùzu is on our immediate roadmap). Throughout this documentation, let's suppose you have a Kùzu
-database in your local directory `./kuzu-db-dir`.
+When you open Kùzu under on-disk mode, your data and the underlying database files are stored in a
+local database directory. You can also create an [in-memory database](/get-started#in-memory-database), where no data is persisted to disk.
+Throughout this documentation, let’s suppose you open a Kùzu database that's on-disk, and whose files
+are in a directory named `./kuzu-db-dir`.
 
 ## Understand connections
 
 ### Database and connection objects
 Application processes must connect to a Kùzu database in 2 steps before they can start querying it:
 
-**Step 1.** Create an instance of a `Database` object `db` and pass it the database directory (`./kuzu-db-dir` in our example below), and 
+**Step 1.** Create an instance of a `Database` object `db` and pass it the database directory (`./kuzu-db-dir` in our example below), and
 a read-write mode which can be either:
 1. `READ_WRITE` (default); or
 2. `READ_ONLY`
@@ -46,6 +47,13 @@ db = kuzu.Database("./kuzu-db-dir")
 conn = kuzu.Connection(db)
 conn.execute("CREATE (a:Person {name: 'Alice'});")
 ```
+
+### Restrictions of in-memory databases
+
+When working with in-memory databases, there are a few restrictions to keep in mind.
+- An in-memory database cannot be opened as `READ_ONLY` -- only `READ_WRITE` processes are allowed
+- When using the [httpfs](/extensions/httpfs) extension, we do not support remote file caching for in-memory databases
+- [Attaching](/extensions/attach) an in-memory database is not allowed
 
 ## Understand concurrency
 
@@ -187,7 +195,7 @@ In this section, we address some commonly asked questions related to concurrency
 No, when embedding Kùzu in your application, you cannot have both `READ_WRITE` and `READ_ONLY` database processes
 open at any given time (in a safe manner). Technical details for this limitation are described the the sections above.
 
-In short, the reason for this limitation is that at any given time, `READ_WRITE` process can make changes
+In short, the reason for this limitation is that at any given time, a `READ_WRITE` process can make changes
 to the disk layout, which may or may not be reflected in the buffer manager of other open `READ_ONLY` connections, and this
 can lead to inconsistencies or data corruption. To avoid this issue, the best practice when embedding Kùzu in your
 application is to use design patterns as per one of the scenarios shown pictorially, in the sections above.
@@ -209,3 +217,8 @@ present in the database directory, allowing you to safely connect to the databas
 for example, a CLI or Kùzu Explorer for graph visualization. In general, it's recommended to only
 open the CLI or Kùzu Explorer *after* you have finished any operations to the database (and closing or
 restarting the Jupyter notebook server).
+
+##### Can I open an in-memory database as `READ_ONLY`?
+
+No, you cannot open in-memory databases as `READ_ONLY` -- only `READ_WRITE` processes are allowed
+when operating under in-memory mode.
