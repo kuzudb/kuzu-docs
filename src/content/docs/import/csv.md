@@ -16,7 +16,7 @@ end of the the `COPY FROM` clause. The following table shows the configuration p
 | `QUOTE` | Character to start a string quote. | `"` |
 | `ESCAPE` | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
 | `SKIP` | Number of rows to skip from the input file | `0` |
-| `PARALLEL` | Read csv files in parallel or not | true |
+| `PARALLEL` | Read csv files in parallel or not | `true` |
 
 The example below specifies that the CSV delimiter is`|` and also that the header row exists.
 

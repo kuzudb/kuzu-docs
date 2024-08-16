@@ -4,26 +4,56 @@ title: "Create your first graph"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Once you have the Kùzu CLI or your preferred client library installed, you can define a graph schema and
-begin inserting data to the database using Cypher. The example below uses a
-graph schema with two node types, `User` and `City`, and two relationship types, `Follows` and `LivesIn`.
-The dataset in CSV format can be found [here](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
-
-:::caution[Info]
-Kùzu implements a _structured_ property graph model and requires a pre-defined schema.
+Kùzu implements a **structured property graph model** and requires a pre-defined schema.
 
 - Schema definition involves declaring node and relationship tables and their associated properties.
 - Each property key is strongly typed (types must be explicitly declared)
 - For node tables, a primary key **must** be defined
 - For relationship tables, no primary key is required
+
+## Persistence
+
+Kùzu supports both **on-disk** and **in-memory** modes of operation. The mode is determined
+at the time of creating the database, explained below.
+
+### On-disk database
+
+At the time of creating your database, if you specify a database path, for example, `./demo_db`, Kùzu
+will be opened under **on-disk** mode. In this mode, Kùzu will persist all data to disk at the specified
+path. All transactions are logged in the Write-Ahead Log (WAL), in which any changes will be merged into the
+database files during checkpoints.
+
+:::tip[When do I need an on-disk database?]
+On-disk databases allow you to process larger-than-memory workloads in a scalable manner,
+while also providing transactional guarantees and persistence.
+:::
+
+### In-memory database
+
+At the time of creating your database, if you omit the database path, specify it as an empty string
+`""`, or explicitly specify the path as `:memory:`, Kùzu will be opened under **in-memory** mode.
+In this mode, there are **no writes to the WAL**, and no data is persisted to
+disk. All data is lost when the process finishes.
+
+:::note[When do I need an in-memory database?]
+In-memory databases are temporary, and can be useful in scenarios that require you to perform
+quick graph querying and analysis on subsets of records, without the need to persist the data.
 :::
 
 ## Quick start
 
+To create your first graph, ensure that you have installed the Kùzu CLI or your preferred client API installed
+as per the instructions in the [Installation](/installation) section.
+The example below uses a graph schema with two node types, `User` and `City`, and two relationship types, `Follows` and `LivesIn`.
+The dataset in CSV format can be found [here](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
+
 Because Kùzu is an embedded database, there are no servers to set up -- you can simply import
-the `kuzu` module in your preferred client library and begin interacting with the database. Cypher queries
-can be passed as string literals to the `execute` (or equivalent) method in the respective client,
-or run directly in the Kùzu CLI shell.
+the `kuzu` module in your preferred client library and begin interacting with the database in your
+client API of choice. The examples below demonstrate how to create a graph schema and insert data
+into an on-disk database.
+
+You can do the same using an in-memory database by omitting the database path, specifying
+an empty string `""`, or specifying `:memory:` in your client API of choice.
 
 <Tabs>
 <TabItem label="Python">
@@ -33,7 +63,7 @@ or run directly in the Kùzu CLI shell.
 import kuzu
 
 def main() -> None:
-    # Initialize database
+    # Create an empty on-disk database and connect to it
     db = kuzu.Database("./demo_db")
     conn = kuzu.Connection(db)
 
@@ -165,7 +195,7 @@ f.since: [[2020,2020,2021,2022]]
 const kuzu = require("kuzu");
 
 (async () => {
-  // Create an empty database and connect to it
+  // Create an empty on-disk database and connect to it
   const db = new kuzu.Database("./demo_db");
   const conn = new kuzu.Connection(db);
 
@@ -233,6 +263,7 @@ import com.kuzudb.*;
 public class Main {
 
     public static void main(String[] args) throws KuzuObjectRefDestroyedException {
+        // Create an empty on-disk database and connect to it
         String db_path = "./testdb";
         KuzuDatabase db = new KuzuDatabase(db_path, 0);
         KuzuConnection conn = new KuzuConnection(db);
@@ -285,7 +316,7 @@ Row: (Karissa, 2021, Zhang)
 Row: (Zhang, 2022, Noura)
 ```
 
-For users who prefer Maven, our jar file can also be manually referenced from your Maven configuration:
+For users who prefer Maven, the JAR file can also be manually referenced from your Maven configuration:
 
 ```xml
 <dependency>
@@ -297,7 +328,7 @@ For users who prefer Maven, our jar file can also be manually referenced from yo
 </dependency>
 ```
 
-Please note that we will soon provide a more convenient Maven-based solution for installing our API
+Please note that we will soon provide a more convenient Maven-based solution for installing the Java API
 directly from Maven Central.
 
 </TabItem>
@@ -315,7 +346,7 @@ The `main.rs` file contains the following code:
 use kuzu::{Connection, Database, Error, SystemConfig};
 
 fn main() -> Result<(), Error> {
-    // Create an empty database and connect to it
+    // Create an empty on-disk database and connect to it
     let db = Database::new("./demo_db", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
@@ -386,7 +417,7 @@ using namespace kuzu::main;
 using namespace std;
 
 int main() {
-    // Create an empty database.
+    // Create an empty on-disk database and connect to it
     SystemConfig systemConfig;
     auto database = make_unique<Database>("test", systemConfig);
 
@@ -487,7 +518,7 @@ int main()
 {
     // Create kuzu system config with 512MB buffer pool size and 2 threads.
     kuzu_system_config config = {.buffer_pool_size = 512 * 1024 * 1024, .max_num_threads = 2, .enable_compression = true, .read_only = false};
-    // Create an empty database.
+    // Create an empty on-disk database and connect to it
     kuzu_database *db = kuzu_database_init("test", config);
 
     // Connect to the database.
@@ -584,11 +615,27 @@ Zhang follows Noura since 2022
 
 <TabItem label="Shell">
 
-When using the Kùzu CLI's shell, you need to first initialize an empty database.
+When using the Kùzu CLI's shell, you can create an on-disk database by specifying a path after
+the `kuzu` command in the terminal.
 
 ```bash
-# Initialize database
-./kuzu ./demo_db
+$ kuzu ./demo_db
+```
+```
+Opened the database at path: ./demo_db in read-write mode.
+Enter ":help" for usage hints.
+kuzu> 
+```
+
+You can create an in-memory database by omitting the path entirely, and just calling `kuzu`:
+
+```bash
+$ kuzu
+```
+```
+Opened the database under in-memory mode.
+Enter ":help" for usage hints.
+kuzu> 
 ```
 
 Then, proceed to enter the following Cypher statements separated by semicolons. Note that you _must_

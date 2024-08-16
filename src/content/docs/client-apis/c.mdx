@@ -10,3 +10,67 @@ See the following link for the full documentation of the C library API.
   title="C API documentation"
   href="https://kuzudb.com/api-docs/c/kuzu_8h.html"
 />
+
+## Linking
+
+### Using the pre-built library
+
+See [Installation](/installation) and [Get Started](/get-started) for simple manual instructions for building with the C library.
+
+Alternatively, here is an example configuration for integrating the pre-built library into a CMake project (substitute `URL` and `URL_HASH` and `libkuzu.so` as appropriate for your platform).
+```cmake
+cmake_minimum_required(VERSION 3.11)
+project(example LANGUAGES C)
+ExternalProject_Add(kuzu-prebuilt
+    URL https://github.com/kuzudb/kuzu/releases/download/v0.5.0/libkuzu-linux-x86_64.tar.gz
+    URL_HASH SHA256=452599a03c4e6accb797d11bd780a2a88629bddf6635b1703993967d31a0467e
+)
+ExternalProject_Get_Property(kuzu-prebuilt SOURCE_DIR)
+add_library(kuzu SHARED IMPORTED)
+add_dependencies(kuzu kuzu-prebuilt)
+set_target_properties(kuzu PROPERTIES IMPORTED_LOCATION ${SOURCE_DIR}/libkuzu.so)
+target_include_directories(kuzu INTERFACE ${SOURCE_DIR})
+add_executable(example main.c)
+target_link_libraries(example kuzu)
+```
+
+### Linking against Kùzu when built from source
+
+See the requirements in https://docs.kuzudb.com/developer-guide/.
+It's recommended that you use CMake if you want to link to the kuzu static library as shown in the example below.
+
+#### CMake
+
+The following example uses [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html) to download and build kuzu as a dependency within a CMake project, and links it either statically or dynamically to an example executable (which can be configured with the `EXAMPLE_SHARED` option). See [Get Started](/get-started) for an example of `main.c`.
+```cmake
+cmake_minimum_required(VERSION 3.11)
+project(example LANGUAGES C CXX)
+set(BUILD_SHELL FALSE)
+include(FetchContent)
+FetchContent_Declare(kuzu
+    URL https://github.com/kuzudb/kuzu/archive/refs/tags/v0.5.0.zip
+    URL_HASH SHA256=47ff308079cbbfeccc38eeb1c5f455a8c00f9294034141b9084387518f0bbed9
+)
+FetchContent_MakeAvailable(kuzu)
+add_executable(example main.c)
+option(EXAMPLE_SHARED "Use dynamic linking" TRUE)
+if (EXAMPLE_SHARED)
+  target_link_libraries(example kuzu_shared)
+else()
+  target_link_libraries(example kuzu)
+endif()
+```
+
+#### Other Build Systems
+
+Using other build systems with the dynamic library is still relatively simple as all you need to make use of is the dynamic library and kuzu.h, both of which can be installed by CMake. E.g. your build system can run.
+```bash
+cmake -B build
+cmake --build build
+cmake --install build --prefix '<install-dest>'
+```
+And then link against `<install-dest>/libkuzu.so` (or `libkuzu.dylib`/`libkuzu.lib` depending on your platform) and add `<install-dest>` to your include directories.
+
+
+The static library is more complicated (as noted above, it's recommended that you use CMake to handle the details) and is not installed by default, but all static libraries will be available in the build directory.
+You need to define `KUZU_STATIC_DEFINE`, and link against the static kuzu library in `build/src`, as well as `antlr4_cypher`, `antlr4_runtime`, `brotlidec`, `brotlicommon`, `utf8proc`, `re2`, `serd`, `fastpfor`, `miniparquet`, `zstd`, `miniz`, `mbedtls`, `lz4` (all of which can be found in the third_party subdirectory of the CMake build directory. E.g. `build/third_party/zstd/libzstd.a`) and whichever standard library you're using.
