@@ -38,6 +38,8 @@ $ ./kuzu -h
       -r, --read_only, --readonly       Open database at read-only mode.
       -p, --path_history                Path to directory for shell history
       -v, --version                     Display current database version
+      -m, --mode                        Set the output mode of the shell
+      -s, --no_stats, --nostats         Disable query stats
       "--" can be used to terminate flag options and force all following
       arguments to be treated as positional options
 ```
@@ -57,6 +59,8 @@ kuzu> :help
     :quit     exit from shell
     :max_rows [max_rows]     set maximum number of rows for display (default: 20)
     :max_width [max_width]     set maximum width in characters for display
+    :mode [mode]     set output mode (default: box)
+    :stats [on|off]     toggle query stats on or off
 
     Note: you can change and see several system configurations, such as num-threads, 
           timeout, and progress_bar using Cypher CALL statements.
@@ -75,6 +79,12 @@ Set maximum number of rows for display. 0 defaults to 20.
 
 #### `:max_width [max_width]`
 Set maximum width in characters for display. Defaults to terminal width if unable to display first and last columns. 
+
+#### `:mode [mode]`
+Set output mode. The default mode is `box`. See the output modes section below for more details.
+
+#### `:stats [on|off]`
+Toggle query statistics on or off. The default is `on`. Query statistics include the number of tuples, columns, and execution time.
 
 ## Interrupt shell
 
@@ -135,3 +145,37 @@ CALL progress_bar=true;
 ```
 
 To further configure the progress bar, see the [configuration](/cypher/configuration) section.
+
+## Output modes
+The `:mode [mode]` command allows you to change the appearance of the tables returned by queries.
+To view the available modes, use the `:mode` command without any arguments:
+
+```
+kuzu> :mode
+Available output modes:
+    box (default):    Tables using unicode box-drawing characters
+    column:    Output in columns
+    csv:    Comma-separated values
+    html:    HTML table
+    json:    Results in a JSON array
+    jsonlines:    Results in a NDJSON format
+    latex:    LaTeX tabular environment code
+    line:    One value per line
+    list:    Values delimited by "|"
+    markdown:    Markdown table
+    table:    Tables using ASCII characters
+    tsv:    Tab-separated values
+    trash:    No output
+```
+
+To change the output mode, use the `:mode` command followed by the desired mode:
+
+```cypher
+kuzu> :mode json
+mode set as json
+kuzu> CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name));
+[{"result":"Table Person has been created."}]
+```
+
+The `:max_rows` and `:max_width` commands can be used to control the number of rows and the width
+of the `box`, `column`, `table`, and `markdown` output modes.
