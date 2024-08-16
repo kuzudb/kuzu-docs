@@ -63,8 +63,6 @@ $ ./kuzu -h
       -r, --read_only, --readonly       Open database at read-only mode.
       -p, --path_history                Path to directory for shell history
       -v, --version                     Display current database version
-      -i, --init                        Path to file with script to run on
-                                        startup
       -m, --mode                        Set the output mode of the shell
       "--" can be used to terminate flag options and force all following
       arguments to be treated as positional options
@@ -148,17 +146,17 @@ Time: 0.09ms (compiling), 11.75ms (executing)
 
 ## Query progress
 
-For queries that might take a significant amount of time to execute, a progress bar can be enabled that displays
+For queries that might take a significant amount of time to execute, there is a progress bar that displays
 the number of pipelines that have been executed (each query is broken down into one or more pipelines), 
 as well as the percentage of the data processed in a pipeline. This gives an estimate for how much of a pipeline
 has executed.
 
 ![](/img/progress-bar.gif)
 
-The progress bar is not enabled by default. To enable the progress bar, use the following command:
+The progress bar is enabled by default. To disable the progress bar, use the `--no_progress_bar` flag or the following command:
 
 ```cypher
-CALL progress_bar=true;
+CALL progress_bar=false;
 ```
 
 To further configure the progress bar, see the [configuration](/cypher/configuration) section.
