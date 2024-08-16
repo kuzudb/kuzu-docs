@@ -13,10 +13,13 @@ end of the the `COPY FROM` clause. The following table shows the configuration p
 |:-----|:-----|:-----|
 | `HEADER` | Whether the first line of the CSV file is the header. Can be true or false. | false |
 | `DELIM` | Character that separates different columns in a lines. | `,`|
+| `LIST_DELIM` | Character that separates different elements in a list, struct, or map. | `,` |
+| `UNBRACED` | Whether list columns are expected to start with `[` and end with `]`. If `true`, braced lists can still be read to allow for nested list scanning | `false` |
 | `QUOTE` | Character to start a string quote. | `"` |
 | `ESCAPE` | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
 | `SKIP` | Number of rows to skip from the input file | `0` |
-| `PARALLEL` | Read csv files in parallel or not | true |
+| `PARALLEL` | Read csv files in parallel or not | `true` |
+| `SAMPLE_SIZE` | Number of rows to sample to determine column datatypes. If set to zero, all columns are assumed to be `STRING`. | `2048` |
 
 The example below specifies that the CSV delimiter is`|` and also that the header row exists.
 

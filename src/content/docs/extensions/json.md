@@ -4,9 +4,8 @@ title: JSON extension
 
 ## Usage
 
-The `json` extension adds support for a set of functions for JSON
-access and manipulation, scanning from, and copying to JSON files. *This extension currently does not
-support storing Json files natively in Kùzu as a node or relationship property.*
+The `json` extension adds support for the `JSON` datatype, including a set of functions for JSON
+access and manipulation, scanning from, and copying to JSON files.
 
 You can install the JSON extension by running the following command:
 
@@ -61,14 +60,14 @@ LOAD FROM 'people.json' RETURN *;
 ```
 Output:
 ```
-┌───────┬─────────┬──────────────┬─────────────────────────────────────────────────────────────────────────────────────┐
-│ id    │ name    │ registry_date │ info                                                                               │
-│ UINT8 │ STRING  │ STRING       │ STRUCT(height DOUBLE, age UINT8, previous_usernames STRING[])                       │
-├───────┼─────────┼──────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
-│ 2     │ Gregory │              │                                                                                     │
-│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]}           │
-│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]}             │
-└───────┴─────────┴──────────────┴─────────────────────────────────────────────────────────────────────────────────────┘
+┌───────┬─────────┬───────────────┬───────────────────────────────────────────────────────────────────────────┐
+│ id    │ name    │ registry_date │ info                                                                      │
+│ UINT8 │ STRING  │ STRING        │ STRUCT(height DOUBLE, age UINT8, previous_usernames STRING[])             │
+├───────┼─────────┼───────────────┼───────────────────────────────────────────────────────────────────────────┤
+│ 2     │ Gregory │               │                                                                           │
+│ 1     │ Bob     │               │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]} │
+│ 0     │ Alice   │ 2024-07-31    │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]}   │
+└───────┴─────────┴───────────────┴───────────────────────────────────────────────────────────────────────────┘
 ```
 
 Note that the resulting schema will be the union of the schema of all the objects in the json file.
@@ -83,14 +82,14 @@ LOAD WITH HEADERS (id INT64, name STRING, registry_date DATE, info STRUCT(height
 ```
 Output:
 ```
-┌───────┬─────────┬──────────────┬─────────────────────────────────────────────────────────────────────────────────────┐
-│ id    │ name    │ registryDate │ info                                                                                │
-│ INT64 │ STRING  │ DATE         │ STRUCT(height DOUBLE, age INT64, previous_usernames STRING[])                       │
-├───────┼─────────┼──────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
-│ 2     │ Gregory │              │                                                                                     │
-│ 1     │ Bob     │              │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]}           │
-│ 0     │ Alice   │ 2024-07-31   │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]}             │
-└───────┴─────────┴──────────────┴─────────────────────────────────────────────────────────────────────────────────────┘
+┌───────┬─────────┬───────────────┬───────────────────────────────────────────────────────────────────────────┐
+│ id    │ name    │ registry_date │ info                                                                      │
+│ INT64 │ STRING  │ DATE          │ STRUCT(height DOUBLE, age INT64, previous_usernames STRING[])             │
+├───────┼─────────┼───────────────┼───────────────────────────────────────────────────────────────────────────┤
+│ 2     │ Gregory │               │                                                                           │
+│ 1     │ Bob     │               │ {height: 1.810000, age: 71, previous_usernames: [the_builder,the_minion]} │
+│ 0     │ Alice   │ 2024-07-31    │ {height: 1.680000, age: 45, previous_usernames: [alice123,alice_34425]}   │
+└───────┴─────────┴───────────────┴───────────────────────────────────────────────────────────────────────────┘
 ```
 
 The following optional parameters are supported:
@@ -121,7 +120,7 @@ Given a 'people-unstructured.json' file in the following form:
 {
     "id": 0,
     "name": "Alice",
-    "registryDate": "2024-07-31",
+    "registry_date": "2024-07-31",
     "info": {
         "height": 1.68,
         "age": 45,
@@ -178,14 +177,14 @@ Then the type inference system will give up after the second level of type infer
 and assume everything is a `STRING`
 
 ```
-┌────────┬─────────┬──────────────────────────────────────────────────────────────────────────────────────┬──────────────┐
-│ id     │ name    │ info                                                                                 │ registryDate │
-│ STRING │ STRING  │ STRING                                                                               │ STRING       │
-├────────┼─────────┼──────────────────────────────────────────────────────────────────────────────────────┼──────────────┤
-│ 2      │ Gregory │                                                                                      │              │
-│ 1      │ Bob     │ {"height":1.81,"age":71,"previous_usernames":["the_builder","the_minion"]}           │              │
-│ 0      │ Alice   │ {"height":1.68,"age":45,"previous_usernames":["alice123","alice_34425"]}             │ 2024-07-31   │
-└────────┴─────────┴──────────────────────────────────────────────────────────────────────────────────────┴──────────────┘
+┌────────┬─────────┬────────────────────────────────────────────────────────────────────────────┬───────────────┐
+│ id     │ name    │ info                                                                       │ registry_date │
+│ STRING │ STRING  │ STRING                                                                     │ STRING        │
+├────────┼─────────┼────────────────────────────────────────────────────────────────────────────┼───────────────┤
+│ 2      │ Gregory │                                                                            │               │
+│ 1      │ Bob     │ {"height":1.81,"age":71,"previous_usernames":["the_builder","the_minion"]} │               │
+│ 0      │ Alice   │ {"height":1.68,"age":45,"previous_usernames":["alice123","alice_34425"]}   │ 2024-07-31    │
+└────────┴─────────┴────────────────────────────────────────────────────────────────────────────┴───────────────┘
 ```
 
 ### `COPY FROM`
@@ -221,3 +220,100 @@ The output in the file `people.json-output` looks like the following:
 {"p.id":2,"p.name":"Gregory","p.info":{"height":1.73,"age":22,"previous_usernames":["gregory7"]}}
 ]
 ```
+
+## Experimental Datatype
+
+> Note: The following datatype and functions has known issues
+> Implicit casts and exporting JSON types does not work correctly at the moment.
+
+A column can be declared to be JSON data in the exact same way that any other datatype is specified.
+```sql
+CREATE NODE TABLE tab(JSON col0, JSON col1, JSON col2, PRIMARY KEY col0);
+```
+
+Values can be inserted in the way you might expect
+
+```cypher
+CREATE (:tab {col0: "123", col1: '{"a": [1, 2, 3]}', col2: '[9.5, 10.5, 11.5]'});
+```
+
+> Note that the json datatype is physically stored as a `STRING`, meaning the validity of individual values is not enforced.
+
+## Experimental Functions
+
+### `to_json`
+
+Signature: `ANY -> JSON`
+
+Converts any Kuzu value to a JSON document
+
+### `json_merge_patch`
+
+Signature: `JSON, JSON -> JSON`
+
+Merges two JSON documents. Applies [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386)
+
+### `json_extract`
+
+Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`
+
+Extracts a path from a JSON document. `STRING` paths are delimited by `'/'`, while `INTEGER` paths are only used to index JSON arrays
+
+If the path does not exist, returns an empty JSON document.
+
+### `json_array_length`
+
+Signature: `JSON -> UINT32`
+
+If the JSON document is an array, returns the array length. Otherwise returns 0
+
+### `json_contains`
+
+Signature: `JSON, JSON -> BOOL`
+
+Determines whether or not the second JSON document (the needle) is contained within the first (the haystack).
+
+### `json_keys`
+
+Signature: `JSON -> STRING[]`
+
+Gives the keys of the root JSON object. If the root is not an object, returns an empty list
+
+### `json_structure`
+
+Signature: `JSON -> STRING`
+
+Returns the structure of the JSON document in Kuzu type notation. Will give smaller integer widths for smaller numbers
+
+Example:
+```cypher
+RETURN json_structure('[{"a": -1, "b": [1000, 2000, 3000]}, {"a": 2, "c": "hi"}]');
+```
+Output:
+```
+STRUCT(a INT16, b UINT16[], c STRING)[]
+```
+
+### `json_valid`
+
+Signature: `JSON -> BOOL`
+
+Determines whether or not the provided JSON document is valid.
+
+### `json`
+
+Signature: `JSON -> JSON`
+
+Parses and minifies the JSON document.
+
+Example:
+```cypher
+UNWIND ['[        {"a":  [1],     "b": 2,"c": 1}, 1,    5, 9]', '[1, 2, 3]', '"ab"'] AS ARR RETURN json(ARR);
+```
+Output:
+```
+[{"a":[1],"b":2,"c":1},1,5,9]
+[1,2,3]
+"ab"
+```
+
