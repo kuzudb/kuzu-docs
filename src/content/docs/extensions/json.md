@@ -221,7 +221,7 @@ The output in the file `people.json-output` looks like the following:
 ]
 ```
 
-## Experimental Datatype
+<!-- ## Experimental Datatype
 
 > Note: The following datatype and functions has known issues
 > Implicit casts and exporting JSON types does not work correctly at the moment.
@@ -316,4 +316,4 @@ Output:
 [1,2,3]
 "ab"
 ```
-
+ -->
