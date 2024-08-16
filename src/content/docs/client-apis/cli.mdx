@@ -9,17 +9,42 @@ to install the CLI and the [quick start](/get-started) page for its basic usage.
 
 ## Start the shell
 
-Navigate to the directory where the Kùzu CLI is located and run the following command:
+Kùzu supports on-disk, as well as in-memory databases. The functionality of the CLI is identical for both on-disk and in-memory modes.
+
+### On-disk database
+
+You can create an on-disk database in the CLI by specifying a path after
+the `kuzu` command in the terminal. This opens the database on-disk, in read-write mode, and the 
+data is persisted to disk after the CLI shell is closed. Note that if the database
+directory does not exist, it will be created for you.
 
 ```bash
-./kuzu <db_path>
+$ kuzu ./test_db
+```
+```
+Opened the database at path: ./test_db in read-write mode.
+Enter ":help" for usage hints.
+kuzu> 
 ```
 
-Where `<db_path>` is the directory for the database files. 
-This path can point to an existing database or a yet-to-be-created directory, in which case
-Kùzu will automatically create the directory and initialize an empty database for you.
+### In-memory database
 
-You can view the additional shell startup flags by running `./kuzu -h`.
+Alternatively, you can create an in-memory database by omitting the path entirely, and just calling `kuzu`
+from your terminal:
+
+```bash
+$ kuzu
+```
+```
+Opened the database under in-memory mode.
+Enter ":help" for usage hints.
+kuzu> 
+```
+
+## Shell commands
+
+Once you start the shell, you can issue Cypher queries as shown in the [get started](/get-started)
+section. List all available shell commands by running `./kuzu -h`.
 
 ```bash
 $ ./kuzu -h
@@ -43,12 +68,6 @@ $ ./kuzu -h
       "--" can be used to terminate flag options and force all following
       arguments to be treated as positional options
 ```
-
-## Shell commands
-
-Once you start the shell, you can issue Cypher queries as shown in the [get started](/get-started)
-section, or call any of the shell commands listed below. Frequently used configurations can be stored in the `.kuzurc` file,
-which is executed on startup of the CLI client. See the [startup commands](#startup-commands) section below for more details.
 
 #### `:help`
 Show built-in command list within the Kùzu shell.
