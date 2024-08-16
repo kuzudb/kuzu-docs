@@ -64,7 +64,6 @@ $ ./kuzu -h
       -p, --path_history                Path to directory for shell history
       -v, --version                     Display current database version
       -m, --mode                        Set the output mode of the shell
-      -s, --no_stats, --nostats         Disable query stats
       "--" can be used to terminate flag options and force all following
       arguments to be treated as positional options
 ```
@@ -80,7 +79,6 @@ kuzu> :help
     :max_rows [max_rows]     set maximum number of rows for display (default: 20)
     :max_width [max_width]     set maximum width in characters for display
     :mode [mode]     set output mode (default: box)
-    :stats [on|off]     toggle query stats on or off
 
     Note: you can change and see several system configurations, such as num-threads, 
           timeout, and progress_bar using Cypher CALL statements.
@@ -102,9 +100,6 @@ Set maximum width in characters for display. Defaults to terminal width if unabl
 
 #### `:mode [mode]`
 Set output mode. The default mode is `box`. See the output modes section below for more details.
-
-#### `:stats [on|off]`
-Toggle query statistics on or off. The default is `on`. Query statistics include the number of tuples, columns, and execution time.
 
 ## Interrupt shell
 
