@@ -27,20 +27,20 @@ brew install kuzu
 <TabItem label="Linux">
 
 Use a tool like cURL to download the latest version of the Kùzu CLI to your local machine. Alternatively,
-simply copy-paste [this URL](https://github.com/kuzudb/kuzu/releases/download/v0.5.0/kuzu_cli-linux-x86_64.tar.gz)
-for x86-64 or [this one](https://github.com/kuzudb/kuzu/releases/download/v0.5.0/kuzu_cli-linux-aarch64.tar.gz)
+simply copy-paste [this URL](https://github.com/kuzudb/kuzu/releases/download/v0.6.0/kuzu_cli-linux-x86_64.tar.gz)
+for x86-64 or [this one](https://github.com/kuzudb/kuzu/releases/download/v0.6.0/kuzu_cli-linux-aarch64.tar.gz)
 for aarch64 into your browser.
 
 **x86-64**
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/kuzu_cli-linux-x86_64.tar.gz
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.6.0/kuzu_cli-linux-x86_64.tar.gz
 ```
 
 **aarch64**
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/kuzu_cli-linux-aarch64.tar.gz
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.6.0/kuzu_cli-linux-aarch64.tar.gz
 ```
 
 Double-click the `kuzu_cli-linux-*.tar.gz` file to extract a file named `kuzu`, and give it
@@ -51,11 +51,11 @@ executable permissions using the command `chmod +x kuzu`.
 <TabItem label="Windows">
 
 Use a tool like cURL to download the latest version of the Kùzu CLI to your local machine. Alternatively,
-simply copy-paste [this HTTPS URL](https://github.com/kuzudb/kuzu/releases/download/v0.5.0/kuzu_cli-windows-x86_64.zip)
+simply copy-paste [this HTTPS URL](https://github.com/kuzudb/kuzu/releases/download/v0.6.0/kuzu_cli-windows-x86_64.zip)
 into your browser.
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/kuzu_cli-windows-x86_64.zip
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.6.0/kuzu_cli-windows-x86_64.zip
 ```
 
 Right-click on the `kuzu_cli-xxx.zip` file and click on **Extract All**. This will create a directory
@@ -132,7 +132,7 @@ npm install kuzu
 
 ## Java
 
-Download the latest version [here](https://github.com/kuzudb/kuzu/releases/download/v0.5.0/kuzu_java.jar),
+Download the latest version [here](https://github.com/kuzudb/kuzu/releases/download/v0.6.0/kuzu_java.jar),
 and put it under `src/main/resources`. (We assume this is the project directory structure and the
 project dependency is managed through Apache Maven).
 
@@ -144,7 +144,7 @@ project dependency is managed through Apache Maven).
 <dependency>
   <groupId>com.kuzudb</groupId>
   <artifactId>kuzudb</artifactId>
-  <version>0.5.0</version>
+  <version>0.6.0</version>
   <scope>system</scope>
   <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -158,7 +158,7 @@ project dependency is managed through Apache Maven).
 <dependency>
   <groupId>com.kuzudb</groupId>
   <artifactId>kuzudb</artifactId>
-  <version>0.5.0</version>
+  <version>0.6.0</version>
   <scope>system</scope>
   <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -172,7 +172,7 @@ project dependency is managed through Apache Maven).
 <dependency>
   <groupId>com.kuzudb</groupId>
   <artifactId>kuzudb</artifactId>
-  <version>0.5.0</version>
+  <version>0.6.0</version>
   <scope>system</scope>
   <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
 </dependency>
@@ -228,7 +228,7 @@ any additional installation. You just need to specify the library search path fo
 <TabItem label="macOS">
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/libkuzu-osx-universal.tar.gz
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.6.0/libkuzu-osx-universal.tar.gz
 ```
 
 </TabItem>
@@ -238,19 +238,19 @@ curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/libkuzu-osx-u
 **x86-64**
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/libkuzu-linux-x86_64.tar.gz
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.6.0/libkuzu-linux-x86_64.tar.gz
 ```
 
 **aarch64**
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/libkuzu-linux-aarch64.tar.gz
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.6.0/libkuzu-linux-aarch64.tar.gz
 ```
 
 **x86-64** ([old ABI](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html))
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/libkuzu-linux-old_abi-x86_64.tar.gz
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.6.0/libkuzu-linux-old_abi-x86_64.tar.gz
 ```
 
 </TabItem>
@@ -258,7 +258,7 @@ curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/libkuzu-linux
 <TabItem label="Windows">
 
 ```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.5.0/libkuzu-windows-x86_64.zip
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.6.0/libkuzu-windows-x86_64.zip
 ```
 
 </TabItem>
