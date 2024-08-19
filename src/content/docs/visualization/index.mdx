@@ -1,5 +1,5 @@
 ---
-title: Visualize graphs
+title: Visualize graphs in Kùzu Explorer
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -59,11 +59,13 @@ finally use Kùzu Explorer to explore it.
 
 <img src="/img/visualization/datasets-panel.png" />
 
-### Additional launch configurations
+## Additional launch configurations
 
-#### Access mode
+### Access mode
 
-By default, Kùzu Explorer is launched in read-write mode, which means that you can modify the database. If you want to launch Kùzu Explorer in read-only mode, you can do so by setting the `MODE` environment variable to `READ_ONLY` as follows.
+By default, Kùzu Explorer is launched in `READ_WRITE` mode, which means that you can modify the database.
+If you want to launch Kùzu Explorer in read-only mode, you can do so by setting the `MODE`
+environment variable to `READ_ONLY` as shown below. 
 
 ```bash
 docker run -p 8000:8000 \
@@ -72,9 +74,32 @@ docker run -p 8000:8000 \
            --rm kuzudb/explorer:latest
 ```
 
-In read-only mode, you can still issue read queries and visualize the results, but you cannot run write queries or modify the schema.
+In read-only mode, you can still issue read queries (such as `MATCH`) and visualize the results,
+but you cannot run queries that require write access (such as `MERGE`, `CREATE` or `SET`), or modify the
+database schema.
 
-#### Buffer pool size
+### In-memory mode
+
+By default, Kùzu Explorer is launched under on-disk mode, in which the database exists on disk.
+If you want to launch Kùzu Explorer to operate on an in-memory database,
+you can do so by setting the `KUZU_IN_MEMORY` environment variable to true as follows.
+
+```bash
+docker run -p 8000:8000 \
+           -e KUZU_IN_MEMORY=true \
+           --rm kuzudb/explorer:latest
+```
+
+You can think of an in-memory database as ephemeral, where the database exists purely in memory --
+**all changes are lost** when the Docker container is stopped, so mounting a database directory
+with `-v` does nothing in this case.
+
+:::caution[Note]
+`READ_ONLY` access is not supported when you open a database in-memory mode. An in-memory database
+can only be opened with `READ_WRITE` access.
+:::
+
+### Buffer pool size
 
 By default, Kùzu Explorer is launched with a maximum buffer pool size of 80% of the available memory. If you want to launch Kùzu Explorer with a different buffer pool size, you can do so by setting the `KUZU_BUFFER_POOL_SIZE` environment variable to the desired value in bytes as follows.
 
