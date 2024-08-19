@@ -4,35 +4,58 @@ title: Import Panel
 
 The Import Panel allows you to import data into your database from CSV or Parquet files via the UI.
 You can create new node/relationship or import data into existing tables via the imported
-files. Once you click on the "Import" tab on the top right, you will see the following widget.
+files. To get started, click on the "Import" tab on the top right.
 
-<img src="/img/visualization/import-panel-intro.png" />
+## File sniffing
 
-The requirement is that the files be organized into node and relationship files. Node files
+You can load files from your local system with the widget available in the import panel.
+The primary requirement is that the files be organized into node and relationship files. Node files
 are files that contain data for nodes, and relationship files are files that contain data for relationships.
 See the documentation on [importing from files](/import/) to learn about the structure of node and relationship files.
 The supported formats for import are CSV and Parquet.
 
+<img src="/img/visualization/import-panel-intro.png" />
+
 Either drag-drop your desired files into the drop zone, or click "Browse Files" to
-multi-select files from your local file system. Once you have selected the files, they will
-be inspected for their schema, and if it is valid, you can proceed to the file setup page, as shown
-below. Note that you can continue to add more files from the file setup page using the "Add More Files"
-button on the top left.
-
-## File setup
-
-Once the file parsing is successful, you will be taken to the file setup page. Once set up, it looks
-like the following:
+multi-select files from your local file system. When you load the files, they will
+be "sniffed" (i.e., their headers parsed and the their overall structure validated).
+Once file sniffing is successful, you will be taken to the file setup page, that looks like the
+following:
 
 <img src="/img/visualization/import-panel-file-setup.png" />
 
-The key steps in the file setup page are listed below.
+## File setup
+
+### Header detection
+
+Whenever possible, header information in files is automatically detected and displayed in the UI. For
+Parquet files, this is not an issue as they contain header and data type information implicitly. For CSV files,
+the first row of a file is assumed to be the header row.
+
+If your CSV file doesn't contain a header row, Kùzu cannot make assumptions about your table's column names,
+or, for node tables, which of the columns is the primary key column. In such cases, you will need to
+expand the table's options by clicking on the downward arrow to manually specify the column names.
+
+<img src="/img/visualization/import-panel-header-detection.png" />
+
+In this example, we specify the column names of the `city.csv` file as `city` and `population`,
+and its primary key column is the `city` column. For the `user.csv` file, we specify the column names
+as `name` and `age`, and the primary key column as `name`.
+
+### CSV import options
+
+CSV import options can be specified, such as custom quote character, escape characters, delimiters, etc.
+To do this, expand the table's options and click on "Configure CSV format". The options are identical
+to those available in the [CSV import](/import/csv/) section of the documentation.
+
+<img src="/img/visualization/import-panel-csv-config.png" />
 
 ### Step 1: Choose node and relationship files
 
+The key steps in the file setup page are listed in this section.
 The first step is to specify which files are node files and which are relationship files.
+In this example, we choose the following options from the dropdown menus on the left side:
 
-From the above example, we choose the following options from the dropdown on the left of the UI:
 - `city.csv`: Node file
 - `user.csv`: Node file
 - `follows.csv`: Relationship file
@@ -59,11 +82,11 @@ setting the tables names as follows:
 - `LivesIn`: Table name of the lives-in relationship between `User` and `City` nodes
 
 The naming convention for node tables is generally to capitalize the first letter, e.g., `City`. For relationship tables,
-it's recommended to use capitalized words separated by underscores (e.g., `LIVES_IN`) or `LivesIn`
-to clearly separate words in a readable fashion. The naming convention you follow is totally up to
+it's recommended to use capitalized words separated by underscores (e.g., `LIVES_IN`) or use PascalCase, for e.g., `LivesIn`.
+This clearly separates words in a readable fashion. The naming convention you follow is totally up to
 you, but it's recommended to be consistent in your naming across all database tables.
 
-## Import the data
+## Data import
 
 Begin the import by clicking the "Start Import" button on the top of the UI. This will first display
 a summary of all the tables that are going to be copied into the database. Click on the "Execute"
