@@ -100,7 +100,15 @@ export default defineConfig({
                 },
                 {
                     label: 'Visualize graphs',
-                    link: '/visualization',
+                    collapsed: true,
+                    items: [
+                        { label: 'Intro to Kùzu Explorer', link: '/visualization'},
+                        { label: 'Shell panel', link: '/visualization/shell-panel'},
+                        { label: 'Schema panel', link: '/visualization/schema-panel' },
+                        { label: 'Import panel', link: '/visualization/import-panel' },
+                        { label: 'Settings panel', link: '/visualization/settings-panel' },
+                    ],
+                    autogenerate: { directory: 'reference' },
                 },
                 {
                     label: 'Cypher manual',
