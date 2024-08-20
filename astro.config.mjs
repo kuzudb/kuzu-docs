@@ -88,7 +88,7 @@ export default defineConfig({
                         { label: 'Overview', link: '/export' },
                         { label: 'Copy to CSV', link: '/export/csv' },
                         { label: 'Copy to Parquet', link: '/export/parquet' },
-                        { label: 'Copy to JSON', link: '/export/json' },
+                        { label: 'Copy to JSON', link: '/export/json', badge: { text: 'New'}},
                     ]
                 },
                 {
