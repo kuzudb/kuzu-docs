@@ -19,6 +19,7 @@ configuration **cannot** be used with other query clauses, such as `RETURN`.
 | `PROGRESS_BAR` | enable progress bar in CLI                                                     | false                  |
 | `PROGRESS_BAR_TIME` | show progress bar after time in ms                                             | 1000                   |
 | `CHECKPOINT_THRESHOLD` | the WAL size threshold in bytes at which to automatically trigger a checkpoint | 16777216 (16MB)        |
+| `WARNING_LIMIT` | The maximum number of warnings that can be stored in a single connection | 8192        |
 
 ### Database configuration
 | Option | Description | Default |
@@ -67,4 +68,9 @@ CALL progress_bar=true;
 #### Configure checkpoint threshold
 ```cypher
 CALL checkpoint_threshold=16777216;
+```
+
+#### Configure warning limit
+```cypher
+CALL warning_limit=1024;
 ```

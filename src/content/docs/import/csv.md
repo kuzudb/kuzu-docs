@@ -17,6 +17,7 @@ end of the the `COPY FROM` clause. The following table shows the configuration p
 | `ESCAPE` | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
 | `SKIP` | Number of rows to skip from the input file | `0` |
 | `PARALLEL` | Read csv files in parallel or not | `true` |
+| `IGNORE_ERRORS` | Skips malformed rows in csv files if enabled. [The `SHOW_WARNINGS` function](/cypher/query-clauses/call#show_warnings) can be used to view the warning messages triggered by the malformed rows. | `false` |
 
 The example below specifies that the CSV delimiter is`|` and also that the header row exists.
 
