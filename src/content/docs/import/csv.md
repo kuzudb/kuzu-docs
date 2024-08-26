@@ -75,7 +75,7 @@ The following statement will load only the first row of `vPerson.csv` into `Pers
 COPY Person FROM "vPerson.csv" (header=false, ignore_errors=true);
 ```
 
-The warnings table stores any errors that were skipped during the copy.
+We can call `show_warnings` to show any errors that caused rows to be skipped during the copy.
 
 ```cypher
 CALL show_warnings() RETURN *;
@@ -83,12 +83,12 @@ CALL show_warnings() RETURN *;
 
 Output:
 ```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────┬─────────────┬────────────────────┐
-│ query_id │ message                                                                     │ file_path                                                                                │ line_number │ reconstructed_line │
-│ UINT64   │ STRING                                                                      │ STRING                                                                                   │ UINT64      │ STRING             │
-├──────────┼─────────────────────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────┼─────────────┼────────────────────┤
-│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv                                                                              │ 2           │ 2,2147483650       │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────┴─────────────┴────────────────────┘
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_number │ reconstructed_line │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING             │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650       │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────┘
 ```
 
 ## Import to relationship table
