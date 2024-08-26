@@ -81,6 +81,8 @@ kuzu> :help
     :max_width [max_width]     set maximum width in characters for display
     :mode [mode]     set output mode (default: box)
     :stats [on|off]     toggle query stats on or off
+    :multiline     set multiline mode
+    :singleline     set singleline mode (default)
 
     Note: you can change and see several system configurations, such as num-threads, 
           timeout, and progress_bar using Cypher CALL statements.
@@ -105,6 +107,37 @@ Set output mode. The default mode is `box`. See the output modes section below f
 
 #### `:stats [on|off]`
 Toggle query statistics on or off. The default is `on`. Query statistics include the number of tuples, columns, and execution time.
+
+#### `:multiline`
+Set multiline editing mode. In multiline editing mode, you can write queries that span multiple lines. In this mode, you are able to go back
+to previous lines and edit them. Comments and newlines will stay when saved into history when using this mode. 
+
+```bash
+kuzu> :multiline
+Multi line mode enabled
+kuzu> CREATE NODE TABLE
+    · Person(name STRING,
+    · age INT64,
+    ‣ PRIMARY KEY (name) // a comment here too
+    · );
+```
+
+The `‣` symbol indicates the current line.
+
+#### `:singleline`
+Set singleline editing mode. This is the default editing mode. In singleline editing mode, you can only write queries on a single line.
+If your query spans multiple lines, you will not be able to go back to previous lines and edit them. Single-line comments and newlines
+will not be saved into history when using this mode.
+
+```bash
+kuzu> :singleline
+Single line mode enabled
+kuzu> CREATE NODE TABLE
+..> Person(name STRING,
+..> age INT64,
+..> PRIMARY KEY (name) // a comment here too
+..> );
+```
 
 ## Interrupt shell
 
