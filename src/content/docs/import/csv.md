@@ -55,6 +55,42 @@ The following statement will load `user.csv` into User table.
 COPY User FROM "user.csv" (header=true);
 ```
 
+## Ignoring Errors
+
+Create a node table `Person` as follows:
+
+```cypher
+create node table person (ID INT16, age INT32, PRIMARY KEY (ID));
+```
+
+The CSV file `vPerson.csv` contains the following fields (note that `2147483650` does not fit into an INT32):
+```csv
+0,4
+2,2147483650
+```
+
+The following statement will load only the first row of `vPerson.csv` into `Person` table, skipping the malformed second row.
+
+```cypher
+COPY Person FROM "vPerson.csv" (header=false, ignore_errors=true);
+```
+
+The warnings table stores any errors that were skipped during the copy.
+
+```cypher
+CALL show_warnings() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────┬─────────────┬────────────────────┐
+│ query_id │ message                                                                     │ file_path                                                                                │ line_number │ reconstructed_line │
+│ UINT64   │ STRING                                                                      │ STRING                                                                                   │ UINT64      │ STRING             │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────┼─────────────┼────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv                                                                              │ 2           │ 2,2147483650       │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────┴─────────────┴────────────────────┘
+```
+
 ## Import to relationship table
 
 When loading into a relationship table, Kùzu assumes the first two columns in the file are:
