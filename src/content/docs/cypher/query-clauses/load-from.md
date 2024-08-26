@@ -106,6 +106,38 @@ If the header is specified manually:
 casting operation fails.
 :::
 
+### Ignore Errors
+
+By specifying the `ignore_errors` option to `true`, we can ignore any erroneous rows in CSV files. Consider the following example:
+
+The CSV file `vPerson.csv` contains the following fields (note that `2147483650` does not fit into an INT32):
+```csv
+0,4
+2,2147483650
+```
+
+The following statement will load only the first row of `vPerson.csv`, skipping the erroneous second row.
+
+```cypher
+LOAD WITH HEADERS (ID INT16, age INT32) FROM "vPerson.csv" (header=false, ignore_errors=true);
+```
+
+We can call `show_warnings` to show any errors that caused rows to be skipped during the copy.
+
+```cypher
+CALL show_warnings() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_number │ reconstructed_line │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING             │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650       │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────┘
+```
+
 ## Scan Data Formats
 
 ### CSV
