@@ -11,8 +11,11 @@ section below to get answers to common questions.
 In this section, we will go over the basics of how applications connect to a Kùzu database and list some
 best practices on how to do so concurrently.
 
-When you open Kùzu under on-disk mode, your data and the underlying database files are stored in a
-local database directory. You can also create an [in-memory database](/get-started#in-memory-database), where no data is persisted to disk.
+Kùzu supports both **on-disk** and **in-memory** modes of operation. 
+When operating under on-disk mode, your data and the underlying database files are stored in a
+local database directory, whereas under [in-memory](/get-started#in-memory-database) mode,
+no data is persisted to disk.
+
 Throughout this documentation, let’s suppose you open a Kùzu database that's on-disk, and whose files
 are in a directory named `./kuzu-db-dir`.
 
@@ -221,4 +224,14 @@ restarting the Jupyter notebook server).
 ##### Can I open an in-memory database as `READ_ONLY`?
 
 No, you cannot open in-memory databases as `READ_ONLY` -- only `READ_WRITE` processes are allowed
-when operating under in-memory mode.
+when operating under in-memory mode. When you create a Kùzu database, there are two things to keep
+in mind:
+- The database mode (on-disk or in-memory)
+- Whether you will read and write to the database or only read from it
+
+An in-memory database is stored in memory and not on disk. This means that the database is temporary
+and the data will be lost when the process that created the database is terminated, so from a working
+level perspective, in-memory databases require a `READ_WRITE` process.
+
+See the [getting started](/get-started#in-memory-database) section for more details on how to create
+and work with in-memory databases in your client API of choice.
