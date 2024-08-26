@@ -60,7 +60,7 @@ COPY User FROM "user.csv" (header=true);
 Create a node table `Person` as follows:
 
 ```cypher
-create node table person (ID INT16, age INT32, PRIMARY KEY (ID));
+CREATE NODE TABLE Person (ID INT16, age INT32, PRIMARY KEY (ID));
 ```
 
 The CSV file `vPerson.csv` contains the following fields (note that `2147483650` does not fit into an INT32):
