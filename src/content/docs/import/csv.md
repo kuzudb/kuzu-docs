@@ -55,7 +55,7 @@ The following statement will load `user.csv` into User table.
 COPY User FROM "user.csv" (header=true);
 ```
 
-## Ignoring Errors
+## Ignoring Erroneous Rows
 
 Create a node table `Person` as follows:
 
@@ -83,12 +83,12 @@ CALL show_warnings() RETURN *;
 
 Output:
 ```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────┐
-│ query_id │ message                                                                     │ file_path   │ line_number │ reconstructed_line │
-│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING             │
-├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼────────────────────┤
-│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650       │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────┘
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬──────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING       │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼──────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650 │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴──────────────┘
 ```
 
 ## Import to relationship table

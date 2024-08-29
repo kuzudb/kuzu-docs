@@ -184,7 +184,7 @@ Output:
 | message | A description of what triggered the warning | STRING |
 | file_path | The path to the CSV file that triggered the warning | STRING |
 | line_number | The line number in the CSV file that triggered the warning | UINT64 |
-| reconstructed_line | A substring of the line containing the actual value that triggered the warning | STRING |
+| skipped_line | A substring of the line containing the actual value that triggered the warning | STRING |
 
 ```cypher
 CALL show_warnings() RETURN *;
@@ -192,7 +192,7 @@ CALL show_warnings() RETURN *;
 Output:
 ```
 ┌──────────┬──────────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────┬─────────────┬─────────────────────────┐
-│ query_id │ message                                                                                  │ file_path                          │ line_number │ reconstructed_line      │
+│ query_id │ message                                                                                  │ file_path                          │ line_number │ skipped_line            │
 │ UINT64   │ STRING                                                                                   │ STRING                             │ UINT64      │ STRING                  │
 ├──────────┼──────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────┼─────────────┼─────────────────────────┤
 │ 1        │ Conversion exception: Cast failed. Could not convert "039472389abc23784928347" to INT32. │ /home/user/test/csv/dataset.csv    │ 1717633     │ 039472389abc23784928347 │

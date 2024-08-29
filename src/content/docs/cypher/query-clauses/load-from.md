@@ -18,7 +18,7 @@ Some example usage for the `LOAD FROM` clause is shown below.
 
 ```cypher
 LOAD FROM "user.csv" (header = true)
-WHERE CAST(age, INT64) > 25 
+WHERE CAST(age, INT64) > 25
 RETURN COUNT(*);
 ----------------
 | COUNT_STAR() |
@@ -78,7 +78,7 @@ By default, Kùzu will infer the column names and data types from the scan sourc
 - For Parquet, Pandas, Polars and PyArrow, column names and data types are always available in the data source
 - For CSV, we use header names as properties if available, otherwise we fallback naming to `column0, column1, ...`. We also assume that all data types are `STRING` if no data type information is available in the header
 - For JSON, we use keys as column names, and infer a common data type from each key's values. To use `LOAD FROM` with JSON, you need
-to have the [JSON extension](/extensions/json) installed. More details on using `LOAD FROM` with JSON files is provided 
+to have the [JSON extension](/extensions/json) installed. More details on using `LOAD FROM` with JSON files is provided
 on the documentation page for the [JSON extension](/extensions/json).
 
 To enforce specific column names and data types when reading, you can use the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
@@ -106,7 +106,7 @@ If the header is specified manually:
 casting operation fails.
 :::
 
-### Ignore Errors
+### Ignoring Erroneous Rows
 
 By specifying the `ignore_errors` option to `true`, we can ignore any erroneous rows in CSV files. Consider the following example:
 
@@ -119,7 +119,7 @@ The CSV file `vPerson.csv` contains the following fields (note that `2147483650`
 The following statement will load only the first row of `vPerson.csv`, skipping the erroneous second row.
 
 ```cypher
-LOAD WITH HEADERS (ID INT16, age INT32) FROM "vPerson.csv" (header=false, ignore_errors=true);
+LOAD WITH HEADERS (ID INT16, age INT32) FROM "vPerson.csv" (header=false, ignore_errors=true) RETURN *;
 ```
 
 We can call `show_warnings` to show any errors that caused rows to be skipped during the copy.
@@ -130,12 +130,12 @@ CALL show_warnings() RETURN *;
 
 Output:
 ```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────┐
-│ query_id │ message                                                                     │ file_path   │ line_number │ reconstructed_line │
-│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING             │
-├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼────────────────────┤
-│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650       │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────┘
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬──────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING       │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼──────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650 │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴──────────────┘
 ```
 
 ## Scan Data Formats
@@ -292,5 +292,5 @@ age: [[30,40,50]]
 ```
 
 ### JSON
-Kùzu can scan JSON files using `LOAD FROM. 
+Kùzu can scan JSON files using `LOAD FROM.
 All JSON-related features are part of the JSON extension. See the documentation on the [JSON extension](/extensions/json#load-from) for details.
