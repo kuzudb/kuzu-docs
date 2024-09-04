@@ -21,3 +21,7 @@ Kùzu's Java API is compatible with **Java 8+**. The OS compatibility is the sam
 ## Rust
 
 Kùzu's Rust API is closely linked with Kùzu's C++ API. By default it compiles the C++ library from source, and the build process has been tested on Windows using MSVC, and macOS and Linux using GCC. If linking to the release binaries (see [here](https://docs.rs/kuzu/latest/kuzu/#building)), the restrictions mentioned for the C++ API above apply.
+
+## Go
+
+Kùzu's Go API is a wrapper around the C API, and is currently for MacOS and Linux only. It's recommended to use a minimum Go version of 1.20. Windows support is planned for a future release.
