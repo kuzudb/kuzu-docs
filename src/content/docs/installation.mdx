@@ -214,6 +214,40 @@ cargo add kuzu
 
 </Tabs>
 
+## Go
+
+Kùzu's Go API is a wrapper around the C API of Kùzu. The installation step below assumes that you have Go
+installed and available on your machine, and that there's an initialized Go project that has a `go.mod`
+in the directory. If you need to create a new Go module, follow [this tutorial](https://go.dev/doc/tutorial/create-module).
+
+<Tabs>
+
+<TabItem label="macOS">
+
+```bash
+go get github.com/kuzudb/go-kuzu
+```
+
+</TabItem>
+
+<TabItem label="Linux">
+
+```bash
+go get github.com/kuzudb/go-kuzu
+```
+
+</TabItem>
+
+<TabItem label="Windows">
+
+We do not yet provide a pre-compiled Go package for Windows. If you need to use the Go API on Windows,
+please upvote this [issue](https://github.com/kuzudb/go-kuzu/issues/12) on GitHub and leave a comment
+to notify the Kùzu team.
+
+</TabItem>
+
+</Tabs>
+
 ## C/C++
 
 Use a tool like cURL to download the latest version of the Kùzu C/C++ binaries to your local machine

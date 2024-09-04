@@ -384,6 +384,91 @@ Zhang, 2022, Noura
 
 </TabItem>
 
+<TabItem label="Go">
+
+
+
+```go
+// main.go
+package main
+
+import (
+    "fmt"
+    "os"
+
+    "github.com/kuzudb/go-kuzu"
+)
+
+func main() {
+    // Create an empty on-disk database and connect to it
+    dbPath := "demo_db"
+    os.RemoveAll(dbPath)
+
+    systemConfig := kuzu.DefaultSystemConfig()
+    systemConfig.BufferPoolSize = 1024 * 1024 * 1024
+    db, err := kuzu.OpenDatabase(dbPath, systemConfig)
+    if err != nil {
+        panic(err)
+    }
+    defer db.Close()
+
+    conn, err := kuzu.OpenConnection(db)
+    if err != nil {
+        panic(err)
+    }
+    defer conn.Close()
+
+    // Create schema
+    queries := []string{
+        "CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))",
+        "CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))",
+        "CREATE REL TABLE Follows(FROM User TO User, since INT64)",
+        "CREATE REL TABLE LivesIn(FROM User TO City)",
+        "COPY User FROM \"../dataset/demo-db/user.csv\"",
+        "COPY City FROM \"../dataset/demo-db/city.csv\"",
+        "COPY Follows FROM \"../dataset/demo-db/follows.csv\"",
+        "COPY LivesIn FROM \"../dataset/demo-db/lives-in.csv\"",
+    }
+    for _, query := range queries {
+        queryResult, err := conn.Query(query)
+        if err != nil {
+            panic(err)
+        }
+        defer queryResult.Close()
+    }
+
+    // Execute Cypher query
+    query := "MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.since, b.name"
+    result, err := conn.Query(query)
+    if err != nil {
+        panic(err)
+    }
+    defer result.Close()
+    for result.HasNext() {
+        tuple, err := result.Next()
+        if err != nil {
+            panic(err)
+        }
+        defer tuple.Close()
+        // The result is a tuple, which can be converted to a slice.
+        slice, err := tuple.GetAsSlice()
+        if err != nil {
+            panic(err)
+        }
+        fmt.Println(slice)
+    }
+```
+Result:
+
+```
+[Adam 2020 Karissa]
+[Adam 2020 Zhang]
+[Karissa 2021 Zhang]
+[Zhang 2022 Noura]
+```
+
+</TabItem>
+
 <TabItem label="C++">
 
 The Kùzu C++ client is distributed as `so`/`dylib`/`dll+lib` library files along with a header file (`kuzu.hpp`).
