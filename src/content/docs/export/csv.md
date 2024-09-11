@@ -27,7 +27,7 @@ Available options are:
 | Option                   | Default Value           | Description                                                               |
 |:------------------------:|:-----------------------:|---------------------------------------------------------------------------|
 | `ESCAPE`                 | `\`                     | Character used to escape special characters in CSV                        |
-| `DELIM`                  | `,`                     | Character that separates fields in the CSV                                |
+| `DELIM` or `DELIMITER`   | `,`                     | Character that separates fields in the CSV                                |
 | `QUOTE`                  | `"`                     | Character used to enclose fields containing special characters or spaces  |
 | `Header`                 | `false`                 | Indicates whether to output a header row                                  |
 
