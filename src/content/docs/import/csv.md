@@ -9,9 +9,9 @@ databases. You can use `COPY FROM` to import data into an empty table or to appe
 The CSV import configuration can be manually set by specifying the parameters inside `( )` at the
 end of the the `COPY FROM` clause. The following table shows the configuration parameters supported:
 
-Any option that is a Boolean can be enabled or disabled in multiple ways. 
-You can write true, ON, or 1 to enable the option, and false, OFF, or 0 to disable it. 
-The Boolean value can also be omitted (e.g., by only passing (HEADER)), in which case true is assumed.
+Any option that is a `Boolean` can be enabled or disabled in multiple ways. 
+You can write `true`, `ON`, or `1` to enable the option, and `false`, `OFF`, or `0` to disable it. 
+The `Boolean` value can also be omitted (e.g., by only passing `(HEADER)`), in which case `true` is assumed.
 
 The assignment operator `=` can also be space ` `.
 
