@@ -9,10 +9,16 @@ databases. You can use `COPY FROM` to import data into an empty table or to appe
 The CSV import configuration can be manually set by specifying the parameters inside `( )` at the
 end of the the `COPY FROM` clause. The following table shows the configuration parameters supported:
 
+Any option that is a Boolean can be enabled or disabled in multiple ways. 
+You can write true, ON, or 1 to enable the option, and false, OFF, or 0 to disable it. 
+The Boolean value can also be omitted (e.g., by only passing (HEADER)), in which case true is assumed.
+
+The assignment operator `=` can also be space ` `.
+
 | Parameter | Description | Default Value |
 |:-----|:-----|:-----|
 | `HEADER` | Whether the first line of the CSV file is the header. Can be true or false. | false |
-| `DELIM` | Character that separates different columns in a lines. | `,`|
+| `DELIM` or `DELIMITER` | Character that separates different columns in a lines. | `,`|
 | `QUOTE` | Character to start a string quote. | `"` |
 | `ESCAPE` | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
 | `SKIP` | Number of rows to skip from the input file | `0` |
