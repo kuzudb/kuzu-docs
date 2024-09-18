@@ -91,6 +91,38 @@ Output:
 └──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴──────────────┘
 ```
 
+Once we are done inspecting the warnings, we can call [`clear_warnings`](/cypher/query-clauses/call#clear_warnings) to clear the warning table.
+
+```cypher
+CALL clear_warnings() RETURN *;
+```
+
+Output:
+```
+┌────────┐
+│ status │
+│ UINT8  │
+├────────┤
+│ 0      │
+└────────┘
+```
+
+After clearing the warnings, the warning table will be empty.
+
+```cypher
+CALL show_warnings() RETURN COUNT(*);
+```
+
+Output:
+```
+┌──────────────┐
+│ COUNT_STAR() │
+│ INT64        │
+├──────────────┤
+│ 0            │
+└──────────────┘
+```
+
 ## Import to relationship table
 
 When loading into a relationship table, Kùzu assumes the first two columns in the file are:
