@@ -132,9 +132,7 @@ npm install kuzu
 
 ## Java
 
-Download the latest version [here](https://github.com/kuzudb/kuzu/releases/download/v0.6.0/kuzu_java.jar),
-and put it under `src/main/resources`. (We assume this is the project directory structure and the
-project dependency is managed through Apache Maven).
+The latest stable version is available on [Maven Central](https://central.sonatype.com/artifact/com.kuzudb/kuzu).
 
 <Tabs>
 
@@ -142,11 +140,9 @@ project dependency is managed through Apache Maven).
 
 ```xml
 <dependency>
-  <groupId>com.kuzudb</groupId>
-  <artifactId>kuzudb</artifactId>
-  <version>0.6.0</version>
-  <scope>system</scope>
-  <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
+    <groupId>com.kuzudb</groupId>
+    <artifactId>kuzu</artifactId>
+    <version>0.6.0</version>
 </dependency>
 ```
 
@@ -156,11 +152,9 @@ project dependency is managed through Apache Maven).
 
 ```xml
 <dependency>
-  <groupId>com.kuzudb</groupId>
-  <artifactId>kuzudb</artifactId>
-  <version>0.6.0</version>
-  <scope>system</scope>
-  <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
+    <groupId>com.kuzudb</groupId>
+    <artifactId>kuzu</artifactId>
+    <version>0.6.0</version>
 </dependency>
 ```
 
@@ -170,11 +164,9 @@ project dependency is managed through Apache Maven).
 
 ```xml
 <dependency>
-  <groupId>com.kuzudb</groupId>
-  <artifactId>kuzudb</artifactId>
-  <version>0.6.0</version>
-  <scope>system</scope>
-  <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
+    <groupId>com.kuzudb</groupId>
+    <artifactId>kuzu</artifactId>
+    <version>0.6.0</version>
 </dependency>
 ```
 
@@ -308,5 +300,6 @@ If you want access to the bleeding edge feature set in Kùzu, install from our n
 
 - Python: `pip install --pre kuzu`
 - Node.js: `npm i kuzu@next`
-- For the CLI, C/C++ shared libraries, Rust and Java, the latest nightly versions for each can be
+- Java: The latest snapshot version is available on [GitHub Packages](https://github.com/kuzudb/kuzu/packages/2258307)
+- For the CLI, C/C++ shared libraries, and Rust, the latest nightly versions for each can be
 downloaded from the latest run of [this GitHub Actions pipeline](https://github.com/kuzudb/kuzu/actions/workflows/build-and-deploy.yml).
