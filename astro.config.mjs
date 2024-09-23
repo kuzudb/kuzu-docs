@@ -157,19 +157,6 @@ export default defineConfig({
                     ]
                 },
                 {
-                    label: 'Model RDF data',
-                    collapsed: true,
-                    items: [
-                        { label: 'Motivation', link: '/rdf-graphs' },
-                        { label: 'RDF basics', link: '/rdf-graphs/rdf-basics' },
-                        { label: 'Create your first RDF graph', link: '/rdf-graphs/example-rdfgraph' },
-                        { label: 'Query an RDF graph in Cypher', link: '/rdf-graphs/rdfgraphs-overview' },
-                        { label: 'RDF bulk data import', link: '/rdf-graphs/rdf-import' },
-                        { label: 'Preloaded RDFGraphs', link: '/rdf-graphs/rdfgraphs-repo' },
-                    ],
-                    autogenerate: { directory: 'reference' },
-                },
-                {
                     label: 'Developer guide',
                     collapsed: true,
                     items: [
