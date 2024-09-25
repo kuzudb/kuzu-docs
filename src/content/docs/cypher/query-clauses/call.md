@@ -177,28 +177,27 @@ Output:
 
 ### SHOW_WARNINGS
 
-`SHOW_WARNINGS` returns the warnings encountered during the current connection when loading from CSVs. They will only be reported if the [`IGNORE_ERRORS`](/import/csv#ignoring-erroneous-rows) setting is enabled. The number of warnings that can be stored per connection is limited; any warnings encountered after the warning limit is hit will not be stored. See [configuration](/cypher/configuration#configure-warning-limit) for more details on the warning limit.
+`SHOW_WARNINGS` returns the warnings encountered during the current connection when loading from files. They will only be reported if the [`IGNORE_ERRORS`](/import/csv#ignoring-erroneous-rows) setting is enabled. The number of warnings that can be stored per connection is limited; any warnings encountered after the warning limit is hit will not be stored. See [configuration](/cypher/configuration#configure-warning-limit) for more details on the warning limit.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
 | query_id | The query that triggered the warning | UINT64 |
 | message | A description of what triggered the warning | STRING |
-| file_path | The path to the CSV file that triggered the warning | STRING |
-| line_number | The line number in the CSV file that triggered the warning | UINT64 |
-| skipped_line | A substring of the line containing the actual value that triggered the warning | STRING |
+| file_path | The path to the file that triggered the warning | STRING |
+| line_or_record_number | The line or record number in the file that triggered the warning. For CSV files, this will be the line number. For JSON files, this can be the line number (for newline-delimited files) or the record number (for other file types) | UINT64 |
+| skipped_line_or_record | A substring of the line or record containing the actual value that triggered the warning. Like `line_or_record_number`, this will correspond to a line number or record number depending on the type of file that triggered the warning. | STRING |
 
 ```cypher
 CALL show_warnings() RETURN *;
 ```
 Output:
 ```
-┌──────────┬──────────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────┬─────────────┬─────────────────────────┐
-│ query_id │ message                                                                                  │ file_path                          │ line_number │ skipped_line            │
-│ UINT64   │ STRING                                                                                   │ STRING                             │ UINT64      │ STRING                  │
-├──────────┼──────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────┼─────────────┼─────────────────────────┤
-│ 1        │ Conversion exception: Cast failed. Could not convert "039472389abc23784928347" to INT32. │ /home/user/test/csv/dataset.csv    │ 1717633     │ 039472389abc23784928347 │
-│ 1        │ Conversion exception: Cast failed. Could not convert "abc" to INT32.                     │ /home/user/test/csv/dataset1.csv   │ 329248      │ abc                     │
-└──────────┴──────────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────┴─────────────┴─────────────────────────┘
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬───────────────────────┬────────────────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_or_record_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64                │ STRING                 │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼───────────────────────┼────────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2                     │ 2,2147483650           │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴───────────────────────┴────────────────────────┘
 ```
 
 ### CLEAR_WARNINGS

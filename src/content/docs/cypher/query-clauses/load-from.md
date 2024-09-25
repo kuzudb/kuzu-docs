@@ -108,7 +108,7 @@ casting operation fails.
 
 ### Ignoring Erroneous Rows
 
-By specifying the `ignore_errors` option to `true`, we can ignore any erroneous rows in CSV files. Consider the following example:
+By specifying the `ignore_errors` option to `true`, we can ignore any erroneous rows in source files. The types of errors that are ignorable will depend on the type of file that is being loaded from. Consider the following example:
 
 The CSV file `vPerson.csv` contains the following fields (note that `2147483650` does not fit into an INT32):
 ```csv
@@ -130,12 +130,12 @@ CALL show_warnings() RETURN *;
 
 Output:
 ```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬──────────────┐
-│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line │
-│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING       │
-├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼──────────────┤
-│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650 │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴──────────────┘
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬───────────────────────┬────────────────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_or_record_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64                │ STRING                 │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼───────────────────────┼────────────────────────┤
+│ 0        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2                     │ 2,2147483650           │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴───────────────────────┴────────────────────────┘
 ```
 
 ## Scan Data Formats
