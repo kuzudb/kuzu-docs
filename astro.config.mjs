@@ -77,7 +77,7 @@ export default defineConfig({
                         { label: 'Copy from Parquet', link: '/import/parquet' },
                         { label: 'Copy from NumPy', link: '/import/npy' },
                         { label: 'Copy from subquery', link: '/import/copy-from-subquery'},
-                        { label: 'Copy from DataFrames', link: '/import/copy-from-dataframe', badge: { text: 'New'}},
+                        { label: 'Copy from DataFrames', link: '/import/copy-from-dataframe'},
                         { label: 'Copy from JSON', link: '/import/copy-from-json', badge: { text: 'New'} },
                     ]
                 },
@@ -145,7 +145,7 @@ export default defineConfig({
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}}, 
                     ],
                 },
-                { label: 'Connections & concurrency', link: '/concurrency', badge: { text: 'New'} },
+                { label: 'Connections & concurrency', link: '/concurrency'},
                 {
                     label: 'Tutorials',
                     collapsed: true,
@@ -155,19 +155,6 @@ export default defineConfig({
                             link: '/tutorials#python',
                         }
                     ]
-                },
-                {
-                    label: 'Model RDF data',
-                    collapsed: true,
-                    items: [
-                        { label: 'Motivation', link: '/rdf-graphs' },
-                        { label: 'RDF basics', link: '/rdf-graphs/rdf-basics' },
-                        { label: 'Create your first RDF graph', link: '/rdf-graphs/example-rdfgraph' },
-                        { label: 'Query an RDF graph in Cypher', link: '/rdf-graphs/rdfgraphs-overview' },
-                        { label: 'RDF bulk data import', link: '/rdf-graphs/rdf-import' },
-                        { label: 'Preloaded RDFGraphs', link: '/rdf-graphs/rdfgraphs-repo' },
-                    ],
-                    autogenerate: { directory: 'reference' },
                 },
                 {
                     label: 'Developer guide',
@@ -198,7 +185,7 @@ export default defineConfig({
                             label: 'External databases',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
-                                { label: 'External Kùzu databases', link: '/extensions/attach/kuzu', badge: { text: 'New'}  },
+                                { label: 'External Kùzu databases', link: '/extensions/attach/kuzu'},
                                 { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
                             ]
                         },

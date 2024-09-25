@@ -236,67 +236,90 @@ Result:
 
 <TabItem label="Java">
 
-Kùzu's Java client library is available as a JAR file that you can include in your project. You can
-download the latest version here. The JAR file is referenced in the `classpath` with the `-cp` flag.
+Kùzu's Java client library is available on [Maven Central](https://central.sonatype.com/artifact/com.kuzudb/kuzu). You can add the following snippet to your `pom.xml` to get it installed:
 
-Below is the project structure for a simple Java application that creates a graph schema and inserts
+```xml
+<dependency>
+    <groupId>com.kuzudb</groupId>
+    <artifactId>kuzu</artifactId>
+    <version>0.6.0</version>
+</dependency>
+```
+
+Alternatively, if you are using Gradle, you can add the following snippet to your build.gradle file to include Kùzu's Java client library:
+
+For Groovy DSL:
+```grovy
+implementation 'com.kuzudb:kuzu:0.6.0'
+```
+
+For Kotlin DSL:
+
+```kotlin
+implementation("com.kuzudb:kuzu:0.6.0")
+```
+
+Below is an example Gradle project structure for a simple Java application that creates a graph schema and inserts
 data into the database for the given example.
 
-```bash
-├── data
-|   ├── user.csv
-|   ├── city.csv
-|   ├── follows.csv
-|   └── lives-in.csv
-|-- src/main
-|   ├── java/org/example/Main.java
-|   └── resources/kuzu_java.jar
+```
+├── build.gradle
+├── src/main
+│   ├── java
+│   │   └── Main.java
+│   └── resources
+│   │   └── user.csv
+│   │   └── city.csv
+│   │   └── follows.csv
+│   │   └── lives-in.csv
+```
+
+The minimal `build.gradle` contains the following configurations:
+```
+plugins {
+    id 'java'
+    id 'application'
+}
+application {
+    mainClassName = "Main"
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation 'com.kuzudb:kuzu:0.6.0'
+}
 ```
 
 The `Main.java` contains the following code:
 
 ```java
 // Main.java
-package org.example;
 import com.kuzudb.*;
 
 public class Main {
-
-    public static void main(String[] args) throws KuzuObjectRefDestroyedException {
-        // Create an empty on-disk database and connect to it
-        String db_path = "./testdb";
-        KuzuDatabase db = new KuzuDatabase(db_path, 0);
-        KuzuConnection conn = new KuzuConnection(db);
-
+    public static void main(String[] args) throws ObjectRefDestroyedException {
+        // Create an in-memory database and connect to it
+        Database db = new Database(":memory:");
+        Connection conn = new Connection(db);
         // Create tables.
         conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
         conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
         conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
         conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
-
         // Load data.
-        KuzuQueryResult r1 = conn.query("COPY User FROM './data/user.csv'");
-        System.out.println(r1.toString());
-
-        KuzuQueryResult r2 = conn.query("COPY City FROM './data/city.csv'");
-        System.out.println(r2.toString());
-
-        KuzuQueryResult r3 = conn.query("COPY Follows FROM './data/follows.csv'");
-        System.out.println(r3.toString());
-
-        KuzuQueryResult r4 = conn.query("COPY LivesIn FROM './data/lives-in.csv'");
-        System.out.println(r4.toString());
+        conn.query("COPY User FROM 'src/main/resources/user.csv'");
+        conn.query("COPY City FROM 'src/main/resources/city.csv'");
+        conn.query("COPY Follows FROM 'src/main/resources/follows.csv'");
+        conn.query("COPY LivesIn FROM 'src/main/resources/lives-in.csv'");
 
         // Execute a simple query.
-        KuzuQueryResult result =
+        QueryResult result =
                 conn.query("MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;");
-
         while (result.hasNext()) {
-            KuzuFlatTuple row = result.getNext();
-            System.out.println("Row: " + row);
-            row.destroy();
+            FlatTuple row = result.getNext();
+            System.out.print(row);
         }
-        result.destroy();
     }
 }
 ```
@@ -304,32 +327,18 @@ public class Main {
 To execute the example, navigate to the project root directory and run the following command:
 
 ```bash
-java -cp '.:src/main/resources/kuzu_java.jar' src/main/java/org/example/Main.java
+gradle run
 ```
 
 Result:
 
-```bash
-Row: (Adam, 2020, Karissa)
-Row: (Adam, 2020, Zhang)
-Row: (Karissa, 2021, Zhang)
-Row: (Zhang, 2022, Noura)
+```
+Adam|2020|Karissa
+Adam|2020|Zhang
+Karissa|2021|Zhang
+Zhang|2022|Noura
 ```
 
-For users who prefer Maven, the JAR file can also be manually referenced from your Maven configuration:
-
-```xml
-<dependency>
-    <groupId>com.kuzudb</groupId>
-    <artifactId>kuzudb</artifactId>
-    <version>0.0.6</version>
-    <scope>system</scope>
-    <systemPath>${project.basedir}/src/main/resources/kuzu_java.jar</systemPath>
-</dependency>
-```
-
-Please note that we will soon provide a more convenient Maven-based solution for installing the Java API
-directly from Maven Central.
 
 </TabItem>
 
