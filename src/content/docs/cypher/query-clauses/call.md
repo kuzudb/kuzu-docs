@@ -29,6 +29,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `property id` | Internal identifier of the property within table | INT64 |
 | `name` | name of the property | STRING |
 | `type` | data type of the property | STRING |
+| `default expression` | default expression of the property | STRING |
 | `primary key` | if property is primary key | BOOLEAN |
 
 ```cypher
@@ -36,13 +37,14 @@ CALL TABLE_INFO('User') RETURN *;
 ```
 Output:
 ```
----------------------------------------------
-| property id | name | type   | primary key |
----------------------------------------------
-| 0           | name | STRING | True        |
----------------------------------------------
-| 1           | age  | INT64  | False       |
----------------------------------------------
+-----------------------------------------------------------------
+| property id | name | type   | default expression |primary key |
+| INT64       |STRING| STRING | STRING             |BOOL        |
+-----------------------------------------------------------------
+| 0           | name | STRING | NULL               |True        |
+-----------------------------------------------------------------
+| 1           | age  | INT64  | NULL               |False       |
+-----------------------------------------------------------------
 ```
 
 ### CURRENT_SETTING
