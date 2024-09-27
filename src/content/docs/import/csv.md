@@ -25,6 +25,7 @@ The assignment operator `=` can also be space ` `.
 | `ESCAPE` | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
 | `SKIP` | Number of rows to skip from the input file | `0` |
 | `PARALLEL` | Read csv files in parallel or not | `true` |
+| `IGNORE_ERRORS` | Skips malformed rows in csv files if enabled. [The `SHOW_WARNINGS` function](/cypher/query-clauses/call#show_warnings) can be used to view the warning messages triggered by the malformed rows. | `false` |
 
 The example below specifies that the CSV delimiter is`|` and also that the header row exists.
 
@@ -60,6 +61,74 @@ The following statement will load `user.csv` into User table.
 
 ```cypher
 COPY User FROM "user.csv" (header=true);
+```
+
+## Ignoring Erroneous Rows
+
+Create a node table `Person` as follows:
+
+```cypher
+CREATE NODE TABLE Person (ID INT16, age INT32, PRIMARY KEY (ID));
+```
+
+The CSV file `vPerson.csv` contains the following fields (note that `2147483650` does not fit into an INT32):
+```csv
+0,4
+2,2147483650
+```
+
+The following statement will load only the first row of `vPerson.csv` into `Person` table, skipping the malformed second row.
+
+```cypher
+COPY Person FROM "vPerson.csv" (header=false, ignore_errors=true);
+```
+
+We can call `show_warnings` to show any errors that caused rows to be skipped during the copy.
+
+```cypher
+CALL show_warnings() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬───────────────────────┬────────────────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_or_record_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64                │ STRING                 │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼───────────────────────┼────────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2                     │ 2,2147483650           │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴───────────────────────┴────────────────────────┘
+```
+
+Once we are done inspecting the warnings, we can call [`clear_warnings`](/cypher/query-clauses/call#clear_warnings) to clear the warning table.
+
+```cypher
+CALL clear_warnings() RETURN *;
+```
+
+Output:
+```
+┌────────┐
+│ status │
+│ UINT8  │
+├────────┤
+│ 0      │
+└────────┘
+```
+
+After clearing the warnings, the warning table will be empty.
+
+```cypher
+CALL show_warnings() RETURN COUNT(*);
+```
+
+Output:
+```
+┌──────────────┐
+│ COUNT_STAR() │
+│ INT64        │
+├──────────────┤
+│ 0            │
+└──────────────┘
 ```
 
 ## Import to relationship table
