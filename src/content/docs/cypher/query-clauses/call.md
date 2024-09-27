@@ -88,10 +88,11 @@ Output:
 
 ### SHOW_TABLES
 
-`SHOW_TABLES` returns the name, type and comment of all tables in the database.
+`SHOW_TABLES` returns the id, name, type and comment of all tables in the database.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
+| id   | id of the table   | INT    |
 | name | name of the table | STRING |
 | type | type of the table | STRING |
 | comment | comment of the table | STRING |
