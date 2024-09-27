@@ -4,7 +4,7 @@ description: CALL clause is a reading clause used for executing schema functions
 ---
 
 The `CALL` clause is used for executing schema functions. This way of using `CALL` needs to be followed
-with other query clauses, such as `RETURN` (see below for many examples) and is 
+with other query clauses, such as `RETURN` (see below for many examples) and is
 different from the standalone [`CALL` statement](/cypher/configuration) used for changing configuration.
 The following tables lists the built-in schema functions you can use with the `CALL` clause:
 
@@ -16,6 +16,8 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database |
 | `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases |
 | `SHOW_FUNCTIONS()` | returns all registered functions in the database |
+| `SHOW_WARNINGS()` | returns warnings encountered during the current connection |
+| `CLEAR_WARNINGS()` | clears all warnings cached in the warning table |
 | `TABLE_INFO('tableName')` | returns metadata information of the given table |
 
 ### TABLE_INFO
@@ -171,4 +173,50 @@ Output:
 ------------------------------------
 | dbfilewithoutext | DUCKDB        |
 ------------------------------------
+```
+
+### SHOW_WARNINGS
+
+`SHOW_WARNINGS` returns the warnings encountered during the current connection when loading from files. They will only be reported if the [`IGNORE_ERRORS`](/import/csv#ignoring-erroneous-rows) setting is enabled. The number of warnings that can be stored per connection is limited; any warnings encountered after the warning limit is hit will not be stored. See [configuration](/cypher/configuration#configure-warning-limit) for more details on the warning limit.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| query_id | The query that triggered the warning | UINT64 |
+| message | A description of what triggered the warning | STRING |
+| file_path | The path to the file that triggered the warning | STRING |
+| line_or_record_number | The line or record number in the file that triggered the warning. For CSV files, this will be the line number. For JSON files, this can be the line number (for newline-delimited files) or the record number (for other file types) | UINT64 |
+| skipped_line_or_record | A substring of the line or record containing the actual value that triggered the warning. Like `line_or_record_number`, this will correspond to a line number or record number depending on the type of file that triggered the warning. | STRING |
+
+```cypher
+CALL show_warnings() RETURN *;
+```
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬───────────────────────┬────────────────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_or_record_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64                │ STRING                 │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼───────────────────────┼────────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2                     │ 2,2147483650           │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴───────────────────────┴────────────────────────┘
+```
+
+### CLEAR_WARNINGS
+
+Over the lifetime of a connection, warnings accumulate in the warning table (which can be queried with [`SHOW_WARNINGS`](#show_warnings)). If you are no longer interested in the accumulated warnings, the table can be cleared with `CLEAR_WARNINGS`.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| status | 0 if the warning table was cleared successfully | UINT8 |
+
+```cypher
+CALL clear_warnings() RETURN *;
+```
+Output:
+```
+┌────────┐
+│ status │
+│ UINT8  │
+├────────┤
+│ 0      │
+└────────┘
 ```
