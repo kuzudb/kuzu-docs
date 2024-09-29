@@ -81,8 +81,10 @@ kuzu> :help
     :max_width [max_width]     set maximum width in characters for display
     :mode [mode]     set output mode (default: box)
     :stats [on|off]     toggle query stats on or off
-    :multiline     set multiline mode
-    :singleline     set singleline mode (default)
+    :multiline     set multiline mode (default)
+    :singleline     set singleline mode
+    :highlight [on|off]     toggle syntax highlighting on or off
+    :render_errors [on|off]     toggle error highlighting on or off
 
     Note: you can change and see several system configurations, such as num-threads, 
           timeout, and progress_bar using Cypher CALL statements.
@@ -109,7 +111,7 @@ Set output mode. The default mode is `box`. See the output modes section below f
 Toggle query statistics on or off. The default is `on`. Query statistics include the number of tuples, columns, and execution time.
 
 #### `:multiline`
-Set multiline editing mode. In multiline editing mode, you can write queries that span multiple lines. In this mode, you are able to go back
+Set multiline editing mode. This is the default editing mode. In multiline editing mode, you can write queries that span multiple lines. In this mode, you are able to go back
 to previous lines and edit them. Comments and newlines will stay when saved into history when using this mode. 
 
 ```bash
@@ -125,7 +127,7 @@ kuzu> CREATE NODE TABLE
 The `‣` symbol indicates the current line.
 
 #### `:singleline`
-Set singleline editing mode. This is the default editing mode. In singleline editing mode, you can only write queries on a single line.
+Set singleline editing mode. In singleline editing mode, you can only write queries on a single line.
 If your query spans multiple lines, you will not be able to go back to previous lines and edit them. Single-line comments and newlines
 will not be saved into history when using this mode.
 
@@ -138,6 +140,15 @@ kuzu> CREATE NODE TABLE
 ..> PRIMARY KEY (name) // a comment here too
 ..> );
 ```
+
+#### `:highlight [on|off]`
+Toggle syntax highlighting on or off. The default is `on`. When enabled, the shell will highlight Cypher keywords, 
+constants and literals, syntax errors, and comments. Error highlighting and multiline comment highlighting are not available in singleline mode.
+![](/img/cli/highlighting.png)
+
+#### `:render_errors [on|off]`
+Toggle error highlighting on or off. The default is `on`. When enabled, the shell will highlight syntax errors in red. In particular, 
+mismatched brackets and unclosed quotes will be highlighted. Error highlighting is not available in singleline mode.
 
 ## Interrupt shell
 
@@ -189,7 +200,7 @@ the number of pipelines that have been executed (each query is broken down into 
 as well as the percentage of the data processed in a pipeline. This gives an estimate for how much of a pipeline
 has executed.
 
-![](/img/progress-bar.gif)
+![](/img/cli/progress-bar.gif)
 
 The progress bar is not enabled by default. To enable the progress bar, use the following command:
 
