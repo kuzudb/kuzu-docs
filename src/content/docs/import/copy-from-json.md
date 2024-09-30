@@ -49,17 +49,24 @@ See the [`JSON`](/extensions/json) extension documentation for more related feat
 
 By specifying the `ignore_errors` option to `true`, we can ignore erroneous rows in JSON files. Consider the following example:
 
-The file `vPerson.json` contains the following fields (note that `2147483650` does not fit into an INT32):
-```json
-0,4
-2,2147483650
-```
-
-The following statement will load only the first row of `vPerson.json`, skipping the erroneous second row.
+Create a node table `Person` as follows:
 
 ```cypher
-LOAD EXTENSION "${KUZU_ROOT_DIRECTORY}/extension/json/build/libjson.kuzu_extension";
-LOAD WITH HEADERS (ID INT16, age INT32) FROM "vPerson.json" (header=false, ignore_errors=true) RETURN *;
+CREATE NODE TABLE Person (ID INT32, age INT32, PRIMARY KEY (ID));
+```
+
+The file `vPerson.json` contains the following fields (that there are two entries with the same primary key `ID=2`):
+```json
+{"ID": 0, "age": 4}
+{"ID": 2, "age": 3}
+{"ID": 2, "age": 6}
+{"ID": 5, "age": 10}
+```
+
+The following statement will skip one of the duplicate rows of `vPerson.json`, copying the remaining rows into the `Person` table.
+
+```cypher
+COPY person FROM "vPerson.json" (ignore_errors=true);
 ```
 
 We can call `show_warnings` to show any errors that caused rows to be skipped during the copy.
@@ -70,10 +77,10 @@ CALL show_warnings() RETURN *;
 
 Output:
 ```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬───────────────────────┬────────────────────────┐
-│ query_id │ message                                                                     │ file_path   │ line_or_record_number │ skipped_line_or_record │
-│ UINT64   │ STRING                                                                      │ STRING      │ UINT64                │ STRING                 │
-├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼───────────────────────┼────────────────────────┤
-│ 0        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.json │ 2                     │ 2,2147483650           │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴───────────────────────┴────────────────────────┘
+┌──────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┬─────────────┬────────────────────────┐
+│ query_id │ message                                                                                                   │ file_path    │ line_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                                                    │ STRING       │ UINT64      │ STRING                 │
+├──────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┼─────────────┼────────────────────────┤
+│ 2        │ Found duplicated primary key value 2, which violates the uniqueness constraint of the primary key column. │ vPerson.json │ 3           │ {"ID": 2, "age": 6}    │
+└──────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┴─────────────┴────────────────────────┘
 ```
