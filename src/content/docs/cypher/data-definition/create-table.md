@@ -39,7 +39,7 @@ To create a node table, use the `CREATE NODE TABLE` statement as shown below:
 CREATE NODE TABLE User (name STRING, age INT64 DEFAULT 0, reg_date DATE, PRIMARY KEY (name))
 ```
 
-Alternatively, you can define the `PRIMARY KEY` after the column:
+Alternatively, you can specify the keyword `PRIMARY KEY` immediately after the column name, as follows:
 ```sql
 CREATE NODE TABLE User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE)
 ```
