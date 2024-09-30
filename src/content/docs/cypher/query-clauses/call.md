@@ -29,7 +29,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `property id` | Internal identifier of the property within table | INT64 |
 | `name` | name of the property | STRING |
 | `type` | data type of the property | STRING |
-| `default expression` | default value of the property | STRING |
+| `default expression` | default value of property when none is specified | STRING |
 | `primary key` | if property is primary key | BOOLEAN |
 
 ```cypher
