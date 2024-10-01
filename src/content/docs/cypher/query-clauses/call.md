@@ -95,6 +95,16 @@ Output:
 | comment | comment of the table | STRING |
 
 ```cypher
+CALL db_version() RETURN *
+```
+┌─────────┐
+│ version │
+│ STRING  │
+├─────────┤
+│ 0.6.0.5 │
+└─────────┘
+
+```cypher
 CALL show_tables() RETURN *;
 ```
 Output:
@@ -103,10 +113,11 @@ Output:
 │ id          │ name         │ type   │ Comment                 │
 │ INT32       │ STRING       │ STRING │ STRING                  │
 ├─────────────┼──────────────┼────────┼─────────────────────────┤
-│ 0           │ gf_TRIPLES   │ REL    │                         │
-│ 1           │ gf_RESOURCE  │ NODE   │                         │
-│ 2           │ person       │ NODE   │ person info             │
-│ 3           │ knows        │ REL    │ person knows person     │
+│ 0           │ person       │ NODE   │ person info             │
+│ 1           │ post         │ NODE   │ post info               │
+│ 1           │ knows        │ REL    │ person knows person     │
+│ 2           │ posted       │ REL    │ person posted post      │
+│ 3           │ comments     │ REL    │ person commented post   │
 └─────────────┴──────────────┴────────┴─────────────────────────┘
 ```
 
