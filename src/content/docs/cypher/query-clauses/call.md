@@ -97,17 +97,29 @@ Output:
 | comment | comment of the table | STRING |
 
 ```cypher
+CALL db_version() RETURN *
+```
+┌─────────┐
+│ version │
+│ STRING  │
+├─────────┤
+│ 0.6.0.5 │
+└─────────┘
+
+```cypher
 CALL show_tables() RETURN *;
 ```
 Output:
 ```
-┌─────────────┬──────────────┬────────┬─────────────────────────┐
-│ id          │ name         │ type   │ Comment                 │
-│ INT32       │ STRING       │ STRING │ STRING                  │
-├─────────────┼──────────────┼────────┼─────────────────────────┤
-│ 0           │ person       │ NODE   │ person info             │
-│ 1           │ knows        │ REL    │ person knows person     │
-└─────────────┴──────────────┴────────┴─────────────────────────┘
+┌────────┬─────────┬────────┬───────────────┬─────────┐
+│ id     │ name    │ type   │ database name │ comment │
+│ UINT64 │ STRING  │ STRING │ STRING        │ STRING  │
+├────────┼─────────┼────────┼───────────────┼─────────┤
+│ 0      │ User    │ NODE   │ local(kuzu)   │         │
+│ 2      │ Follows │ REL    │ local(kuzu)   │         │
+│ 1      │ City    │ NODE   │ local(kuzu)   │         │
+│ 3      │ LivesIn │ REL    │ local(kuzu)   │         │
+└────────┴─────────┴────────┴───────────────┴─────────┘
 ```
 
 ### SHOW_CONNECTION
@@ -123,29 +135,16 @@ Output:
 
 Show connection on a relationship table:
 ```cypher
-CALL show_connection('knows') RETURN *;
+CALL show_connection('LivesIn') RETURN *;
 ```
 Output:
 ```
----------------------------------------------------------------------------------------------------------
-| source table name | destination table name | source table primary key | destination table primary key |
----------------------------------------------------------------------------------------------------------
-| person            | person                 | name                     | name                          |
----------------------------------------------------------------------------------------------------------
-```
-Show connection on a relationship group:
-```cypher
-CALL show_connection('knows') RETURN *;
-```
-Output:
-```
-----------------------------------------------
-| source table name | destination table name |
-----------------------------------------------
-| user              | person                 |
-----------------------------------------------
-| person            | person                 |
-----------------------------------------------
+┌───────────────────┬────────────────────────┬──────────────────────────┬───────────────────────────────┐
+│ source table name │ destination table name │ source table primary key │ destination table primary key │
+│ STRING            │ STRING                 │ STRING                   │ STRING                        │
+├───────────────────┼────────────────────────┼──────────────────────────┼───────────────────────────────┤
+│ User              │ City                   │ name                     │ name                          │
+└───────────────────┴────────────────────────┴──────────────────────────┴───────────────────────────────┘
 ```
 
 ### SHOW_ATTACHED_DATABASES
