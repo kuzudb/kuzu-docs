@@ -103,7 +103,7 @@ CALL db_version() RETURN *
 │ version │
 │ STRING  │
 ├─────────┤
-│ 0.6.0.5 │
+│ 0.x.0 │
 └─────────┘
 
 ```cypher
