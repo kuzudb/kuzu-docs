@@ -27,6 +27,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `property id` | Internal identifier of the property within table | INT64 |
 | `name` | name of the property | STRING |
 | `type` | data type of the property | STRING |
+| `default expression` | default value of property when none is specified | STRING |
 | `primary key` | if property is primary key | BOOLEAN |
 
 ```cypher
@@ -34,13 +35,13 @@ CALL TABLE_INFO('User') RETURN *;
 ```
 Output:
 ```
----------------------------------------------
-| property id | name | type   | primary key |
----------------------------------------------
-| 0           | name | STRING | True        |
----------------------------------------------
-| 1           | age  | INT64  | False       |
----------------------------------------------
+┌─────────────┬──────────────┬────────┬───────────────────┬─────────────┐
+│ property id │ name         │ type   │ deault expression │ primary key │
+│ INT32       │ STRING       │ STRING │ STRING            │ BOOL        │
+├─────────────┼──────────────┼────────┼───────────────────┼─────────────┤
+│ 0           │ name         │ STRING │ NULL              │ True        │
+│ 1           │ age          │ INT64  │ 0                 │ False       │
+└─────────────┴──────────────┴────────┴───────────────────┴─────────────┘
 ```
 
 ### CURRENT_SETTING
@@ -84,32 +85,40 @@ Output:
 
 ### SHOW_TABLES
 
-`SHOW_TABLES` returns the name, type and comment of all tables in the database.
+`SHOW_TABLES` returns the id, name, type and comment of all tables in the database.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
+| id   | id of the table   | INT    |
 | name | name of the table | STRING |
 | type | type of the table | STRING |
 | comment | comment of the table | STRING |
+
+```cypher
+CALL db_version() RETURN *
+```
+┌─────────┐
+│ version │
+│ STRING  │
+├─────────┤
+│ 0.x.0 │
+└─────────┘
 
 ```cypher
 CALL show_tables() RETURN *;
 ```
 Output:
 ```
---------------------------------------------
-| name        | type | comment             |
---------------------------------------------
-| gf          | RDF  |                     |
---------------------------------------------
-| gf_TRIPLES  | REL  |                     |
---------------------------------------------
-| gf_RESOURCE | NODE |                     |
---------------------------------------------
-| person      | NODE | person info         |
---------------------------------------------
-| knows       | REL  | person knows person |
---------------------------------------------
+┌─────────────┬──────────────┬────────┬─────────────────────────┐
+│ id          │ name         │ type   │ Comment                 │
+│ INT32       │ STRING       │ STRING │ STRING                  │
+├─────────────┼──────────────┼────────┼─────────────────────────┤
+│ 0           │ person       │ NODE   │ person info             │
+│ 1           │ post         │ NODE   │ post info               │
+│ 1           │ knows        │ REL    │ person knows person     │
+│ 2           │ posted       │ REL    │ person posted post      │
+│ 3           │ comments     │ REL    │ person commented post   │
+└─────────────┴──────────────┴────────┴─────────────────────────┘
 ```
 
 ### SHOW_CONNECTION
