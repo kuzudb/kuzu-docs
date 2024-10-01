@@ -184,8 +184,8 @@ Output:
 | query_id | The query that triggered the warning | UINT64 |
 | message | A description of what triggered the warning | STRING |
 | file_path | The path to the file that triggered the warning | STRING |
-| line_or_record_number | The line or record number in the file that triggered the warning. For CSV files, this will be the line number. For JSON files, this can be the line number (for newline-delimited files) or the record number (for other file types) | UINT64 |
-| skipped_line_or_record | A substring of the line or record containing the actual value that triggered the warning. Like `line_or_record_number`, this will correspond to a line number or record number depending on the type of file that triggered the warning. | STRING |
+| line_number | The line number in the file that triggered the warning. | UINT64 |
+| skipped_line_or_record | The line or record (depending on the type of file that is being read from) containing the actual value that triggered the warning. For example, for CSV files this will be the line number and for JSON files this will be the record number. | STRING |
 
 ```cypher
 CALL show_warnings() RETURN *;

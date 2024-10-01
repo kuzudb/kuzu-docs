@@ -55,7 +55,7 @@ Create a node table `Person` as follows:
 CREATE NODE TABLE Person (ID INT32, age INT32, PRIMARY KEY (ID));
 ```
 
-The file `vPerson.json` contains the following fields (that there are two entries with the same primary key `ID=2`):
+The file `vPerson.json` contains the following fields (note that there are two entries with the same primary key `ID=2`):
 ```json
 {"ID": 0, "age": 4}
 {"ID": 2, "age": 3}
