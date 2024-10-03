@@ -20,11 +20,12 @@ RETURN a.name, a.age;
 ```
 Output:
 ```
-------------------
-| a.name | a.age |
-------------------
-| Adam   | 30    |
-------------------
+┌────────┬───────┐
+│ a.name │ a.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Adam   │ 30    │
+└────────┴───────┘
 ```
 
 #### Nested `EXISTS` subquery
@@ -39,9 +40,11 @@ RETURN a.name, a.age;
 ```
 Output:
 ```
-------------------
-| a.name | a.age |
-------------------
+┌────────┬───────┐
+│ a.name │ a.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+└────────┴───────┘
 ```
 
 This query returns an empty result because in example database, only `Adam` has a 3-hop `Follows` path
@@ -59,11 +62,12 @@ RETURN a.name, a.age;
 ```
 Output:
 ```
-------------------
-| a.name | a.age |
-------------------
-| Adam   | 30    |
-------------------
+┌────────┬───────┐
+│ a.name │ a.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Adam   │ 30    │
+└────────┴───────┘
 ```
 
 ## COUNT
@@ -80,17 +84,15 @@ RETURN a.name, COUNT { MATCH (a)<-[:Follows]-(b:User) } AS num_follower ORDER BY
 
 Output:
 ```
---------------------------
-| a.name  | num_follower |
---------------------------
-| Adam    | 0            |
---------------------------
-| Karissa | 1            |
---------------------------
-| Noura   | 1            |
---------------------------
-| Zhang   | 2            |
---------------------------
+┌─────────┬──────────────┐
+│ a.name  │ num_follower │
+│ STRING  │ INT64        │
+├─────────┼──────────────┤
+│ Adam    │ 0            │
+│ Karissa │ 1            │
+│ Noura   │ 1            │
+│ Zhang   │ 2            │
+└─────────┴──────────────┘
 ```
 A count subquery can also be used in a `WHERE` clause as an expression that returns an integer value.
 
@@ -102,11 +104,35 @@ RETURN a.name;
 
 Output:
 ```
---------------------------
-| a.name  | num_follower |
---------------------------
-| Karissa | 1            |
---------------------------
-| Noura   | 1            |
---------------------------
+┌─────────┐
+│ a.name  │
+│ STRING  │
+├─────────┤
+│ Karissa │
+│ Noura   │
+└─────────┘
 ```
+
+### COUNT with DISTINCT
+
+The `COUNT` subquery can also be used with `DISTINCT` to count the number of unique matches for a given pattern.
+
+For example, the following query counts the number of unique followers for each user.
+
+```cypher
+MATCH (a:User)-[e:Follows*1..2]->(b:User)
+WHERE a.name = 'Karissa'
+RETURN COUNT(DISTINCT b) AS num_unique_followers;
+```
+
+Output:
+```
+┌──────────────────────┐
+│ num_unique_followers │
+│ INT64                │
+├──────────────────────┤
+│ 2                    │
+└──────────────────────┘
+```
+
+
