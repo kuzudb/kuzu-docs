@@ -66,3 +66,49 @@ directly insert results from their columns into a Kùzu table.
   title="Import results from a DataFrame"
   href="/import/copy-from-dataframe"
 />
+
+## `COPY FROM` JSON
+
+Using Kùzu's [JSON extension](/extensions/json), you can copy data directly from JSON files that store
+nested data. This is useful when you have semi-structured data that you want to analyze as a graph.
+
+<LinkCard
+  title="Import from JSON file"
+  href="/extensions/json#copy-from"
+/>
+
+## `COPY FROM` a partial subset
+
+In certain cases, you may only want to partially fill your Kùzu table using the data from your input
+source. This is common in cases where you want to create extra columns during DDL that will hold
+a default value, and only a subset of the Kùzu table's columns are filled during the `COPY` operation.
+
+This is better illustrated with an example. Consider a case where you have a CSV file `person.csv`
+that has 3 columns: `id`, `name` and `age`.
+Assume you have a data model where you want to attach and addtional property to a `Person` node,
+i.e., the address they live in, initially populated as nulls but to be filled in with appropriate
+values at a later time.
+
+The DDL for the `Person` node table is as follows:
+```sql
+CREATE NODE TABLE Person(id INT64, name STRING, age INT64, address STRING, PRIMARY KEY(id));
+```
+
+However, the given CSV file to `COPY FROM` has only 3 columns -- the address information will be
+obtained from another source.
+
+In such a case, you can explicitly tell the `COPY` pipeline to partially fill the node table and
+only map the named columns from the CSV file as follows:
+
+```sql
+COPY Person(id, name, age) FROM 'person.csv'
+```
+
+This will only copy the `id`, `name` and `age` columns from the CSV file, while filling the fourth
+column, `address` with null values. These values can be populated at a later time via `MERGE`.
+
+:::caution[Note]
+The above approach only works when the input data source contains *fewer* columns than exists in the
+node table being copied into. If the node table had fewer columns than the data source, it would
+lead to a Runtime error because of a column number mismatch.
+:::
