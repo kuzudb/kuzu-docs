@@ -78,7 +78,7 @@ export default defineConfig({
                         { label: 'Copy from NumPy', link: '/import/npy' },
                         { label: 'Copy from subquery', link: '/import/copy-from-subquery'},
                         { label: 'Copy from DataFrames', link: '/import/copy-from-dataframe'},
-                        { label: 'Copy from JSON', link: '/import/copy-from-json', badge: { text: 'New'} },
+                        { label: 'Copy from JSON', link: '/import/copy-from-json'},
                     ]
                 },
                 {
