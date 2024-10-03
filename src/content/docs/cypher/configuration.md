@@ -20,6 +20,7 @@ configuration **cannot** be used with other query clauses, such as `RETURN`.
 | `PROGRESS_BAR_TIME` | show progress bar after time in ms                                             | 1000                   |
 | `CHECKPOINT_THRESHOLD` | the WAL size threshold in bytes at which to automatically trigger a checkpoint | 16777216 (16MB)        |
 | `WARNING_LIMIT` | The maximum number of warnings that can be stored in a single connection | 8192        |
+| `SPILL_TO_DISK_TMP_FILE` | The location of the temporary file to use to store data if there is not enough memory during a copy | `copy.tmp` inside the database directory |
 
 ### Database configuration
 | Option | Description | Default |
@@ -73,4 +74,11 @@ CALL checkpoint_threshold=16777216;
 #### Configure warning limit
 ```cypher
 CALL warning_limit=1024;
+```
+
+#### Configure Spill to disk temporary file
+```cypher
+CALL spill_to_disk_tmp_file="/path/to/tmp/file";
+# Disables spilling to disk
+CALL spill_to_disk_tmp_file="";
 ```

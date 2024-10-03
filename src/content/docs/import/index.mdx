@@ -112,3 +112,15 @@ The above approach only works when the input data source contains *fewer* column
 node table being copied into. If the node table had fewer columns than the data source, it would
 lead to a Runtime error because of a column number mismatch.
 :::
+
+## Importing large REL tables
+
+Importing large REL tables can use significant amounts of memory. If the memory used to prepare the
+imported REL table data comes close to exceeding the buffer pool size,
+Kùzu will spill some of this data to a `copy.tmp` file in the database directory.
+The location of this file can be customized using the
+[`spill_to_disk_tmp_file`](/cypher/configuration#configure-spill-to-disk-temporary-file) setting.
+You can also disable spilling to disk by setting `spill_to_disk_tmp_file` to an empty string.
+
+This feature is disabled by default for in-memory databases and databases using file system extensions,
+but can be enabled for these cases by setting a custom `spill_to_disk_tmp_file` path.
