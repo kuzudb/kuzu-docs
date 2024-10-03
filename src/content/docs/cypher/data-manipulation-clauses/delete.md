@@ -18,11 +18,12 @@ CREATE (u:User {name: 'Alice', age: 35});
 MATCH (u:User) WHERE u.name = 'Alice' DELETE u RETURN u.*;
 ```
 ```
-------------------
-| u.name | u.age |
-------------------
-| Alice  | 35    |
-------------------
+┌────────┬───────┐
+│ u.name │ u.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 35    │
+└────────┴───────┘
 ```
 
 ### Delete Multi Label Nodes
@@ -32,13 +33,13 @@ CREATE (:User {name: 'A'}), (:City {name: 'A'});
 MATCH (u) WHERE u.name = 'A' DELETE u RETURN u.*;
 ```
 ```
--------------------------------------
-| u                                 |
--------------------------------------
-| {_ID: 1:3, _LABEL: City, name: A} |
--------------------------------------
-| {_ID: 0:4, _LABEL: User, name: A} |
--------------------------------------
+┌────────┬───────┬──────────────┐
+│ u.name │ u.age │ u.population │
+│ STRING │ INT64 │ INT64        │
+├────────┼───────┼──────────────┤
+│ A      │       │              │
+│ A      │       │              │
+└────────┴───────┴──────────────┘
 ```
 
 ## Detach Delete
@@ -49,22 +50,24 @@ a single clause, use `DETACH DELETE`.
 MATCH ()-[e]->() RETURN COUNT(e) AS num_rels;
 ```
 ```
-------------
-| num_rels |
-------------
-| 8        |
-------------
+┌──────────┐
+│ num_rels │
+│ INT64    │
+├──────────┤
+│ 8        │
+└──────────┘
 ```
 ```cypher
 MATCH (u:User) WHERE u.name = 'Adam' DETACH DELETE u;
 MATCH ()-[]->() RETURN COUNT(*) AS num_rels;
 ```
 ```
-------------
-| num_rels |
-------------
-| 5        |
-------------
+┌──────────┐
+│ num_rels │
+│ INT64    │
+├──────────┤
+│ 5        │
+└──────────┘
 ```
 
 For example, to delete every record in the database, you can do the following:
@@ -79,16 +82,9 @@ The following query deletes the `Follows` relationship between `Adam` and `Karis
 ```
 MATCH (u:User)-[f:Follows]->(u1:User)
 WHERE u.name = 'Adam' AND u1.name = 'Karissa'
-DELETE f
-RETURN f;
+DELETE f;
 ```
-```
----------------------------------------------------------
-| f                                                     |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) |
----------------------------------------------------------
-```
+
 
 ### Delete Multi Label Relationships
 
@@ -99,13 +95,13 @@ WHERE u.name = 'Karissa'
 RETURN u.name, u1.name;
 ```
 ```
-----------------------
-| u.name  | u1.name  |
-----------------------
-| Karissa | Zhang    |
-----------------------
-| Karissa | Waterloo |
-----------------------
+┌─────────┬──────────┐
+│ u.name  │ u1.name  │
+│ STRING  │ STRING   │
+├─────────┼──────────┤
+│ Karissa │ Waterloo │
+│ Karissa │ Zhang    │
+└─────────┴──────────┘
 ```
 ```cypher
 MATCH (u:User)-[f]->(u1)
@@ -116,7 +112,9 @@ WHERE u.name = 'Karissa'
 RETURN u.name, u1.name;
 ```
 ```
---------------------
-| u.name | u1.name |
---------------------
+┌────────┬─────────┐
+│ u.name │ u1.name │
+│ STRING │ STRING  │
+├────────┼─────────┤
+└────────┴─────────┘
 ```

@@ -14,7 +14,7 @@ are shown below.
 
 ### User nodes
 Schema:
-```
+```cypher
 CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))
 ```
 

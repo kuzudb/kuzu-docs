@@ -21,46 +21,50 @@ The following query tries to merge a user with name "Adam". Since user "Adam" ex
 MERGE (n:User {name : 'Adam'}) RETURN n.*;
 ```
 ```
-------------------
-| n.name | n.age |
-------------------
-| Adam   | 30    |
-------------------
+┌────────┬───────┐
+│ n.name │ n.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Adam   │ 30    │
+└────────┴───────┘
 ```
 
 ```cypher
 MATCH (:User) RETURN COUNT(*);
 ```
 ```
-----------------
-| COUNT_STAR() |
-----------------
-| 4            |
-----------------
+┌──────────────┐
+│ COUNT_STAR() │
+│ INT64        │
+├──────────────┤
+│ 4            │
+└──────────────┘
 ```
 
 ### Merge Non-existing Nodes
 The following query tries to merge a user with name "Bob". Since user "Bob" does not exist in the database, a new user with name "Bob" is created.
 ```cypher
-MERGE (n:User {name : 'Bob'}) RETURN n.*;
+MERGE (n:User {name : 'Bob', age: 45}) RETURN n.*;
 ```
 ```
-------------------
-| n.name | n.age |
-------------------
-| Bob    |       |
-------------------
+┌────────┬───────┐
+│ n.name │ n.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Bob    │       │
+└────────┴───────┘
 ```
 
 ```cypher
 MATCH (:User) RETURN COUNT(*);
 ```
 ```
-----------------
-| COUNT_STAR() |
-----------------
-| 5            |
-----------------
+┌──────────────┐
+│ COUNT_STAR() │
+│ INT64        │
+├──────────────┤
+│ 5            │
+└──────────────┘
 ```
 
 ### Merge with `ON MATCH`
@@ -69,11 +73,12 @@ MATCH (:User) RETURN COUNT(*);
 MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
 ```
 ```
-------------------
-| n.name | n.age |
-------------------
-| Adam   | 35    |
-------------------
+┌────────┬───────┐
+│ n.name │ n.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Adam   │ 35    │
+└────────┴───────┘
 ```
 
 ### Merge with `ON CREATE`
@@ -82,12 +87,14 @@ MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
 MERGE (n:User {name : 'Bob'}) ON CREATE SET n.age = 60 RETURN n.*;
 ```
 ```
-------------------
-| n.name | n.age |
-------------------
-| Bob    | 60    |
-------------------
+┌────────┬───────┐
+│ n.name │ n.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Bob    │ 60    │
+└────────┴───────┘
 ```
+
 ## Merge Relationships
 
 ### Merge Existing Relationships
@@ -98,11 +105,12 @@ WHERE a.name = 'Adam' AND b.name = 'Zhang'
 MERGE (a)-[e:Follows {since:2020}]->(b) RETURN e;
 ```
 ```
----------------------------------------------------------
-| e                                                     |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) |
----------------------------------------------------------
+┌───────────────────────────────────────────────────────┐
+│ e                                                     │
+│ REL                                                   │
+├───────────────────────────────────────────────────────┤
+│ (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) │
+└───────────────────────────────────────────────────────┘
 ```
 ```cypher
 MATCH (a:User)-[e:Follows]->(b:User) 
@@ -110,11 +118,12 @@ WHERE a.name = 'Adam' AND b.name = 'Zhang'
 RETURN e;
 ```
 ```
----------------------------------------------------------
-| e                                                     |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) |
----------------------------------------------------------
+┌───────────────────────────────────────────────────────┐
+│ e                                                     │
+│ REL                                                   │
+├───────────────────────────────────────────────────────┤
+│ (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) │
+└───────────────────────────────────────────────────────┘
 ```
 
 ### Merge Non-existing Relationships

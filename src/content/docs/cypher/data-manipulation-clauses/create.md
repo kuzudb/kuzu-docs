@@ -22,11 +22,14 @@ If you queried the database now for a `User` node with name `Alice`, you would g
 MATCH (a:User) 
 WHERE a.name = 'Alice' 
 RETURN a.*;
-------------------
-| a.name | a.age |
-------------------
-| Alice  | 35    |
-------------------
+```
+```
+┌────────┬───────┐
+│ a.name │ a.age │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 35    │
+└────────┴───────┘
 ```
 
 Any node property which is not specified in the mapping but which exists in the schema, will be set to NULL.
@@ -45,11 +48,14 @@ CREATE (u:User {name: 'Dimitri'});
 MATCH (a:User) 
 WHERE a.name = 'Dimitri'
 RETURN a.*;
--------------------
-| a.name  | a.age |
--------------------
-| Dimitri |       |
--------------------
+```
+```
+┌─────────┬───────┐
+│ a.name  │ a.age │
+│ STRING  │ INT64 │
+├─────────┼───────┤
+│ Dimitri │       │
+└─────────┴───────┘
 ```
 
 ## Insert new relationships
@@ -59,9 +65,10 @@ first binding two variables `s` and `t` to nodes, and then
 For example, the following creates a Follows relationship
 from the User node with name `Adam` to the User node with
 name `Noura`.
-```
-MATCH (u1:User), (u2:User) WHERE u1.name = 'Adam' AND u2.name = 'Noura' 
-CREATE (u1)-[:Follows {since: 2011}]->(u2)
+```cypher
+MATCH (u1:User), (u2:User)
+WHERE u1.name = 'Adam' AND u2.name = 'Noura' 
+CREATE (u1)-[:Follows {since: 2011}]->(u2);
 ```
 Similar to inserting node records, any relationship property which is not
 specified in the query will be set to NULL.
