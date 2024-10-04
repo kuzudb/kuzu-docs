@@ -19,6 +19,7 @@ configuration **cannot** be used with other query clauses, such as `RETURN`.
 | `PROGRESS_BAR` | enable progress bar in CLI                                                     | false                  |
 | `PROGRESS_BAR_TIME` | show progress bar after time in ms                                             | 1000                   |
 | `CHECKPOINT_THRESHOLD` | the WAL size threshold in bytes at which to automatically trigger a checkpoint | 16777216 (16MB)        |
+| `SPILL_TO_DISK_TMP_FILE` | The location of the temporary file to use to store data if there is not enough memory during a copy | `copy.tmp` inside the database directory |
 
 ### Database configuration
 | Option | Description | Default |
