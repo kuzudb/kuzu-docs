@@ -1,0 +1,506 @@
+---
+title: "JSON extension"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Usage
+
+The `json` extension adds support for `JSON` objects, including a set of functions for JSON
+access and manipulation, scanning from, and copying to JSON files. Using this extension, you can
+interact with JSON files using [`LOAD FROM`](/cypher/query-clauses/load-from),
+[`COPY FROM`](/import/copy-from-query-results), and [`COPY TO`](/export), similar to how you would
+with CSV files.
+
+The JSON functionality is not available by default, so you would first need to install the JSON
+extension by running the following commands:
+
+```sql
+INSTALL json;
+LOAD EXTENSION json;
+```
+
+## Example dataset
+
+Let's look at an example dataset to demonstrate how the JSON extension can be used.
+We have 3 JSON files that contain information about patients and their medical conditions. The
+files are organized into two node files (`person.json` and `condition.json`) and one relationship
+file (`has_condition.json`).
+
+<Tabs>
+<TabItem label="person.json">
+
+```json
+[
+    {
+        "p_id": "p1",
+        "name": "Gregory",
+        "info": {
+            "height": 1.81,
+            "weight": 75.5,
+            "age": 35,
+            "insurance_provider": [
+                {
+                    "type": "health",
+                    "name": "Blue Cross Blue Shield",
+                    "policy_number": "1536425345"
+                },
+                {
+                    "type": "dental",
+                    "name": "Cigna dental",
+                    "policy_number": "745332412"
+                }
+            ]
+        }
+    },
+    {
+        "p_id": "p2",
+        "name": "Alicia",
+        "info": {
+            "height": 1.65,
+            "weight": 60.1,
+            "age": 28,
+            "insurance_provider": [
+                {
+                    "type": "health",
+                    "name": "Aetna",
+                    "policy_number": "9876543210"
+                }
+            ]
+        }
+    },
+    {
+        "p_id": "p3",
+        "name": "Rebecca"
+    }
+]
+```
+</TabItem>
+
+<TabItem label="condition.json">
+
+```json
+[
+    {
+        "c_id": "c1",
+        "name": "Diabetes (Type 1)",
+        "description": "Diabetes is a chronic condition where the body can't properly regulate blood sugar levels, either due to insufficient insulin production or ineffective use of insulin, leading to potential health complications."
+    },
+    {
+        "c_id": "c2",
+        "name": "Asthma",
+        "description": "Asthma is a chronic condition that affects the airways in your lungs, causing inflammation and narrowing of the airways. This can lead to difficulty breathing, coughing, and other symptoms."
+    },
+    {
+        "c_id": "c3",
+        "name": "Allergic Rhinitis",
+        "description": "Allergic rhinitis, also known as hay fever, is a condition where your immune system overreacts to allergens like pollen, mold, or pet dander, causing symptoms like sneezing, congestion, and nasal itching."
+    },
+    {
+        "c_id": "c4",
+        "name": "Migraine",
+        "description": "Migraine is a common neurological condition characterized by recurring headaches with associated symptoms like nausea, vomiting, and sensitivity to light or sound. It can be severe and disabling, impacting daily life."
+    }
+]
+```
+</TabItem>
+
+<TabItem label="has_condition.json">
+
+```json
+[
+    {
+        "from": "p1",
+        "to": "c1",
+        "since": 2019
+    },
+    {
+        "from": "p1",
+        "to": "c2",
+        "since": 2015
+    },
+    {
+        "from": "p2",
+        "to": "c1",
+        "since": 2022
+    },
+    {
+        "from": "p2",
+        "to": "c4",
+        "since": 2020
+    }
+]
+```
+
+</TabItem>
+</Tabs>
+
+In the following sections, we will first scan the JSON files to query its contents in Cypher, and
+then proceed to copy the JSON data and construct a graph.
+
+## Scan the JSON file
+
+`LOAD FROM` is a Cypher query that scans a file or object element by element, but doesn’t actually
+move the data into a Kùzu table.
+
+Because the JSON format contains simple data types without type information, the structure will be inferred.
+To declare type information explicitly, you can use `LOAD WITH HEADERS` like you would for CSV files.
+
+To scan the file above, you can do the following:
+
+```cypher
+LOAD FROM 'patient.json' RETURN *;
+```
+Output:
+```
+┌────────┬─────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ p_id   │ name    │ info                                                                                                                                                                                                     │
+│ STRING │ STRING  │ STRUCT(height DOUBLE, weight DOUBLE, age UINT8, insurance_provider STRUCT(type STRING, name STRING, policy_number STRING)[])                                                                             │
+├────────┼─────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ p1     │ Gregory │ {height: 1.810000, weight: 75.500000, age: 35, insurance_provider: [{type: health, name: Blue Cross Blue Shield, policy_number: 1536425345},{type: dental, name: Cigna dental, policy_number: 7453324... │
+│ p2     │ Alicia  │ {height: 1.650000, weight: 60.100000, age: 28, insurance_provider: [{type: health, name: Aetna, policy_number: 9876543210},{type: vision, name: VSP, policy_number: 1784567890}]}                        │
+│ p3     │ Rebecca │ {height: 1.780000, weight: , age: 23, insurance_provider: [{type: health, name: Blue Cross Blue Shield, policy_number: 5678901234}]}                                                                     │
+└────────┴─────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Because `info` is a nested object, its type in Kùzu is inferred as a `STRUCT`, that itself contains
+other types, like `DOUBLE`, `UINT8`, `STRING`, and `STRUCT`.
+
+### Missing keys
+
+Missing keys, i.e., keys that are present in one JSON blob but not in another, are returned as the
+default/empty value for the type. To test this, let's run another query to get the name, age, height,
+weight and insurance provider of all patients:
+
+```cypher
+LOAD FROM 'patient.json' RETURN name, info.age, info.height, info.weight, info.insurance_provider;
+```
+Output:
+```
+┌─────────┬──────────────────────────┬─────────────────────────────┬─────────────────────────────┬─────────────────────────────────────────────────────────────────┐
+│ name    │ STRUCT_EXTRACT(info,age) │ STRUCT_EXTRACT(info,height) │ STRUCT_EXTRACT(info,weight) │ STRUCT_EXTRACT(info,insurance_provider)                         │
+│ STRING  │ UINT8                    │ DOUBLE                      │ DOUBLE                      │ STRUCT(type STRING, name STRING, policy_number STRING)[]        │
+├─────────┼──────────────────────────┼─────────────────────────────┼─────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+│ Gregory │ 35                       │ 1.810000                    │ 75.500000                   │ [{type: health, name: Blue Cross Blue Shield, policy_number:... │
+│ Alicia  │ 28                       │ 1.650000                    │ 60.100000                   │ [{type: health, name: Aetna, policy_number: 9876543210}]        │
+│ Rebecca │ 0                        │ 0.000000                    │ 0.000000                    │ []                                                              │
+└─────────┴──────────────────────────┴─────────────────────────────┴─────────────────────────────┴─────────────────────────────────────────────────────────────────┘
+```
+
+As can be seen, the patient Rebecca is new in the system and is missing her information fields:
+- `age` is set to the default value of `0` for `UINT8`
+- `height` and `weight` are set to the default value of `0.0` for `DOUBLE`
+- `insurance_provider` is set to an empty array `[]`
+
+### Enforcing types
+
+To enforce the data type during scanning, use the `LOAD WITH HEADERS` feature.
+
+Example:
+```cypher
+LOAD WITH HEADERS (
+    p_id STRING,
+    name STRING,
+    info STRUCT(
+        height FLOAT,
+        weight FLOAT,
+        age UINT8,
+        insurance_provider STRUCT(type STRING, name STRING, policy_number STRING)[]
+    )
+)
+FROM 'patient.json'
+RETURN name, info.height, info.weight;
+```
+We can see that the types inside the `info` STRUCT are now enforced to `FLOAT`, rather than `DOUBLE`.
+```
+┌─────────┬─────────────────────────────┬─────────────────────────────┐
+│ name    │ STRUCT_EXTRACT(info,height) │ STRUCT_EXTRACT(info,weight) │
+│ STRING  │ FLOAT                       │ FLOAT                       │
+├─────────┼─────────────────────────────┼─────────────────────────────┤
+│ Gregory │ 1.810000                    │ 75.500000                   │
+│ Alicia  │ 1.650000                    │ 60.099998                   │
+│ Rebecca │ 0.000000                    │ 0.000000                    │
+└─────────┴─────────────────────────────┴─────────────────────────────┘
+```
+
+### Optional parameters
+
+The following optional parameters are supported:
+
+|Name|Description|
+|---|---|
+|`maximum_depth`|Default value is `10`. Used by the type inference system to determine how "deep" into the json document to go to infer types.
+|`sample_size`|Default value `2048`. Used by the type inference system to determine the number of elements used to infer the json type.
+
+## Copy JSON files to a table
+
+The `COPY FROM` statement allows you to copy data from a JSON file into a node or relationship table in Kùzu.
+In this section we will walk through the example dataset shown above and build a graph from the JSON data.
+
+### Copy to node tables
+
+First, start by defining a node table schema that conforms to the JSON structure. For nested fields,
+we declare a `STRUCT` where necessary.
+
+Example:
+```sql
+CREATE NODE TABLE IF NOT EXISTS Patient(
+    p_id STRING,
+    name STRING,
+    info STRUCT(
+        height FLOAT,
+        weight FLOAT,
+        age UINT8,
+        insurance_provider STRUCT(
+            type STRING,
+            name STRING,
+            policy_number STRING
+        )[]
+    ),
+    PRIMARY KEY (p_id)
+)
+```
+The syntax `STRUCT( ... )[]` with the square braces at the end represents an arrya of STRUCTs.
+
+You can then use a `COPY FROM` statement to directly copy the contents of the JSON file into the 
+node table.
+
+```cypher
+COPY Patient FROM 'patient.json'
+```
+
+Similarly, we can define the node table for the patients' medical conditions.
+
+```sql
+CREATE NODE TABLE IF NOT EXISTS Condition(
+    c_id STRING,
+    name STRING,
+    description STRING,
+    PRIMARY KEY (c_id)
+)
+```
+And copy the contents of `condition.json` to the node table as follows:
+```sql
+conn.execute("COPY Condition FROM 'condition.json'")
+```
+
+### Copy to relationship tables
+
+To copy from a JSON file to a relationship table, the file must contain the `"from"` and `"to"` keys.
+
+In the example dataset for `has_condition.json`, we have these keys defined:
+
+```json
+[
+    {
+        "from": "p1",
+        "to": "c1",
+        "since": 2019
+    },
+    {
+        "from": "p1",
+        "to": "c2",
+        "since": 2015
+    },
+    ...
+]
+```
+Any other keys that are not `"from"` or `"to"` are treated as relationship properties.
+
+Let's create a relationship table schema:
+```sql
+CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
+    FROM Patient TO Condition,
+    since UINT16
+)
+```
+The `has_condition.json` file can then directly be copied into the relationship table that was just created. 
+```cypher
+COPY HAS_CONDITION FROM 'has_condition.json'
+```
+
+We obtain the following graph:
+
+<img src="/img/json-extension/patient_1.png" />
+
+Any nested fields are ingested into the graph as STRUCTs. We can query on these nested fields as shown
+below:
+
+```cypher
+MATCH (p:Patient)-[:HAS_CONDITION]->(c:Condition)
+WHERE c.name = "Diabetes (Type 1)"
+WITH p.name AS name, p.info.age AS age, c.name AS condition, p.info.insurance_provider AS ip
+UNWIND ip AS provider
+WITH name, age, provider, condition
+WHERE provider.type = "health"
+RETURN name, age, condition, provider.name AS health_insurance_provider
+```
+Output:
+```
+┌─────────┬───────┬───────────────────┬───────────────────────────┐
+│ name    │ age   │ condition         │ health_insurance_provider │
+│ STRING  │ UINT8 │ STRING            │ STRING                    │
+├─────────┼───────┼───────────────────┼───────────────────────────┤
+│ Gregory │ 35    │ Diabetes (Type 1) │ Blue Cross Blue Shield    │
+│ Alicia  │ 28    │ Diabetes (Type 1) │ Aetna                     │
+└─────────┴───────┴───────────────────┴───────────────────────────┘
+```
+
+Note how the `UNWIND` clause was used to obtain individual records of the insurance providers for
+each patient.
+
+### `UNWIND` JSON arrays
+
+In the above example, we have useful information about insurance providers that could also be used
+to capture the relationships between patients and their insurance providers.
+
+Let's model this using a new node table, `InsuranceProvider`, and a new relationship table `HAS_PROVIDER`.
+
+```sql
+CREATE NODE TABLE IF NOT EXISTS InsuranceProvider(
+    name STRING,
+    type STRING,
+    PRIMARY KEY (name)
+)
+
+CREATE REL TABLE IF NOT EXISTS HAS_PROVIDER(
+    FROM Patient TO InsuranceProvider,
+    policy_number STRING
+)
+```
+
+We can then `UNWIND` the insurance providers for each patient, obtain distinct providers, and then
+pass these results via a subquery to `COPY FROM`.
+
+```cypher
+COPY InsuranceProvider FROM (
+    LOAD FROM 'patient.json'
+    WITH info.insurance_provider AS ip
+    UNWIND ip AS provider
+    RETURN DISTINCT
+        provider.name AS name,
+        provider.type AS type
+)
+```
+Let's break down the above query step by step:
+- The outer `COPY FROM` expects the result from the inner `LOAD FROM`
+- The info `STRUCT` from `patient.json` is passed to `UNWIND` so that we can obtain individual providers
+for each patient
+- A `DISTINCT` clause is used when returning the results of the subquery, because the `name` of a
+provider is the primary key of the `InsuranceProvider` node table per the schema created above (we
+cannot have duplicate values for primary keys).
+
+We can do a similar sequence of steps to copy relationships from `patient.json` as follows:
+
+```cypher
+COPY HAS_PROVIDER FROM (
+    LOAD FROM 'patient.json'
+    WITH p_id, info.insurance_provider AS ip
+    UNWIND ip AS provider
+    RETURN
+        p_id,
+        provider.name AS name,
+        provider.policy_number AS policy_number
+)
+```
+
+In this case, we didn't alias the first two entries to `from` and `to`, like we did when copying
+from the `has_condition.json` file above. This is because the `COPY FROM` query is looking for the
+first two columns in the result as the `FROM` and the `TO` columns in the relationship, similar to
+how it's done in CSV.
+
+
+We now obtain the following graph:
+
+<img src="/img/json-extension/patient_2.png" />
+
+
+## Copy query results to JSON files
+
+Once you have the data in a graph, you can begin querying it in Cypher. You can use the `COPY TO`
+statement to write the results of a query to a JSON file. Any query results of the type `STRUCT`
+will be written as nested JSON. Two examples are shown below.
+
+<Tabs>
+<TabItem label="Example 1">
+
+Say you want to write health insurance provider information and patient names for patients with the
+condition "Migraine" to a JSON file named `patient_providers.json`.
+
+```cypher
+COPY (
+    MATCH (p:Patient)-[:HAS_CONDITION]->(c:Condition)
+    WHERE c.name = "Migraine"
+    WITH p.name AS name, p.info.age AS age, c.name AS condition, p.info.insurance_provider AS ip
+    UNWIND ip AS provider
+    WITH name, age, provider, condition
+    WHERE provider.type = "health"
+    RETURN name, age, condition, provider
+) TO 'patient_providers.json';
+```
+
+The output JSON would look like this:
+
+```json
+[
+    {
+        "name": "Alicia",
+        "age": 28,
+        "condition": "Migraine",
+        "provider": {
+            "type": "health",
+            "name": "Aetna",
+            "policy_number": "9876543210"
+        }
+    }
+]
+```
+
+</TabItem>
+
+<TabItem label="Example 2">
+
+
+Say we want to write the name of the condition and a list of patient names who have the condition
+and have health insurance to a JSON file named `patients_with_condition.json`. This is how we
+would query the graph:
+
+```cypher
+COPY (
+    MATCH (c:Condition)<-[:HAS_CONDITION]-(a:Patient)-[:HAS_PROVIDER]->(pr:InsuranceProvider)
+    WHERE c.name = 'Diabetes (Type 1)' AND pr.type = 'health'
+    RETURN
+        c.name AS condition,
+        COLLECT(a.name) AS patients;
+) TO 'patients_with_condition.json';
+```
+The output JSON would look like this:
+
+```json
+[
+    {
+        "condition": "Diabetes (Type 1)",
+        "patients": [
+            "Gregory",
+            "Alicia"
+        ]
+    }
+]
+```
+
+</TabItem>
+</Tabs>
+
+## Summary
+
+When using the JSON extension, keep in mind the following considerations when copying data to Kùzu tables:
+
+1. The order of the keys in the JSON file doesn't need to match with the order of the columns defined
+in the schema (just the names need to match)
+
+2. If directly copying from a JSON file to a relationship table, there need to be keys named `"from"`
+and `"to"` in the file, whose values point to the primary key values of the underlying node tables.
+
+3. You can combine `LOAD FROM` subqueries with `COPY FROM` to have more control over the subset of
+JSON data being copied, as well as dynamically transform your data via `UNWIND` or `DISTINCT` clauses,
+so it's not necessary to write your relationships to an intermediate file prior to using `COPY`.
