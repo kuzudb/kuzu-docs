@@ -145,7 +145,7 @@ export default defineConfig({
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}}, 
                     ],
                 },
-                { label: 'Connections & concurrency', link: '/concurrency', badge: { text: 'New'} },
+                { label: 'Connections & concurrency', link: '/concurrency' },
                 {
                     label: 'Tutorials',
                     collapsed: true,
@@ -198,11 +198,11 @@ export default defineConfig({
                             label: 'External databases',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
-                                { label: 'External Kùzu databases', link: '/extensions/attach/kuzu', badge: { text: 'New'}  },
+                                { label: 'External Kùzu databases', link: '/extensions/attach/kuzu' },
                                 { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
                             ]
                         },
-                        { label: 'JSON', link: '/extensions/json', badge: { text: 'New'} },
+                        { label: 'JSON', link: '/extensions/json' },
                     ],
                     autogenerate: { directory: 'reference' },
                 },
