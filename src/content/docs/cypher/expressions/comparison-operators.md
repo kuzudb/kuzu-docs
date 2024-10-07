@@ -10,10 +10,10 @@ The following table describes the standard comparison operators supported by Kù
 | Operator | Description | Example | Result |
 | ----------- | ----------- | ----------- | ----------- |
 | `<` | less than | `2 < 3` | `true` |
-| `\>` | greater than | `1 \> 5` | `false` |
+| `>` | greater than | `1 > 5` | `false` |
 | `<=` | less than or equal to | `3 <= 3` | `true` |
-| `\>=` | greater than or equal to | `4 \>= 2` | `true` |
+| `>=` | greater than or equal to | `4 >= 2` | `true` |
 | `=` | equal | `NULL = NULL` | `NULL` |
-| `<\>` | not equal | `5 <\> NULL` | `NULL` |
+| `<>` | not equal | `5 <> NULL` | `NULL` |
 
 </div>
