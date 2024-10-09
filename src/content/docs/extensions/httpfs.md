@@ -21,7 +21,7 @@ LOAD EXTENSION httpfs;
 Example:
 
 ```sql
-LOAD FROM "https://raw.githubusercontent.com/kuzudb/extension/main/dataset/test/city.csv" 
+LOAD FROM "https://extension.kuzudb.com/dataset/test/city.csv" 
 RETURN *;
 ```
 
