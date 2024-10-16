@@ -2,7 +2,7 @@
 title: Visualize graphs in Kùzu Explorer
 ---
 
-import { LinkCard } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 ## What is Kùzu Explorer?
 
@@ -133,37 +133,41 @@ Note that it is possible to mount multiple directories in the container. For mor
 
 ## Panels
 
-Kùzu Explorer has 3 panels: (i) the `Shell` panel, (ii) the `Schema` panel, (iii) the `Settings` panel.
+Kùzu Explorer comes with the following panels, accessible on the top-right of the menu bar.
 You can refer to the corresponding cards below for more details.
 
-### Shell panel
+<CardGrid>
+  <LinkCard
+    title="Shell panel"
+    href="/visualization/shell-panel"
+  />
+  <LinkCard
+    title="Schema panel"
+    href="/visualization/schema-panel"
+  />
+  <LinkCard
+    title="Import panel"
+    href="/visualization/import-panel"
+  />
+  <LinkCard
+    title="Settings panel"
+    href="/visualization/settings-panel"
+  />
+</CardGrid>
 
-<LinkCard
-  title="Shell panel"
-  href="/visualization/shell-panel"
-/>
+## Deep dive tutorial
 
-### Schema panel
+For a deep dive walkthrough of Kùzu Explorer, check out the following video on YouTube:
 
-<LinkCard
-  title="Schema panel"
-  href="/visualization/schema-panel"
-/>
-
-### Import panel
-
-<LinkCard
-  title="Import panel"
-  href="/visualization/import-panel"
-/>
-
-
-### Settings panel
-
-<LinkCard
-  title="Settings panel"
-  href="/visualization/settings-panel"
-/>
+<div class="video-container">
+  <iframe
+    height="480"
+    src="https://www.youtube.com/embed/yKcVV_bhBTo?si=Jrv7XkzsMvbn5wq0"
+    title="YouTube video player" frameborder="0"
+    allowfullscreen
+    >
+  </iframe>
+</div>
 
 ## Development build of Kùzu Explorer
 
