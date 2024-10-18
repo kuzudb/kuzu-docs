@@ -7,14 +7,14 @@ This page is intended for developers who want to build Kùzu from source. If you
 please refer to the [installation guide](https://docs.kuzudb.com/installation) for downloading pre-built binaries for your platform.
 :::
 
-To build from source code, Kùzu requires CMake(`>=3.15`), Python(`>=3.9`), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 11, Clang 12, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
+To build from source code, Kùzu requires CMake(`>=3.15`), Python(`>=3.9`), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 11, Clang 14, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
 
 Below are the instructions for building Kùzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. These instructions should also work for other similar platforms:
 
 - For other Debian-based Linux distros, such as *Debian*, *Linux Mint*, and *Pop!\_OS*, the instructions should be similar to Ubuntu 22.04 LTS.
 - For other Red Hat-based Linux distros, such as *Red Hat Enterprise Linux (RHEL)*, *CentOS*, *Fedora*, *Rocky Linux*, and *Oracle Linux*, the instructions should be similar to AlmaLinux 9.2.
 - For other Arch-based Linux distros, such as *Manjaro*, the instructions should be similar to Arch Linux.
-- For other versions of *macOS*, the instructions should be similar to macOS 12.
+- For other versions of *macOS*, the instructions should be similar to macOS 14.
 - For other versions of *Windows*, the instructions should be similar to Windows 10.
 
 ## Building Instructions
@@ -64,7 +64,7 @@ pacman -S --needed base-devel cmake gcc python
 make release NUM_THREADS=$(nproc)
 ```
 
-### macOS 12
+### macOS 14
 
 #### Install command line tools
 
