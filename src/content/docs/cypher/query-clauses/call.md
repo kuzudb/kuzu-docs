@@ -37,31 +37,30 @@ CALL TABLE_INFO('User') RETURN *;
 ```
 Output:
 ```
-┌─────────────┬──────────────┬────────┬───────────────────┬─────────────┐
-│ property id │ name         │ type   │ deault expression │ primary key │
-│ INT32       │ STRING       │ STRING │ STRING            │ BOOL        │
-├─────────────┼──────────────┼────────┼───────────────────┼─────────────┤
-│ 0           │ name         │ STRING │ NULL              │ True        │
-│ 1           │ age          │ INT64  │ 0                 │ False       │
-└─────────────┴──────────────┴────────┴───────────────────┴─────────────┘
+┌─────────────┬──────────────┬────────┬──────────────────────┬──────────────┐
+│ property id │ name         │ type   │ default expression  │ primary key │
+│ INT32       │ STRING       │ STRING │ STRING              │ BOOL        │
+├─────────────┼───────────────┼────────┼─────────────────────┼──────────────┤
+│ 0           │ name         │ STRING │ NULL                │ True        │
+│ 1           │ age          │ INT64  │ 0                   │ False       │
+└─────────────┴──────────────┴─────────┴──────────────────────┴─────────────┘
 ```
 
 ### CURRENT_SETTING
 
 `CURRENT_SETTING` returns the value of given database configuration.
 
-<!-- All supported configurable database options can be found here: [configuration](../configuration) -->
-
 ```cypher
 CALL current_setting('threads') RETURN *;
 ```
 Output:
 ```
------------
-| threads |
------------
-| 8       |
------------
+┌─────────┐
+│ threads │
+│ STRING  │
+├─────────┤
+│ 12      │
+└─────────┘
 ```
 
 ### DB_VERSION
@@ -78,11 +77,12 @@ CALL db_version() RETURN *;
 ```
 Output:
 ```
-----------------
-| KUZU_Version |
-----------------
-| v0.3.2       |
-----------------
+┌─────────┐
+│ version │
+│ STRING  │
+├─────────┤
+│ 0.x.0   │
+└─────────┘
 ```
 
 ### SHOW_TABLES
@@ -95,16 +95,6 @@ Output:
 | name | name of the table | STRING |
 | type | type of the table | STRING |
 | comment | comment of the table | STRING |
-
-```cypher
-CALL db_version() RETURN *
-```
-┌─────────┐
-│ version │
-│ STRING  │
-├─────────┤
-│ 0.x.0 │
-└─────────┘
 
 ```cypher
 CALL show_tables() RETURN *;
@@ -161,13 +151,13 @@ CALL show_attached_databases() RETURN *;
 ```
 Output:
 ```
-------------------------------------
-| name             | database type |
-------------------------------------
-| tinysnb          | DUCKDB        |
-------------------------------------
-| dbfilewithoutext | DUCKDB        |
-------------------------------------
+┌─────────────┬────────────────┐
+│ name        │ database type │
+│ STRING      │ STRING        │
+├─────────────┼────────────────┤
+│ tinysnb     │ DUCKDB        │
+│ anotherdb   │ POSTGRES      │
+└─────────────┴────────────────┘
 ```
 
 ### SHOW_WARNINGS
