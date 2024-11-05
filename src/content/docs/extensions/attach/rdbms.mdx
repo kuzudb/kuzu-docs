@@ -73,6 +73,25 @@ the alias `uw`:
 ATTACH 'university.db' AS uw (dbtype duckdb);
 ```
 
+Note: Kuzu also allows users to attach a remote DuckDB database, which may be hosted on S3 or HTTPFS. However, the httpfs extension must be loaded beforehand.
+
+```sql
+LOAD EXTENSION HTTPFS;
+ATTACH 's3://duckdb-blobs/databases/stations.duckdb' as station (dbtype duckdb);
+LOAD FROM station.stations RETURN count(*);
+```
+
+Result:
+```
+┌──────────────┐
+│ COUNT_STAR() │
+│ INT64        │
+├──────────────┤
+│ 578          │
+└──────────────┘
+```
+
+
 #### 3. Scan from DuckDB tables
 
 Finally, we can utilize the `LOAD FROM` statement to scan the `person` table. Note that you need to prefix the 
