@@ -45,7 +45,7 @@ COPY Person FROM 'people.json';
 
 See the [`JSON`](/extensions/json) extension documentation for more related features on working with JSON files.
 
-### Ignoring Erroneous Rows
+## Ignoring Erroneous Rows
 
 By specifying the `ignore_errors` option to `true`, we can ignore erroneous rows in JSON files. Consider the following example:
 
