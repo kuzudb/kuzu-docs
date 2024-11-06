@@ -6,11 +6,6 @@ You can migrate databases between different versions of Kùzu without manually w
 To perform a migration, you would first export the database from an existing Kùzu version using the command `EXPORT DATABASE`.
 Then, you would import this database into another Kùzu version using `IMPORT DATABASE`.
 
-:::caution[Note]
-Currently the `EXPORT/IMPORT DATABASE` commands only export your node and relationship
-tables and not your RDFGraphs. You currently need to manually migrate your RDFGraphs.
-:::
-
 ## Export database
 
 The `EXPORT DATABASE` command exports all the contents of a Kùzu database to the specified directory.
