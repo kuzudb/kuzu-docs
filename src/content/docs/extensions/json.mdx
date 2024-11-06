@@ -503,7 +503,7 @@ The output JSON would look like this:
 </TabItem>
 </Tabs>
 
-## Summary
+## Takeaways
 
 When using the JSON extension, keep in mind the following considerations when copying data to Kùzu tables:
 
@@ -516,3 +516,83 @@ and `"to"` in the file, whose values point to the primary key values of the unde
 3. You can combine `LOAD FROM` subqueries with `COPY FROM` to have more control over the subset of
 JSON data being copied, as well as dynamically transform your data via `UNWIND` or `DISTINCT` clauses,
 so it's not necessary to write your relationships to an intermediate file prior to using `COPY`.
+
+## JSON functions
+
+This section lists the built-in functions that operate on the JSON data type within Kùzu.
+
+### `to_json`
+
+Signature: `ANY -> JSON`
+
+Converts any Kuzu value to a JSON document
+
+### `json_merge_patch`
+
+Signature: `JSON, JSON -> JSON`
+
+Merges two JSON documents. Applies [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386)
+
+### `json_extract`
+
+Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`
+
+Extracts a path from a JSON document. `STRING` paths are delimited by `'/'`, while `INTEGER` paths are only used to index JSON arrays
+
+If the path does not exist, returns an empty JSON document.
+
+### `json_array_length`
+
+Signature: `JSON -> UINT32`
+
+If the JSON document is an array, returns the array length. Otherwise returns 0
+
+### `json_contains`
+
+Signature: `JSON, JSON -> BOOL`
+
+Determines whether or not the second JSON document (the needle) is contained within the first (the haystack).
+
+### `json_keys`
+
+Signature: `JSON -> STRING[]`
+
+Gives the keys of the root JSON object. If the root is not an object, returns an empty list
+
+### `json_structure`
+
+Signature: `JSON -> STRING`
+
+Returns the structure of the JSON document in Kuzu type notation. Will give smaller integer widths for smaller numbers
+
+Example:
+```cypher
+RETURN json_structure('[{"a": -1, "b": [1000, 2000, 3000]}, {"a": 2, "c": "hi"}]');
+```
+Output:
+```
+STRUCT(a INT16, b UINT16[], c STRING)[]
+```
+
+### `json_valid`
+
+Signature: `JSON -> BOOL`
+
+Determines whether or not the provided JSON document is valid.
+
+### `json`
+
+Signature: `JSON -> JSON`
+
+Parses and minifies the JSON document.
+
+Example:
+```cypher
+UNWIND ['[        {"a":  [1],     "b": 2,"c": 1}, 1,    5, 9]', '[1, 2, 3]', '"ab"'] AS ARR RETURN json(ARR);
+```
+Output:
+```
+[{"a":[1],"b":2,"c":1},1,5,9]
+[1,2,3]
+"ab"
+```
