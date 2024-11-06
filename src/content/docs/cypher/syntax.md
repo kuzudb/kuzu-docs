@@ -163,7 +163,6 @@ The following list shows the reserved keywords in Cypher, organized by category:
 - `MACRO`
 - `OPTIONAL`
 - `PROFILE`
-- `RDFGRAPH`
 - `UNION`
 - `UNWIND`
 - `WITH`
