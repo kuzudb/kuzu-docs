@@ -525,45 +525,164 @@ This section lists the built-in functions that operate on the JSON data type wit
 
 Signature: `ANY -> JSON`
 
-Converts any Kuzu value to a JSON document
+`to_json(any)`
+
+Converts `any` Kuzu value to a `JSON` document
+
+Examples: 
+
+```cypher
+RETURN to_json('kuzu');
+```
+Output:
+```json
+"kuzu"
+```
+
+```cypher
+RETURN to_json([1,2,3]);
+```
+Output:
+```json
+[1,2,3]
+```
+
+```cypher
+RETURN to_json({duck : 42});
+```
+Output:
+```json
+{"duck":42}
+```
+
+```cypher
+RETURN to_json(map(['duck'],[42]));
+```
+Output:
+```json
+{"duck":42}
+```
 
 ### `json_merge_patch`
 
 Signature: `JSON, JSON -> JSON`
 
-Merges two JSON documents. Applies [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386)
+Merges two `JSON` documents. Applies [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386)
 
 ### `json_extract`
 
 Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`
 
-Extracts a path from a JSON document. `STRING` paths are delimited by `'/'`, while `INTEGER` paths are only used to index JSON arrays
+`json_extract(json, path)`
 
-If the path does not exist, returns an empty JSON document.
+Extracts `JSON` from `json` at the given `path`.  `STRING` `path` is delimited by `'/'`, while `INTEGER` path is only used to index `JSON arrays`. If `path` is a `LIST`, the result will be a `LIST` of `JSON`.
+
+If the path does not exist, returns an empty `JSON` document.
+
+Examples:
+
+```cypher
+RETURN json_extract('{"my_field": {"my_nested_field": ["goose", "kuzu"]}}', 'my_field/my_nested_field/1')
+```
+Output:
+```json
+"kuzu"
+```
+
+```cypher
+RETURN json_extract('[1, 2, 42]', 2)
+```
+Output:
+```json
+42
+```
+
+```cypher
+RETURN json_extract('{"my_field": {"my_nested_field": ["goose", "kuzu"]}}', 'my_field/non_existed_field/1')
+```
+Output:
+```json
+```
+(empty `JSON` document)
+
 
 ### `json_array_length`
 
 Signature: `JSON -> UINT32`
 
-If the JSON document is an array, returns the array length. Otherwise returns 0
+`json_array_length(json[])`
+
+If the `json` document is an `array`, returns its length. Otherwise returns `0`
+
+Examples:
+
+```cypher
+return json_array_length('["1", "1", "4", null]');
+```
+Output:
+```json
+4
+```
+
+```cypher
+return json_array_length('{"kuzu": ["1", "1", "4", null]}');
+```
+Output:
+```json
+0
+```
 
 ### `json_contains`
 
 Signature: `JSON, JSON -> BOOL`
 
-Determines whether or not the second JSON document (the needle) is contained within the first (the haystack).
+`json_contains(json_haystack, json_needle)`
+
+Returns `True` if `json_needle` is contained in `json_haystack`. Both parameters are of `JSON` type, but `json_needle` can also be a numeric value or a `string`, however the `string` must be wrapped in double quotes.
+
+Examples:
+
+```cypher
+RETURN JSON_CONTAINS('{"key": "value"}', '"value"');
+```
+Output:
+```json
+True
+```
+
+```cypher
+RETURN JSON_CONTAINS('{"key": 1}', '1');
+```
+Output:
+```json
+True
+```
 
 ### `json_keys`
 
 Signature: `JSON -> STRING[]`
 
-Gives the keys of the root JSON object. If the root is not an object, returns an empty list
+`json_keys(json[])`
+
+Gives the keys of the root `JSON` object. If the root is not an object, returns an empty `list`
+
+Examples:
+
+```cypher
+return json_keys('{ "family": "anatidae", "species": [ "duck", "goose", "swan", null ] }');
+```
+Output:
+```
+[family,species]
+```
 
 ### `json_structure`
 
 Signature: `JSON -> STRING`
 
-Returns the structure of the JSON document in Kuzu type notation. Will give smaller integer widths for smaller numbers
+`json_structure(json)`
+
+Returns the structure of the `JSON` document in Kuzu type notation. Will give smaller `integer` widths for smaller numbers
 
 Example:
 ```cypher
@@ -578,13 +697,35 @@ STRUCT(a INT16, b UINT16[], c STRING)[]
 
 Signature: `JSON -> BOOL`
 
-Determines whether or not the provided JSON document is valid.
+`json_valid(json)`
+
+Determines whether or not the provided `json` is valid JSON.
+
+Example:
+
+```cypher
+RETURN json_valid('{"a":55,"b":72}');
+```
+Output:
+```json
+True
+```
+
+```cypher
+RETURN json_valid('"a":55,"b":72');
+```
+Output:
+```json
+False
+```
 
 ### `json`
 
 Signature: `JSON -> JSON`
 
-Parses and minifies the JSON document.
+`json(json)`
+
+Parses and minifies the `json`.
 
 Example:
 ```cypher
