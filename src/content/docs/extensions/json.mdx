@@ -527,7 +527,7 @@ Signature: `ANY -> JSON`
 
 `to_json(any)`
 
-Converts `any` Kuzu value to a `JSON` document
+Converts `any` Kuzu value to `JSON`.
 
 Examples: 
 
@@ -548,26 +548,36 @@ Output:
 ```
 
 ```cypher
-RETURN to_json({duck : 42});
+RETURN to_json({kuzu : 42});
 ```
 Output:
 ```json
-{"duck":42}
+{"kuzu":42}
 ```
 
 ```cypher
-RETURN to_json(map(['duck'],[42]));
+RETURN to_json(map(['kuzu'],[42]));
 ```
 Output:
 ```json
-{"duck":42}
+{"kuzu":42}
 ```
 
 ### `json_merge_patch`
 
 Signature: `JSON, JSON -> JSON`
 
+`json_merge_patch(json, json)`
+
 Merges two `JSON` documents. Applies [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386)
+
+```cypher
+RETURN json_merge_patch('{"kuzu": 114}', '{"goose": 514}');
+```
+Output:
+```json
+{"kuzu":114,"goose":514} 
+```
 
 ### `json_extract`
 
@@ -575,7 +585,7 @@ Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`
 
 `json_extract(json, path)`
 
-Extracts `JSON` from `json` at the given `path`.  `STRING` `path` is delimited by `'/'`, while `INTEGER` path is only used to index `JSON arrays`. If `path` is a `LIST`, the result will be a `LIST` of `JSON`.
+Extracts `JSON` from `json` at the given `path`.  `STRING` `path` is delimited by `'/'`, while integer path is only used to index JSON arrays. If `path` is a `LIST`, the result will be a `LIST` of JSON.
 
 If the path does not exist, returns an empty `JSON` document.
 
@@ -612,7 +622,7 @@ Signature: `JSON -> UINT32`
 
 `json_array_length(json[])`
 
-If the `json` document is an `array`, returns its length. Otherwise returns `0`
+If the `json` is an JSON array, returns its length. Otherwise returns `0`.
 
 Examples:
 
@@ -664,7 +674,7 @@ Signature: `JSON -> STRING[]`
 
 `json_keys(json[])`
 
-Gives the keys of the root `JSON` object. If the root is not an object, returns an empty `list`
+Gives the keys of the root `json` object. If the root is not an JSON object, returns an empty `list`.
 
 Examples:
 
@@ -682,7 +692,7 @@ Signature: `JSON -> STRING`
 
 `json_structure(json)`
 
-Returns the structure of the `JSON` document in Kuzu type notation. Will give smaller `integer` widths for smaller numbers
+Returns the structure of the `json` in Kuzu type notation. Will give smaller integer widths for smaller numbers.
 
 Example:
 ```cypher
@@ -725,7 +735,7 @@ Signature: `JSON -> JSON`
 
 `json(json)`
 
-Parses and minifies the `json`.
+Parses and minifies the `json.
 
 Example:
 ```cypher
