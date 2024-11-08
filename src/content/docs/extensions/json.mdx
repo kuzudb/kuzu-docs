@@ -517,6 +517,27 @@ and `"to"` in the file, whose values point to the primary key values of the unde
 JSON data being copied, as well as dynamically transform your data via `UNWIND` or `DISTINCT` clauses,
 so it's not necessary to write your relationships to an intermediate file prior to using `COPY`.
 
+## JSON Type
+KuzuDB supports `json` via the `JSON` logical type. The `JSON` logical type is interpreted as parsed JSON, 
+rather than interpreted as `string`.
+
+The following example creates a node table `person` with a `JSON` column `description`,
+it then creates two `json` objects in this column using `to_json` function, and outputs them.
+
+Example:
+```cypher
+CREATE NODE TABLE person (id INT64, description json, primary key(id));
+CREATE (p:person {id: 20, description: to_json({height: 52, age: 32, scores: [1,2,5]})});
+CREATE (p:person {id: 40, description: to_json({age: 55, scores: [1,32,5,null], name: 'dan'})});
+MATCH (p:person) RETURN p.*;
+```
+
+```json
+20|{"height":52,"age":32,"scores":[1,2,5]}
+40|{"age":55,"scores":[1,32,5,null],"name":"dan"}
+```
+
+
 ## JSON functions
 
 This section lists the built-in functions that operate on the JSON data type within Kùzu.
@@ -563,13 +584,39 @@ Output:
 {"kuzu":42}
 ```
 
+### `json_object`
+
+Signature: `STRING, ANY -> JSON object`
+
+`json_object([key, value, ...])`
+
+Create a JSON object from any number of `key`, `value` pairs.
+
+Examples:
+
+```cypher
+RETURN json_object('kuzu', 42);
+```
+```json
+{"kuzu":42}
+```
+
+```cypher
+RETURN json_object('KEY1', NULL, 'KEY2', 5)
+```
+```json
+{"KEY1":null,"KEY2":5}
+```
+
 ### `json_merge_patch`
 
 Signature: `JSON, JSON -> JSON`
 
 `json_merge_patch(json, json)`
 
-Merges two `JSON` documents. Applies [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386)
+Merges TWO `JSON` documents. Applies [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386)
+
+Examples:
 
 ```cypher
 RETURN json_merge_patch('{"kuzu": 114}', '{"goose": 514}');
@@ -577,6 +624,12 @@ RETURN json_merge_patch('{"kuzu": 114}', '{"goose": 514}');
 Output:
 ```json
 {"kuzu":114,"goose":514} 
+```
+```cypher
+RETURN json_merge_patch('3', NULL);
+```
+Output:
+```json
 ```
 
 ### `json_extract`
