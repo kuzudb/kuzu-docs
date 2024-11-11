@@ -569,20 +569,24 @@ Output:
 ```
 
 ```cypher
-RETURN to_json({kuzu : 42});
+RETURN to_json('{"name": "Alicia", "age": 28}');
 ```
 Output:
 ```json
-{"kuzu":42}
+{"name":"Alicia","age":28}
 ```
 
-```cypher
-RETURN to_json(map(['kuzu'],[42]));
-```
-Output:
-```json
-{"kuzu":42}
-```
+### `array_to_json`
+
+Signature: `ARRAY -> JSON`
+
+Alias for `to_json` that only accepts `ARRAY`.
+
+### `row_to_json`
+
+Signature: `LIST -> JSON`
+
+Alias for `to_json` that only accepts `LIST`.
 
 ### `json_object`
 
@@ -595,18 +599,36 @@ Create a JSON object from any number of `key`, `value` pairs.
 Examples:
 
 ```cypher
-RETURN json_object('kuzu', 42);
+RETURN json_object("name","Alicia");
 ```
 ```json
-{"kuzu":42}
+{"name":"Alicia"}
 ```
 
 ```cypher
-RETURN json_object('KEY1', NULL, 'KEY2', 5)
+RETURN json_object("name","Alicia","age",28);
 ```
 ```json
-{"KEY1":null,"KEY2":5}
+{"name":"Alicia","age":28}
 ```
+
+### `json_array`
+
+Signature: `ARRAY -> JSON ARRAY`
+
+`json_array([any, ...])`
+
+Create a JSON array from `any` number of values.
+
+Examples:
+
+```cypher
+RETURN json_array(42, 'kuzu', NULL);
+```
+```json
+[42,"kuzu",null]
+```
+
 
 ### `json_merge_patch`
 
@@ -619,11 +641,11 @@ Merges TWO `JSON` documents. Applies [RFC 7386](https://datatracker.ietf.org/doc
 Examples:
 
 ```cypher
-RETURN json_merge_patch('{"kuzu": 114}', '{"goose": 514}');
+RETURN json_merge_patch('{"name": "Alicia"}', '{"age": 28}');
 ```
 Output:
 ```json
-{"kuzu":114,"goose":514} 
+{"name":"Alicia","age":28}
 ```
 ```cypher
 RETURN json_merge_patch('3', NULL);
@@ -631,6 +653,7 @@ RETURN json_merge_patch('3', NULL);
 Output:
 ```json
 ```
+(merge with a NULL path would result in NULL path)
 
 ### `json_extract`
 
@@ -638,14 +661,17 @@ Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`
 
 `json_extract(json, path)`
 
-Extracts `JSON` from `json` at the given `path`.  `STRING` `path` is delimited by `'/'`, while integer path is only used to index JSON arrays. If `path` is a `LIST`, the result will be a `LIST` of JSON.
+Extracts `JSON` from `json` at the given `path`. 
+`path` is a `STRING` delimited by `'/'`, 
+Integers may also be used in path, which represents index in JSON arrays.
+If `path` is a `LIST`, the result will be a `LIST` of JSON.
 
 If the path does not exist, returns an empty `JSON` document.
 
 Examples:
 
 ```cypher
-RETURN json_extract('{"my_field": {"my_nested_field": ["goose", "kuzu"]}}', 'my_field/my_nested_field/1')
+RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', 'Software/Database/1')
 ```
 Output:
 ```json
@@ -661,12 +687,12 @@ Output:
 ```
 
 ```cypher
-RETURN json_extract('{"my_field": {"my_nested_field": ["goose", "kuzu"]}}', 'my_field/non_existed_field/1')
+RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', 'Software/Musicplayer/1');
 ```
 Output:
 ```json
 ```
-(empty `JSON` document)
+(Extract from an nonexisted path results in empty `JSON` document)
 
 
 ### `json_array_length`
@@ -694,6 +720,7 @@ Output:
 ```json
 0
 ```
+(this is not an JSON array)
 
 ### `json_contains`
 
@@ -706,7 +733,7 @@ Returns `True` if `json_needle` is contained in `json_haystack`. Both parameters
 Examples:
 
 ```cypher
-RETURN JSON_CONTAINS('{"key": "value"}', '"value"');
+RETURN JSON_CONTAINS('{"name": "Alicia"}', '"Alicia"');
 ```
 Output:
 ```json
@@ -714,7 +741,7 @@ True
 ```
 
 ```cypher
-RETURN JSON_CONTAINS('{"key": 1}', '1');
+RETURN JSON_CONTAINS('{"age": 28}', '28');
 ```
 Output:
 ```json
@@ -767,7 +794,7 @@ Determines whether or not the provided `json` is valid JSON.
 Example:
 
 ```cypher
-RETURN json_valid('{"a":55,"b":72}');
+RETURN json_valid('{"name": "Alicia", "age": 28}');
 ```
 Output:
 ```json
@@ -775,7 +802,7 @@ True
 ```
 
 ```cypher
-RETURN json_valid('"a":55,"b":72');
+RETURN json_valid('"name": "Alicia", "age": 28');
 ```
 Output:
 ```json
