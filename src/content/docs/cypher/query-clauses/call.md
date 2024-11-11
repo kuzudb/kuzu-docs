@@ -38,12 +38,12 @@ CALL TABLE_INFO('User') RETURN *;
 Output:
 ```
 ┌─────────────┬──────────────┬────────┬──────────────────────┬──────────────┐
-│ property id │ name         │ type   │ default expression  │ primary key │
-│ INT32       │ STRING       │ STRING │ STRING              │ BOOL        │
-├─────────────┼───────────────┼────────┼─────────────────────┼──────────────┤
-│ 0           │ name         │ STRING │ NULL                │ True        │
-│ 1           │ age          │ INT64  │ 0                   │ False       │
-└─────────────┴──────────────┴─────────┴──────────────────────┴─────────────┘
+│ property id │ name         │ type   │ default expression   │ primary key  │
+│ INT32       │ STRING       │ STRING │ STRING               │ BOOL         │
+├─────────────┼──────────────┼────────┼──────────────────────┼──────────────┤
+│ 0           │ name         │ STRING │ NULL                 │ True         │
+│ 1           │ age          │ INT64  │ 0                    │ False        │
+└─────────────┴──────────────┴────────┴──────────────────────┴──────────────┘
 ```
 
 ### CURRENT_SETTING
