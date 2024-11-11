@@ -152,11 +152,11 @@ CALL show_attached_databases() RETURN *;
 Output:
 ```
 ┌─────────────┬────────────────┐
-│ name        │ database type │
-│ STRING      │ STRING        │
+│ name        │ database type  │
+│ STRING      │ STRING         │
 ├─────────────┼────────────────┤
-│ tinysnb     │ DUCKDB        │
-│ anotherdb   │ POSTGRES      │
+│ tinysnb     │ DUCKDB         │
+│ anotherdb   │ POSTGRES       │
 └─────────────┴────────────────┘
 ```
 
