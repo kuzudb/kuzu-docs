@@ -177,7 +177,7 @@ Output:
 
 ### SHOW_WARNINGS
 
-`SHOW_WARNINGS` returns the warnings encountered during the current connection when loading from files. They will only be reported if the [`IGNORE_ERRORS`](/import/csv#ignoring-erroneous-rows) setting is enabled. The number of warnings that can be stored per connection is limited; any warnings encountered after the warning limit is hit will not be stored. See [configuration](/cypher/configuration#configure-warning-limit) for more details on the warning limit.
+`SHOW_WARNINGS` returns the warnings encountered during the current connection when loading from files. They will only be reported if the [`IGNORE_ERRORS`](/import/csv#ignoring-erroneous-rows) setting is enabled. The number of warnings that can be stored per connection is limited; after the warning limit is hit, any warnings encountered will not be stored. See [configuration](/cypher/configuration#configure-warning-limit) for more details on how to set the warning limit.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
@@ -202,21 +202,8 @@ Output:
 
 ### CLEAR_WARNINGS
 
-Over the lifetime of a connection, warnings accumulate in the warning table (which can be queried with [`SHOW_WARNINGS`](#show_warnings)). If you are no longer interested in the accumulated warnings, the table can be cleared with `CLEAR_WARNINGS`.
-
-| Column | Description | Type |
-| ------ | ----------- | ---- |
-| status | 0 if the warning table was cleared successfully | UINT8 |
+Over the lifetime of a connection, warnings accumulate in the warning table (which can be queried with [`SHOW_WARNINGS`](#show_warnings)). If you are no longer interested in the accumulated warnings, the table can be cleared with `CLEAR_WARNINGS`. This function has no output.
 
 ```cypher
-CALL clear_warnings() RETURN *;
-```
-Output:
-```
-┌────────┐
-│ status │
-│ UINT8  │
-├────────┤
-│ 0      │
-└────────┘
+CALL clear_warnings();
 ```
