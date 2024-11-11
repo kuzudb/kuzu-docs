@@ -17,6 +17,21 @@ The `Boolean` value can also be omitted (e.g., by only passing `(HEADER)`), in w
 
 The assignment operator `=` can also be space ` `.
 
+### Auto Detect
+The current CSV Auto Detect contains two functionalities: `Header_Detect` and `Dialect_Detect`, it is controlled by the boolean parameter `auto_detect`,
+
+#### Header_Detect
+The `Header_Detect` phase simply obtains the first valid line of the CSV file and attempts to cast it to the candidate types in other columns.
+If there is a cast mismatch, we consider that row as the header; if not, we treat the first row as actual data and automatically generate a header.
+
+#### Dialect_Detect
+In the `Dialect_Detect`, we identify the delimiter, quotes and the escapes of a CSV file. 
+The delimiter search space consists of the following delimiters: `,`, `|`, `;`, `\t`. If the file has a delimiter outside the search space, it must be provided by the user (e.g., `delim='?'`).
+The quote search space is `"`, `'` and `\0`, where `\0` is a string terminator indicating no quote is present; again, users can provide custom characters outside the search space (e.g., `quote='?'`).
+The search space of escape values depends on the value of the quote option, but in summary, they are the same as quotes with the addition of `\`, and again, they can also be provided by the user (`escape='?'`).
+
+By default, the dialect detection runs on 24 different combinations of dialect configurations. To determine the most promising configuration, we calculate the number of columns each CSV tuple would produce under each of these configurations. The one that results in the most columns with the most consistent rows will be chosen.
+
 | Parameter | Description | Default Value |
 |:-----|:-----|:-----|
 | `HEADER` | Whether the first line of the CSV file is the header. Can be true or false. | false |
@@ -26,6 +41,7 @@ The assignment operator `=` can also be space ` `.
 | `SKIP` | Number of rows to skip from the input file | `0` |
 | `PARALLEL` | Read CSV files in parallel or not | `true` |
 | `IGNORE_ERRORS` | Skips malformed rows in CSV files if enabled. [The `SHOW_WARNINGS` function](/cypher/query-clauses/call#show_warnings) can be used to view the warning messages triggered by the malformed rows. | `false` |
+| `auto_detect` | Turn ON/OFF the header and dialect detection | `true` |
 
 The example below specifies that the CSV delimiter is`|` and also that the header row exists.
 
