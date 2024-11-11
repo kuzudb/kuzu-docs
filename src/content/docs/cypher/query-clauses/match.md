@@ -377,7 +377,7 @@ Output:
 └─────────┴───────────────────────────┴─────────────────────────┘
 ```
 
-By default, recursive relationship follows `WALK` semantic, in which nodes and relationships can be visited repeatedly. 
+By default, recursive relationship follows a `WALK` semantic, in which nodes and relationships can be visited repeatedly. 
 Kùzu also supports `TRAIL` and `ACYCLIC` semantics, which can be specified inside the recursive pattern after `*`.
 
 A `TRAIL` is a walk in which all relationships are distinct.
