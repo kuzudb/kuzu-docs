@@ -29,6 +29,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `property id` | Internal identifier of the property within table | INT64 |
 | `name` | name of the property | STRING |
 | `type` | data type of the property | STRING |
+| `default expression` | default value of property when none is specified | STRING |
 | `primary key` | if property is primary key | BOOLEAN |
 
 ```cypher
@@ -36,31 +37,30 @@ CALL TABLE_INFO('User') RETURN *;
 ```
 Output:
 ```
----------------------------------------------
-| property id | name | type   | primary key |
----------------------------------------------
-| 0           | name | STRING | True        |
----------------------------------------------
-| 1           | age  | INT64  | False       |
----------------------------------------------
+┌─────────────┬──────────────┬────────┬──────────────────────┬──────────────┐
+│ property id │ name         │ type   │ default expression   │ primary key  │
+│ INT32       │ STRING       │ STRING │ STRING               │ BOOL         │
+├─────────────┼──────────────┼────────┼──────────────────────┼──────────────┤
+│ 0           │ name         │ STRING │ NULL                 │ True         │
+│ 1           │ age          │ INT64  │ 0                    │ False        │
+└─────────────┴──────────────┴────────┴──────────────────────┴──────────────┘
 ```
 
 ### CURRENT_SETTING
 
 `CURRENT_SETTING` returns the value of given database configuration.
 
-<!-- All supported configurable database options can be found here: [configuration](../configuration) -->
-
 ```cypher
 CALL current_setting('threads') RETURN *;
 ```
 Output:
 ```
------------
-| threads |
------------
-| 8       |
------------
+┌─────────┐
+│ threads │
+│ STRING  │
+├─────────┤
+│ 12      │
+└─────────┘
 ```
 
 ### DB_VERSION
@@ -77,19 +77,21 @@ CALL db_version() RETURN *;
 ```
 Output:
 ```
-----------------
-| KUZU_Version |
-----------------
-| v0.3.2       |
-----------------
+┌─────────┐
+│ version │
+│ STRING  │
+├─────────┤
+│ 0.x.0   │
+└─────────┘
 ```
 
 ### SHOW_TABLES
 
-`SHOW_TABLES` returns the name, type and comment of all tables in the database.
+`SHOW_TABLES` returns the id, name, type and comment of all tables in the database.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
+| id   | id of the table   | INT    |
 | name | name of the table | STRING |
 | type | type of the table | STRING |
 | comment | comment of the table | STRING |
@@ -99,13 +101,15 @@ CALL show_tables() RETURN *;
 ```
 Output:
 ```
---------------------------------------------
-| name        | type | comment             |
---------------------------------------------
-| person      | NODE | person info         |
---------------------------------------------
-| knows       | REL  | person knows person |
---------------------------------------------
+┌────────┬─────────┬────────┬───────────────┬─────────┐
+│ id     │ name    │ type   │ database name │ comment │
+│ UINT64 │ STRING  │ STRING │ STRING        │ STRING  │
+├────────┼─────────┼────────┼───────────────┼─────────┤
+│ 0      │ User    │ NODE   │ local(kuzu)   │         │
+│ 2      │ Follows │ REL    │ local(kuzu)   │         │
+│ 1      │ City    │ NODE   │ local(kuzu)   │         │
+│ 3      │ LivesIn │ REL    │ local(kuzu)   │         │
+└────────┴─────────┴────────┴───────────────┴─────────┘
 ```
 
 ### SHOW_CONNECTION
@@ -121,29 +125,16 @@ Output:
 
 Show connection on a relationship table:
 ```cypher
-CALL show_connection('knows') RETURN *;
+CALL show_connection('LivesIn') RETURN *;
 ```
 Output:
 ```
----------------------------------------------------------------------------------------------------------
-| source table name | destination table name | source table primary key | destination table primary key |
----------------------------------------------------------------------------------------------------------
-| person            | person                 | name                     | name                          |
----------------------------------------------------------------------------------------------------------
-```
-Show connection on a relationship group:
-```cypher
-CALL show_connection('knows') RETURN *;
-```
-Output:
-```
-----------------------------------------------
-| source table name | destination table name |
-----------------------------------------------
-| user              | person                 |
-----------------------------------------------
-| person            | person                 |
-----------------------------------------------
+┌───────────────────┬────────────────────────┬──────────────────────────┬───────────────────────────────┐
+│ source table name │ destination table name │ source table primary key │ destination table primary key │
+│ STRING            │ STRING                 │ STRING                   │ STRING                        │
+├───────────────────┼────────────────────────┼──────────────────────────┼───────────────────────────────┤
+│ User              │ City                   │ name                     │ name                          │
+└───────────────────┴────────────────────────┴──────────────────────────┴───────────────────────────────┘
 ```
 
 ### SHOW_ATTACHED_DATABASES
@@ -160,13 +151,13 @@ CALL show_attached_databases() RETURN *;
 ```
 Output:
 ```
-------------------------------------
-| name             | database type |
-------------------------------------
-| tinysnb          | DUCKDB        |
-------------------------------------
-| dbfilewithoutext | DUCKDB        |
-------------------------------------
+┌─────────────┬────────────────┐
+│ name        │ database type  │
+│ STRING      │ STRING         │
+├─────────────┼────────────────┤
+│ tinysnb     │ DUCKDB         │
+│ anotherdb   │ POSTGRES       │
+└─────────────┴────────────────┘
 ```
 
 ### SHOW_WARNINGS
