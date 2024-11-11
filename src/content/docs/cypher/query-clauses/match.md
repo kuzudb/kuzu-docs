@@ -331,32 +331,117 @@ Output:
 | Kitchener | 2      |
 ----------------------
 ```
-- Adam is found through `Noura <- User -> Adam`
-- Karissa is found through `Noura <- User -> Karissa`
-- Kitchener is found through `Noura <- User -> Kitchener`
+- Adam is found through `Noura <- Zhang -> Adam`
+- Karissa is found through `Noura <- Zhang -> Karissa`
+- Kitchener is found through `Noura <- Zhang -> Kitchener`
 
 ### Return recursive relationships
 
 A recursive relationship has the logical data type `RECURSIVE_REL` and is physically represented as `STURCT{LIST[NODE], LIST[REL]}`. Returning a recursive relationship will return all properties 
 ```cypher
-MATCH (a:User)-[e:Follows*1..2]->(b:User) 
-WHERE a.name = 'Adam'
-RETURN b.name, e;
+MATCH (a:User)-[e:Follows* 4..4]-(b:User)
+WHERE a.name = 'Zhang'
+RETURN b.name, properties(nodes(e), 'name'), properties(rels(e), '_ID');
 ```
 Output:
 ```
-----------------------------------------------------------------------------------------------
-| b.name  | e                                                                                |
-----------------------------------------------------------------------------------------------
-| Karissa | {_NODES: [], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]}     |
-----------------------------------------------------------------------------------------------
-| Zhang   | {_NODES: [{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}], _RELS: [(0:0)-{_... |
-----------------------------------------------------------------------------------------------
-| Zhang   | {_NODES: [], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2)]}     |
-----------------------------------------------------------------------------------------------
-| Noura   | {_NODES: [{_ID: 0:2, _LABEL: User, name: Zhang, age: 50}], _RELS: [(0:0)-{_LA... |
-----------------------------------------------------------------------------------------------
+┌─────────┬───────────────────────────┬─────────────────────────┐
+│ b.name  │ PROPERTIES(NODES(e),name) │ PROPERTIES(RELS(e),_ID) │
+│ STRING  │ STRING[]                  │ INTERNAL_ID[]           │
+├─────────┼───────────────────────────┼─────────────────────────┤
+│ Adam    │ [Adam,Karissa,Zhang]      │ [1:1,1:0,1:2,1:1]       │
+│ Adam    │ [Karissa,Adam,Zhang]      │ [1:2,1:0,1:1,1:1]       │
+│ Adam    │ [Noura,Zhang,Karissa]     │ [1:3,1:3,1:2,1:0]       │
+│ Adam    │ [Karissa,Zhang,Karissa]   │ [1:2,1:2,1:2,1:0]       │
+│ Adam    │ [Adam,Zhang,Karissa]      │ [1:1,1:1,1:2,1:0]       │
+│ Adam    │ [Karissa,Adam,Karissa]    │ [1:2,1:0,1:0,1:0]       │
+│ Karissa │ [Adam,Karissa,Zhang]      │ [1:1,1:0,1:2,1:2]       │
+│ Karissa │ [Karissa,Adam,Zhang]      │ [1:2,1:0,1:1,1:2]       │
+│ Karissa │ [Noura,Zhang,Adam]        │ [1:3,1:3,1:1,1:0]       │
+│ Karissa │ [Karissa,Zhang,Adam]      │ [1:2,1:2,1:1,1:0]       │
+│ Karissa │ [Adam,Zhang,Adam]         │ [1:1,1:1,1:1,1:0]       │
+│ Karissa │ [Adam,Karissa,Adam]       │ [1:1,1:0,1:0,1:0]       │
+│ Zhang   │ [Noura,Zhang,Noura]       │ [1:3,1:3,1:3,1:3]       │
+│ Zhang   │ [Karissa,Zhang,Noura]     │ [1:2,1:2,1:3,1:3]       │
+│ Zhang   │ [Adam,Zhang,Noura]        │ [1:1,1:1,1:3,1:3]       │
+│ Zhang   │ [Noura,Zhang,Karissa]     │ [1:3,1:3,1:2,1:2]       │
+│ Zhang   │ [Karissa,Zhang,Karissa]   │ [1:2,1:2,1:2,1:2]       │
+│ Zhang   │ [Adam,Zhang,Karissa]      │ [1:1,1:1,1:2,1:2]       │
+│ Zhang   │ [Karissa,Adam,Karissa]    │ [1:2,1:0,1:0,1:2]       │
+│ Zhang   │ [Noura,Zhang,Adam]        │ [1:3,1:3,1:1,1:1]       │
+│ Zhang   │ [Karissa,Zhang,Adam]      │ [1:2,1:2,1:1,1:1]       │
+│ Zhang   │ [Adam,Zhang,Adam]         │ [1:1,1:1,1:1,1:1]       │
+│ Zhang   │ [Adam,Karissa,Adam]       │ [1:1,1:0,1:0,1:1]       │
+│ Noura   │ [Adam,Karissa,Zhang]      │ [1:1,1:0,1:2,1:3]       │
+│ Noura   │ [Karissa,Adam,Zhang]      │ [1:2,1:0,1:1,1:3]       │
+└─────────┴───────────────────────────┴─────────────────────────┘
 ```
+
+By default, recursive relationship follows a `WALK` semantic, in which nodes and relationships can be visited repeatedly. 
+Kùzu also supports `TRAIL` and `ACYCLIC` semantics, which can be specified inside the recursive pattern after `*`.
+
+A `TRAIL` is a walk in which all relationships are distinct.
+
+```
+MATCH (a:User)-[e:Follows* trail 4..4]-(b:User)
+      WHERE a.name = 'Zhang'
+      RETURN b.name, properties(nodes(e), 'name');
+```
+Output:
+```
+┌────────┬───────────────────────────┐
+│ b.name │ PROPERTIES(NODES(e),name) │
+│ STRING │ STRING[]                  │
+├────────┼───────────────────────────┤
+│ Noura  │ [Adam,Karissa,Zhang]      │
+│ Noura  │ [Karissa,Adam,Zhang]      │
+└────────┴───────────────────────────┘
+```
+
+The example above doesn't include any recursive relationships that contain redundant internal IDs.
+
+A `ACYCLIC` is a walk in which all nodes are distinct.
+```
+MATCH (a:User)-[e:Follows* acyclic 4..4]-(b:User)
+      WHERE a.name = 'Zhang'
+      RETURN b.name, properties(nodes(e), 'name');
+```
+Output:
+```
+┌─────────┬───────────────────────────┐
+│ b.name  │ PROPERTIES(NODES(e),name) │
+│ STRING  │ STRING[]                  │
+├─────────┼───────────────────────────┤
+│ Adam    │ [Adam,Karissa,Zhang]      │
+│ Adam    │ [Karissa,Adam,Zhang]      │
+│ Adam    │ [Noura,Zhang,Karissa]     │
+│ Adam    │ [Adam,Zhang,Karissa]      │
+│ Karissa │ [Adam,Karissa,Zhang]      │
+│ Karissa │ [Karissa,Adam,Zhang]      │
+│ Karissa │ [Noura,Zhang,Adam]        │
+│ Karissa │ [Karissa,Zhang,Adam]      │
+│ Zhang   │ [Karissa,Zhang,Noura]     │
+│ Zhang   │ [Adam,Zhang,Noura]        │
+│ Zhang   │ [Noura,Zhang,Karissa]     │
+│ Zhang   │ [Adam,Zhang,Karissa]      │
+│ Zhang   │ [Noura,Zhang,Adam]        │
+│ Zhang   │ [Karissa,Zhang,Adam]      │
+│ Noura   │ [Adam,Karissa,Zhang]      │
+│ Noura   │ [Karissa,Adam,Zhang]      │
+└─────────┴───────────────────────────┘
+```
+
+The example above doesn't include recursive patterns that contain any repeated nodes.
+
+:::note[Note]
+An `ACYCLIC` recursive relationship is different from an `acyclic` path in that the acyclic recursive relationship doesn't take the source and destination nodes into consideration, while the acyclic path takes both into consideration.
+```
+MATCH p=(a:User)-[e:Follows* 4..4]-(b:User)
+            WHERE a.name = 'Zhang' and is_acyclic(p)
+            RETURN p;
+```
+The above query returns empty result as we apply the filter `is_acyclic(p)` to force returned path be acyclic.
+:::
 
 #### Filter recursive relationships
 We also support running predicates on recursive relationships to constrain the relationship being traversed.
