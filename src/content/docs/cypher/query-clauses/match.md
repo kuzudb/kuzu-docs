@@ -340,8 +340,8 @@ Output:
 A recursive relationship has the logical data type `RECURSIVE_REL` and is physically represented as `STURCT{LIST[NODE], LIST[REL]}`. Returning a recursive relationship will return all properties 
 ```cypher
 MATCH (a:User)-[e:Follows* 4..4]-(b:User)
-            WHERE a.name = 'Zhang'
-            RETURN b.name, properties(nodes(e), 'name'), properties(rels(e), '_ID');
+WHERE a.name = 'Zhang'
+RETURN b.name, properties(nodes(e), 'name'), properties(rels(e), '_ID');
 ```
 Output:
 ```
@@ -378,7 +378,7 @@ Output:
 ```
 
 By default, recursive relationship follows `WALK` semantic, in which nodes and relationships can be visited repeatedly. 
-Kùzu also supports `TRAIL` and `ACYCLIC` semantic, which can be specified inside the recursive pattern after `*`.
+Kùzu also supports `TRAIL` and `ACYCLIC` semantics, which can be specified inside the recursive pattern after `*`.
 
 A `TRAIL` is a walk in which all relationships are distinct.
 
@@ -431,10 +431,10 @@ Output:
 └─────────┴───────────────────────────┘
 ```
 
-The example above doesn't not include recursive patterns that contain any repeated nodes.
+The example above doesn't include recursive patterns that contain any repeated nodes.
 
 :::note[Note]
-A `ACYCLIC` recursive relationship is different from an `acyclic` path in that the acyclic recursive relationship doesn't take the source and destination nodes into consideration, while the acyclic path takes both into consideration.
+An `ACYCLIC` recursive relationship is different from an `acyclic` path in that the acyclic recursive relationship doesn't take the source and destination nodes into consideration, while the acyclic path takes both into consideration.
 ```
 MATCH p=(a:User)-[e:Follows* 4..4]-(b:User)
             WHERE a.name = 'Zhang' and is_acyclic(p)
