@@ -109,10 +109,11 @@ Supported environments are:
 
 | Setting | System environment variable |
 |----------|----------|
-| AWS S3 key ID | S3_ACCESS_KEY_ID |
-| AWS S3 secret key | S3_SECRET_ACCESS_KEY |
-| AWS S3 default endpoint | S3_ENDPOINT |
-| AWS S3 default region | S3_REGION |
+| S3 key ID | S3_ACCESS_KEY_ID |
+| S3 secret key | S3_SECRET_ACCESS_KEY |
+| S3 endpoint | S3_ENDPOINT |
+| S3 region | S3_REGION |
+| S3 url style | S3_URL_STYLE |
 
 ## Local cache for remote files
 Remote file system calls can be expensive and highly dependent on the user's network conditions (bandwidth, latency). 
