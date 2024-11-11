@@ -588,6 +588,24 @@ Signature: `LIST -> JSON`
 
 Alias for `to_json` that only accepts `LIST`.
 
+### `cast(ANY AS JSON)`
+
+Signature: `ANY -> JSON`
+
+Syntax sugar for `to_json(any) -> JSON`,
+`cast` can cast `ANY` type to be some type other than `JSON` as well,
+Read the instruction of `Casting` for more details.
+
+Example:
+
+```cypher
+RETURN cast('{"name": "Alicia", "age": 28}' AS JSON);
+```
+Output:
+```json
+{"name":"Alicia","age":28}
+```
+
 ### `json_object`
 
 Signature: `STRING, ANY -> JSON object`
@@ -657,7 +675,7 @@ Output:
 
 ### `json_extract`
 
-Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`
+Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`, `JSON, LIST -> LIST of JSON`
 
 `json_extract(json, path)`
 
@@ -671,11 +689,19 @@ If the path does not exist, returns an empty `JSON` document.
 Examples:
 
 ```cypher
-RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', 'Software/Database/1')
+RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', 'Software/Database/1');
 ```
 Output:
 ```json
 "kuzu"
+```
+
+```cypher
+RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', ['Software/Database/1', 'Software/Database/0']);
+```
+Output:
+```json
+["kuzu","duck"]
 ```
 
 ```cypher
@@ -752,7 +778,7 @@ True
 
 Signature: `JSON -> STRING[]`
 
-`json_keys(json[])`
+`json_keys(json)`
 
 Gives the keys of the root `json` object. If the root is not an JSON object, returns an empty `list`.
 
