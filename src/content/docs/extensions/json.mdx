@@ -548,8 +548,8 @@ You can then query on these properties as follows:
 
 ```cypher
 MATCH (p:Person)
-WHERE p.description.age < 50
-RETURN p.id AS id, p.description.age AS age
+WHERE json_extract(p.description, 'age') < 50
+RETURN p.id AS id, json_extract(p.description, 'age') AS age;
 ```
 Result:
 ```
