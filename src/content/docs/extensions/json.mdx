@@ -537,7 +537,7 @@ Result:
 ```
 ┌───────┬────────────────────────────────────────────────┐
 │ p.id  │ p.description                                  │
-│ INT64 │ STRING                                         │
+│ INT64 │ json                                           │
 ├───────┼────────────────────────────────────────────────┤
 │ 20    │ {"height":52,"age":32,"scores":[1,2,5]}        │
 │ 40    │ {"age":55,"scores":[1,32,5,null],"name":"dan"} │
@@ -548,14 +548,14 @@ You can then query on these properties as follows:
 
 ```cypher
 MATCH (p:Person)
-WHERE p.description.age < 50
-RETURN p.id AS id, p.description.age AS age
+WHERE json_extract(p.description, "age") < 50
+RETURN p.id AS id, json_extract(p.description, "age") AS age;
 ```
 Result:
 ```
 ┌───────┬────────┐
 │ id    │ age    │
-│ INT64 │ INT64  │
+│ INT64 │ STRING │
 ├───────┼────────┤
 │ 20    │ 32     │
 └───────┴────────┘
