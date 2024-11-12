@@ -524,8 +524,8 @@ it then creates two `json` objects in this column using `to_json` function, and 
 
 Example:
 ```cypher
-// INSTALL json;
-// LOAD EXTENSION json;
+INSTALL json;
+LOAD EXTENSION json;
 
 CREATE NODE TABLE Person (id INT64, description JSON, primary key(id));
 CREATE (p:Person {id: 20, description: to_json({height: 52, age: 32, scores: [1,2,5]})});
