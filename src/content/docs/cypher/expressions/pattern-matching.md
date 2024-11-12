@@ -73,6 +73,14 @@ See the [options](#global-replacement-options) section for global replacement op
 - Example: `regexp_extract_all('abababab', 'b.b', 0)`
 - Result: `['bab','bab']`
 
+#### `regexp_split_to_array(string, pattern[, options])`
+
+- Description: Splits the string along the regex and extract all occurences between regex.
+- Example: `regexp_split_to_array('hello world 42', ' ')`
+- Result: `['hello','world', '42']`
+
+See the [options](#global-replacement-options) section for global replacement options.
+
 ## Options for regex functions
 
 ### Global replacement options
