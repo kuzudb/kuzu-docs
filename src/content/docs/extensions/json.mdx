@@ -32,7 +32,7 @@ See our YouTube video for a walkthrough on how to use the JSON extension:
   </iframe>
 </div>
 
-## Example dataset
+### Example dataset
 
 Let's look at an example dataset to demonstrate how the JSON extension can be used.
 We have 3 JSON files that contain information about patients and their medical conditions. The
@@ -150,7 +150,7 @@ file (`has_condition.json`).
 In the following sections, we will first scan the JSON files to query its contents in Cypher, and
 then proceed to copy the JSON data and construct a graph.
 
-## Scan the JSON file
+### Scan the JSON file
 
 `LOAD FROM` is a Cypher query that scans a file or object element by element, but doesn’t actually
 move the data into a Kùzu table.
@@ -178,7 +178,7 @@ Output:
 Because `info` is a nested object, its type in Kùzu is inferred as a `STRUCT`, that itself contains
 other types, like `DOUBLE`, `UINT8`, `STRING`, and `STRUCT`.
 
-### Missing keys
+#### Missing keys
 
 Missing keys, i.e., keys that are present in one JSON blob but not in another, are returned as the
 default/empty value for the type. To test this, let's run another query to get the name, age, height,
@@ -204,7 +204,7 @@ As can be seen, the patient Rebecca is new in the system and is missing her info
 - `height` and `weight` are set to the default value of `0.0` for `DOUBLE`
 - `insurance_provider` is set to an empty array `[]`
 
-### Enforcing types
+#### Enforcing types
 
 To enforce the data type during scanning, use the `LOAD WITH HEADERS` feature.
 
@@ -235,7 +235,7 @@ We can see that the types inside the `info` STRUCT are now enforced to `FLOAT`, 
 └─────────┴─────────────────────────────┴─────────────────────────────┘
 ```
 
-### Optional parameters
+#### Optional parameters
 
 The following optional parameters are supported:
 
@@ -244,12 +244,12 @@ The following optional parameters are supported:
 |`maximum_depth`|Default value is `10`. Used by the type inference system to determine how "deep" into the json document to go to infer types.
 |`sample_size`|Default value `2048`. Used by the type inference system to determine the number of elements used to infer the json type.
 
-## Copy JSON files to a table
+### Copy JSON files to a table
 
 The `COPY FROM` statement allows you to copy data from a JSON file into a node or relationship table in Kùzu.
 In this section we will walk through the example dataset shown above and build a graph from the JSON data.
 
-### Copy to node tables
+#### Copy to node tables
 
 First, start by defining a node table schema that conforms to the JSON structure. For nested fields,
 we declare a `STRUCT` where necessary.
@@ -296,7 +296,7 @@ And copy the contents of `condition.json` to the node table as follows:
 conn.execute("COPY Condition FROM 'condition.json'")
 ```
 
-### Copy to relationship tables
+#### Copy to relationship tables
 
 To copy from a JSON file to a relationship table, the file must contain the `"from"` and `"to"` keys.
 
@@ -361,7 +361,7 @@ Output:
 Note how the `UNWIND` clause was used to obtain individual records of the insurance providers for
 each patient.
 
-### `UNWIND` JSON arrays
+#### `UNWIND` JSON arrays
 
 In the above example, we have useful information about insurance providers that could also be used
 to capture the relationships between patients and their insurance providers.
@@ -427,7 +427,7 @@ We now obtain the following graph:
 <img src="/img/json-extension/patient_2.png" />
 
 
-## Copy query results to JSON files
+### Copy query results to JSON files
 
 Once you have the data in a graph, you can begin querying it in Cypher. You can use the `COPY TO`
 statement to write the results of a query to a JSON file. Any query results of the type `STRUCT`
@@ -503,7 +503,7 @@ The output JSON would look like this:
 </TabItem>
 </Tabs>
 
-## Takeaways
+### Takeaways
 
 When using the JSON extension, keep in mind the following considerations when copying data to Kùzu tables:
 
@@ -517,24 +517,51 @@ and `"to"` in the file, whose values point to the primary key values of the unde
 JSON data being copied, as well as dynamically transform your data via `UNWIND` or `DISTINCT` clauses,
 so it's not necessary to write your relationships to an intermediate file prior to using `COPY`.
 
-## JSON Type
-KuzuDB supports `json` via the `JSON` logical type. The `JSON` logical type is interpreted as parsed JSON, 
-rather than interpreted as `string`.
+## JSON data type
 
-The following example creates a node table `person` with a `JSON` column `description`,
+Using the Kùzu extension, you can model store properties as JSON natively via the `JSON` logical type,
+which is interpreted as parsed as JSON, rather than as a string.
+
+The following example creates a node table `Person` with a `JSON` column `description`,
 it then creates two `json` objects in this column using `to_json` function, and outputs them.
 
 Example:
 ```cypher
-CREATE NODE TABLE person (id INT64, description json, primary key(id));
-CREATE (p:person {id: 20, description: to_json({height: 52, age: 32, scores: [1,2,5]})});
-CREATE (p:person {id: 40, description: to_json({age: 55, scores: [1,32,5,null], name: 'dan'})});
-MATCH (p:person) RETURN p.*;
+// INSTALL json;
+// LOAD EXTENSION json;
+
+CREATE NODE TABLE Person (id INT64, description JSON, primary key(id));
+CREATE (p:Person {id: 20, description: to_json({height: 52, age: 32, scores: [1,2,5]})});
+CREATE (p:Person {id: 40, description: to_json({age: 55, scores: [1,32,5,null], name: 'dan'})});
+MATCH (p:Person) RETURN p.*;
 ```
 
-```json
-20|{"height":52,"age":32,"scores":[1,2,5]}
-40|{"age":55,"scores":[1,32,5,null],"name":"dan"}
+Result:
+```
+┌───────┬────────────────────────────────────────────────┐
+│ p.id  │ p.description                                  │
+│ INT64 │ STRING                                         │
+├───────┼────────────────────────────────────────────────┤
+│ 20    │ {"height":52,"age":32,"scores":[1,2,5]}        │
+│ 40    │ {"age":55,"scores":[1,32,5,null],"name":"dan"} │
+└───────┴────────────────────────────────────────────────┘
+```
+
+You can then query on these properties as follows:
+
+```cypher
+MATCH (p:Person)
+WHERE p.description.age < 50
+RETURN p.id AS id, p.description.age AS age
+```
+Result:
+```
+┌───────┬────────┐
+│ id    │ age    │
+│ INT64 │ INT64  │
+├───────┼────────┤
+│ 20    │ 32     │
+└───────┴────────┘
 ```
 
 
