@@ -592,7 +592,23 @@ Kùzu supports two list-like data types: (i) variable-length lists, simply calle
 (ii) fixed-length lists, called `ARRAY`. Click on the card below to learn more about them.
 
 <LinkCard
-  title="LIST and ARRAY"
+  title="How to work with LIST and ARRAY"
   href="/cypher/data-types/list-and-array"
   description="Example usage of LIST and ARRAY data types"
+/>
+
+
+## JSON
+
+:::note[Requires the JSON extension]
+The JSON data type is not natively available in Kùzu, and requires the [JSON extension](/extensions/json)
+:::
+
+Using the Kùzu JSON extension, you can model store properties as JSON natively via the `JSON`
+logical type, which is interpreted as parsed as JSON, rather than as a string.
+
+<LinkCard
+  title="How to work with JSON"
+  href="/extensions/json#json-data-type"
+  description="Example usage of JSON data type"
 />
