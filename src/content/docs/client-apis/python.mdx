@@ -497,7 +497,7 @@ Below, we show an example to calculate the discounted price of an item using a P
 ```python
 def calculate_discounted_price(price: float, has_discount: bool) -> float:
     # Assume 10% discount on all items for simplicity
-    return price * 0.9 if has_discount else price
+    return float(price) * 0.9 if has_discount else price
 
 # define the expected type of the UDF's parameters
 parameters = ['DECIMAL(7, 2)', kuzu.Type.BOOL]
