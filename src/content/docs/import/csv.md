@@ -6,56 +6,18 @@ You can bulk import data to node and relationship tables from CSV files
 using the `COPY FROM` command. It is **highly recommended** to use `COPY FROM` if you are creating large
 databases. You can use `COPY FROM` to import data into an empty table or to append data to an existing table.
 
-The CSV import configuration can be manually set by specifying the parameters inside `( )` at the
-end of the the `COPY FROM` clause. The following table shows the configuration parameters supported:
-
-Any option that is a `Boolean` can be enabled or disabled in multiple ways. 
-
-You can write `true`, or `1` to enable the option, and `false`, or `0` to disable it. 
-
-The `Boolean` value can also be omitted (e.g., by only passing `(HEADER)`), in which case `true` is assumed.
-
-The assignment operator `=` can also be space ` `.
-
-### Auto Detect
-The current CSV Auto Detect contains two functionalities: `Header_Detect` and `Dialect_Detect`, it is controlled by the boolean parameter `auto_detect`,
-
-#### Header_Detect
-The `Header_Detect` phase simply obtains the first valid line of the CSV file and attempts to cast it to the candidate types in other columns.
-If there is a cast mismatch, we consider that row as the header; if not, we treat the first row as actual data and automatically generate a header.
-
-#### Dialect_Detect
-In the `Dialect_Detect`, we identify the delimiter, quotes and the escapes of a CSV file. 
-The delimiter search space consists of the following delimiters: `,`, `|`, `;`, `\t`. If the file has a delimiter outside the search space, it must be provided by the user (e.g., `delim='?'`).
-The quote search space is `"`, `'` and `\0`, where `\0` is a string terminator indicating no quote is present; again, users can provide custom characters outside the search space (e.g., `quote='?'`).
-The search space of escape values depends on the value of the quote option, but in summary, they are the same as quotes with the addition of `\`, and again, they can also be provided by the user (`escape='?'`).
-
-By default, the dialect detection runs on 24 different combinations of dialect configurations. To determine the most promising configuration, we calculate the number of columns each CSV tuple would produce under each of these configurations. The one that results in the most columns with the most consistent rows will be chosen.
-
-| Parameter | Description | Default Value |
-|:-----|:-----|:-----|
-| `HEADER` | Whether the first line of the CSV file is the header. Can be true or false. | false |
-| `DELIM` or `DELIMITER` | Character that separates different columns in a lines. | `,`|
-| `QUOTE` | Character to start a string quote. | `"` |
-| `ESCAPE` | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.| `\` |
-| `SKIP` | Number of rows to skip from the input file | `0` |
-| `PARALLEL` | Read CSV files in parallel or not | `true` |
-| `IGNORE_ERRORS` | Skips malformed rows in CSV files if enabled. [The `SHOW_WARNINGS` function](/cypher/query-clauses/call#show_warnings) can be used to view the warning messages triggered by the malformed rows. | `false` |
-| `auto_detect` | Turn ON/OFF the header and dialect detection | `true` |
-
-The example below specifies that the CSV delimiter is`|` and also that the header row exists.
-
-```cypher
-COPY User FROM "user.csv" (HEADER=true, DELIM="|");
-```
+There are a set of CSV configurations you can set during `COPY FROM` (as well as `LOAD FROM`). We will cover
+these parameters below in the [CSV Configurations](#csv-configurations) section. This page first covers
+examples of loading into node and relationship tables. Please see the section about [Ignoring Erroneous Rows](#ignoring-erroneous-rows)
+on how to skip erroneous CSV rows during the import.
 
 :::caution[Guidelines]
 - **Copy nodes before relationships:** In order to copy a relationship table `R` from a csv file `RFile`, the nodes that appear in `RFile` need to
-already exist in the database (either imported in bulk or inserted through Cypher data manipulation commands).
+  already exist in the database (either imported in bulk or inserted through Cypher data manipulation commands).
 - **Wrap strings inside quotes:** Kùzu will accept strings in string columns both with and without quotes, though it's recommended to wrap strings in quotes to avoid any ambiguity with delimiters.
 - **Avoid leading and trailing spaces**: As per the CSV standard, Kùzu does not ignore leading and trailing spaces (e.g., if you input `   213   ` for
   an integer value, that will be read as malformed integer and the corresponding node/rel property will be set to NULL.
-:::
+  :::
 
 ## Import to node table
 
@@ -77,64 +39,6 @@ The following statement will load `user.csv` into User table.
 
 ```cypher
 COPY User FROM "user.csv" (header=true);
-```
-
-## Ignoring Erroneous Rows
-
-Create a node table `Person` as follows:
-
-```cypher
-CREATE NODE TABLE Person (ID INT16, age INT32, PRIMARY KEY (ID));
-```
-
-The CSV file `vPerson.csv` contains the following fields (note that `2147483650` does not fit into an INT32):
-```csv
-0,4
-2,2147483650
-```
-
-The following statement will load only the first row of `vPerson.csv` into `Person` table, skipping the malformed second row.
-
-```cypher
-COPY Person FROM "vPerson.csv" (header=false, ignore_errors=true);
-```
-
-We can call `show_warnings` to show any errors that caused rows to be skipped during the copy.
-
-```cypher
-CALL show_warnings() RETURN *;
-```
-
-Output:
-```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
-│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
-│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING                 │
-├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼────────────────────────┤
-│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650           │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────────┘
-```
-
-Once we are done inspecting the warnings, we can call [`clear_warnings`](/cypher/query-clauses/call#clear_warnings) to clear the warning table.
-
-```cypher
-CALL clear_warnings();
-```
-
-After clearing the warnings, the warning table will be empty.
-
-```cypher
-CALL show_warnings() RETURN COUNT(*);
-```
-
-Output:
-```
-┌──────────────┐
-│ COUNT_STAR() │
-│ INT64        │
-├──────────────┤
-│ 0            │
-└──────────────┘
 ```
 
 ## Import to relationship table
@@ -201,4 +105,173 @@ Alternatively, you can just specify a list of files to be loaded.
 
 ```cypher
 COPY User FROM ["User0.csv", "User0.csv", "User2.csv"]
+```
+
+## CSV Configurations
+There are a set of configurations that can be set when importing CSV files, such as
+whether the CSV file has a header that should be skipped during loading or what is the delimiter character
+between the columns of the CSV? See below for the list of all supported configurations. These
+configurations can be manually set by specifying parameters inside `( )` at the
+end of the `COPY FROM` clause. Several of the supported configurations, such as the header and delimiter characters,
+are automatically detected if they are not manually specified at the end of  `COPY FROM` clause.
+See the [Auto Detecting Configurations](#auto-detecting-configurations) section for more details
+how Kùzu automatically detects these configurations.
+
+The following table shows the configuration parameters supported:
+
+| Parameter              | Description                                                                                                                                                                                                                                                                                                                                          | Default Value |
+|:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
+| `HEADER`               | Whether the first line of the CSV file is the header. Can be true or false.                                                                                                                                                                                                                                                                          | false         |
+| `DELIM` or `DELIMITER` | Character that separates different columns in a lines.                                                                                                                                                                                                                                                                                               | `,`           |
+| `QUOTE`                | Character to start a string quote.                                                                                                                                                                                                                                                                                                                   | `"`           |
+| `ESCAPE`               | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.                                                                                                                                                                                           | `\`           |
+| `SKIP`                 | Number of rows to skip from the input file                                                                                                                                                                                                                                                                                                           | `0`           |
+| `PARALLEL`             | Read CSV files in parallel or not                                                                                                                                                                                                                                                                                                                    | `true`        |
+| `IGNORE_ERRORS`        | Skips malformed rows in CSV files if set to true. Use [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) function to view information about malformed rows. Also see [`CLEAR_WARNINGS`](/cypher/query-clauses/call#clear_warnings) function. See more on [Warnings table](#warnings-table-inspecting-skipped-rows) to inspect skipped rows. | `false`       |
+| `auto_detect`          | Turn ON/OFF the auto detection of configurations (more details below)                                                                                                                                                                                                                                                                                | `true`        |
+| `sample_size`          | The number of sample CSV lines to use when auto detecting CSV configurations (more details below)                                                                                                                                                                                                                                                    | 1024          |
+
+For example, the query below specifies that the CSV delimiter is `|` and also that the header row exists.
+
+```cypher
+COPY User FROM "user.csv" (HEADER=true, DELIM="|");
+```
+
+**Note on Boolean options:** Any option that is a `Boolean` can be enabled or disabled in multiple ways. You can write `true`, or `1` to enable the option (e.g., `(HEADER=true)` or `(HEADER=1)`) , and `false` or `0` to disable it (e.g., `(HEADER=false)` or `(HEADER=0)`).
+The `Boolean` value can also be omitted (e.g., by only passing `(HEADER)`), in which case `true` is assumed.
+Finally, the assignment operator `=` can also be omitted and replaced with space (e.g., `(HEADER true)` is equivalent to `(HEADER=true)`).
+
+
+
+### Auto Detecting Configurations
+If any of the following configuration options are not manually specified at the end of the `COPY FROM` statement,
+by default Kùzu will try to automatically detect them:
+- HEADER
+- DELIM
+- QUOTE
+- ESCAPE
+
+If you specify a subset of these manually but not the others, then only those that have not been specified will be automatically detected.
+You can turn off auto-detection by setting `(auto_detect=false)` as a parameter, in which case Kùzu will default to using the default values
+for any of the unspecified configurations. For example, consider the example from above again:
+```cypher
+COPY User FROM "user.csv" (HEADER=true, DELIM="|");
+```
+In this case (which is equivalent to `COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=true)`),
+Kùzu will try to automatically detect the `QUOTE` and `ESCAPE` characters.
+It will not try to automatically detect if the first line is a header line or the `DELIM` character,
+since those configurations are manually specified in the query.
+If instead the query was:
+```cypher
+COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
+```
+Then, Kùzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `\` respectively (and use
+the manually specified configurations for `HEADER` and `DELIM`).
+
+**sample_size**: By default, Kùzu will use the first 1024 lines of the CSV file to auto-detect unspecified configurations.
+If you want to use a different number of lines, you can specify the `sample_size` parameter.
+
+For interested users, below are more details of how Kùzu automatically tries to detect these configurations.
+
+**HEADER auto detection** parses the first line of the CSV into columns and
+checks if each column can be cast to the data type of the target column in the node or rel table that is being copied into.
+If so, the line is assumed to be a valid "data" line and inserted as a record into the target table. Otherwise, it is assumed to be
+a header line and skipped.
+
+**DELIM, QUOTE, ESCAPE auto detection**
+Kùzu uses the `sample_size` many lines to auto detect any configuration that has not been manually specified.
+The possible configurations for different configurations are:
+- DELIM: `,`, `|`, `;`, `\t`.
+- QUOTE: `"`, `'` and (no quote character)
+- ESCAPE: `"`, `'`, '\' and (no escape character) (ensuring in any configuration QUOTE and ESCAPE are different characters or are  "no quote" and "no escape" characters)
+
+For the unspecified configurations, Kùzu considers parsing the samples lines it scans (see the `sample_size` parameter)
+for each possible configuration combination and then picks the configuration combination that successfully parses the most lines.
+
+## Ignoring Erroneous Rows
+
+By default, your `COPY FROM` and `LOAD FROM` clauses will fail if there is an erroneous rows 
+in your CSV file. You can instead skip these rows by setting the `IGNORE_ERRORS` parameter to `true`.
+When `IGNORE_ERRORS` is set to `true`, Kùzu will skip any rows that have errors and continue loading the rest of the rows.
+This has some performance costs, so if you think your CSV files are clean, we recommend keeping `IGNORE_ERRORS` as `false`.
+
+Here is an example. Consider the simplified version of the `User` table from above:
+
+```cypher
+CREATE NODE TABLE User (name String, age INT32, PRIMARY KEY (ID));
+```
+
+Let the CSV file `user.csv` contain the following rows:
+```csv
+0,4
+2,2147483650
+```
+Note that `2147483650` does not fit into an INT32 and will cause an error.
+The following statement will load only the first row of `user.csv` into `User` table, skipping the malformed second row.
+
+```cypher
+COPY User FROM "user.csv" (header=false, ignore_errors=true);
+```
+
+To check that only one `User` node has been inserted, we can run the following query:
+```cypher
+MATCH (a:User) RETURN count(*)
+```
+Output:
+```
+┌──────────┬
+│ count(*) │
+│ UINT64   │
+├──────────┼
+│ 1        │
+└──────────┴
+```
+
+### Warnings Table: Inspecting skipped rows
+Information about malformed lines are kept in a system-level Warnings table.
+Warnings table is a connection-level table that accumulates warnings that are generated during COPY statements during the
+lifetime of a database connection. You can inspect the contents of this table, e.g., to see the warnings
+about the malformed rows, or clear this table. 
+
+For example, to see the warning messages generated about the malformed line in our 'user.csv' import above,
+you can run the [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) function after the `COPY FROM` statement:
+
+```cypher
+CALL show_warnings() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING                 │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼────────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650           │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────────┘
+```
+
+At any point in time you can also call the [`CLEAR_WARNINGS`](/cypher/query-clauses/call#clear_warnings) function to clear the Warnings table.
+
+```cypher
+CALL clear_warnings();
+```
+
+After clearing the warnings, the Warnings table will be empty.
+
+```cypher
+CALL show_warnings() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
+│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING                 │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────────┘
+```
+
+By default, Kùzu stores a limited number of warnings per connection, determined by the [`warning_limit`](/cypher/configuration#connection-configuration) connection configuration parameter.
+You can change this configuration as follows (see the [Connection Configuration](/cypher/configuration#connection-configuration) section for more details):
+```cypher
+CALL warning_limit=1024;
 ```

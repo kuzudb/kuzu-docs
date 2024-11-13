@@ -7,8 +7,11 @@ The `LOAD FROM` clause performs a direct scan over an input file **without copyi
 This clause is very useful to inspect a subset of a larger file to display or load into a node table, or to
 perform simple transformation tasks like rearranging column order.
 
-`LOAD FROM` is designed to be used in the exact same way as `MATCH`, meaning that it can be followed
-by arbitrary clauses like `CREATE`, `WHERE`, `RETURN`, and so on.
+`LOAD FROM` can be followed by arbitrary clauses like `MATCH`, `CREATE`, `WHERE`, `RETURN`, and so on.
+Suppose the input source has tuples with k columns.
+`LOAD FROM` will bind each tuple t=(col0, col1, ..., col(k-1)) of the scanned input source to k variables
+with some names and data types. Names and data types of the variables can either be specified
+in the `LOAD FROM` statement using the [`WITH HEADERS` clause](#enforce-schema). Or they will be automatically inferred from the source.
 
 ## Example usage
 
@@ -73,15 +76,17 @@ RETURN age, name LIMIT 3;
 --------------------
 ```
 
-### Enforce Schema
+### Bound variable names and data types
+
 By default, Kùzu will infer the column names and data types from the scan source automatically.
 - For Parquet, Pandas, Polars and PyArrow, column names and data types are always available in the data source
-- For CSV, we use header names as properties if available, otherwise we fallback naming to `column0, column1, ...`. We also assume that all data types are `STRING` if no data type information is available in the header
+- For CSV: The behavior is determined by the [CSV scanning configuration](/import/csv#csv-configurations), which are specified at the end of `LOAD FROM`,  inside `()`, similar
+to `COPY FROM` statements. We review the details of this behavior [below](#csv).
 - For JSON, we use keys as column names, and infer a common data type from each key's values. To use `LOAD FROM` with JSON, you need
 to have the [JSON extension](/extensions/json) installed. More details on using `LOAD FROM` with JSON files is provided
 on the documentation page for the [JSON extension](/extensions/json).
 
-To enforce specific column names and data types when reading, you can use the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
+You can enforce specific column names and data types when reading, by using the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
 
 The following query will first bind the column `name` to the `STRING` type and second column `age` to the `INT64` type.
 You can combine this with a `WHERE` clause to filter the data as needed.
@@ -100,70 +105,49 @@ RETURN name, age;
 ```
 
 :::caution[Note]
-If the header is specified manually:
-- Kùzu will throw an exception if the given header does not the match number of columns in the file.
+If `WITH HEADERS` is specified manually:
+- Kùzu will throw an exception if the given number of columns in `WITH HEADERS` does not the match number of columns in the file.
 - Kùzu will always try to cast to the type specified header. An exception will be thrown if the
 casting operation fails.
 :::
 
-### Ignoring Erroneous Rows
-
-By specifying the `ignore_errors` option to `true`, we can ignore any erroneous rows in source files. The types of errors that are ignorable will depend on the type of file that is being loaded from. Consider the following example:
-
-The CSV file `vPerson.csv` contains the following fields (note that `2147483650` does not fit into an INT32):
-```csv
-0,4
-2,2147483650
-```
-
-The following statement will load only the first row of `vPerson.csv`, skipping the erroneous second row.
-
-```cypher
-LOAD WITH HEADERS (ID INT16, age INT32) FROM "vPerson.csv" (header=false, ignore_errors=true) RETURN *;
-```
-
-We can call `show_warnings` to show any errors that caused rows to be skipped during the copy.
-
-```cypher
-CALL show_warnings() RETURN *;
-```
-
-Output:
-```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
-│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
-│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING                 │
-├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼────────────────────────┤
-│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650           │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────────┘
-```
-
 ## Scan Data Formats
+Load from can scan several raw or in-memory file formats, such as CSV, Parquet, Pandas, Polars, Arrow tables, and JSON.
+Below we give examples of using `LOAD FROM` to scan data from each of these formats. We assume `WITH HEADERS`
+is not used in the examples below, so we discuss how Kùzu infers the variable names and data types of
+that bind to the scanned tuples.
 
 ### CSV
 
-When loading from a CSV file, you can use a similar syntax to the `COPY FROM` statement.
+:::caution[Note]
+See the
+[CSV Configurations](/import/csv#csv-configurations) and [ignoring erroneous rows
+](/import/csv#ignoring-erroneous-rows) documentation pages for the `COPY FROM` file.
+The configurations documented in those pages can be specified after the `LOAD FROM` statement inside `()` when scanning
+CSV files. For example, you can indicate that the first line should
+be interpreted as a header line by setting `(haders = true)`. These configurations determine the names of the 
+variables and their data types that are scanned from CSV files.
+This page does not document those options in detail. We refer you to [CSV Configurations](/import/csv#csv-configurations) and 
+[ignoring erroneous rows](/import/csv#ignoring-erroneous-rows) documentation pages for details.
+:::
 
-If no header row is available, you can simply pass in the CSV file name to the statment and Kùzu will parse
-each column as `STRING` type with name `column0, column1, ...`.
+The syntax for using `LOAD FROM` to scan a CSV file is similar to the one used for using `COPY FROM` with CSV files.
+#### CSV header
+If (i) the CSV file has a header line, i.e., a first line that should not be interpreted
+as a tuple to be scanned; and (ii) `(header = true)` set, then the column names in the first line 
+provide the names of the columns. The data types are always automatically inferred from the CSV file (except of course 
+if `LOAD WITH HEADERS (...) FROM` is used, in which case the data types provided inside the `(...)` are used as 
+described [above](#bound-variable-names-and-data-types)).
 
-Example:
-
-```cypher
-LOAD FROM "test.csv" RETURN *;
------------
-| column0 |
------------
-| a       |
------------
-| b       |
------------
+Suppose user.csv is a CSV file with the following contents:
+```
+name,age
+Adam,30
+Karissa,40
+Zhang,50
 ```
 
-If header names are available in the file, you can ask Kùzu to parse the header and use data types
-and names as specified in the header.
-
-Example:
+Then if you run the following query, Kùzu will infer the column names `name` and `age` from the first line of the CSV:
 
 ```cypher
 LOAD FROM "user.csv" (header = true) RETURN *;
@@ -178,10 +162,34 @@ LOAD FROM "user.csv" (header = true) RETURN *;
 -----------------
 ```
 
+
+If (header = false), then the names of the columns will be column0, column1, ..., column(k-1), where k is the number of columns in the CSV file.
+Suppose user.csv has instead the following contents:
+```
+Adam,30
+Karissa,40
+Zhang,50
+```
+
+```cypher
+LOAD FROM "user.csv" (header = false) RETURN *;
+---------------------
+| column0 | column1 |
+---------------------
+| Adam    |    30   |
+---------------------
+| Karissa |    40   |
+--------------------- 
+| Zhang   |    50   |
+---------------------
+```
+
 ### Parquet
 
 Since Parquet files contain schema information in their metadata, Kùzu will always use the available
-schema information when loading from Parquet files.
+schema information when loading from Parquet files (except again
+if `LOAD WITH HEADERS (...) FROM` is used). Suppose we have a Parquet file `user.parquet` with two columns `f0` and `f1` 
+and the same content as in the `user.csv` file above. Then the query below will scan the Parquet file and output the following:
 
 ```cypher
 LOAD FROM "user.parquet" RETURN *;
@@ -198,9 +206,9 @@ LOAD FROM "user.parquet" RETURN *;
 
 ### Pandas
 
-Kùzu allows zero-copy access to Pandas DataFrames. The data types within a Pandas DataFrame will be
-used to infer the schema of the data. The Pandas DataFrame can be scanned using the `LOAD FROM`
-clause just like we would from an external file.
+Kùzu allows zero-copy access to Pandas DataFrames. The variable names and data types of scanned columns 
+within a Pandas DataFrame will be
+inferred from the schema information of the data frame. Here is an example:
 
 ```py
 # main.py
@@ -211,7 +219,7 @@ db = kuzu.Database("persons")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
-    "name": ["Adam", "Karissa", "Zhang"],
+    "nameP": ["Adam", "Karissa", "Zhang"],
     "age": [30, 40, 50]
 })
 
@@ -224,6 +232,8 @@ print(result.get_as_df())
 1  Karissa   40
 2    Zhang   50
 ```
+Here `name` and `age` have string and integer types in the define Pandas Dataframe, and so the output table
+contains two columns with the same names and data types.
 
 :::note[Note]
 Pandas can use either a NumPy or Arrow backend - Kùzu can natively scan from either backend.
@@ -231,7 +241,8 @@ Pandas can use either a NumPy or Arrow backend - Kùzu can natively scan from ei
 
 ### Polars
 
-Kùzu can also scan Polars DataFrames via the underlying PyArrow layer.
+Kùzu can also scan Polars DataFrames via the underlying PyArrow layer. The rules for determining the 
+variable names and data types is identical to scanning Pandas data frames. Here is an example:
 
 ```python
 import kuzu
