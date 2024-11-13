@@ -162,7 +162,7 @@ Output:
 
 ### SHOW_WARNINGS
 
-`SHOW_WARNINGS` returns the warnings encountered during the current connection when loading from files. Currently only the warnings related to `COPY FROM` and `LOAD FROM` statements are reported. They will only be reported if the [`IGNORE_ERRORS`](/import/csv#ignoring-erroneous-rows) setting is enabled. The number of warnings that can be stored per connection is limited; after the warning limit is hit, any warnings encountered will not be stored. See [configuration](/cypher/configuration#configure-warning-limit) for more details on how to set the warning limit.
+`SHOW_WARNINGS` returns the warnings encountered during the current connection when loading from files. Currently only the warnings related to `COPY FROM` and `LOAD FROM` statements are reported. They will only be reported if the [`IGNORE_ERRORS`](/import/ignoring-erroneous-rows) setting is enabled. The number of warnings that can be stored per connection is limited; after the warning limit is hit, any warnings encountered will not be stored. See [configuration](/cypher/configuration#configure-warning-limit) for more details on how to set the warning limit.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |

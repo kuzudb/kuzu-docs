@@ -47,40 +47,9 @@ See the [`JSON`](/extensions/json) extension documentation for more related feat
 
 ## Ignoring Erroneous Rows
 
-By specifying the `ignore_errors` option to `true`, we can ignore erroneous rows in JSON files. Consider the following example:
+Like for CSV files, Kùzu can skip erroneous rows when the following types of errors are encountered when importing from JSON.
+- Duplicate primary key exception (for node tables only)
+- Null primary key exception
+- Missing primary key exception (for rel tables only)
 
-Create a node table `Person` as follows:
-
-```cypher
-CREATE NODE TABLE Person (ID INT32, age INT32, PRIMARY KEY (ID));
-```
-
-The file `vPerson.json` contains the following fields (note that there are two entries with the same primary key `ID=2`):
-```json
-{"ID": 0, "age": 4}
-{"ID": 2, "age": 3}
-{"ID": 2, "age": 6}
-{"ID": 5, "age": 10}
-```
-
-The following statement will skip one of the duplicate rows of `vPerson.json`, copying the remaining rows into the `Person` table.
-
-```cypher
-COPY person FROM "vPerson.json" (ignore_errors=true);
-```
-
-We can call `show_warnings` to show any errors that caused rows to be skipped during the copy.
-
-```cypher
-CALL show_warnings() RETURN *;
-```
-
-Output:
-```
-┌──────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────┬─────────────┬────────────────────────┐
-│ query_id │ message                                                                                                   │ file_path    │ line_number │ skipped_line_or_record │
-│ UINT64   │ STRING                                                                                                    │ STRING       │ UINT64      │ STRING                 │
-├──────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────┼─────────────┼────────────────────────┤
-│ 2        │ Found duplicated primary key value 2, which violates the uniqueness constraint of the primary key column. │ vPerson.json │ 3           │ {"ID": 2, "age": 6}    │
-└──────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────┴─────────────┴────────────────────────┘
-```
+However unlike with CSV files, skipping parsing errors is not supported when importing from JSON. See [ignoring erroneous rows](/import/ignoring-erroneous-rows) for more detailed information on how to use this feature.

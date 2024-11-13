@@ -58,7 +58,7 @@ want to copy data from a `LOAD FROM` scan operation on another data format.
 
 ## `COPY FROM` DataFrames
 
-You can copy data from a Pandas or Polars DataFrame into a node or relationship table. This is useful 
+You can copy data from a Pandas or Polars DataFrame into a node or relationship table. This is useful
 when you are already doing your data transformations in either Pandas or Polars DataFrames and want to
 directly insert results from their columns into a Kùzu table.
 
@@ -124,3 +124,14 @@ You can also disable spilling to disk by setting `spill_to_disk_tmp_file` to an 
 
 This feature is disabled by default for in-memory databases and databases using file system extensions,
 but can be enabled for these cases by setting a custom `spill_to_disk_tmp_file` path.
+
+## Ignoring Erroneous Rows
+
+By default, your `COPY FROM` and `LOAD FROM` clauses will fail if there are any erroneous rows
+in your CSV file. You can instead skip these rows by setting the `IGNORE_ERRORS` parameter to `true`.
+See the linked card below for more information and examples.
+
+<LinkCard
+  title="Ignoring Erroneous Rows"
+  href="/import/ignoring-erroneous-rows"
+/>
