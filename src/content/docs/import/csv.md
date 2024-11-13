@@ -168,7 +168,7 @@ COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
 Then, Kùzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `\` respectively (and use
 the manually specified configurations for `HEADER` and `DELIM`).
 
-**sample_size**: By default, Kùzu will use the first 1024 lines of the CSV file to auto-detect unspecified configurations.
+**sample_size**: By default, Kùzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
 If you want to use a different number of lines, you can specify the `sample_size` parameter.
 
 For interested users, below are more details of how Kùzu automatically tries to detect these configurations.
