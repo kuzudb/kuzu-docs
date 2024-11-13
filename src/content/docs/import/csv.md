@@ -8,7 +8,7 @@ databases. You can use `COPY FROM` to import data into an empty table or to appe
 
 There are a set of CSV configurations you can set during `COPY FROM` (as well as `LOAD FROM`). We will cover
 these parameters below in the [CSV Configurations](#csv-configurations) section. This page first covers
-examples of loading into node and relationship tables. Please see the section about [Ignoring Erroneous Rows](/import/ignoring-erroneous-rows)
+examples of loading into node and relationship tables. Please see the section about [Ignoring Erroneous Rows](/import#ignore-erroneous-rows)
 on how to skip erroneous CSV rows during the import.
 
 :::caution[Guidelines]
