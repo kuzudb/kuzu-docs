@@ -190,7 +190,7 @@ for each possible configuration combination and then picks the configuration com
 
 ## Ignoring Erroneous Rows
 
-By default, your `COPY FROM` and `LOAD FROM` clauses will fail if there is an erroneous rows 
+By default, your `COPY FROM` and `LOAD FROM` clauses will fail if there are any erroneous rows
 in your CSV file. You can instead skip these rows by setting the `IGNORE_ERRORS` parameter to `true`.
 When `IGNORE_ERRORS` is set to `true`, Kùzu will skip any rows that have errors and continue loading the rest of the rows.
 This has some performance costs, so if you think your CSV files are clean, we recommend keeping `IGNORE_ERRORS` as `false`.
@@ -198,13 +198,13 @@ This has some performance costs, so if you think your CSV files are clean, we re
 Here is an example. Consider the simplified version of the `User` table from above:
 
 ```cypher
-CREATE NODE TABLE User (name String, age INT32, PRIMARY KEY (ID));
+CREATE NODE TABLE User (name String, age INT32, PRIMARY KEY (name));
 ```
 
 Let the CSV file `user.csv` contain the following rows:
 ```csv
-0,4
-2,2147483650
+Alice,4
+Bob,2147483650
 ```
 Note that `2147483650` does not fit into an INT32 and will cause an error.
 The following statement will load only the first row of `user.csv` into `User` table, skipping the malformed second row.
@@ -231,7 +231,7 @@ Output:
 Information about malformed lines are kept in a system-level Warnings table.
 Warnings table is a connection-level table that accumulates warnings that are generated during COPY statements during the
 lifetime of a database connection. You can inspect the contents of this table, e.g., to see the warnings
-about the malformed rows, or clear this table. 
+about the malformed rows, or clear this table.
 
 For example, to see the warning messages generated about the malformed line in our 'user.csv' import above,
 you can run the [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) function after the `COPY FROM` statement:
@@ -242,12 +242,12 @@ CALL show_warnings() RETURN *;
 
 Output:
 ```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
-│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
-│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING                 │
-├──────────┼─────────────────────────────────────────────────────────────────────────────┼─────────────┼─────────────┼────────────────────────┤
-│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ vPerson.csv │ 2           │ 2,2147483650           │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────────┘
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬───────────┬─────────────┬────────────────────────┐
+│ query_id │ message                                                                     │ file_path │ line_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                      │ STRING    │ UINT64      │ STRING                 │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼─────────────┼────────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ user.csv  │ 2           │ Bob,2147483650         │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴───────────┴─────────────┴────────────────────────┘
 ```
 
 At any point in time you can also call the [`CLEAR_WARNINGS`](/cypher/query-clauses/call#clear_warnings) function to clear the Warnings table.
@@ -264,13 +264,14 @@ CALL show_warnings() RETURN *;
 
 Output:
 ```
-┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
-│ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
-│ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING                 │
-└──────────┴─────────────────────────────────────────────────────────────────────────────┴─────────────┴─────────────┴────────────────────────┘
+┌──────────┬─────────┬───────────┬─────────────┬────────────────────────┐
+│ query_id │ message │ file_path │ line_number │ skipped_line_or_record │
+│ UINT64   │ STRING  │ STRING    │ UINT64      │ STRING                 │
+├──────────┼─────────┼───────────┼─────────────┼────────────────────────┤
+└──────────┴─────────┴───────────┴─────────────┴────────────────────────┘
 ```
 
-By default, Kùzu stores a limited number of warnings per connection, determined by the [`warning_limit`](/cypher/configuration#connection-configuration) connection configuration parameter.
+By default, Kùzu stores a limited number of warnings per connection, determined by the `warning_limit` connection configuration parameter.
 You can change this configuration as follows (see the [Connection Configuration](/cypher/configuration#connection-configuration) section for more details):
 ```cypher
 CALL warning_limit=1024;
