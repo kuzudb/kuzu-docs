@@ -72,14 +72,19 @@ export default defineConfig({
                     label: 'Import data',
                     collapsed: true,
                     items: [
-                        { label: 'Overview', link: '/import' },
-                        { label: 'Copy from CSV', link: '/import/csv' },
-                        { label: 'Copy from Parquet', link: '/import/parquet' },
-                        { label: 'Copy from NumPy', link: '/import/npy' },
-                        { label: 'Copy from subquery', link: '/import/copy-from-subquery'},
-                        { label: 'Copy from DataFrames', link: '/import/copy-from-dataframe'},
-                        { label: 'Copy from JSON', link: '/import/copy-from-json'},
-                        { label: 'Ignoring Erroneous Rows', link: '/import/ignoring-erroneous-rows'},
+                        {
+                            label: 'Copy from files/formats',
+                            items: [
+                                { label: 'Overview', link: '/import' },
+                                { label: 'Copy from CSV', link: '/import/csv' },
+                                { label: 'Copy from Parquet', link: '/import/parquet' },
+                                { label: 'Copy from NumPy', link: '/import/npy' },
+                                { label: 'Copy from DataFrame', link: '/import/copy-from-dataframe' },
+                                { label: 'Copy from subquery', link: '/import/copy-from-subquery' },
+                                { label: 'Copy from JSON', link: '/import/copy-from-json' },
+                            ]
+                        },
+                        { label: 'Merge', link: '/import/merge' },
                     ]
                 },
                 {

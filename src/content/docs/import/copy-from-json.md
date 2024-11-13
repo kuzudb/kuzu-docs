@@ -52,4 +52,5 @@ Like for CSV files, Kùzu can skip erroneous rows when the following types of er
 - Null primary key exception
 - Missing primary key exception (for rel tables only)
 
-However unlike with CSV files, skipping parsing errors is not supported when importing from JSON. See [ignoring erroneous rows](/import/ignoring-erroneous-rows) for more detailed information on how to use this feature.
+However unlike with CSV files, skipping parsing errors is not supported when importing from JSON.
+See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.

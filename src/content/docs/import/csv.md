@@ -187,3 +187,7 @@ The possible configurations for different configurations are:
 
 For the unspecified configurations, Kùzu considers parsing the samples lines it scans (see the `sample_size` parameter)
 for each possible configuration combination and then picks the configuration combination that successfully parses the most lines.
+
+## Ignore erroneous rows
+
+See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.
