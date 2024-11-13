@@ -109,8 +109,8 @@ COPY User FROM ["User0.csv", "User0.csv", "User2.csv"]
 
 ## CSV Configurations
 There are a set of configurations that can be set when importing CSV files, such as
-whether the CSV file has a header that should be skipped during loading or what is the delimiter character
-between the columns of the CSV? See below for the list of all supported configurations. These
+whether the CSV file has a header that should be skipped during loading or what the delimiter character
+between the columns of the CSV is. See below for the list of all supported configurations. These
 configurations can be manually set by specifying parameters inside `( )` at the
 end of the `COPY FROM` clause. Several of the supported configurations, such as the header and delimiter characters,
 are automatically detected if they are not manually specified at the end of  `COPY FROM` clause.
