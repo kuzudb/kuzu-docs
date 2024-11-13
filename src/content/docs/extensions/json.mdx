@@ -553,12 +553,12 @@ RETURN p.id AS id, json_extract(p.description, 'age') AS age;
 ```
 Result:
 ```
-┌───────┬────────┐
-│ id    │ age    │
-│ INT64 │ INT64  │
-├───────┼────────┤
-│ 20    │ 32     │
-└───────┴────────┘
+┌───────┬──────┐
+│ id    │ age  │
+│ INT64 │ json │
+├───────┼──────┤
+│ 20    │ 32   │
+└───────┴──────┘
 ```
 
 
@@ -577,28 +577,43 @@ Converts `any` Kùzu value to `JSON`.
 Example 1:
 
 ```cypher
-RETURN to_json('kuzu');
+RETURN to_json('{"name": "Gregory"}') AS person;
 ```
-```json
-"kuzu"
+```
+┌────────────────────┐
+│ person             │
+│ json               │
+├────────────────────┤
+│ {"name":"Gregory"} │
+└────────────────────┘
 ```
 
 Example 2:
 
 ```cypher
-RETURN to_json([1,2,3]);
+RETURN to_json([1,2,3]) AS json_array;
 ```
-```json
-[1,2,3]
+```
+┌────────────┐
+│ json_array │
+│ json       │
+├────────────┤
+│ [1,2,3]    │
+└────────────┘
 ```
 
 Example 3:
 
 ```cypher
-RETURN to_json('{"name": "Alicia", "age": 28}');
+RETURN to_json('Alicia') AS simple_string;
 ```
-```json
-{"name":"Alicia","age":28}
+```
+┌───────────────┐
+│ simple_string │
+│ json          │
+├───────────────┤
+│ "Alicia"      │
+└───────────────┘
 ```
 
 ### `array_to_json`
@@ -626,8 +641,13 @@ Example:
 ```cypher
 RETURN cast('{"name": "Alicia", "age": 28}' AS JSON);
 ```
-```json
-{"name":"Alicia","age":28}
+```
+┌───────────────────────────────────────────┐
+│ CAST({"name": "Alicia", "age": 28}, json) │
+│ json                                      │
+├───────────────────────────────────────────┤
+│ {"name":"Alicia","age":28}                │
+└───────────────────────────────────────────┘
 ```
 
 ### `json_object`
@@ -641,17 +661,27 @@ Create a JSON object from any number of `key`, `value` pairs.
 Example 1:
 
 ```cypher
-RETURN json_object("name","Alicia");
+RETURN json_object("name", "Alicia");
 ```
-```json
-{"name":"Alicia"}
+```
+┌──────────────────────────┐
+│ json_object(name,Alicia) │
+│ json                     │
+├──────────────────────────┤
+│ {"name":"Alicia"}        │
+└──────────────────────────┘
 ```
 Example 2:
 ```cypher
-RETURN json_object("name","Alicia","age",28);
+RETURN json_object("name", "Alicia", "age", 28);
 ```
-```json
-{"name":"Alicia","age":28}
+```
+┌─────────────────────────────────┐
+│ json_object(name,Alicia,age,28) │
+│ json                            │
+├─────────────────────────────────┤
+│ {"name":"Alicia","age":28}      │
+└─────────────────────────────────┘
 ```
 
 ### `json_array`
@@ -665,10 +695,15 @@ Create a JSON array from `any` number of values.
 Example:
 
 ```cypher
-RETURN json_array(42, 'kuzu', NULL);
+RETURN json_array("Alicia", "25", NULL);
 ```
-```json
-[42,"kuzu",null]
+```
+┌────────────────────────┐
+│ json_array(Alicia,25,) │
+│ json                   │
+├────────────────────────┤
+│ ["Alicia","25",null]   │
+└────────────────────────┘
 ```
 
 
@@ -685,16 +720,30 @@ Example 1:
 ```cypher
 RETURN json_merge_patch('{"name": "Alicia"}', '{"age": 28}');
 ```
-```json
-{"name":"Alicia","age":28}
+```
+┌──────────────────────────────────────────────────┐
+│ json_merge_patch({"name": "Alicia"},{"age": 28}) │
+│ json                                             │
+├──────────────────────────────────────────────────┤
+│ {"name":"Alicia","age":28}                       │
+└──────────────────────────────────────────────────┘
 ```
 Example 2:
-```cypher
-RETURN json_merge_patch('3', NULL);
-```
-```json
-```
+
 Merging with a NULL path would result in NULL path.
+
+```cypher
+RETURN json_merge_patch("3", NULL);
+```
+```
+┌──────────────────────┐
+│ json_merge_patch(3,) │
+│ json                 │
+├──────────────────────┤
+│                      │
+└──────────────────────┘
+```
+
 
 ### `json_extract`
 
@@ -714,37 +763,58 @@ Examples:
 In this case, we provide a single item as the `path`.
 
 ```cypher
-RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', 'Software/Database/1');
+RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', 'Software/Database/1') AS extracted;
 ```
-```json
-"kuzu"
+```
+┌───────────┐
+│ extracted │
+│ json      │
+├───────────┤
+│ "kuzu"    │
+└───────────┘
 ```
 
 Here, we provide a `LIST` of paths:
 
 ```cypher
-RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', ['Software/Database/1', 'Software/Database/0']);
+RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', ['Software/Database/1', 'Software/Database/0']) AS extracted;
 ```
-```json
-["kuzu","duck"]
+```
+┌─────────────────┐
+│ extracted       │
+│ json[]          │
+├─────────────────┤
+│ ["kuzu","duck"] │
+└─────────────────┘
 ```
 
 This example provides the path as an integer that represents the index of the item in the JSON array
 we want to extract:
 
 ```cypher
-RETURN json_extract('[1, 2, 42]', 2)
+RETURN json_extract('[1, 2, 42]', 2) AS nums;
 ```
 ```json
-42
+┌──────┐
+│ nums │
+│ json │
+├──────┤
+│ 42   │
+└──────┘
 ```
 
-Extracting from a nonexistent path results in empty `JSON` document:
+Extracting from an empty path results in empty `JSON` document:
 
 ```cypher
-RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}');
+RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', "") AS extracted;
 ```
-```json
+```
+┌───────────┐
+│ extracted │
+│ json      │
+├───────────┤
+│           │
+└───────────┘
 ```
 
 
@@ -759,19 +829,32 @@ If the `json` is an JSON array, returns its length. Otherwise returns `0`.
 Example 1:
 
 ```cypher
-return json_array_length('["1", "1", "4", null]');
+RETURN json_array_length('["1", "1", "4", null]') AS len;
 ```
-```json
-4
+```
+┌────────┐
+│ len    │
+│ UINT32 │
+├────────┤
+│ 4      │
+└────────┘
 ```
 Example 2:
+
+Trying to compute the length of a JSON array with a `null` value results in a length of zero, as
+this isn't valid JSON array.
+
 ```cypher
-return json_array_length('{"kuzu": ["1", "1", "4", null]}');
+RETURN json_array_length('{"kuzu": ["1", "1", "4", null]}') AS len;
 ```
-```json
-0
 ```
-(this is not an JSON array)
+┌────────┐
+│ len    │
+│ UINT32 │
+├────────┤
+│ 0      │
+└────────┘
+```
 
 ### `json_contains`
 
@@ -784,17 +867,27 @@ Returns `True` if `json_needle` is contained in `json_haystack`. Both parameters
 Example 1:
 
 ```cypher
-RETURN JSON_CONTAINS('{"name": "Alicia"}', '"Alicia"');
+RETURN JSON_CONTAINS('{"name": "Alicia"}', '"Alicia"') AS found_name;
 ```
-```json
-True
+```
+┌────────────┐
+│ found_name │
+│ BOOL       │
+├────────────┤
+│ True       │
+└────────────┘
 ```
 Example 2:
 ```cypher
-RETURN JSON_CONTAINS('{"age": 28}', '28');
+RETURN JSON_CONTAINS('{"age": 28}', '28') AS found_age;
 ```
-```json
-True
+```
+┌───────────┐
+│ found_age │
+│ BOOL      │
+├───────────┤
+│ True      │
+└───────────┘
 ```
 
 ### `json_keys`
@@ -808,10 +901,15 @@ Gives the keys of the root `json` object. If the root is not an JSON object, ret
 Examples:
 
 ```cypher
-return json_keys('{ "family": "anatidae", "species": [ "duck", "goose", "swan", null ] }');
+RETURN json_keys('{ "family": "anatidae", "species": [ "duck", "goose", "swan", null ] }') AS keys;
 ```
 ```
-[family,species]
+┌──────────────────┐
+│ keys             │
+│ STRING[]         │
+├──────────────────┤
+│ [family,species] │
+└──────────────────┘
 ```
 
 ### `json_structure`
@@ -824,10 +922,15 @@ Returns the structure of the `json` in Kuzu type notation. Will give smaller int
 
 Example:
 ```cypher
-RETURN json_structure('[{"a": -1, "b": [1000, 2000, 3000]}, {"a": 2, "c": "hi"}]');
+RETURN json_structure('[{"a": -1, "b": [1000, 2000, 3000]}, {"a": 2, "c": "hi"}]') AS structure;
 ```
 ```
-STRUCT(a INT16, b UINT16[], c STRING)[]
+┌─────────────────────────────────────────┐
+│ structure                               │
+│ STRING                                  │
+├─────────────────────────────────────────┤
+│ STRUCT(a INT16, b UINT16[], c STRING)[] │
+└─────────────────────────────────────────┘
 ```
 
 ### `json_valid`
@@ -841,17 +944,27 @@ Determines whether or not the provided `json` is valid JSON.
 Example 1:
 
 ```cypher
-RETURN json_valid('{"name": "Alicia", "age": 28}');
+RETURN json_valid('{"name": "Alicia", "age": 28}') AS is_valid;
 ```
-```json
-True
+```
+┌──────────┐
+│ is_valid │
+│ BOOL     │
+├──────────┤
+│ True     │
+└──────────┘
 ```
 Example 2:
 ```cypher
-RETURN json_valid('"name": "Alicia", "age": 28');
+RETURN json_valid('"name": "Alicia", "age": 28') AS is_valid;
 ```
-```json
-False
+```
+┌──────────┐
+│ is_valid │
+│ BOOL     │
+├──────────┤
+│ False    │
+└──────────┘
 ```
 
 ### `json`
@@ -860,14 +973,19 @@ Signature: `JSON -> JSON`
 
 `json(json)`
 
-Parses and minifies the `json.
+Parses and minifies the JSON.
 
 Example:
 ```cypher
 UNWIND ['[        {"a":  [1],     "b": 2,"c": 1}, 1,    5, 9]', '[1, 2, 3]', '"ab"'] AS ARR RETURN json(ARR);
 ```
 ```
-[{"a":[1],"b":2,"c":1},1,5,9]
-[1,2,3]
-"ab"
+┌───────────────────────────────┐
+│ json(ARR)                     │
+│ json                          │
+├───────────────────────────────┤
+│ [{"a":[1],"b":2,"c":1},1,5,9] │
+│ [1,2,3]                       │
+│ "ab"                          │
+└───────────────────────────────┘
 ```
