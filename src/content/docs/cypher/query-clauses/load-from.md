@@ -219,7 +219,7 @@ db = kuzu.Database("persons")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
-    "nameP": ["Adam", "Karissa", "Zhang"],
+    "name": ["Adam", "Karissa", "Zhang"],
     "age": [30, 40, 50]
 })
 
