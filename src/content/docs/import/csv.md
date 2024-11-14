@@ -165,7 +165,7 @@ If instead the query was:
 ```cypher
 COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
 ```
-Then, Kùzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `\` respectively (and use
+Then, Kùzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `"` respectively (and use
 the manually specified configurations for `HEADER` and `DELIM`).
 
 **sample_size**: By default, Kùzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
@@ -179,14 +179,14 @@ If so, the line is assumed to be a valid "data" line and inserted as a record in
 a header line and skipped.
 
 **DELIM, QUOTE, ESCAPE auto detection**
-Kùzu uses the `sample_size` many lines to auto detect any configuration that has not been manually specified.
+Kùzu uses the first `sample_size` lines to auto detect any configuration that has not been manually specified.
 The possible configurations for different configurations are:
 - DELIM: `,`, `|`, `;`, `\t`.
 - QUOTE: `"`, `'` and (no quote character)
-- ESCAPE: `"`, `'`, '\' and (no escape character) (ensuring in any configuration QUOTE and ESCAPE are different characters or are  "no quote" and "no escape" characters)
+- ESCAPE: `"`, `'`, `\` and (no escape character)
 
 For the unspecified configurations, Kùzu considers parsing the samples lines it scans (see the `sample_size` parameter)
-for each possible configuration combination and then picks the configuration combination that successfully parses the most lines.
+for each possible configuration combination and then picks the configuration combination that successfully parses the most lines and with the most consistent number of columns in each row.
 
 ## Ignore erroneous rows
 
