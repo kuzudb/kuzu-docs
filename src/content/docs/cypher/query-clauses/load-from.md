@@ -303,5 +303,5 @@ age: [[30,40,50]]
 ```
 
 ### JSON
-Kùzu can scan JSON files using `LOAD FROM.
+Kùzu can scan JSON files using `LOAD FROM`.
 All JSON-related features are part of the JSON extension. See the documentation on the [JSON extension](/extensions/json#load-from) for details.

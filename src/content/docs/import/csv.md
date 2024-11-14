@@ -109,8 +109,8 @@ COPY User FROM ["User0.csv", "User0.csv", "User2.csv"]
 
 ## CSV Configurations
 There are a set of configurations that can be set when importing CSV files, such as
-whether the CSV file has a header that should be skipped during loading or what is the delimiter character
-between the columns of the CSV? See below for the list of all supported configurations. These
+whether the CSV file has a header that should be skipped during loading or what the delimiter character
+between the columns of the CSV is. See below for the list of all supported configurations. These
 configurations can be manually set by specifying parameters inside `( )` at the
 end of the `COPY FROM` clause. Several of the supported configurations, such as the header and delimiter characters,
 are automatically detected if they are not manually specified at the end of  `COPY FROM` clause.
@@ -122,14 +122,14 @@ The following table shows the configuration parameters supported:
 | Parameter              | Description                                                                                                                                                                                                                                                                                                                                          | Default Value |
 |:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
 | `HEADER`               | Whether the first line of the CSV file is the header. Can be true or false.                                                                                                                                                                                                                                                                          | false         |
-| `DELIM` or `DELIMITER` | Character that separates different columns in a lines.                                                                                                                                                                                                                                                                                               | `,`           |
+|  <span style="text-wrap: nowrap;"> `DELIM` or `DELIMITER` </span> | Character that separates different columns in a lines.                                                                                                                                                                                                                                                                                               | `,`           |
 | `QUOTE`                | Character to start a string quote.                                                                                                                                                                                                                                                                                                                   | `"`           |
 | `ESCAPE`               | Character within string quotes to escape QUOTE and other characters, e.g., a line break. <br/> See the important note below about line breaks lines below.                                                                                                                                                                                           | `\`           |
 | `SKIP`                 | Number of rows to skip from the input file                                                                                                                                                                                                                                                                                                           | `0`           |
 | `PARALLEL`             | Read CSV files in parallel or not                                                                                                                                                                                                                                                                                                                    | `true`        |
 | `IGNORE_ERRORS`        | Skips malformed rows in CSV files if set to true. Use [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) function to view information about malformed rows. Also see [`CLEAR_WARNINGS`](/cypher/query-clauses/call#clear_warnings) function. See more on [Warnings table](#warnings-table-inspecting-skipped-rows) to inspect skipped rows. | `false`       |
 | `auto_detect`          | Turn ON/OFF the auto detection of configurations (more details below)                                                                                                                                                                                                                                                                                | `true`        |
-| `sample_size`          | The number of sample CSV lines to use when auto detecting CSV configurations (more details below)                                                                                                                                                                                                                                                    | 1024          |
+| `sample_size`          | The number of sample CSV lines to use when auto detecting CSV configurations (more details below)                                                                                                                                                                                                                                                    | 256          |
 
 For example, the query below specifies that the CSV delimiter is `|` and also that the header row exists.
 
@@ -168,7 +168,7 @@ COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
 Then, Kùzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `\` respectively (and use
 the manually specified configurations for `HEADER` and `DELIM`).
 
-**sample_size**: By default, Kùzu will use the first 1024 lines of the CSV file to auto-detect unspecified configurations.
+**sample_size**: By default, Kùzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
 If you want to use a different number of lines, you can specify the `sample_size` parameter.
 
 For interested users, below are more details of how Kùzu automatically tries to detect these configurations.
