@@ -140,10 +140,6 @@ See the [`JSON`](/extensions/json) extension documentation for more related feat
 
 ## Ignoring erroneous rows
 
-Like for CSV files, Kùzu can skip erroneous rows when the following types of errors are encountered when importing from JSON.
-- Duplicate primary key exception (for node tables only)
-- Null primary key exception
-- Missing primary key exception (for rel tables only)
-
-However unlike with CSV files, skipping parsing errors is not supported when importing from JSON.
+Like for CSV files, Kùzu can skip rows when some types of errors are encountered when importing from JSON.
+However, now every error type that is skippable by the CSV reader can be skipped by the JSON reader.
 See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.

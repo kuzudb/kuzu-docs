@@ -193,3 +193,15 @@ You can change this configuration as follows (see the [Connection Configuration]
 ```cypher
 CALL warning_limit=1024;
 ```
+### Skippable Errors By Source
+
+While the `IGNORE_ERRORS` option can be specified for all file import sources, the set of errors that can be skipped can be different. Below is a table that shows the errors that are skippable by each source.
+
+||Parsing Errors|Casting Errors|Duplicate/Null/Missing Primary-Key errors|
+|----|----|----|----|
+|CSV|&#9745;|&#9745;|&#9745;|
+|JSON|||&#9745;|
+|Numpy|||&#9745;|
+|Parquet|||&#9745;|
+|Dataframe||||
+|Subquery|||
