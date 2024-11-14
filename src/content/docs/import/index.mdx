@@ -2,7 +2,7 @@
 title: Import data
 ---
 
-import { LinkCard } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 There are multiple ways to import data in Kùzu. The only prerequisite for inserting data
 into a database is that you first create a graph schema, i.e., the structure of your node and relationship tables.
@@ -16,66 +16,41 @@ In general, the recommended approach is to use `COPY FROM` (rather than creating
 merging nodes one by one), for larger graphs of millions of nodes and beyond.
 This is the fastest way to bulk insert data into Kùzu.
 
-## `COPY FROM` CSV
+The following sections show how to bulk import data using `COPY FROM` on various data formats.
 
-The `COPY FROM` command is used to bulk import data from a CSV file into a node or relationship table.
-See the linked card below for more information and examples.
+<CardGrid>
 
-<LinkCard
-  title="Import CSV"
-  href="/import/csv"
-/>
+    <LinkCard
+    title="Copy from CSV"
+    href="/import/csv"
+    />
 
-## `COPY FROM` Parquet
+    <LinkCard
+    title="Copy from Parquet"
+    href="/import/parquet"
+    />
 
-Similar to CSV, the `COPY FROM` command is used to bulk import data from a Parquet file into a node or relationship table.
-See the linked card below for more information and examples.
+    <LinkCard
+    title="Copy from NumPy"
+    href="/import/npy"
+    />
 
-<LinkCard
-  title="Import Parquet"
-  href="/import/parquet"
-/>
+    <LinkCard
+    title="Copy from subquery"
+    href="/import/copy-from-subquery"
+    />
 
-## `COPY FROM` NumPy
+    <LinkCard
+    title="Copy from DataFrame"
+    href="/import/copy-from-dataframe"
+    />
 
-Importing from NumPy is a specific use case that allows you to import numeric data from a NumPy file into a node table.
+    <LinkCard
+    title="Copy from JSON"
+    href="/extensions/json#copy-from"
+    />
 
-<LinkCard
-  title="Import NumPy"
-  href="/import/npy"
-/>
-
-## `COPY FROM` subquery results
-
-You can copy data from a subquery's results into a node or relationship table.
-This is useful when you need to modify existing data and re-insert it into the database, or if youw
-want to copy data from a `LOAD FROM` scan operation on another data format.
-
-<LinkCard
-  title="Import results from a subquery"
-  href="/import/copy-from-subquery"
-/>
-
-## `COPY FROM` DataFrames
-
-You can copy data from a Pandas or Polars DataFrame into a node or relationship table. This is useful 
-when you are already doing your data transformations in either Pandas or Polars DataFrames and want to
-directly insert results from their columns into a Kùzu table.
-
-<LinkCard
-  title="Import results from a DataFrame"
-  href="/import/copy-from-dataframe"
-/>
-
-## `COPY FROM` JSON
-
-Using Kùzu's [JSON extension](/extensions/json), you can copy data directly from JSON files that store
-nested data. This is useful when you have semi-structured data that you want to analyze as a graph.
-
-<LinkCard
-  title="Import from JSON file"
-  href="/extensions/json#copy-from"
-/>
+</CardGrid>
 
 ## `COPY FROM` a partial subset
 
@@ -113,10 +88,11 @@ node table being copied into. If the node table had fewer columns than the data 
 lead to a Runtime error because of a column number mismatch.
 :::
 
-## Importing large REL tables
+## Copy large relationship tables
 
-Importing large REL tables can use significant amounts of memory. If the memory used to prepare the
-imported REL table data comes close to exceeding the buffer pool size,
+Importing large relationship tables from external files (100M+ scale) can use significant amounts of memory.
+If the memory used to prepare the
+imported relationship table data comes close to exceeding the buffer pool size,
 Kùzu will spill some of this data to a `copy.tmp` file in the database directory.
 The location of this file can be customized using the
 [`spill_to_disk_tmp_file`](/cypher/configuration#configure-spill-to-disk-temporary-file) setting.
@@ -124,3 +100,108 @@ You can also disable spilling to disk by setting `spill_to_disk_tmp_file` to an 
 
 This feature is disabled by default for in-memory databases and databases using file system extensions,
 but can be enabled for these cases by setting a custom `spill_to_disk_tmp_file` path.
+
+## Ignore erroneous rows
+
+By default, your `COPY FROM` and `LOAD FROM` clauses will fail if there are any erroneous rows
+in your input file. You can instead skip these rows by setting the `IGNORE_ERRORS` parameter to `true`.
+
+When `IGNORE_ERRORS` is set to `true`, Kùzu will skip any rows that have errors and continue loading the rest of the rows.
+This has some performance costs, so if you think your input files are clean, we recommend keeping `IGNORE_ERRORS` as `false`.
+
+Here is an example of using `IGNORE_ERRORS` when [reading from a CSV file](/import/csv). This feature will work similarly when copying from other file sources (such as [JSON](/import/copy-from-json)) although the set of skippable errors may be different.
+
+Consider the following `User` table:
+
+```cypher
+CREATE NODE TABLE User (name String, age INT32, PRIMARY KEY (name));
+```
+
+Let the CSV file `user.csv` contain the following rows:
+```csv
+Alice,4
+Bob,2147483650
+```
+Note that `2147483650` does not fit into an INT32 and will cause an error.
+The following statement will load only the first row of `user.csv` into `User` table, skipping the malformed second row.
+
+```cypher
+COPY User FROM "user.csv" (header=false, ignore_errors=true);
+```
+
+To check that only one `User` node has been inserted, we can run the following query:
+```cypher
+MATCH (a:User) RETURN count(*)
+```
+Output:
+```
+┌──────────┬
+│ count(*) │
+│ UINT64   │
+├──────────┼
+│ 1        │
+└──────────┴
+```
+
+### Warnings table: Inspect skipped rows
+
+Information about malformed lines are kept in a system-level `Warnings` table.
+Warnings table is a connection-level table that accumulates warnings that are generated during COPY statements during the
+lifetime of a database connection. You can inspect the contents of this table, e.g., to see the warnings
+about the malformed rows, or clear this table.
+
+For example, to see the warning messages generated about the malformed line in our `user.csv` import above,
+you can run the [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) function after the `COPY FROM` statement:
+
+```cypher
+CALL show_warnings() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────────┬───────────┬─────────────┬────────────────────────┐
+│ query_id │ message                                                                     │ file_path │ line_number │ skipped_line_or_record │
+│ UINT64   │ STRING                                                                      │ STRING    │ UINT64      │ STRING                 │
+├──────────┼─────────────────────────────────────────────────────────────────────────────┼───────────┼─────────────┼────────────────────────┤
+│ 1        │ Conversion exception: Cast failed. Could not convert "2147483650" to INT32. │ user.csv  │ 2           │ Bob,2147483650         │
+└──────────┴─────────────────────────────────────────────────────────────────────────────┴───────────┴─────────────┴────────────────────────┘
+```
+
+At any point in time you can also call the [`CLEAR_WARNINGS`](/cypher/query-clauses/call#clear_warnings) function to clear the Warnings table.
+
+```cypher
+CALL clear_warnings();
+```
+
+After clearing the warnings, the Warnings table will be empty.
+
+```cypher
+CALL show_warnings() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────┬───────────┬─────────────┬────────────────────────┐
+│ query_id │ message │ file_path │ line_number │ skipped_line_or_record │
+│ UINT64   │ STRING  │ STRING    │ UINT64      │ STRING                 │
+├──────────┼─────────┼───────────┼─────────────┼────────────────────────┤
+└──────────┴─────────┴───────────┴─────────────┴────────────────────────┘
+```
+
+By default, Kùzu stores a limited number of warnings per connection, determined by the `warning_limit` connection configuration parameter.
+You can change this configuration as follows (see the [Connection Configuration](/cypher/configuration#connection-configuration) section for more details):
+```cypher
+CALL warning_limit=1024;
+```
+### Skippable Errors By Source
+
+While the `IGNORE_ERRORS` option can be specified for all file import sources, the set of errors that can be skipped can be different. Below is a table that shows the errors that are skippable by each source.
+
+||Parsing Errors|Casting Errors|Duplicate/Null/Missing Primary-Key errors|
+|----|----|----|----|
+|CSV|&#9745;|&#9745;|&#9745;|
+|JSON|||&#9745;|
+|Numpy|||&#9745;|
+|Parquet|||&#9745;|
+|Dataframe||||
+|Subquery|||
