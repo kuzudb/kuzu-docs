@@ -516,7 +516,7 @@ so it's not necessary to write your relationships to an intermediate file prior 
 
 ## JSON data type
 
-Using the Kùzu JSON extension, you can model store properties as JSON natively via the `JSON` logical type,
+Using the Kùzu JSON extension, you can model and store properties as JSON natively via the `JSON` logical type,
 which is interpreted as parsed as JSON, rather than as a string.
 
 The following example creates a node table `Person` with a `JSON` column `description`,
@@ -690,7 +690,7 @@ Signature: `ARRAY -> JSON ARRAY`
 
 `json_array([any, ...])`
 
-Create a JSON array from `any` number of values.
+Create an array of JSON objects from **any** number of values. Each value is converted into a JSON object.
 
 Example:
 
@@ -824,7 +824,7 @@ Signature: `JSON -> UINT32`
 
 `json_array_length(json[])`
 
-If the `json` is an JSON array, returns its length. Otherwise returns `0`.
+If the `json` is an JSON array, return its length. Otherwise return `0`.
 
 Example 1:
 
@@ -896,7 +896,7 @@ Signature: `JSON -> STRING[]`
 
 `json_keys(json)`
 
-Gives the keys of the root `json` object. If the root is not an JSON object, returns an empty `list`.
+Return keys of the root `json` object. If the root is not an JSON object, return an empty `list`.
 
 Examples:
 
@@ -918,7 +918,7 @@ Signature: `JSON -> STRING`
 
 `json_structure(json)`
 
-Returns the structure of the `json` in Kuzu type notation. Will give smaller integer widths for smaller numbers.
+Returns the structure of the `json` in Kùzu type notation. Integer widths are automatically inferred from input values.
 
 Example:
 ```cypher
