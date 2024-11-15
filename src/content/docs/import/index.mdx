@@ -93,13 +93,10 @@ lead to a Runtime error because of a column number mismatch.
 Importing large relationship tables from external files (100M+ scale) can use significant amounts of memory.
 If the memory used to prepare the
 imported relationship table data comes close to exceeding the buffer pool size,
-Kùzu will spill some of this data to a `copy.tmp` file in the database directory.
-The location of this file can be customized using the
-[`spill_to_disk_tmp_file`](/cypher/configuration#configure-spill-to-disk-temporary-file) setting.
-You can also disable spilling to disk by setting `spill_to_disk_tmp_file` to an empty string.
+Kùzu will spill some of this data to a `.tmp` file in the database directory.
+You can disable spilling to disk by `CALL spill_to_disk=false`.
 
-This feature is disabled by default for in-memory databases and databases using file system extensions,
-but can be enabled for these cases by setting a custom `spill_to_disk_tmp_file` path.
+This feature is disabled for in-memory or read-only databases.
 
 ## Ignore erroneous rows
 

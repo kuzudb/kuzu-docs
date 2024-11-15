@@ -19,8 +19,8 @@ configuration **cannot** be used with other query clauses, such as `RETURN`.
 | `PROGRESS_BAR` | enable progress bar in CLI                                                                                                                                                                                                                                                | false                  |
 | `PROGRESS_BAR_TIME` | show progress bar after time in ms                                                                                                                                                                                                                                        | 1000                   |
 | `CHECKPOINT_THRESHOLD` | the WAL size threshold in bytes at which to automatically trigger a checkpoint                                                                                                                                                                                            | 16777216 (16MB)        |
-| `WARNING_LIMIT` | Maximum number of [warnings](/import#warnings-table-inspect-skipped-rows) that can be stored in a single connection. | 8192        |
-| `SPILL_TO_DISK_TMP_FILE` | The location of the temporary file to use to store data if there is not enough memory during a copy                                                                                                                                                                       | `copy.tmp` inside the database directory |
+| `WARNING_LIMIT` | maximum number of [warnings](/import#warnings-table-inspect-skipped-rows) that can be stored in a single connection. | 8192        |
+| `SPILL_TO_DISK` | enable spilling to the temporary file if there is not enough memory during a copy. This cannot be set to TRUE under in-memory or read-only mode                                                                                                                                                                       | True |
 
 ### Database configuration
 | Option | Description | Default |
@@ -78,7 +78,7 @@ CALL warning_limit=1024;
 
 #### Configure Spill to disk temporary file
 ```cypher
-CALL spill_to_disk_tmp_file="/path/to/tmp/file";
+CALL spill_to_disk=true;
 # Disables spilling to disk
-CALL spill_to_disk_tmp_file="";
+CALL spill_to_disk=false;
 ```
