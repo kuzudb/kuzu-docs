@@ -9,38 +9,137 @@ Consider the following JSON file:
 
 ```json
 // people.json
-{
-    "id": 2,
-    "name": "Gregory"
-}
-{
-    "id": 1,
-    "name": "Bob",
-    "info": {
-        "height": 1.81,
-        "age": 71,
-        "previous_usernames": [ "the_builder", "the_minion" ]
+[
+    {
+        "p_id": "p1",
+        "name": "Gregory",
+        "info": {
+            "height": 1.81,
+            "weight": 75.5,
+            "age": 35,
+            "insurance_provider": [
+                {
+                    "type": "health",
+                    "name": "Blue Cross Blue Shield",
+                    "policy_number": "1536425345"
+                }
+            ]
+        }
+    },
+    {
+        "p_id": "p2",
+        "name": "Alicia",
+        "info": {
+            "height": 1.65,
+            "weight": 60.1,
+            "age": 28,
+            "insurance_provider": [
+                {
+                    "type": "health",
+                    "name": "Aetna",
+                    "policy_number": "9876543210"
+                }
+            ]
+        }
+    },
+    {
+        "p_id": "p3",
+        "name": "Rebecca"
     }
-}
-{
-    "id": 0,
-    "name": "Alice",
-    "registryDate": "2024-07-31",
-    "info": {
-        "height": 1.68,
-        "age": 45,
-        "previous_usernames": [ "alice123", "alice_34425" ]
-    }
-}
+]
 ```
 
-## Import to node table
+## Copy to node table
 
 The following example creates a node table `Person` and copies data from a JSON file `people.json` into it:
 
 ```sql
-CREATE NODE TABLE Person (id SERIAL, name STRING, info STRUCT(height DOUBLE, age INT64, registry_date DATE, previous_usernames STRING[]), PRIMARY KEY(id));
+CREATE NODE TABLE Person (
+    p_id STRING,
+    name STRING,
+    info STRUCT(
+        height FLOAT,
+        weight FLOAT,
+        age UINT8,
+        insurance_provider STRUCT(type STRING, name STRING, policy_number STRING)[]
+    ),
+    PRIMARY KEY(p_id)
+);
 COPY Person FROM 'people.json';
 ```
 
 See the [`JSON`](/extensions/json) extension documentation for more related features on working with JSON files.
+
+## Copy to relationship table
+
+To copy from a JSON file to a relationship table, the relationship JSON file must contain
+the `"from"` and `"to"` keys. We'll need two more JSON files to complete this example.
+
+```json
+// condition.json
+[
+    {
+        "c_id": "c1",
+        "name": "Diabetes"
+    },
+    {
+        "c_id": "c2",
+        "name": "Hypertension"
+    }
+]
+```
+
+```json
+// has_condition.json
+[
+    {
+        "from": "p1",
+        "to": "c1",
+        "since": 2019
+    },
+    {
+        "from": "p2",
+        "to": "c2",
+        "since": 2015
+    },
+    ...
+]
+```
+
+The `condition.json` file contains medical conditions that patients can have, while the `has_condition.json`
+indicates which patients have which conditions.
+
+As mentioned, to copy relationships, a `from` and `to` key are essential in the JSON file. Any other keys that
+are not `"from"` or `"to"` are treated as relationship properties.
+
+First, let's create a node table called `Condition`:
+
+```sql
+CREATE NODE TABLE Condition (
+    c_id STRING,
+    name STRING,
+    PRIMARY KEY(c_id)
+);
+```
+
+Next, let's create a relationship table `HAS_CONDITION`:
+
+```sql
+CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
+    FROM Patient TO Condition,
+    since UINT16
+)
+```
+
+The `has_condition.json` file can then directly be copied into the relationship table that was just created. 
+```sql
+COPY HAS_CONDITION FROM 'has_condition.json'
+```
+
+See the [`JSON`](/extensions/json) extension documentation for more related features on working with JSON files.
+
+## Ignoring erroneous rows
+
+Like for CSV files, Kùzu can skip rows when some types of errors are encountered when importing from JSON.
+However, now every error type that is skippable by the CSV reader can be skipped by the JSON reader.
+See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.

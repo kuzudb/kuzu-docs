@@ -377,20 +377,6 @@ types to a Kùzu `LogicalTypeID`, which will be used to infer types via Python t
 |`list`|`LIST`|
 |`dict`|`MAP`|
 
-### Nested types
-
-When defining a UDF, you can also specify nested types, though in this case, there are some differences
-from the example shown above.
-
-If the parameter is a nested type, you must also provide the children's type information. As such, with nested types,
-it's not valid to use `kuzu.Type`. Instead, a string representation of the type should be given.
-
-- A list of `INT64` would be `"INT64[]"`
-- A map from a `STRING` to a `DOUBLE` would be `"MAP(STRING, DOUBLE)"`.
-
-Note that it's also valid to define child types through Python's type annotations, e.g. `list[int]`,
-or `dict(str, float)`. It is also valid to use string representations to denote non-nested types.
-
 ## UDF
 
 Kùzu's Python API also supports the registration of User Defined Functions (UDFs),
@@ -490,3 +476,44 @@ In case you want to remove the UDF, you can call the `remove_function` method on
 # Use existing connection object
 conn.remove_function(difference)
 ```
+
+### Nested and complex types
+
+When working with UDFs, you can also specify nested or complex types, though in this case, there are some differences
+from the examples shown above. With these additional types, a string representation should be given
+for the parameters which are then manually casted to the respective Kùzu type.
+
+Some examples of where this is relevant are listed below:
+
+- A list of `INT64` would be `"INT64[]"`
+- A map from a `STRING` to a `DOUBLE` would be `"MAP(STRING, DOUBLE)"`
+- A Decimal value with 7 significant figures and 2 decimals would be `"DECIMAL(7, 2)"`
+
+Note that it's also valid to define child types through Python's type annotations, e.g. `list[int]`,
+or `dict(str, float)` for simple types.
+
+Below, we show an example to calculate the discounted price of an item using a Python UDF.
+
+```python
+def calculate_discounted_price(price: float, has_discount: bool) -> float:
+    # Assume 10% discount on all items for simplicity
+    return float(price) * 0.9 if has_discount else price
+
+# define the expected type of the UDF's parameters
+parameters = ['DECIMAL(7, 2)', kuzu.Type.BOOL]
+
+# define expected type of the UDF's returned value
+return_type = 'DECIMAL(7, 2)'
+
+# register the UDF
+conn.create_function(
+    "current_price",
+    calculate_discounted_price,
+    parameters,
+    return_type
+)
+```
+
+The second parameter is a built-in native type in Kùzu, i.e., `kuzu.Type.BOOL`. For the first parameter,
+we need to specify a string, i.e. `"DECIMAL(7,2)"` that's then parsed and used by the binder in Kùzu
+to map to the internal Decimal representation.

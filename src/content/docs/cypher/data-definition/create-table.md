@@ -38,7 +38,13 @@ To create a node table, use the `CREATE NODE TABLE` statement as shown below:
 ```sql
 CREATE NODE TABLE User (name STRING, age INT64 DEFAULT 0, reg_date DATE, PRIMARY KEY (name))
 ```
-The above statement adds a `User` table to the catalog of the system with three properties: `name`, `age`, and `reg_date`,
+
+Alternatively, you can specify the keyword `PRIMARY KEY` immediately after the column name, as follows:
+```sql
+CREATE NODE TABLE User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE)
+```
+
+The above statements adds a `User` table to the catalog of the system with three properties: `name`, `age`, and `reg_date`,
 with the primary key being set to the `name` property in this case.
 
 The name of the node table, `User`, specified above will serve as the "label" which we want to query
@@ -49,7 +55,7 @@ MATCH (a:User) RETURN *
 
 ### Primary key
 
-Kùzu requires a primary key column for node table which can be either a `STRING` or `INT64` property of the node. Kùzu will generate an index to do quick lookups on the primary key (e.g., `name` in the above example). Alternatively, you can use the [`SERIAL`](/cypher/data-types/#serial) data type to generate an auto-increment column as primary key.
+Kùzu requires a primary key column for node table which can be either a `STRING`, numeric, `DATE`, or `BLOB` property of the node. Kùzu will generate an index to do quick lookups on the primary key (e.g., `name` in the above example). Alternatively, you can use the [`SERIAL`](/cypher/data-types/#serial) data type to generate an auto-increment column as primary key.
 
 ### Default value
 

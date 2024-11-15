@@ -72,13 +72,19 @@ export default defineConfig({
                     label: 'Import data',
                     collapsed: true,
                     items: [
-                        { label: 'Overview', link: '/import' },
-                        { label: 'Copy from CSV', link: '/import/csv' },
-                        { label: 'Copy from Parquet', link: '/import/parquet' },
-                        { label: 'Copy from NumPy', link: '/import/npy' },
-                        { label: 'Copy from subquery', link: '/import/copy-from-subquery'},
-                        { label: 'Copy from DataFrames', link: '/import/copy-from-dataframe'},
-                        { label: 'Copy from JSON', link: '/import/copy-from-json'},
+                        {
+                            label: 'Copy from files/formats',
+                            items: [
+                                { label: 'Overview', link: '/import' },
+                                { label: 'Copy from CSV', link: '/import/csv' },
+                                { label: 'Copy from Parquet', link: '/import/parquet' },
+                                { label: 'Copy from NumPy', link: '/import/npy' },
+                                { label: 'Copy from DataFrame', link: '/import/copy-from-dataframe' },
+                                { label: 'Copy from subquery', link: '/import/copy-from-subquery' },
+                                { label: 'Copy from JSON', link: '/import/copy-from-json' },
+                            ]
+                        },
+                        { label: 'Merge', link: '/import/merge' },
                     ]
                 },
                 {
@@ -142,7 +148,7 @@ export default defineConfig({
                         { label: 'Go', link: '/client-apis/go' },
                         { label: 'C++', link: '/client-apis/cpp' },
                         { label: 'C', link: '/client-apis/c' },
-                        { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}}, 
+                        { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}},
                     ],
                 },
                 { label: 'Connections & concurrency', link: '/concurrency' },
@@ -150,7 +156,7 @@ export default defineConfig({
                     label: 'Tutorials',
                     collapsed: true,
                     items: [
-                        { 
+                        {
                             label: 'Learning resources',
                             link: '/tutorials#python',
                         }
@@ -164,7 +170,7 @@ export default defineConfig({
                         { label: 'Performance debugging', link: '/developer-guide/performance-debugging' },
                         { label: 'Testing framework', link: '/developer-guide/testing-framework' },
                         { label: 'Join order hints', link: '/developer-guide/join-order-hint' },
-                        { 
+                        {
                             label: 'Database internals',
                             items: [
                                 { label: 'Overview', link: '/developer-guide/database-internal' },

@@ -89,3 +89,7 @@ Alternatively, you can just specify a list of files to be loaded.
 ```cypher
 COPY User FROM ["User0.parquet", "User1.parquet", "User2.parquet"]
 ```
+
+## Ignore erroneous rows
+
+See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.

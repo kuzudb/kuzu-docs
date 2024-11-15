@@ -40,3 +40,7 @@ COPY Paper FROM ("node_id.npy", "node_feat_f32.npy", "node_year.npy", "node_labe
 
 As stated before, the number of `*.npy` files must equal the number of columns, and must also be
 specified in the same order as they are defined in the DDL.
+
+## Ignore erroneous rows
+
+See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.

@@ -14,6 +14,10 @@ test file comprises two key sections: the test header and test body. In the head
 you must specify the dataset to be used and other optional
 parameters such as `BUFFER_POOL_SIZE`.
 
+:::caution[Note]
+Avoid using the character `-` in test file names. In the Google Test Framework, `-` has a special meaning that can inadvertently exclude a test case, leading to the test file being silently skipped. To prevent this issue, our `e2e_test` framework will throw an exception if a test file name contains `-`.
+:::
+
 Here is a basic example of a test:
 
 ```
@@ -386,6 +390,24 @@ In the example above:
 `-BATCH_STATEMENTS` is followed by `<FILE>:` , indicating that you're specifying a file to be used.
 The file must be created inside `test/statements/<name-of-the-file.cypher>`. By doing so, the testing
 framework reads the query statements from the file and execute each query statement.
+
+### Random Split Files to Copy
+
+You can use `-MULTI_COPY_RANDOM` to randomly split a copy-able source into multiple csv files, which will then each be copied to a specified table.
+
+```
+-MULTI_COPY_RANDOM 5 test "${KUZU_ROOT_DIRECTORY}/dataset/large-serial/serialtable_merged.csv"
+```
+
+In the example above:
+
+`-MULTI_COPY_RANDOM` is followed by an integer, being `5`, indicating the number of fragments the source should be split into. The next parameter is the table to copy into, here being `test`. The last parameter is a string that is the exact string used if the source were to be used in a `COPY FROM` statement (including the quotes and any specifications such as `delim` that follow).
+
+Optionally, a seed can be specified after the table name to stably split the source or to reproduce a previous result. The seed is made up of two unsigned 64-bit integers. So, formally, the syntax from `-MULTI_COPY_RANDOM` is:
+
+```
+-MULTI_COPY_RANDOM <int> <string> [ SEED <int> <int> ] <string>
+```
 
 ## Examples
 
