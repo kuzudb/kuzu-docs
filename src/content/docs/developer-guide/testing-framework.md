@@ -14,6 +14,10 @@ test file comprises two key sections: the test header and test body. In the head
 you must specify the dataset to be used and other optional
 parameters such as `BUFFER_POOL_SIZE`.
 
+:::caution[Note]
+Avoid using the character `-` in test file names. In the Google Test Framework, `-` has a special meaning that can inadvertently exclude a test case, leading to the test file being silently skipped. To prevent this issue, our `e2e_test` framework will throw an exception if a test file name contains `-`.
+:::
+
 Here is a basic example of a test:
 
 ```
