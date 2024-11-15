@@ -96,19 +96,27 @@ imported relationship table data comes close to exceeding the buffer pool size,
 Kùzu will spill some of this data to a `.tmp` file in the database directory.
 You can disable spilling to disk by `CALL spill_to_disk=false`.
 
+
 This feature is disabled for in-memory or read-only databases.
 
 ## Ignore erroneous rows
 
-By default, your `COPY FROM` and `LOAD FROM` clauses will fail if there are any erroneous rows
-in your input file. You can instead skip these rows by setting the `IGNORE_ERRORS` parameter to `true`.
+By default, your `COPY FROM` and `LOAD FROM` clauses will fail if there are any erroneous rows/tuples
+in your input file.
+You can instead skip these rows by setting the `IGNORE_ERRORS` parameter to `true`.
+By default this parameter is set to `false`.
+There can be several reasons for errors when scanning a row/tuple from
+a file, such as the row/tuple being malformed (e.g., in a CSV file) or that the row leads
+to duplicate primary keys if the clause was COPY FROM. We support skipping over different types
+of errors for different files, which are documented [below](#skippable-errors-by-source).
 
+:::caution[Note]
 When `IGNORE_ERRORS` is set to `true`, Kùzu will skip any rows that have errors and continue loading the rest of the rows.
 This has some performance costs, so if you think your input files are clean, we recommend keeping `IGNORE_ERRORS` as `false`.
+:::
 
-Here is an example of using `IGNORE_ERRORS` when [reading from a CSV file](/import/csv). This feature will work similarly when copying from other file sources (such as [JSON](/import/copy-from-json)) although the set of skippable errors may be different.
-
-Consider the following `User` table:
+Here is an example of using `IGNORE_ERRORS` when [reading from a CSV file](/import/csv).
+Consider the following `User` node table:
 
 ```cypher
 CREATE NODE TABLE User (name String, age INT32, PRIMARY KEY (name));
@@ -140,15 +148,17 @@ Output:
 └──────────┴
 ```
 
-### Warnings table: Inspect skipped rows
+### Warnings table: Inspecting skipped rows
 
-Information about malformed lines are kept in a system-level `Warnings` table.
-Warnings table is a connection-level table that accumulates warnings that are generated during COPY statements during the
+Information about skipped rows are kept in a system-level `Warnings` table.
+Warnings table is a connection-level table that accumulates warnings that are
+generated due to erroneous and skipped rows during all `COPY FROM` and `LOAD FROM`
+executions during the
 lifetime of a database connection. You can inspect the contents of this table, e.g., to see the warnings
 about the malformed rows, or clear this table.
 
-For example, to see the warning messages generated about the malformed line in our `user.csv` import above,
-you can run the [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) function after the `COPY FROM` statement:
+For example, to see the warning messages generated about the malformed line when importing `user.csv` using `COPY FROM` above,
+you can run the [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) function:
 
 ```cypher
 CALL show_warnings() RETURN *;
@@ -192,13 +202,12 @@ CALL warning_limit=1024;
 ```
 ### Skippable Errors By Source
 
-While the `IGNORE_ERRORS` option can be specified for all file import sources, the set of errors that can be skipped can be different. Below is a table that shows the errors that are skippable by each source.
+Currently `IGNORE_ERRORS` option works when scanning files (and not in-memory data frames or when running
+`COPY/LOAD FROM` on sub-queries). For different files, the errors that can be skipped can be different.
+If the error is not skippable in a file format, `COPY/LOAD FROM` will instead error and fail.
+Below is a table that shows the errors that are skippable by each source.
 
 ||Parsing Errors|Casting Errors|Duplicate/Null/Missing Primary-Key errors|
 |----|----|----|----|
-|CSV|&#9745;|&#9745;|&#9745;|
-|JSON|||&#9745;|
-|Numpy|||&#9745;|
-|Parquet|||&#9745;|
-|Dataframe||||
-|Subquery|||
+|CSV| X | X | X |
+|JSON/Numpy/Parquet|||X|

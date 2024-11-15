@@ -8,17 +8,17 @@ with other query clauses, such as `RETURN` (see below for many examples) and is
 different from the standalone [`CALL` statement](/cypher/configuration) used for changing configuration.
 The following tables lists the built-in schema functions you can use with the `CALL` clause:
 
-| Function | Description |
-| ----------- | --------------- |
-| `CURRENT_SETTING('setting')` | returns the value of the given setting |
-| `DB_VERSION()` | returns the version of Kùzu |
-| `SHOW_TABLES()` | returns the name, type, comment of all tables in the database |
-| `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database |
-| `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases |
-| `SHOW_FUNCTIONS()` | returns all registered functions in the database |
-| `SHOW_WARNINGS()` | returns warnings encountered during the current connection |
-| `CLEAR_WARNINGS()` | clears all warnings cached in the warning table |
-| `TABLE_INFO('tableName')` | returns metadata information of the given table |
+| Function | Description                                                                                  |
+| ----------- |----------------------------------------------------------------------------------------------|
+| `CURRENT_SETTING('setting')` | returns the value of the given setting                                                       |
+| `DB_VERSION()` | returns the version of Kùzu                                                                  |
+| `SHOW_TABLES()` | returns the name, type, comment of all tables in the database                                |
+| `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database             |
+| `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases                                             |
+| `SHOW_FUNCTIONS()` | returns all registered functions in the database                                             |
+| `SHOW_WARNINGS()` | returns the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows) |
+| `CLEAR_WARNINGS()` | clears all warnings in the [Warnings Table](/import#warnings-table-inspecting-skipped-rows)  |
+| `TABLE_INFO('tableName')` | returns metadata information of the given table                                              |
 
 ### TABLE_INFO
 
@@ -162,7 +162,13 @@ Output:
 
 ### SHOW_WARNINGS
 
-`SHOW_WARNINGS` returns the warnings encountered during the current connection when loading from files. Currently only the warnings related to `COPY FROM` and `LOAD FROM` statements are reported. They will only be reported if the [`IGNORE_ERRORS`](/import#ignore-erroneous-rows) setting is enabled. The number of warnings that can be stored per connection is limited; after the warning limit is hit, any warnings encountered will not be stored. See [configuration](/cypher/configuration#configure-warning-limit) for more details on how to set the warning limit.
+`SHOW_WARNINGS` returns the contents of the
+[Warnings Table](/import#warnings-table-inspecting-skipped-rows). This is a feature
+related to [ignoring errors](/import#ignore-erroneous-rows) when running `COPY/LOAD FROM` statements to scan files. 
+They will only be reported if the [`IGNORE_ERRORS`](/import#ignore-erroneous-rows) setting is enabled. 
+Note that the number of warnings that are stored is limited by the `warning_limit` parameter.
+See [configuration](/cypher/configuration#configure-warning-limit) for more details on how to set the warning limit.
+After `warning_limit` many warnings are stored, any new warnings generated will not be stored. 
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
@@ -186,8 +192,8 @@ Output:
 ```
 
 ### CLEAR_WARNINGS
-
-Over the lifetime of a connection, warnings accumulate in the warning table (which can be queried with [`SHOW_WARNINGS`](#show_warnings)). If you are no longer interested in the accumulated warnings, the table can be cleared with `CLEAR_WARNINGS`. This function has no output.
+If you would like to clear the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows), you can run the `CLEAR_WARNINGS` function. 
+This function has no output.
 
 ```cypher
 CALL clear_warnings();
