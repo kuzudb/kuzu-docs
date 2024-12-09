@@ -49,6 +49,19 @@ LOAD FROM '/tmp/student'(file_format='delta') RETURN *;
 ```
 Note: The `file_format` parameter is used to explicitly specify the file format of the given file instead of letting kuzu sniff the file format at runtime. When scanning from the DELTA table, `file_format` option must be provided since kuzu is not capable of sniffing delta tables.
 
+Result:
+```cypher
+kuzu> LOAD FROM '/tmp/student'(file_format='delta') RETURN *;
+┌────────┬───────┐
+│ name   │ ID    │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 0     │
+│ Bob    │ 3     │
+│ Carol  │ 7     │
+└────────┴───────┘
+```
+
 ### Copy the DELTA table into a node table
 You can then use a `COPY FROM` statement to directly copy the contents of the DELTA table into a node table.
 
@@ -57,6 +70,25 @@ CREATE NODE TABLE student (name STRING, ID INT64, PRIMARY KEY(ID));
 COPY student FROM '/tmp/student' (file_format='delta')
 ```
 Note: The `file_format` parameter is also needed in the copy from clause as mentioned in the `LOAD FROM` section.
+
+Result:
+```cypher
+kuzu> CREATE NODE TABLE student (name STRING, ID INT64, PRIMARY KEY(ID));
+┌─────────────────────────────────┐
+│ result                          │
+│ STRING                          │
+├─────────────────────────────────┤
+│ Table student has been created. │
+└─────────────────────────────────┘
+
+kuzu> COPY student FROM '/tmp/student' (file_format='delta');
+┌─────────────────────────────────────────────────┐
+│ result                                          │
+│ STRING                                          │
+├─────────────────────────────────────────────────┤
+│ 3 tuples have been copied to the student table. │
+└─────────────────────────────────────────────────┘
+```
 
 ### Access the DELTA table hosted on S3
 Kùzu also supports scanning/copying a DELTA table hosted on S3 in the same way as from a local file system.
