@@ -1,0 +1,122 @@
+---
+title: "iceberg extension"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Usage
+
+The `iceberg` extension adds support for `iceberg` objects, currently including scanning from [Apache Iceberg format](https://iceberg.apache.org/).
+
+The iceberg functionality is not available by default, so you would first need to install the iceberg
+extension by running the following commands:
+
+```sql
+INSTALL iceberg;
+LOAD EXTENSION iceberg;
+```
+
+### Example dataset
+
+To test the examples, download the [iceberg_data.zip](TODO: upload iceberg sample data for download) file and unzip it.
+
+## Usage
+
+### Common Parameters
+
+```
+┌───────────────────────────────┬───────────┬──────────────┬──────────────────────────────────────────────────────────────────────────────┐
+│ Parameter                     │ Type      │ Default      │ Description                                                                  │
+├───────────────────────────────┼───────────┼──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│ allow_moved_paths             │ BOOLEAN   │ false        │ Allows scanning Iceberg tables that are moved                                │
+│ metadata_compression_codec    │ STRING    │ ''           │ Treats metadata files as when set to 'gzip'                                  │
+│ version                       │ STRING    │ '?'          │ Provides an explicit version string, hint file or guessing                   │
+│ version_name_format           │ STRING    │ 'v%s%s.metadata.json,%s%s.metadata.json' │ Controls how versions are converted to metadata file names │
+└───────────────────────────────┴───────────┴──────────────┴──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Scan the Iceberg file
+
+```cypher
+LOAD FROM 'kuzu/extension/iceberg/test/iceberg_tables/person_table' (file_format='iceberg', allow_moved_paths=true) RETURN *;
+```
+```
+┌─────────┬───────┬──────────────┬─────────────────────────────┐
+│ Name    │ Age   │ Balance      │ Date of Birth               │
+├─────────┼───────┼──────────────┼─────────────────────────────┤
+│ Alice   │ 25    │ 1000.500000  │ 1999-01-15 05:00:00+00      │
+│ Bob     │ 30    │ 1500.750000  │ 1994-06-25 04:00:00+00      │
+│ Charlie │ 35    │ 2000.000000  │ 1988-12-05 05:00:00+00      │
+│ Diana   │ 40    │ 2500.300000  │ 1983-07-20 04:00:00+00      │
+│ Ethan   │ 28    │ 1800.600000  │ 1996-03-10 05:00:00+00      │
+└─────────┴───────┴──────────────┴─────────────────────────────┘
+
+```
+
+:::note[Note]
+The `allow_moved_paths` option ensures that some path resolution is performed, which allows scanning Iceberg tables that are moved.
+:::
+
+This extension can be paired with the httpfs extension to access Iceberg tables in object stores such as S3.
+
+```
+LOAD FROM 's3://kuzu-test/iceberg' (file_format='iceberg', allow_moved_paths=true) RETURN *;
+```
+
+### Access Iceberg Metadata
+
+```cypher
+CALL ICEBERG_METADATA('kuzu/extension/iceberg/test/iceberg_tables/lineitem_iceberg', allow_moved_paths := true) return *;
+```
+
+```
+┌──────────────────────────┬──────────────────────────┬──────────────────┬─────────┬──────────┬──────────────────────────┬─────────────┬──────────────┐
+│ manifest_path            │ manifest_sequence_number │ manifest_content │ status  │ content  │ file_path                │ file_format │ record_count │
+│ STRING                   │ INT64                    │ STRING           │ STRING  │ STRING   │ STRING                   │ STRING      │ INT64        │
+├──────────────────────────┼──────────────────────────┼──────────────────┼─────────┼──────────┼──────────────────────────┼─────────────┼──────────────┤
+│ lineitem_iceberg/meta... │ 2                        │ DATA             │ ADDED   │ EXISTING │ lineitem_iceberg/data... │ PARQUET     │ 51793        │
+│ lineitem_iceberg/meta... │ 2                        │ DATA             │ DELETED │ EXISTING │ lineitem_iceberg/data... │ PARQUET     │ 60175        │
+└──────────────────────────┴──────────────────────────┴──────────────────┴─────────┴──────────┴──────────────────────────┴─────────────┴──────────────┘
+
+```
+
+:::note[Note]
+Be sure to use `:=` operator to set the variable in `CALL` function, as `=` operator in `CALL` function has a different meaning of comparison.
+:::
+
+### Visualizing Snapshots
+
+```cypher
+CALL ICEBERG_SNAPSHOTS('kuzu/extension/iceberg/test/iceberg_tables/lineitem_iceberg') return *;
+```
+
+```
+┌─────────────────┬─────────────────────┬─────────────────────────┬───────────────────────────────────────┐
+│ sequence_number │ snapshot_id         │ timestamp_ms            │ manifest_list                         │
+│ UINT64          │ UINT64              │ TIMESTAMP               │ STRING                                │
+├─────────────────┼─────────────────────┼─────────────────────────┼───────────────────────────────────────┤
+│ 1               │ 3776207205136740581 │ 2023-02-15 15:07:54.504 │ lineitem_iceberg/metadata/snap-3776207205136740581-1-cf3d0be5-cf70-453d-ad8f-48fdc412e608.avro │
+│ 2               │ 7635660646343998149 │ 2023-02-15 15:08:14.73  │ lineitem_iceberg/metadata/snap-7635660646343998149-1-10eaca8a-1e1c-421e-ad6d-b232e5ee23d3.avro │
+└─────────────────┴─────────────────────┴─────────────────────────┴───────────────────────────────────────┘
+
+```
+
+
+### Selecting Metadata versions
+By default, the `iceberg` extension will look for a `version-hint.text` file to identify the proper metadata version to use. 
+This can be overridden by explicitly supplying a version number via the `version` parameter to iceberg table functions. 
+By default, this will look for both `v{version}.metadata.json` and `{version}.metadata.json` files, or `v{version}.gz.metadata.json` and `{version}.gz.metadata.json` when `metadata_compression_codec = 'gzip'` is specified. 
+Other compression codecs are not supported.
+
+Additionally, if any `.text` or `.txt` file is provided as a version, it is opened and treated as a version-hint file. 
+The `iceberg` extension will open this file and use the entire contents of the file as a provided version number.
+```cypher
+CALL ICEBERG_SNAPSHOTS('kuzu/extension/iceberg/test/iceberg_tables/lineitem_iceberg', version := '2') return *;
+```
+
+```cypher
+CALL ICEBERG_SNAPSHOTS('/kuzu/extension/iceberg/test/iceberg_tables/lineitem_iceberg_gz', metadata_compression_codec := 'gzip') return *;
+```
+
+### Limitations
+Writing (i.e., exporting to) Iceberg files is currently not supported.
