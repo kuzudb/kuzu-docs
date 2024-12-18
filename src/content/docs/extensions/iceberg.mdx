@@ -41,14 +41,12 @@ CALL ICEBERG_SNAPSHOTS('iceberg_table_path') RETURN *;
 
 ### Common Options
 
-```
 │ Parameter                     │ Type      │ Default      │ Description                                                                     │
 |-------------------------------|-----------|--------------|---------------------------------------------------------------------------------|
 │ allow_moved_paths             │ BOOLEAN   │ false        │ Allows scanning Iceberg tables that are not located in their original directory │
 │ metadata_compression_codec    │ STRING    │ ''           │ Specifies the compression code used for the metadata files                      │
 │ version                       │ STRING    │ '?'          │ Provides an explicit Iceberg version number, if not provided, the Iceberg version number would be determined from `version-hint.txt`│
 │ version_name_format           │ STRING    │ 'v%s%s.metadata.json,%s%s.metadata.json' │ Provides the regular expression to find the correct metadata data file │
-```
 
 ### Scan the Iceberg table
 
