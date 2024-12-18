@@ -42,14 +42,12 @@ CALL ICEBERG_SNAPSHOTS('iceberg_table_path') RETURN *;
 ### Common Options
 
 ```
-┌───────────────────────────────┬───────────┬──────────────┬──────────────────────────────────────────────────────────────────────────────┐
-│ Parameter                     │ Type      │ Default      │ Description                                                                  │
-├───────────────────────────────┼───────────┼──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│ Parameter                     │ Type      │ Default      │ Description                                                                     │
+|-------------------------------|-----------|--------------|---------------------------------------------------------------------------------|
 │ allow_moved_paths             │ BOOLEAN   │ false        │ Allows scanning Iceberg tables that are not located in their original directory │
-│ metadata_compression_codec    │ STRING    │ ''           │ Specifies the compression code used for the metadata files                   │
+│ metadata_compression_codec    │ STRING    │ ''           │ Specifies the compression code used for the metadata files                      │
 │ version                       │ STRING    │ '?'          │ Provides an explicit Iceberg version number, if not provided, the Iceberg version number would be determined from `version-hint.txt`│
 │ version_name_format           │ STRING    │ 'v%s%s.metadata.json,%s%s.metadata.json' │ Provides the regular expression to find the correct metadata data file │
-└───────────────────────────────┴───────────┴──────────────┴──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Scan the Iceberg table
@@ -98,22 +96,21 @@ The `file_format` parameter is also needed in the copy from clause as mentioned 
 Result:
 ```cypher
 kuzu> CREATE NODE TABLE university (name STRING, rank INT64, fund double, PRIMARY KEY(name));
-┌─────────────────────────────────┐
-│ result                          │
-│ STRING                          │
-├─────────────────────────────────┤
+┌─────────────────────────────────────┐
+│ result                              │
+│ STRING                              │
+├─────────────────────────────────────┤
 │ Table university has been created.  │
-└─────────────────────────────────┘
+└─────────────────────────────────────┘
 
 kuzu> COPY university FROM 'kuzu/extension/iceberg/test/iceberg_tables/university' (file_format='iceberg', allow_moved_paths=true);
-┌─────────────────────────────────────────────────┐
-│ result                                          │
-│ STRING                                          │
-├─────────────────────────────────────────────────┤
+┌─────────────────────────────────────────────────────┐
+│ result                                              │
+│ STRING                                              │
+├─────────────────────────────────────────────────────┤
 │ 6 tuples have been copied to the university table.  │
-└─────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────┘
 ```
-
 
 ### Access the Iceberg table hosted on S3
 Kùzu also supports scanning/copying a Iceberg table hosted on S3 in the same way as from a local file system.
@@ -144,7 +141,7 @@ Reading from S3 is as simple as reading from regular files:
 LOAD FROM 's3://kuzu-test/iceberg' (file_format='iceberg', allow_moved_paths=true) RETURN *;
 ```
 
-### Selecting Metadata Versions
+### Select Metadata Versions
 By default, the `iceberg` extension will look for a `version-hint.text` file to identify the proper metadata version to use. 
 This can be overridden by explicitly supplying a version number via the `version` parameter to iceberg table functions.
 
@@ -153,7 +150,7 @@ Example:
 LOAD FROM 'kuzu/extension/iceberg/test/iceberg_tables/lineitem_iceberg' (file_format='iceberg', allow_moved_paths=true, version='2') return *;
 ```
 
-### Changing Metadata Compression Code
+### Change Metadata Compression Code
 By default, this extension will look for both `v{version}.metadata.json` and `{version}.metadata.json` files for metadata, or `v{version}.gz.metadata.json` and `{version}.gz.metadata.json` when `metadata_compression_codec = 'gzip'` is specified. 
 Other compression codecs are NOT supported. 
 
@@ -162,7 +159,7 @@ Example:
 LOAD FROM 'kuzu/extension/iceberg/test/iceberg_tables/lineitem_iceberg_gz' (file_format='iceberg', allow_moved_paths=true, metadata_compression_codec = 'gzip') return *;
 ```
 
-### Changing Metadata Name Format
+### Change Metadata Name Format
 To change the metadata naming format, use the `version_name_format` option, for example, if your metadata is named as `rev-2.metadata.json`, set this option as `version_name_format = 'rev-%s.metadata.json` to make sure the metadata file can be found successfully.
 
 Example:
@@ -194,7 +191,7 @@ CALL ICEBERG_METADATA('kuzu/extension/iceberg/test/iceberg_tables/lineitem_icebe
 
 ```
 
-### List Snapshots
+### List Iceberg Snapshots
 The `ICEBERG_SNAPSHOTS` function provides  insights into the snapshot history of an Iceberg table.
 Snapshots are the core of Iceberg’s versioning system, allowing you to track, query, and manage changes to your table over time.
 
@@ -209,13 +206,13 @@ CALL ICEBERG_SNAPSHOTS('kuzu/extension/iceberg/test/iceberg_tables/lineitem_iceb
 ```
 
 ```
-┌─────────────────┬─────────────────────┬─────────────────────────┬───────────────────────────────────────┐
-│ sequence_number │ snapshot_id         │ timestamp_ms            │ manifest_list                         │
-│ UINT64          │ UINT64              │ TIMESTAMP               │ STRING                                │
-├─────────────────┼─────────────────────┼─────────────────────────┼───────────────────────────────────────┤
+┌─────────────────┬─────────────────────┬─────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ sequence_number │ snapshot_id         │ timestamp_ms            │ manifest_list                                                                                  │
+│ UINT64          │ UINT64              │ TIMESTAMP               │ STRING                                                                                         │
+├─────────────────┼─────────────────────┼─────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 1               │ 3776207205136740581 │ 2023-02-15 15:07:54.504 │ lineitem_iceberg/metadata/snap-3776207205136740581-1-cf3d0be5-cf70-453d-ad8f-48fdc412e608.avro │
 │ 2               │ 7635660646343998149 │ 2023-02-15 15:08:14.73  │ lineitem_iceberg/metadata/snap-7635660646343998149-1-10eaca8a-1e1c-421e-ad6d-b232e5ee23d3.avro │
-└─────────────────┴─────────────────────┴─────────────────────────┴───────────────────────────────────────┘
+└─────────────────┴─────────────────────┴─────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────┘
 
 ```
 
