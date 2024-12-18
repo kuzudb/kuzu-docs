@@ -39,7 +39,7 @@ CALL ICEBERG_METADATA('iceberg_table_path') RETURN *;
 CALL ICEBERG_SNAPSHOTS('iceberg_table_path') RETURN *;
 ```
 
-### Common Options
+### Optional parameters
 
 | Parameter                     | Type      | Default      | Description                                                                     |
 |-------------------------------|-----------|--------------|---------------------------------------------------------------------------------|
@@ -59,7 +59,7 @@ To scan an iceberg table, you can do the following:
 LOAD FROM 'kuzu/extension/iceberg/test/iceberg_tables/university' (file_format='iceberg', allow_moved_paths=true) RETURN *;
 ```
 
-Note: The `file_format` parameter is used to explicitly specify the file format of the given file instead of letting kuzu sniff the file format at runtime. When scanning from the Iceberg table, 
+Note: The `file_format` parameter is used to explicitly specify the file format of the given file instead of letting Kùzu autodetect the file format at runtime. When scanning from the Iceberg table, 
 `file_format` option must be provided since kuzu is not capable of sniffing iceberg tables.
 
 Result:
@@ -215,6 +215,6 @@ CALL ICEBERG_SNAPSHOTS('kuzu/extension/iceberg/test/iceberg_tables/lineitem_iceb
 ```
 
 ### Limitations
-Writing (i.e., exporting to) Iceberg files is currently not supported.
+ - Writing (i.e., exporting to) Iceberg files is currently not supported.
 
-The current version of Iceberg Extension doesn't support structs inside iceberg table.
+- The current version of Iceberg Extension doesn't support structs inside iceberg table.
