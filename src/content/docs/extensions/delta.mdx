@@ -129,3 +129,6 @@ RETURN *;
 CREATE NODE TABLE student (name STRING, ID INT64, PRIMARY KEY(ID));
 COPY student FROM 's3://kuzu-sample/student-delta' (file_format='delta')
 ```
+
+### Limitations
+Writing (i.e., exporting to) Delta lake is currently not supported.
