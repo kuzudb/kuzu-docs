@@ -20,8 +20,6 @@ LOAD EXTENSION iceberg;
 
 To test the examples, download the [iceberg_data.zip](TODO: upload iceberg sample data for download) file and unzip it.
 
-## Usage
-
 ### Common Functions
 
 #### Scan the Iceberg table
@@ -62,23 +60,25 @@ move the data into a Kùzu table.
 To scan an iceberg table, you can do the following:
 
 ```cypher
-LOAD FROM 'kuzu/extension/iceberg/test/iceberg_tables/person_table' (file_format='iceberg', allow_moved_paths=true) RETURN *;
+LOAD FROM 'kuzu/extension/iceberg/test/iceberg_tables/university' (file_format='iceberg', allow_moved_paths=true) RETURN *;
 ```
 
 Note: The `file_format` parameter is used to explicitly specify the file format of the given file instead of letting kuzu sniff the file format at runtime. When scanning from the Iceberg table, 
 `file_format` option must be provided since kuzu is not capable of sniffing iceberg tables.
 
 Result:
-```
-┌─────────┬───────┬──────────────┬─────────────────────────────┐
-│ Name    │ Age   │ Balance      │ Date of Birth               │
-├─────────┼───────┼──────────────┼─────────────────────────────┤
-│ Alice   │ 25    │ 1000.500000  │ 1999-01-15 05:00:00+00      │
-│ Bob     │ 30    │ 1500.750000  │ 1994-06-25 04:00:00+00      │
-│ Charlie │ 35    │ 2000.000000  │ 1988-12-05 05:00:00+00      │
-│ Diana   │ 40    │ 2500.300000  │ 1983-07-20 04:00:00+00      │
-│ Ethan   │ 28    │ 1800.600000  │ 1996-03-10 05:00:00+00      │
-└─────────┴───────┴──────────────┴─────────────────────────────┘
+```cypher
+kuzu> LOAD FROM 'kuzu/extension/iceberg/test/iceberg_tables/university' (file_format='iceberg', allow_moved_paths=true) RETURN *;
+┌────────────┬──────┬──────────┐
+| University | Rank | Funding  |
+├────────────┼──────┼──────────┤
+| Stanford   | 2    | 250.300  |
+| Yale       | 6    | 190.700  |
+| Harvard    | 1    | 210.500  |
+| Cambridge  | 5    | 280.200  |
+| MIT        | 3    | 170.000  |
+| Oxford     | 4    | 300.000  |
+└────────────┴──────┴──────────┘
 
 ```
 :::note[Note]
@@ -89,28 +89,28 @@ The `allow_moved_paths` option ensures that some path resolution is performed, w
 You can then use a `COPY FROM` statement to directly copy the contents of the Iceberg table into a node table.
 
 ```cypher
-CREATE NODE TABLE people (name STRING, age INT64, PRIMARY KEY(age));
-COPY student FROM 'kuzu/extension/iceberg/test/iceberg_tables/person_table' (file_format='iceberg')
+CREATE NODE TABLE university (name STRING, age INT64, PRIMARY KEY(age));
+COPY student FROM 'kuzu/extension/iceberg/test/iceberg_tables/person_table' (file_format='iceberg', allow_moved_paths=true)
 ```
 :::note[Note]
 The `file_format` parameter is also needed in the copy from clause as mentioned in the `LOAD FROM` section.
 :::
 Result:
 ```cypher
-kuzu> CREATE NODE TABLE people (name STRING, age INT64, PRIMARY KEY(age));
+kuzu> CREATE NODE TABLE university (name STRING, rank INT64, fund double, PRIMARY KEY(name));
 ┌─────────────────────────────────┐
 │ result                          │
 │ STRING                          │
 ├─────────────────────────────────┤
-│ Table people has been created.  │
+│ Table university has been created.  │
 └─────────────────────────────────┘
 
-kuzu> COPY student FROM 'kuzu/extension/iceberg/test/iceberg_tables/people_table' (file_format='iceberg');
+kuzu> COPY university FROM 'kuzu/extension/iceberg/test/iceberg_tables/university' (file_format='iceberg', allow_moved_paths=true);
 ┌─────────────────────────────────────────────────┐
 │ result                                          │
 │ STRING                                          │
 ├─────────────────────────────────────────────────┤
-│ 3 tuples have been copied to the people table.  │
+│ 6 tuples have been copied to the university table.  │
 └─────────────────────────────────────────────────┘
 ```
 
