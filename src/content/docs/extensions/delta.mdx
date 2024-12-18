@@ -23,6 +23,11 @@ LOAD EXTENSION DELTA;
 
 Let's look at an example dataset to demonstrate how the DELTA extension can be used.
 Firstly, let's create a DELTA table containing student information using python and save the delta table in the `'/tmp/student'` directory:
+Before running the script, make sure the deltalake package is properly installed by:
+```shell
+pip3 install deltalake
+```
+
 ```python
 import pandas as pd
 from deltalake import DeltaTable, write_deltalake
