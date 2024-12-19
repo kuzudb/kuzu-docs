@@ -2,14 +2,11 @@
 title: "Delta Lake"
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
-
 ## Usage
 
-The `delta` extension adds support for scanning/copying from the [`Delta Lake open-source storage format`](https://delta.io/). Using this extension, you can
-interact with Delta tables using [`LOAD FROM`](/cypher/query-clauses/load-from),
-[`COPY FROM`](/import/copy-from-query-results), similar to how you would
-with CSV files.
+The `delta` extension adds support for scanning/copying from the [`Delta Lake open-source storage format`](https://delta.io/).
+Delta Lake is an open-source storage framework that enables building a format agnostic Lakehouse architecture.
+Using this extension, you can interact with Delta tables from within Kùzu.
 
 The Delta functionality is not available by default, so you would first need to install the `DELTA`
 extension by running the following commands:
