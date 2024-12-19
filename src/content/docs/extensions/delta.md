@@ -137,7 +137,7 @@ CREATE NODE TABLE student (name STRING, ID INT64, PRIMARY KEY(ID));
 COPY student FROM 's3://kuzu-sample/student-delta' (file_format='delta')
 ```
 
-### Limitations
+## Limitations
 
 When using the Delta Lake extension in Kùzu, keep the following limitations in mind.
 
