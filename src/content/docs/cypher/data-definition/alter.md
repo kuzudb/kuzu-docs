@@ -29,6 +29,20 @@ You can also specify the default value of the added column.
 ALTER TABLE User ADD grade INT64 DEFAULT 40;
 ```
 
+## Add column if not exists
+
+If the given column name already exists in the table, Kùzu throws an exception when you try to create it.
+To avoid the exception being raised, use the `IF NOT EXISTS` clause. This tells Kùzu to do nothing when
+the given column name already exists in the table.
+
+Example:
+```sql
+alter table User add if not exists grade int64;
+```
+This query tells Kùzu to only create the `grade` column if it doesn't exist.
+
+The same applies to relationship tables.
+
 ## Drop column
 
 `DROP COLUMN` allows you to remove a column from a table.
@@ -37,6 +51,20 @@ The following query drops the age column from the User table.
 ```sql
 ALTER TABLE User DROP age;
 ```
+
+## Drop column if exists
+
+If the given column name does not exists in the table, Kùzu throws an exception when you try to drop it.
+To avoid the exception being raised, use the `IF EXISTS` clause. This tells Kùzu to do nothing when
+the given column name does not exists in the table.
+
+Example:
+```sql
+alter table User drop if exists grade;
+```
+This query tells Kùzu to only drop the `grade` column if it exists.
+
+The same applies to relationship tables.
 
 ## Rename table
 
