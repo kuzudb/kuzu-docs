@@ -15,7 +15,7 @@ you must specify the dataset to be used and other optional
 parameters such as `BUFFER_POOL_SIZE`.
 
 :::caution[Note]
-Avoid using the character `-` in test file names. In the Google Test Framework, `-` has a special meaning that can inadvertently exclude a test case, leading to the test file being silently skipped. To prevent this issue, our `e2e_test` framework will throw an exception if a test file name contains `-`.
+Avoid using the character `-` in test file names and case names. In the Google Test Framework, `-` has a special meaning that can inadvertently exclude a test case, leading to the test file being silently skipped. To prevent this issue, our `e2e_test` framework will throw an exception if a test file name contains `-`.
 :::
 
 Here is a basic example of a test:
@@ -36,15 +36,18 @@ Here is a basic example of a test:
 The first three lines represents the header, separated by `--`. The testing
 framework will parse the file and register a [GTest
 programatically](http://google.github.io/googletest/advanced.html#registering-tests-programmatically).
+All e2e tests will have a prefix `e2e_test_` when being registered, which is used to distinguish them from other internal tests. e.g. a e2e_test named `BasicTest` will be registered as a GTest named `e2e_test_BasicTest`.
 When it comes to the test case name, the provided example above would be equivalent to:
 
 ```
-TEST_F(basic, BasicTest) {
+TEST_F(basic, e2e_test_BasicTest) {
 ...
 }
 ```
 
-The test group name will be the relative path of the file under the `test/test_files` directory, delimited by `~`, followed by a dot and the test case name.
+For the main source code tests, the test group name will be the relative path of the file under the `test/test_files` directory, delimited by `~`, followed by a dot and the test case name.
+
+For the extension code tests, the test group name will be the relative path of the file under the `extension/name_of_extension/test/test_files` directory, delimited by `~`, followed by a dot and the test case name.
 
 The testing framework will test each logical plan created from the prepared
 statements and assert the result.
@@ -81,10 +84,29 @@ $ ctest -V -R common~types~interval.DifferentTypesCheck
 $ ctest -j 10
 ```
 
+To switch between main tests and extension tests, pass 'E2E_TEST_FILES_DIRECTORY=extension' as an environment variable when calling ctest.
+
+Example:
+
+```
+# First cd to build/relwithdebinfo/test (after running make extension-test)
+$ cd build/relwithdebinfo/test
+
+# Run all the extension tests (-R e2e_test is used to filter the extension tests, as all extension tests are e2e tests)
+$ E2E_TEST_FILES_DIRECTORY=extension ctest -R e2e_test
+```
+
+:::caution[Note]
+Windows has different syntax for setting environment variable, to run all extension tests in windows, run
+```
+$ set "E2E_TEST_FILES_DIRECTORY=extension" && ctest -R e2e_test
+```
+:::
+
 #### 2. Running directly from `e2e_test` binary
 
-The test binaries are available in `build/release[or debug]/test/runner`
-folder. You can run `e2e_test` specifying the relative path file inside
+The test binaries are available in `build/relwithdebinfo[or debug or release]/test/runner`
+folder. To run any of the main tests, you can run `e2e_test` specifying the relative path file inside
 `test_files`:
 
 ```
@@ -96,6 +118,19 @@ $ ./e2e_test long_string_pk/long_string_pk.test
 
 # Run all tests
 $ ./e2e_test .
+```
+
+To run any of the extension tests, you can run `e2e_test` with environment variable `E2E_TEST_FILES_DIRECTORY=extension` and specify the relative path file inside
+`extension`:
+```
+# Run all tests inside extension/duckdb
+$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test duckdb
+
+# Run all tests from extension/json/test/copy_to_json.test file
+$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test json/test/copy_to_json.test
+
+# Run all extension tests
+$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test .
 ```
 
 :::caution[Note]
