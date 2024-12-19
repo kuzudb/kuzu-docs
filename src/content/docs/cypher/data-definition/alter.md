@@ -37,7 +37,7 @@ the given column name already exists in the table.
 
 Example:
 ```sql
-alter table User add if not exists grade int64;
+ALTER TABLE User ADD IF NOT EXISTS grade INT64;
 ```
 This query tells Kùzu to only create the `grade` column if it doesn't exist.
 
@@ -60,7 +60,7 @@ the given column name does not exists in the table.
 
 Example:
 ```sql
-alter table User drop if exists grade;
+ALTER TABLE User DROP IF EXISTS grade;
 ```
 This query tells Kùzu to only drop the `grade` column if it exists.
 
