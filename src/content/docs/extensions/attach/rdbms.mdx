@@ -57,14 +57,15 @@ conn.execute("INSERT INTO person values ('Dan', 25);")
 #### 2. Attach database
 
 ```sql
-ATTACH [DB_PATH] AS [alias] (dbtype duckdb, skip_unsupported_table = OPTION)
+ATTACH [DB_PATH] AS [alias] (dbtype duckdb, skip_unsupported_table = OPTION, schema = SCHEMA_NAME)
 ```
 
 - `DB_PATH`: Path to the DuckDB database instance (can be a relative/absolute/https/s3 path)
 - `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used.
   When attaching multiple databases, it's recommended to use aliasing.
-- `skip_unsupported_table`: Whether kuzu should throw an exception or skip when encountering a table with unsupported datatype. 
+- `skip_unsupported_table`: Whether Kùzu should throw an exception or skip when encountering a table with unsupported datatype. 
    Supported options are: TRUE/FALSE. Default is FALSE.
+- `schema`: The name of the schema in duckdb to attach. Kùzu attaches to the `main` schema of duckdb by default.
 
 The below example shows how the `university.db` DuckDB database can be attached to Kùzu using
 the alias `uw`:
@@ -288,12 +289,12 @@ asyncio.run(main())
 #### 2. Attach database
 
 ```sql
-ATTACH [PG_CONNECTION_STRING] AS [alias] (dbtype postgres, skip_unsupported_table = OPTION)
+ATTACH [PG_CONNECTION_STRING] AS [alias] (dbtype postgres, skip_unsupported_table = OPTION, schema = SCHEMA_NAME)
 ```
 
-- `skip_unsupported_table`: Whether kuzu should throw an exception or skip when encountering a table with unsupported datatype.
+- `skip_unsupported_table`: Whether Kùzu should throw an exception or skip when encountering a table with unsupported datatype.
    Supported options are: TRUE or FALSE. Default is FALSE.
-
+- `schema`: The name of the schema in Postgres to attach. Kùzu attaches to the `public` schema of postgres by default.
 
 The below example shows how the `university` PostgreSQL database can be attached to Kùzu using
 the alias `uw`:
@@ -478,7 +479,7 @@ ATTACH [DB_PATH] AS [alias] (dbtype sqlite, skip_unsupported_table = OPTION)
 - `DB_PATH`: Path to the SQLite database instance (can be relative or absolute path)
 - `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used.
   When attaching multiple databases, it's recommended to use aliasing.
-- `skip_unsupported_table`: Whether kuzu should throw an exception or skip when encountering a table with unsupported datatype. Supported options: `TRUE` or `FALSE`.
+- `skip_unsupported_table`: Whether Kùzu should throw an exception or skip when encountering a table with unsupported datatype. Supported options: `TRUE` or `FALSE`.
 
 
 The below example shows how the `university.db` SQLite database can be attached to Kùzu using
