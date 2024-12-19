@@ -196,6 +196,8 @@ export default defineConfig({
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
+                        { label: 'Iceberg', link: '/extensions/iceberg', badge: { text: 'New' }},
+                        { label: 'Delta Lake', link: '/extensions/delta', badge: { text: 'New' }},
                     ],
                     autogenerate: { directory: 'reference' },
                 },
