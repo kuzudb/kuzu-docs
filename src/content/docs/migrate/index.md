@@ -34,6 +34,10 @@ For more compact storage, you can export the data files in Parquet format as fol
 EXPORT DATABASE '/path/to/export' (format="parquet");
 ```
 
+:::note[Note]
+The `EXPORT DATABASE` command only export indexes whose dependent extensions have been loaded.
+:::
+
 ## Import database
 
 The `IMPORT DATABASE` command imports the contents of the database from a specific directory to which
@@ -48,8 +52,9 @@ IMPORT DATABASE '/path/to/export';
 ```
 
 :::note[Note]
-The `IMPORT DATABASE` command can only be executed on an empty database.
+1. The `IMPORT DATABASE` command can only be executed on an empty database.
 Currently, in case of a failure during the execution of the `IMPORT DATABASE` command,
 automatic rollback is not supported. Therefore, if the `IMPORT DATABASE` command fails, you will need to delete the 
 database directory you are connected to and reload it again.
+2. The `IMPORT DATABASE` command also imports all indexes, regardless of whether their dependent extensions were loaded during import. If the dependent extension was not loaded during import, it will be automatically loaded during import.
 :::

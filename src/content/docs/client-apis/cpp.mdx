@@ -11,10 +11,71 @@ See the following link for the full documentation of the C++ API.
   href="https://kuzudb.com/api-docs/cpp/annotated.html"
 />
 
+## Handling Kùzu output using `getNext()`
+
+For the examples in this section we will be using the following schema:
+```cypher
+CREATE NODE TABLE person(id INT64 PRIMARY KEY);
+```
+
+The `getNext()` function in a `QueryResult` returns a reference to the resulting `FlatTuple`. Additionally, to reduce resource allocation all calls to `getNext()` reuse the same
+FlatTuple object. This means that for a `QueryResult`, each call to `getNext()` actually overwrites the `FlatTuple` previously returned by the previous call to `getNext()`.
+
+Thus, we don't recommend using `QueryResult` like this:
+
+```cpp
+std::unique_ptr<kuzu::main::QueryResult> result = conn.query("MATCH (p:person) RETURN p.*");
+std::vector<std::shared_ptr<kuzu::processor::FlatTuple>> tuples;
+while (result->hasNext()) {
+  // Each call to getNext() actually returns a pointer to the same tuple object
+  tuples.emplace_back(result->getNext());
+}
+
+// This is wrong!
+// The vector stores a bunch of pointers to the same underlying tuple object
+for (const auto& resultTuple: tuples) {
+  doSomething(resultTuple);
+}
+```
+
+Instead, we recommend processing each tuple immediately before making the next call to `getNext`:
+```cpp
+std::unique_ptr<kuzu::main::QueryResult> result = conn.query("MATCH (p:person) RETURN p.*");
+std::vector<std::shared_ptr<kuzu::processor::FlatTuple>> tuples;
+while (result->hasNext()) {
+  auto tuple = result->getNext();
+  doSomething(tuple);
+}
+```
+
+If wish to process the tuples later, you must explicitly make a copy of each tuple:
+```cpp
+static decltype(auto) copyFlatTuple(kuzu::processor::FlatTuple* tuple) {
+  std::vector<std::unique_ptr<kuzu::common::Value>> ret;
+  for (uint32_t i = 0; i < tuple->len(); i++) {
+      ret.emplace_back(tuple->getValue(i)->copy());
+  }
+  return ret;
+}
+
+void mainFunction() {
+  std::unique_ptr<kuzu::main::QueryResult> result = conn->query("MATCH (p:person) RETURN p.*");
+  std::vector<std::vector<std::unique_ptr<kuzu::common::Value>>> tuples;
+  while (result->hasNext()) {
+      auto tuple = result->getNext();
+      tuples.emplace_back(copyFlatTuple(tuple.get()));
+  }
+  for (const auto& tuple : tuples) {
+      doSomething(tuple);
+  }
+}
+```
+
+## UDF API
+
 In addition to interfacing with the database, the C++ API offers users the ability to define custom
 functions via User Defined Functions (UDFs), described below.
 
-## UDF API
 Kùzu provides two interfaces that enable you to define your own custom scalar and vectorized functions.
 
 ### Scalar functions
@@ -211,7 +272,7 @@ conn->createVectorizedFunction<int64_t, int64_t>("addFour", &addFour);
 conn->query("MATCH (p:person) return addFour(p.age)");
 ```
 
-#### Option 2. Vectorized function with input and return type in Cypher 
+#### Option 2. Vectorized function with input and return type in Cypher
 
 Create a vectorized function with input and return type in Cypher.
 ```cpp

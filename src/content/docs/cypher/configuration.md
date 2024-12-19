@@ -17,7 +17,6 @@ configuration **cannot** be used with other query clauses, such as `RETURN`.
 | `HOME_DIRECTORY`| system home directory                                                                                                           | user home directory    |
 | `FILE_SEARCH_PATH`| file search path                                                                                                                | N/A                    |
 | `PROGRESS_BAR` | enable progress bar in CLI                                                                                                      | false                  |
-| `PROGRESS_BAR_TIME` | show progress bar after time in ms                                                                                              | 1000                   |
 | `CHECKPOINT_THRESHOLD` | the WAL size threshold in bytes at which to automatically trigger a checkpoint                                                  | 16777216 (16MB)        |
 | `WARNING_LIMIT` | maximum number of [warnings](/import#warnings-table-inspect-skipped-rows) that can be stored in a single connection.            | 8192        |
 | `SPILL_TO_DISK` | spill data disk if there is not enough memory when running `COPY FROM (cannot be set to TRUE under in-memory or read-only mode) | true |
