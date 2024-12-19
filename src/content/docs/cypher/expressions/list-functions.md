@@ -51,6 +51,7 @@ Scroll to the right to see the example usage in the below table.
 | `list_transform(list, lambda)` | returns a list by applying lambda function to each element of input list  | `list_transform([1,2,3], x->x+1)` | [2,3,4] |
 | `list_filter(list, lambda)` | returns list containing elements whose lambda function result is true | `list_filter([1,2,3], x->x>1)` | [2,3] |
 | `list_reduce(list, lambda)` | returns single value by applying the lambda function on a running result and the next list element.| `list_reduce([1,2,3], (x,y)->x+y)` | 6 |
+| `list_has_all(list, sub-list)` | returns true if all elements of sub-list exist in list. | `list_has_all([5, 7, 2], [5, 2])` | true |
 
 </div>
 
