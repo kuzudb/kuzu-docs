@@ -40,15 +40,14 @@ Opened the database under in-memory mode.
 Enter ":help" for usage hints.
 kuzu> 
 ```
-
 ## Shell commands
 
 Once you start the shell, you can issue Cypher queries as shown in the [get started](/get-started)
 section. List all available shell commands by running `./kuzu -h`.
 
 ```bash
-$ ./kuzu -h
-  ./kuzu [databasePath] {OPTIONS}
+$ kuzu -h
+  kuzu [databasePath] {OPTIONS}
 
     KuzuDB Shell
 
@@ -68,6 +67,20 @@ $ ./kuzu -h
       "--" can be used to terminate flag options and force all following
       arguments to be treated as positional options
 ```
+
+:::caution[Note on memory usage]
+By default, Kùzu's CLI is launched with a maximum buffer pool size of 80% of the available memory.
+If you want to launch the Kùzu CLI with a different buffer pool size, you can do so by setting the
+`--defaultbpsize` or `-d` flag to the desired value in megabytes.
+:::
+
+
+To limit the buffer pool size to use just 4GB of memory, you can use the following command:
+
+```bash
+kuzu --defaultbpsize 4096
+```
+
 
 #### `:help`
 Show built-in command list within the Kùzu shell.
