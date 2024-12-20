@@ -21,13 +21,13 @@ RETURN *;
 ```
 Output:
 ```
----------------------------------------------
-| a                                         |
----------------------------------------------
-| (label:User, 0:1, {name:Karissa, age:40}) |
----------------------------------------------
-| (label:User, 0:2, {name:Zhang, age:50})   |
----------------------------------------------
+┌──────────────────────────────────────────────────┐
+│ a                                                │
+│ NODE                                             │
+├──────────────────────────────────────────────────┤
+│ {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} │
+│ {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}   │
+└──────────────────────────────────────────────────┘
 ```
 
 The boolean predicate specified above can be understood as it reads: Users "a" whose ages are
@@ -44,9 +44,33 @@ RETURN *;
 ```
 Output:
 ```
----------------------------------------------
-| a                                         |
----------------------------------------------
-| (label:User, 0:1, {name:Karissa, age:40}) |
----------------------------------------------
+┌──────────────────────────────────────────────────┐
+│ a                                                │
+│ NODE                                             │
+├──────────────────────────────────────────────────┤
+│ {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} │
+└──────────────────────────────────────────────────┘
 ```
+
+## `WHERE` subquery on a relationship
+
+You can also specify a subquery that matches a relationship using the `WHERE` clause.
+
+```cypher
+MATCH (a:User)
+WHERE (a)-[r1:Follows]->(b:User {name: "Noura"})-[r2:LivesIn]->(c:City {name: "Guelph"})
+RETURN a;
+```
+```
+┌────────────────────────────────────────────────┐
+│ a                                              │
+│ NODE                                           │
+├────────────────────────────────────────────────┤
+│ {_ID: 0:2, _LABEL: User, name: Zhang, age: 50} │
+└────────────────────────────────────────────────┘
+```
+
+The above query matches users who follow "Noura" and lives in "Guelph". Note that you can only
+`RETURN` the nodes that are in the scope of the `MATCH` clause (the nodes and relationships that
+are in the `WHERE` clause are not returned).
+
