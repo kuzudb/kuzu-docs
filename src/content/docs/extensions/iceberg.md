@@ -4,6 +4,7 @@ title: "Iceberg"
 
 The `iceberg` extension adds support for scanning and copying from the [Apache Iceberg format](https://iceberg.apache.org/).
 Iceberg is an open-source table format originally developed at Netflix for large-scale analytical datasets.
+Using this extension, you can interact with Iceberg tables from within Kùzu using the `LOAD FROM` and `COPY FROM` clauses.
 
 The Iceberg functionality is not available by default, so you would first need to install the `iceberg`
 extension by running the following commands:
@@ -241,5 +242,5 @@ COPY student FROM 's3://path/to/iceberg_table' (file_format='iceberg', allow_mov
 
 When using the Iceberg extension in Kùzu, keep the following limitations in mind.
 
-- Writing (i.e., exporting to) Iceberg tables is currently not supported.
+- Writing (i.e., exporting to) Iceberg tables from Kùzu is currently not supported.
 - We currently do not support scanning/copying nested data (i.e., of type `STRUCT`) in the Iceberg table columns.

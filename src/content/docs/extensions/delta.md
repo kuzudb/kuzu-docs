@@ -6,7 +6,7 @@ title: "Delta Lake"
 
 The `delta` extension adds support for scanning/copying from the [`Delta Lake open-source storage format`](https://delta.io/).
 Delta Lake is an open-source storage framework that enables building a format agnostic Lakehouse architecture.
-Using this extension, you can interact with Delta tables from within Kùzu.
+Using this extension, you can interact with Delta tables from within Kùzu using the `LOAD FROM` and `COPY FROM` clauses.
 
 The Delta functionality is not available by default, so you would first need to install the `DELTA`
 extension by running the following commands:
@@ -141,5 +141,5 @@ COPY student FROM 's3://kuzu-sample/student-delta' (file_format='delta')
 
 When using the Delta Lake extension in Kùzu, keep the following limitations in mind.
 
-- Writing (i.e., exporting to) Delta files is currently not supported.
-- We currently do not support scanning/copying nested data (i.e., of type `STRUCT`) in the Delta table columns.
+- Writing (i.e., exporting to) Delta files from Kùzu is currently not supported.
+
