@@ -149,6 +149,7 @@ export default defineConfig({
                         { label: 'C++', link: '/client-apis/cpp' },
                         { label: 'C', link: '/client-apis/c' },
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}},
+                        { label: 'Elixir', link: '/client-apis/elixir', badge: { text: 'Community', variant: 'caution'}}
                     ],
                 },
                 { label: 'Connections & concurrency', link: '/concurrency' },
