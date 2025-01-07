@@ -1,0 +1,25 @@
+---
+title: Kùzu NIF for Elixir
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+Elixir is a programming language based on the BEAM virtual environment.
+Its functional style, strong community, Erlang compatibility and concurrency-friendly
+features, like preemptive scheduling and spawning a large number of process without incurring much overhead,
+make it a popular choice among developers for building full-stack applications.
+
+<LinkCard
+  title="Kùzu NIF for Elixir"
+  description="The NIF package is maintained as an independent, external open source project."
+  href="https://hex.pm/packages/kuzu_nif"
+/>
+
+In Elixir, a NIF (Native Implemented Function) is a function written in a native language (in this case, Rust)
+that can be called directly from Elixir code, allowing developers to leverage high-performance, low-level
+operations within their Elixir applications, essentially providing a way to extend the functionality of the
+Erlang BEAM virtual machine by executing code outside of its standard runtime environment.
+
+If you build applications in Elixir, you can access the NIF package using the instructions shown
+[here](https://github.com/bgoosmanviz/kuzu_nif), based on the NIF package that adapts Kùzu's officially
+supported Rust crate to Elixir.
