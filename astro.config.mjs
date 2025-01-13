@@ -148,6 +148,7 @@ export default defineConfig({
                         { label: 'Go', link: '/client-apis/go' },
                         { label: 'C++', link: '/client-apis/cpp' },
                         { label: 'C', link: '/client-apis/c' },
+                        { label: 'WebAssembly', link: '/client-apis/wasm' },
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}},
                     ],
                 },
