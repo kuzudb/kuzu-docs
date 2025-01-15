@@ -124,4 +124,23 @@ The below example shows how to drop the `bookIdx` index from the `book` table:
 CALL DROP_FTS_INDEX('book', 'bookIdx')
 ```
 
+### Prepared statement
+[Prepared-statements](../../get-started/prepared-statements.mdx) allows users to execute a query with different parameter values without rebinding the same query.
+A typical use case where parameters are useful is when you want to find books with different contents.
+
+Example:
+Let's start with preparing a cypher statement which queries the `bookIdx`.
+```c++
+auto preparedStatement = conn->prepare("CALL QUERY_FTS_INDEX('book', 'bookIdx', $q) RETURN _node.ID, score;");
+```
+Now, we can find books with different contents using the prepared statement without rebinding.
+1. Find books related to `machine learning`
+```c++
+auto result = conn->execute(prepared.get, std::make_pair(std::string("q"), std::string("machine learning")));
+```
+
+2. Find books related to `dragons`
+```c++
+auto result = conn->execute(prepared.get, std::make_pair(std::string("q"), std::string("dragons")));
+```
 
