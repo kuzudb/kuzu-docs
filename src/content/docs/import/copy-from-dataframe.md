@@ -33,7 +33,7 @@ conn.execute("COPY Person FROM df")
 
 ## Polars
 
-You can utilize an existing Polars DataFrame to copy data directly into Kùzu. 
+You can utilize an existing Polars DataFrame to copy data directly into Kùzu.
 
 ```python
 import kuzu
@@ -73,3 +73,7 @@ pa_table = pa.table({
 
 conn.execute("COPY Person FROM pa_table")
 ```
+
+## Ignore erroneous rows
+
+See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.
