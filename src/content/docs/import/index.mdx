@@ -202,12 +202,12 @@ CALL warning_limit=1024;
 ```
 ### Skippable Errors By Source
 
-Currently `IGNORE_ERRORS` option works when scanning files (and not in-memory data frames or when running
-`COPY/LOAD FROM` on sub-queries). For different files, the errors that can be skipped can be different.
-If the error is not skippable in a file format, `COPY/LOAD FROM` will instead error and fail.
+Currently `IGNORE_ERRORS` option works when scanning files or in-memory data frames (but not when running
+`COPY/LOAD FROM` on sub-queries). For different sources, the errors that can be skipped can be different.
+If the error is not skippable for a specific source, `COPY/LOAD FROM` will instead error and fail.
 Below is a table that shows the errors that are skippable by each source.
 
 ||Parsing Errors|Casting Errors|Duplicate/Null/Missing Primary-Key errors|
 |----|----|----|----|
 |CSV| X | X | X |
-|JSON/Numpy/Parquet|||X|
+|JSON/Numpy/Parquet/PyArrow/Pandas Dataframes|||X|
