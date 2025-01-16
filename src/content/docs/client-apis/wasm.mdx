@@ -28,36 +28,30 @@ The example shown below sets up a graph database in the browser using Kùzu's We
 
 ```js
 // Import library
-import * as kuzu from "kuzu-wasm";
+import kuzu from './index.js';
 
 (async () => {
-  // Initialize the WebAssembly module
-  await kuzu.init();
-
   // Write the data into WASM filesystem
   const userCSV = `Adam,30
 Karissa,40
 Zhang,50
 Noura,25`;
-
   const cityCSV = `Waterloo,150000
 Kitchener,200000
 Guelph,75000`;
-
   const followsCSV = `Adam,Karissa,2020
 Adam,Zhang,2020
 Karissa,Zhang,2021
 Zhang,Noura,2022`;
-
   const livesInCSV = `Adam,Waterloo
 Karissa,Waterloo
 Zhang,Kitchener
 Noura,Guelph`;
 
-  kuzu.FS.writeFile("user.csv", userCSV);
-  kuzu.FS.writeFile("city.csv", cityCSV);
-  kuzu.FS.writeFile("follows.csv", followsCSV);
-  kuzu.FS.writeFile("lives-in.csv", livesInCSV);
+  await kuzu.FS.writeFile("/user.csv", userCSV);
+  await kuzu.FS.writeFile("/city.csv", cityCSV);
+  await kuzu.FS.writeFile("/follows.csv", followsCSV);
+  await kuzu.FS.writeFile("/lives-in.csv", livesInCSV);
 
   // Create an empty database and connect to it
   const db = new kuzu.Database("./test");
@@ -78,15 +72,14 @@ Noura,Guelph`;
   await conn.query('COPY City FROM "city.csv"');
   await conn.query('COPY Follows FROM "follows.csv"');
   await conn.query('COPY LivesIn FROM "lives-in.csv"');
-
-  const queryResult = await conn.query("MATCH (u:User) RETURN u.name, u.age;");
+  const queryResult = await conn.query("MATCH (u:User) -[l:LivesIn]-> (c:City) RETURN u.name, c.name");
 
   // Get all rows from the query result
   const rows = await queryResult.getAllObjects();
 
   // Print the rows
   for (const row of rows) {
-    console.log(row);
+    console.log(`User ${row['u.name']} lives in ${row['c.name']}`);
   }
 })();
 ```
