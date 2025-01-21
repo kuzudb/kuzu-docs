@@ -208,6 +208,13 @@ If the error is not skippable for a specific source, `COPY/LOAD FROM` will inste
 Below is a table that shows the errors that are skippable by each source.
 
 ||Parsing Errors|Casting Errors|Duplicate/Null/Missing Primary-Key errors|
-|----|----|----|----|
-|CSV| X | X | X |
-|JSON/Numpy/Parquet/PyArrow/Pandas/Polars Dataframes|||X|
+|---|:---:|:---:|:---:|
+|CSV| ✅ | ✅ | ✅ |
+|JSON| ❌ | ❌ | ✅ |
+|Numpy| ❌ | ❌ | ✅ |
+|Parquet| ❌ | ❌ | ✅ |
+|PyArrow tables| ❌ | ❌ | ✅ |
+|Pandas DataFrames| ❌ | ❌ | ✅ |
+|Polars DataFrames| ❌ | ❌ | ✅ |
+
+
