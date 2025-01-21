@@ -19,7 +19,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_WARNINGS()` | returns the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows) |
 | `CLEAR_WARNINGS()` | clears all warnings in the [Warnings Table](/import#warnings-table-inspecting-skipped-rows)  |
 | `TABLE_INFO('tableName')` | returns metadata information of the given table                                              |
-| `SHOW_OFFICIAL_EXTENSIONS` | returns all official [extensions](../../extensions) which can be installed by `INSTALL <extension_name>` |
+| `SHOW_OFFICIAL_EXTENSIONS` | returns all official [extensions](/extensions) which can be installed by `INSTALL <extension_name>` |
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
 
@@ -203,7 +203,7 @@ CALL clear_warnings();
 ```
 
 ### SHOW_OFFICIAL_EXTENSIONS
-If you would like to know all official [extensions](../../extensions) available in kuzu, you can run the `SHOW_OFFICIAL_EXTENSIONS` function.
+If you would like to know all official [extensions](../../extensions) available in Kùzu, you can run the `SHOW_OFFICIAL_EXTENSIONS` function.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
@@ -232,12 +232,12 @@ Output:
 ```
 
 ### SHOW_LOADED_EXTENSIONS
-If you would like to know information about loaded extensions in kuzu, you can run the `SHOW_LOADED_EXTENSIONS` function.
+If you would like to know information about loaded extensions in Kùzu, you can run the `SHOW_LOADED_EXTENSIONS` function.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
 | extension name | name of the extension | STRING |
-| extension source | whether the extension is official or developed by third-party | STRING |
+| extension source | whether the extension is officially supported by Kùzu Inc., or developed by a third-party | STRING |
 | extension path | the path to the extension | STRING |
 
 ```cypher
@@ -249,7 +249,7 @@ CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 │ extension name │ extension source │ extension path                                                              │
 │ STRING         │ STRING           │ STRING                                                                      │
 ├────────────────┼──────────────────┼─────────────────────────────────────────────────────────────────────────────┤
-│ FTS            │ USER             │ /Users/z473chen/Desktop/code/kuzu/extension/fts/build/libfts.kuzu_extension │
+│ FTS            │ USER             │ /path/to/kuzu/extension/fts/build/libfts.kuzu_extension │
 └────────────────┴──────────────────┴─────────────────────────────────────────────────────────────────────────────┘
 ```
 
