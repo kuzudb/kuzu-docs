@@ -249,7 +249,7 @@ CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 │ extension name │ extension source │ extension path                                                              │
 │ STRING         │ STRING           │ STRING                                                                      │
 ├────────────────┼──────────────────┼─────────────────────────────────────────────────────────────────────────────┤
-│ FTS            │ USER             │ /path/to/kuzu/extension/fts/build/libfts.kuzu_extension │
+│ FTS            │ OFFICIAL         │ extension/fts/build/libfts.kuzu_extension │
 └────────────────┴──────────────────┴─────────────────────────────────────────────────────────────────────────────┘
 ```
 
