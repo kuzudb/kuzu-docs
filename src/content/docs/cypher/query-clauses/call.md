@@ -19,6 +19,9 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_WARNINGS()` | returns the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows) |
 | `CLEAR_WARNINGS()` | clears all warnings in the [Warnings Table](/import#warnings-table-inspecting-skipped-rows)  |
 | `TABLE_INFO('tableName')` | returns metadata information of the given table                                              |
+| `SHOW_OFFICIAL_EXTENSIONS` | returns all official [extensions](../../extensions) which can be installed by `INSTALL <extension_name>` |
+| `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
+| `SHOW_INDEXES` | returns all indexes built in the system |
 
 ### TABLE_INFO
 
@@ -198,3 +201,83 @@ This function has no output.
 ```cypher
 CALL clear_warnings();
 ```
+
+### SHOW_OFFICIAL_EXTENSIONS
+If you would like to know all official [extensions](../../extensions) available in kuzu, you can run the `SHOW_OFFICIAL_EXTENSIONS` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| name | name of the extension | STRING |
+| description | description of the extension | STRING |
+
+```cypher
+CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────┐
+│ name     │ description                                                             │
+│ STRING   │ STRING                                                                  │
+├──────────┼─────────────────────────────────────────────────────────────────────────┤
+│ SQLITE   │ Adds support for reading from SQLITE tables                             │
+│ JSON     │ Adds support for JSON operations                                        │
+│ ICEBERG  │ Adds support for reading from iceberg tables                            │
+│ HTTPFS   │ Adds support for reading and writing files over a HTTP(S)/S3 filesystem │
+│ DELTA    │ Adds support for reading from delta tables                              │
+│ POSTGRES │ Adds support for reading from POSTGRES tables                           │
+│ FTS      │ Adds support for full-text search indexes                               │
+│ DUCKDB   │ Adds support for reading from duckdb tables                             │
+└──────────┴─────────────────────────────────────────────────────────────────────────┘
+```
+
+### SHOW_LOADED_EXTENSIONS
+If you would like to know information about loaded extensions in kuzu, you can run the `SHOW_LOADED_EXTENSIONS` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| extension name | name of the extension | STRING |
+| extension source | whether the extension is official or developed by third-party | STRING |
+| extension path | the path to the extension | STRING |
+
+```cypher
+CALL SHOW_LOADED_EXTENSIONS() RETURN *;
+```
+
+```
+┌────────────────┬──────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│ extension name │ extension source │ extension path                                                              │
+│ STRING         │ STRING           │ STRING                                                                      │
+├────────────────┼──────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│ FTS            │ USER             │ /Users/z473chen/Desktop/code/kuzu/extension/fts/build/libfts.kuzu_extension │
+└────────────────┴──────────────────┴─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### SHOW_INDEXES
+If you would like to know information about indexes built in kuzu, you can run the `SHOW_INDEXES` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| table name | the table which the index is built on | STRING |
+| index name | the name of the index | STRING |
+| index type | the type of the index (e.g. FTS, HNSW) | STRING |
+| property names | the properties which the index is built on | STRING[] |
+| extension loaded | whether the depended extension has been loaded | BOOL |
+| index definition | the cypher query to create the index | STRING |
+
+Note:
+Some indexes are implemented within extensions. If a required extension is not loaded, the extension loaded field will display false, and the index definition field will be null.
+
+```cypher
+CALL SHOW_INDEXES() RETURN *;
+```
+
+```
+┌────────────┬────────────┬────────────┬─────────────────────────┬──────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ table name │ index name │ index type │ property names          │ extension loaded │ index definition                                                                                 │
+│ STRING     │ STRING     │ STRING     │ STRING[]                │ BOOL             │ STRING                                                                                           │
+├────────────┼────────────┼────────────┼─────────────────────────┼──────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ book       │ bookIdx    │ FTS        │ [abstract,author,title] │ True             │ CALL CREATE_FTS_INDEX('book', 'bookIdx', ['abstract', 'author', 'title' ], stemmer := 'porter'); │
+└────────────┴────────────┴────────────┴─────────────────────────┴──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
