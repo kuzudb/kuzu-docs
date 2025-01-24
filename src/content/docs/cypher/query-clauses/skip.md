@@ -31,3 +31,45 @@ Result:
 
 If you omit the `ORDER BY`, you would skip some k tuples in a `SKIP` k query
 but you have no guarantee about which ones will be skipped.
+
+
+The number of rows to skip can either be:
+1. A parameter expression when used with prepared statement:
+
+Prepare:
+```c++
+auto prepared = conn->prepare("MATCH (u:User) RETURN u.name skip $sp")
+```
+
+Execution:
+
+The number of rows to skip can be given at the time of execution.
+```c++
+conn->execute(prepared.get(), std::make_pair(std::string{"sp"}, 2))
+```
+
+Result:
+```
+----------
+| u.name |
+----------
+| Noura  |
+----------
+| Zhang  |
+----------
+```
+2. A literal expression which can be evaluated at compile time.
+```cypher
+MATCH (u:User)
+RETURN u.name
+skip 2+1
+```
+Result:
+
+```
+----------
+| u.name |
+----------
+| Zhang  |
+----------
+```
