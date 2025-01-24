@@ -52,6 +52,15 @@ The following sections show how to bulk import data using `COPY FROM` on various
 
 </CardGrid>
 
+:::caution[Note]
+Similar to the [LOAD FROM](../cypher/query-clauses/load-from.md) clause, the `COPY FROM` clause determines the file format based on the file extension if the `file_format` option is not provided. Alternatively, the `file_format` option can be used in the COPY FROM clause to explicitly specify the file format.
+
+Example: To copy from a file ending with `dsv`, we have to use the `file_format` option to explicitly force kuzu to treat the file as a `CSV` file.
+```
+COPY person FROM 'person.dsv' (file_format = 'csv')
+```
+:::
+
 ## `COPY FROM` a partial subset
 
 In certain cases, you may only want to partially fill your Kùzu table using the data from your input
