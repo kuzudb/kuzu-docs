@@ -147,12 +147,12 @@ See the [ignoring erroneous rows section of `COPY FROM`](import#ignore-erroneous
 `LOAD FROM` can scan several raw or in-memory file formats, such as CSV, Parquet, Pandas, Polars, Arrow tables, and JSON.
 
 ### File format detection
-`Load from` determines the file format based on the file extension if the `file_format` option is not given. For instance, files with a `.csv` extension are automatically recognized as CSV format.
+`LOAD FROM` determines the file format based on the file extension if the `file_format` option is not given. For instance, files with a `.csv` extension are automatically recognized as CSV format.
 
 If the file format cannot be inferred from the extension, or if you need to override the default sniffing behaviour, the `file_format` option can be used.
 
 For example, to load a CSV file that has a `.tsv` extension (for tab-separated data), you must explicitly specify the file format using the `file_format` option, as shown below:
-```
+```cypher
 LOAD FROM 'data.tsv' (file_format='csv')
 RETURN *
 ```
@@ -170,7 +170,7 @@ See the
 ](/import/csv#ignoring-erroneous-rows) documentation pages for the `COPY FROM` file.
 The configurations documented in those pages can also be specified after the `LOAD FROM` statement inside `()` when scanning
 CSV files. For example, you can indicate that the first line should
-be interpreted as a header line by setting `(haders = true)` or that the CSV delimiter is '|' by setting `(DELIM="|")`.
+be interpreted as a header line by setting `(headers = true)` or that the CSV delimiter is '|' by setting `(DELIM="|")`.
 Some of these configurations are also by default [automatically detected](/import/csv#auto-detecting-configurations) by Kùzu when scanning CSV files.
 These configurations determine the names and data types of the 
 variables that bind to the fields scanned from CSV files.
@@ -186,7 +186,7 @@ provide the names of the columns. The data types are always automatically inferr
 if `LOAD WITH HEADERS (...) FROM` is used, in which case the data types provided inside the `(...)` are used as 
 described [above](#bound-variable-names-and-data-types)).
 
-Suppose user.csv is a CSV file with the following contents:
+Suppose `user.csv` is a CSV file with the following contents:
 ```
 name,age
 Adam,30
@@ -198,15 +198,14 @@ Then if you run the following query, Kùzu will infer the column names `name` an
 
 ```cypher
 LOAD FROM "user.csv" (header = true) RETURN *;
------------------
-| name    | age |
------------------
-| Adam    | 30  |
------------------
-| Karissa | 40  |
------------------
-| Zhang   | 50  |
------------------
+┌─────────┬───────┐
+│ name    │ age   │
+│ STRING  │ INT64 │
+├─────────┼───────┤
+│ Adam    │ 30    │
+│ Karissa │ 40    │
+│ Zhang   │ 50    │
+└─────────┴───────┘
 ```
 
 
@@ -220,15 +219,15 @@ Zhang,50
 
 ```cypher
 LOAD FROM "user.csv" (header = false) RETURN *;
----------------------
-| column0 | column1 |
----------------------
-| Adam    |    30   |
----------------------
-| Karissa |    40   |
---------------------- 
-| Zhang   |    50   |
----------------------
+┌─────────┬─────────┐
+│ column0 │ column1 │
+│ STRING  │ STRING  │
+├─────────┼─────────┤
+│ name    │ age     │
+│ Adam    │ 30      │
+│ Karissa │ 40      │
+│ Zhang   │ 50      │
+└─────────┴─────────┘
 ```
 
 ### Parquet
@@ -240,15 +239,14 @@ and the same content as in the `user.csv` file above. Then the query below will 
 
 ```cypher
 LOAD FROM "user.parquet" RETURN *;
-----------------
-| f0      | f1 |
-----------------
-| Adam    | 30 |
-----------------
-| Karissa | 40 |
-----------------
-| Zhang   | 50 |
-----------------
+┌─────────┬───────┐
+│ f0      │  f1   │
+│ STRING  │ INT64 │
+├─────────┼───────┤
+│ Adam    │ 30    │
+│ Karissa │ 40    │
+│ Zhang   │ 50    │
+└─────────┴───────┘
 ```
 
 ### Pandas
@@ -350,5 +348,5 @@ age: [[30,40,50]]
 ```
 
 ### JSON
-Kùzu can scan JSON files using `LOAD FROM`.
-All JSON-related features are part of the JSON extension. See the documentation on the [JSON extension](/extensions/json#load-from) for details.
+Kùzu can scan JSON files using `LOAD FROM`, but only upon installation of the JSON extension.
+See the documentation on the [JSON extension](/extensions/json#load-from) for details.
