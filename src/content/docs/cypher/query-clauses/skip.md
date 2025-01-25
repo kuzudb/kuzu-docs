@@ -20,13 +20,13 @@ SKIP 2;
 ```
 Result:
 ```
------------
-| u.name  |
------------
-| Karissa |
------------
-| Zhang   |
------------
+┌─────────┐
+│ u.name  │
+│ STRING  │
+├─────────┤
+│ Karissa │
+│ Zhang   │
+└─────────┘
 ```
 
 If you omit the `ORDER BY`, you would skip some k tuples in a `SKIP` k query
@@ -50,13 +50,13 @@ conn->execute(prepared.get(), std::make_pair(std::string{"sp"}, 2))
 
 Result:
 ```
-----------
-| u.name |
-----------
-| Noura  |
-----------
-| Zhang  |
-----------
+┌────────┐
+│ u.name │
+│ STRING │
+├────────┤
+│ Zhang  │
+│ Noura  │
+└────────┘
 ```
 2. A literal expression which can be evaluated at compile time.
 ```cypher
@@ -67,9 +67,10 @@ skip 2+1
 Result:
 
 ```
-----------
-| u.name |
-----------
-| Zhang  |
-----------
+┌────────┐
+│ u.name │
+│ STRING │
+├────────┤
+│ Noura  │
+└────────┘
 ```
