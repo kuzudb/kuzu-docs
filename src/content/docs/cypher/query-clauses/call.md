@@ -328,7 +328,7 @@ Result:
 ```
 
 :::caution[Note]
-1. If the yield clause is used after a call function, all return columns of the function must appear in the yield clause.
+1. If the `YIELD` clause is used after a `CALL` function, **all** return columns of the function must appear in the `YIELD` clause.
 
 For example:
 ```
@@ -338,7 +338,7 @@ RETURN person_id
 ```
 The query throws an exception since not all returns columns of the `table_info` function appear in the yield clause.
 
-2. The column names to yield must match the origianl return column names of the call function.
+2. The column names to yield must match the original return column names of the call function.
 For example:
 ```
 CALL current_setting('threads')
@@ -347,5 +347,5 @@ RETURN *;
 ```
 The query throws an exception since the column name to yield is `thread` which doesn't match the return column name(`threads`) of the call function.
 
-3. Unlike neo4j, `Yield` clause must be followed by a return clause and `yield *` is not allowed in kuzu.
+3. The syntax in Kùzu Cypher is different from other systems like Neo4j. In Kùzu, the `YIELD` clause must be followed by a return clause. `YIELD *` is not allowed in Kùzu.
 :::
