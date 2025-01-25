@@ -281,3 +281,71 @@ CALL SHOW_INDEXES() RETURN *;
 └────────────┴────────────┴────────────┴─────────────────────────┴──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### Using yield
+The `YIELD` clause in Kuzu is used to rename the return columns of a CALL function to avoid naming conflicition and better readability.
+Usage:
+```
+CALL FUNC()
+YIELD COLUMN0 [AS ALIAS0], COLUMN1 [AS ALIAS1]
+RETURN ALIAS0, ALIAS1
+```
+
+Example:
+To rename the output column name of `current_setting('threads')` from `threads` to `threads_num`, you can use the following query:
+```
+CALL current_setting('threads')
+YIELD threads as threads_num
+RETURN *;
+```
+
+Result:
+```
+┌─────────────┐
+│ threads_num │
+│ STRING      │
+├─────────────┤
+│ 10          │
+└─────────────┘
+```
+
+Another useful scenario is to avoid naming conflicition when two call functions in the same query returns a column with the same name.
+```
+CALL table_info('person')
+YIELD `property id` as person_id,  name as person_name, type as person_type, `default expression` as person_default, `primary key` as person_pk
+CALL table_info('student')
+YIELD `property id` as student_id,  name as student_name, type as student_type, `default expression` as student_default, `primary key` as student_pk 
+RETURN *;
+```
+
+Result:
+```
+┌───────────┬─────────────┬─────────────┬────────────────┬───────────┬────────────┬──────────────┬──────────────┬─────────────────┬────────────┐
+│ person_id │ person_name │ person_type │ person_default │ person_pk │ student_id │ student_name │ student_type │ student_default │ student_pk │
+│ INT32     │ STRING      │ STRING      │ STRING         │ BOOL      │ INT32      │ STRING       │ STRING       │ STRING          │ BOOL       │
+├───────────┼─────────────┼─────────────┼────────────────┼───────────┼────────────┼──────────────┼──────────────┼─────────────────┼────────────┤
+│ 0         │ id          │ INT64       │ NULL           │ True      │ 0          │ id           │ INT64        │ NULL            │ True       │
+└───────────┴─────────────┴─────────────┴────────────────┴───────────┴────────────┴──────────────┴──────────────┴─────────────────┴────────────┘
+```
+
+:::caution[Note]
+1. If the `YIELD` clause is used after a `CALL` function, **all** return columns of the function must appear in the `YIELD` clause.
+
+For example:
+```
+CALL table_info('person')
+YIELD `property id` as person_id
+RETURN person_id
+```
+The query throws an exception since not all returns columns of the `table_info` function appear in the yield clause.
+
+2. The column names to yield must match the original return column names of the call function.
+For example:
+```
+CALL current_setting('threads')
+YIELD thread as threads_num
+RETURN *;
+```
+The query throws an exception since the column name to yield is `thread` which doesn't match the return column name(`threads`) of the call function.
+
+3. The syntax in Kùzu Cypher is different from other systems like Neo4j. In Kùzu, the `YIELD` clause must be followed by a return clause. `YIELD *` is not allowed in Kùzu.
+:::
