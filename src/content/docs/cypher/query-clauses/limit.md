@@ -18,15 +18,14 @@ LIMIT 3;
 ```
 Result:
 ```
------------
-| u.name  |
------------
-| Zhang   |
------------
-| Karissa |
------------
-| Adam    |
------------
+┌─────────┐
+│ u.name  │
+│ STRING  │
+├─────────┤
+│ Zhang   │
+│ Karissa │
+│ Adam    │
+└─────────┘
 ```
 
 If you omit the `ORDER BY`, you would get some k tuples in a `LIMIT k` query
@@ -48,11 +47,12 @@ conn->execute(prepared.get(), std::make_pair(std::string{"lt"}, 1))
 
 Result:
 ```
-----------
-| u.name |
-----------
-| Adam   |
-----------
+┌────────┐
+│ u.name │
+│ STRING │
+├────────┤
+│ Adam   │
+└────────┘
 ```
 2. A literal expression which can be evaluated at compile time.
 ```cypher
@@ -63,14 +63,13 @@ limit 1+2
 Result:
 
 ```
------------
-| u.name  |
------------
-| Karissa |
------------
-| Zhang   |
------------
-| Noura   |
------------
+┌─────────┐
+│ u.name  │
+│ STRING  │
+├─────────┤
+│ Adam    │
+│ Karissa │
+│ Zhang   │
+└─────────┘
 ```
 
