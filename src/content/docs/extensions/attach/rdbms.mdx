@@ -109,8 +109,42 @@ Result:
 └──────────────┘
 ```
 
+#### 3. Data type mapping from duckdb to kuzu
 
-#### 3. Scan from DuckDB tables
+The table below shows the mapping from duckdb's type to kuzu's type:
+| Data type in DuckDB         | Corresponding data type in Kuzu |
+|-----------------------------|----------------------------------|
+| BIGINT                     | INT64                           |
+| BIT                        | UNSUPPORTED                          |
+| BLOB                       | BLOB                                 |
+| BOOLEAN                    | BOOL                                 |
+| DATE                       | DATE                                 |
+| DECIMAL(prec, scale)       | DECIMAL(prec, scale)             |
+| DOUBLE                     | DOUBLE                                 |
+| FLOAT                      | FLOAT                                 |
+| HUGEINT                    | INT128                                 |
+| INTEGER                    | INT32                                 |
+| INTERVAL                   | INTERVAL                                 |
+| SMALLINT                   | INT16                                 |
+| TIME                       | UNSUPPORTED                      |
+| TIMESTAMP WITH TIME ZONE   | UNSUPPORTED                                 |
+| TIMESTAMP                  | TIMESTAMP                                 |
+| TINYINT                    | INT8                                 |
+| UBIGINT                    | UINT64                                 |
+| UHUGEINT                   | UNSUPPORTED                                 |
+| UINTEGER                   | UINT32                                 |
+| USMALLINT                  | UINT16                                 |
+| UTINYINT                   | UINT8                                 |
+| UUID                       | UUID                                 |
+| VARCHAR                    | STRING                                 |
+| ENUM                       | UNSUPPORTED                                 |
+| ARRAY                      | ARRAY                                 |
+| LIST                       | LIST                                 |
+| MAP                       | MAP                                 |
+| STRUCT                       | STRUCT                                 |
+| UNION                       | UNION                                 |
+
+#### 4. Scan from DuckDB tables
 
 Finally, we can utilize the `LOAD FROM` statement to scan the `person` table. Note that you need to prefix the 
 external `person` table with the database alias (in our example `uw`). See the `USE` statement which allows you to
@@ -137,7 +171,7 @@ Result:
 ---------------
 ```
 
-#### 4. USE: Reference database without alias
+#### 5. USE: Reference database without alias
 
 You can use the `USE` statement for attached databases to use a default database name for future operations.
 This can be used when reading from an attached database to avoid specifying the full database name
@@ -164,7 +198,7 @@ LOAD FROM person
 RETURN *
 ```
 
-#### 5. Copy data from DuckDB tables
+#### 6. Copy data from DuckDB tables
 
 One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kùzu.
 In this example, we continue using the `university.db` database created in the last step, but this time,
@@ -187,7 +221,7 @@ If the schemas are not the same, e.g., `Person` contains only `name` property wh
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
-#### 6. Query the data in Kùzu
+#### 7. Query the data in Kùzu
 
 Finally, we can verify the data in the `Person` table in Kùzu.
 
@@ -210,7 +244,7 @@ Result:
 ------------------
 ```
 
-#### 7. Clear attached database schema cache
+#### 8. Clear attached database schema cache
 
 To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
