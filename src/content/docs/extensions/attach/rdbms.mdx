@@ -572,7 +572,21 @@ the alias `uw`:
 ATTACH 'university.db' AS uw (dbtype sqlite);
 ```
 
-#### 3. Scan from SQLite tables
+#### 3. Data type mapping from SQLite to kuzu
+
+The table below shows the mapping from SQLite's type to kuzu's type:
+| SQLite Storage Class / Datatype            | Corresponding Data Type in Kuzu |
+|--------------------------------------------|----------------------------------|
+| NULL                                       | BLOB                            |
+| INTEGER                                    | INT64                           |
+| REAL                                       | DOUBLE                          |
+| TEXT                                       | STRING                          |
+| BLOB                                       | BLOB                            |
+| BOOLEAN                                    | INT64                          |
+| DATE                                       | DATE                           |
+| TIME                                       | TIMESTAMP                      |
+
+#### 4. Scan from SQLite tables
 
 Finally, we can utilize the `LOAD FROM` statement to scan the `person` table.
 
@@ -597,7 +611,7 @@ Result:
 ---------------
 ```
 
-#### 4. USE: Reference database without alias
+#### 5. USE: Reference database without alias
 
 You can use the `USE` statement for attached databases to use a default database name for future operations.
 This can be used when reading from an attached database to avoid specifying the full database name
@@ -624,7 +638,7 @@ LOAD FROM person
 RETURN *
 ```
 
-#### 5. Copy data from SQLite tables
+#### 6. Copy data from SQLite tables
 
 One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kùzu.
 In this example, we continue using the `university.db` database created in the last step, but this time,
@@ -647,7 +661,7 @@ If the schemas are not the same, e.g., `Person` contains only `name` property wh
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
-#### 6. Query the data in Kùzu
+#### 7. Query the data in Kùzu
 
 Finally, we can verify the data in the `Person` table in Kùzu.
 
@@ -670,7 +684,7 @@ Result:
 ------------------
 ```
 
-#### 7. Clear attached database schema cache
+#### 8. Clear attached database schema cache
 
 To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
@@ -684,7 +698,7 @@ CALL clear_attached_db_cache() RETURN *
 Note: If you have attached to databases from different
 RDBMSs, say Postgres, DuckDB, and Sqlite, this call will clear the cache for all of them.
 
-#### 8. Detach database
+#### 9. Detach database
 
 To detach a database, use `DETACH [ALIAS]` as follows:
 
