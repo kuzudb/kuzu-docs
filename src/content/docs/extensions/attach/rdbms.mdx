@@ -353,7 +353,56 @@ The below table lists some common connection string parameters:
 | `password`  | Postgres password | [empty] |
 | `port`      | Port number | 5432 |
 
-#### 3. Scan from PostgreSQL tables
+#### 3. Data type mapping from PostgreSQL to kuzu
+
+The table below shows the mapping from PostgreSQL's type to kuzu's type:
+| PostgreSQL Data Type                      | Corresponding Data Type in Kuzu |
+|-------------------------------------------|----------------------------------|
+| bigint (int8)                             | INT64                           |
+| bigserial (serial8)                       | INT64                                 |
+| bit [ (n) ]                               | STRING                                 |
+| bit varying [ (n) ] (varbit [ (n) ])      | STRING                                 |
+| boolean (bool)                            | BOOL                            |
+| box                                       | DOUBLE[]                                 |
+| bytea                                     | BLOB                            |
+| character [ (n) ] (char [ (n) ])          | STRING                          |
+| character varying [ (n) ] (varchar [ (n)])| STRING                          |
+| cidr                                      | STRING                                 |
+| circle                                    | DOUBLE[]                                 |
+| date                                      | DATE                            |
+| double precision (float8)                 | DOUBLE                          |
+| inet                                      | STRING                                 |
+| integer (int, int4)                       | INT32                           |
+| interval [ fields ] [ (p) ]               | INTERVAL                                |
+| json                                      | JSON                            |
+| line                                      | DOUBLE[]                                 |
+| lseg                                      | DOUBLE[]                                 |
+| macaddr                                   | STRING                                 |
+| macaddr8                                  | STRING                                 |
+| money                                     | STRING                                 |
+| numeric [ (p, s) ] (decimal [ (p, s) ])   | DECIMAL                         |
+| path                                      | DOUBLE[]                                 |
+| pg_lsn                                    | STRING                                 |
+| pg_snapshot                               | STRING                                 |
+| point                                     | STRUCT(x DOUBLE, y DOUBLE)                                 |
+| polygon                                   | DOUBLE[]                                 |
+| real (float4)                             | FLOAT                         |
+| smallint (int2)                           | INT16                           |
+| smallserial (serial2)                     | INT16                                 |
+| serial (serial4)                          | INT32                                 |
+| text                                      | STRING                          |
+| time [ (p) ] [ without time zone ]        | UNSUPPORTED                            |
+| time [ (p) ] with time zone (timetz)      | UNSUPPORTED                                 |
+| timestamp [ (p) ] [ without time zone ]   | TIMESTAMP                        |
+| timestamp [ (p) ] with time zone (timestamptz) | UNSUPPORTED                      |
+| tsquery                                   | STRING                                 |
+| tsvector                                  | STRING                                 |
+| txid_snapshot                             | STRING                                 |
+| uuid                                      | UUID                            |
+| xml                                       | STRING                                 |
+
+
+#### 4. Scan from PostgreSQL tables
 
 Finally, we can utilize the `LOAD FROM` statement to scan the `Person` table.
 
@@ -378,7 +427,7 @@ Result:
 ---------------
 ```
 
-#### 4. USE: Reference database without alias
+#### 5. USE: Reference database without alias
 
 You can use the `USE` statement for attached databases to use a default database name for future operations.
 This can be used when reading from an attached database to avoid specifying the full database name
@@ -405,7 +454,7 @@ LOAD FROM person
 RETURN *
 ```
 
-#### 5. Copy data from PostgreSQL tables
+#### 6. Copy data from PostgreSQL tables
 
 One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kùzu.
 In this example, we continue using the `university.db` database created in the last step, but this time,
@@ -428,7 +477,7 @@ If the schemas are not the same, e.g., `Person` contains only `name` property wh
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
-#### 6. Query the data in Kùzu
+#### 7. Query the data in Kùzu
 
 Finally, we can verify the data in the `Person` table in Kùzu.
 
@@ -451,7 +500,7 @@ Result:
 ------------------
 ```
 
-#### 7. Clear attached database schema cache
+#### 8. Clear attached database schema cache
 
 To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
@@ -465,7 +514,7 @@ CALL clear_attached_db_cache() RETURN *
 Note: If you have attached to databases from different
 RDBMSs, say Postgres, DuckDB, and Sqlite, this call will clear the cache for all of them.
 
-#### 8. Detach database
+#### 9. Detach database
 
 To detach a database, use `DETACH [ALIAS]` as follows:
 
