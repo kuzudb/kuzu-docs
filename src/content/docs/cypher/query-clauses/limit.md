@@ -18,17 +18,58 @@ LIMIT 3;
 ```
 Result:
 ```
------------
-| u.name  |
------------
-| Zhang   |
------------
-| Karissa |
------------
-| Adam    |
------------
+┌─────────┐
+│ u.name  │
+│ STRING  │
+├─────────┤
+│ Zhang   │
+│ Karissa │
+│ Adam    │
+└─────────┘
 ```
 
 If you omit the `ORDER BY`, you would get some k tuples in a `LIMIT k` query
 but you have no guarantee about which ones will be selected.
+
+
+The number of rows to limit can either be:
+1. A parameter expression when used with prepared statement:
+
+Prepare:
+```c++
+auto prepared = conn->prepare("MATCH (u:User) RETURN u.name limit $lt")
+```
+Execution:
+The number of rows to limit can be given at the time of execution.
+```c++
+conn->execute(prepared.get(), std::make_pair(std::string{"lt"}, 1))
+```
+
+Result:
+```
+┌────────┐
+│ u.name │
+│ STRING │
+├────────┤
+│ Adam   │
+└────────┘
+```
+2. A literal expression which can be evaluated at compile time.
+```cypher
+MATCH (u:User)
+RETURN u.name
+limit 1+2
+```
+Result:
+
+```
+┌─────────┐
+│ u.name  │
+│ STRING  │
+├─────────┤
+│ Adam    │
+│ Karissa │
+│ Zhang   │
+└─────────┘
+```
 
