@@ -75,16 +75,41 @@ Once you create node tables, you can define relationships between them using the
 The following statement adds to the catalog a `Follows` relationship table between `User` and `User` with one `date` property on the relationship.
 
 ```sql
-CREATE REL TABLE Follows(FROM User TO User, since DATE)
+CREATE REL TABLE Follows(FROM User TO User, since DATE);
+```
+
+Defining a rel table with multiple node table pairs is also possible. The following statement adds a `Teaches` relationship table between two node table pairs:
+1. `Student` and `Teacher`
+2. `Student` and `Student`
+
+```sql
+CREATE REL TABLE Teaches(FROM TEACHER TO STUDENT, FROM STUDENT TO STUDENT);
 ```
 
 :::caution[Notes]
 
-- **Syntax**: There is no comma between the `FROM` and `TO` clauses.
+- **Syntax**: There is no comma between the `FROM` and `TO` clauses, however a comma is needed between two node table pairs.
 - **Directionality**: Each relationship has a direction following the property graph model. So when `Follows` relationship records are added, each one has a specific source (FROM) node and a specific destination (TO) node.
 - **Primary keys**: You cannot define a primary key for relationship records. Each relationship gets a unique system-level edge ID, which are internally generated. You can check if two edges are the same, i.e., have the same edge ID, using the `=` and `!=` operator between the `ID()` function on two variables that bind to relationships. For example, you can query `MATCH (n1:User)-[r1:Follows]->(n2:User)<-[r2:Follows]-(n3:User) WHERE ID(r1) != ID(r2) RETURN *` to ensure that the same relationship does not bind to both r1 and r2.
 - **Pairing**: A relationship can only be defined as being from one node table/label to one node table/label.
-  :::
+- **Querying**: Any query to a relationship table with multiple node pairs is treated as a query on the union of _all_ relationships between each node pair.
+:::
+
+### Data Import: 
+Internally, a relationship table with multiple node pairs defines a relationship table for _each_ `FROM ... TO ...` block. An example is given below:
+For the `Teaches` relationship table we created above, the following two internal relationship tables will be created:
+```
+Teaches_TEACHER_STUDENT
+Teaches_STUDENT_STUDEN
+```
+When copying from a `CSV` file which contains relationship records from `STUDENT` to `STUDENT`, a specific pair of `FROM` and `TO` nodes must be given:
+```
+COPY Teaches_STUDENT_STUDEN FROM 'student_teaches_student.csv' 
+```
+The following query will throw an exception since the node pair is not given:
+```
+COPY Teaches FROM 'student_teaches_student.csv' 
+```
 
 ### Relationship Multiplicities
 
@@ -111,6 +136,10 @@ The DDL above indicates that `Likes` has 1-to-n multiplicity. This DDL command e
 In general in a relationship `E`'s multiplicity, if the "source side" is `ONE`, then for each node `v` that can be the destination of `E` relationships, `v` can have at most one backward edge. If the "destination side" is `ONE`, then each node `v` that can be the source of `E` relationships, `v` can have at most one forward edge.
 
 ## Create relationship table group
+:::note[Note]
+Relationship table group has been deprecated since our v0.8.0 release. Users can now define multiple node table pairs in rel table using multiple `FROM ... TO ...` clauses.
+:::
+
 
 You can use relationship table groups to gain added flexibility in your data modelling, by defining a relationship table with multiple node table pairs. This is done via the `CREATE REL TABLE GROUP` statement. This has a similar syntax to `CREATE REL TABLE`, but uses multiple `FROM ... TO ...` clauses. Internally, a relationship table group defines a relationship table for _each_ `FROM ... TO ...` block. Any query to a relationship table group is treated as a query on the union of _all_ relationship tables in the group.
 
