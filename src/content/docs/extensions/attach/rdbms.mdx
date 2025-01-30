@@ -586,6 +586,17 @@ The table below shows the mapping from SQLite's type to kuzu's type:
 | DATE                                       | DATE                           |
 | TIME                                       | TIMESTAMP                      |
 
+Note: Sqlite uses a [dynamic type system](https://www.sqlite.org/datatype3.html), meaning that a column in sqlite can store values with different types. The option: `sqlite_all_varchar_option` is provided to scan such column in kuzu. 
+Usage:
+```
+`CALL sqlite_all_varchar_option=<OPTION>`
+```
+If `sqlite_all_varchar_option` is set to true, all sqlite columns will be treated and scanned as `VAR_CHAR` columns.
+If `sqlite_all_varchar_option` is set to false, trying to scan a column with values in different types will result in a runtime exception.
+
+
+
+
 #### 4. Scan from SQLite tables
 
 Finally, we can utilize the `LOAD FROM` statement to scan the `person` table.
