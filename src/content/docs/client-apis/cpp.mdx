@@ -15,7 +15,7 @@ See the following link for the full documentation of the C++ API.
 
 For the examples in this section we will be using the following schema:
 ```cypher
-create node table person(id int64, primary key(id));
+CREATE NODE TABLE person(id INT64 PRIMARY KEY);
 ```
 
 The `getNext()` function in a `QueryResult` returns a reference to the resulting `FlatTuple`. Additionally, to reduce resource allocation all calls to `getNext()` reuse the same

@@ -73,13 +73,13 @@ And then link against `<install-dest>/libkuzu.so` (or `libkuzu.dylib`/`libkuzu.l
 
 
 The static library is more complicated (as noted above, it's recommended that you use CMake to handle the details) and is not installed by default, but all static libraries will be available in the build directory.
-You need to define `KUZU_STATIC_DEFINE`, and link against the static kuzu library in `build/src`, as well as `antlr4_cypher`, `antlr4_runtime`, `brotlidec`, `brotlicommon`, `utf8proc`, `re2`, `serd`, `fastpfor`, `miniparquet`, `zstd`, `miniz`, `mbedtls`, `lz4` (all of which can be found in the third_party subdirectory of the CMake build directory. E.g. `build/third_party/zstd/libzstd.a`) and whichever standard library you're using.
+You need to define `KUZU_STATIC_DEFINE`, and link against the static Kùzu library in `build/src`, as well as `antlr4_cypher`, `antlr4_runtime`, `brotlidec`, `brotlicommon`, `utf8proc`, `re2`, `serd`, `fastpfor`, `miniparquet`, `zstd`, `miniz`, `mbedtls`, `lz4` (all of which can be found in the third_party subdirectory of the CMake build directory. E.g. `build/third_party/zstd/libzstd.a`) and whichever standard library you're using.
 
 ## Handling Kùzu output using `kuzu_query_result_get_next()`
 
 For the examples in this section we will be using the following schema:
 ```cypher
-create node table person(id int64, primary key(id));
+CREATE NODE TABLE person(id INT64 PRIMARY KEY);
 ```
 
 The `kuzu_query_result_get_next()` function returns a reference to the resulting flat tuple. Additionally, to reduce resource allocation all calls to `kuzu_query_result_get_next()` reuse the same
@@ -97,7 +97,7 @@ while (kuzu_query_result_has_next(result)) {
 }
 ```
 
-If wish to process the tuples later, you must explicitly make a copy of each tuple:
+If you wish to process the tuples later, you must explicitly make a copy of each tuple:
 ```cpp
 static kuzu_value* copy_flat_tuple(kuzu_flat_tuple* tuple, uint32_t tupleLen) {
   kuzu_value* ret = malloc(sizeof(kuzu_value) * tupleLen);
