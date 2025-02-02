@@ -78,12 +78,12 @@ The following statement adds to the catalog a `Follows` relationship table betwe
 CREATE REL TABLE Follows(FROM User TO User, since DATE);
 ```
 
-Defining a rel table with multiple node table pairs is also possible. The following statement adds a `Teaches` relationship table between two node table pairs:
-1. `Student` and `Teacher`
-2. `Student` and `Student`
+Defining a rel table with multiple node table pairs is also possible. The following statement adds a `Knows` relationship table between two node table pairs:
+1. `User` and `User`
+2. `User` and `City`
 
 ```sql
-CREATE REL TABLE Teaches(FROM TEACHER TO STUDENT, FROM STUDENT TO STUDENT);
+CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
 ```
 
 :::caution[Notes]
@@ -91,32 +91,32 @@ CREATE REL TABLE Teaches(FROM TEACHER TO STUDENT, FROM STUDENT TO STUDENT);
 - **Syntax**: There is no comma between the `FROM` and `TO` clauses, however a comma is needed between two node table pairs.
 - **Directionality**: Each relationship has a direction following the property graph model. So when `Follows` relationship records are added, each one has a specific source (FROM) node and a specific destination (TO) node.
 - **Primary keys**: You cannot define a primary key for relationship records. Each relationship gets a unique system-level edge ID, which are internally generated. You can check if two edges are the same, i.e., have the same edge ID, using the `=` and `!=` operator between the `ID()` function on two variables that bind to relationships. For example, you can query `MATCH (n1:User)-[r1:Follows]->(n2:User)<-[r2:Follows]-(n3:User) WHERE ID(r1) != ID(r2) RETURN *` to ensure that the same relationship does not bind to both r1 and r2.
-- **Pairing**: A relationship can only be defined as being from one node table/label to one node table/label.
-- **Querying**: Any query to a relationship table with multiple node pairs is treated as a query on the union of _all_ relationships between each node pair.
 :::
 
-### Data Import: 
-Internally, a relationship table with multiple node pairs defines a relationship table for _each_ `FROM ... TO ...` block. An example is given below:
-For the `Teaches` relationship table we created above, the following two internal relationship tables will be created:
+### Bulk insert to relationship table with multiple from-to pairs
+
+Internally, a relationship table with multiple from-to pairs will create a child table per from-to pair. In the example above, the following two children
+tables will be created internally
 ```
-Teaches_TEACHER_STUDENT
-Teaches_STUDENT_STUDEN
+Knows_User_User
+Knows_User_City
 ```
-When copying from a `CSV` file which contains relationship records from `STUDENT` to `STUDENT`, a specific pair of `FROM` and `TO` nodes must be given:
+
+When bulk insert into a relationship table with multiple from-to pairs, user need to specify which child table to insert through `from, to` options. For exmaple, the following two statements will bulk insert into `Knows` relationship table.
 ```
-COPY Teaches_STUDENT_STUDEN FROM 'student_teaches_student.csv' 
+Copy Knows FROM 'knows_user_user.csv' (from='User', to='User');
+Copy Knows FROM 'knows_user_city.csv' (from='User', to='City');
 ```
-The following query will throw an exception since the node pair is not given:
+
+Alternatively, you can also directly copy into a child table. Though this approach is not recommended and will be deprecated in the future release.
 ```
-COPY Teaches FROM 'student_teaches_student.csv' 
+Copy Knows_User_User FROM 'knows_user_user.csv';
+Copy Knows_User_City FROM 'knows_user_city.csv';
 ```
 
 ### Relationship Multiplicities
 
-For any relationship label E, e.g., , by default there can be multiple relationships from any node v both in the forward and backward direction. In database terminology, relationships are by default many-to-many. For example in the first Follows example above: (i) any User node v can follow multiple User nodes; and (ii) be followed by multiple User nodes. You can also constrain the multiplicity to _at most 1_ (we don't yet support exactly 1 semantics as in foreign key constraints in relational systems) in either direction. You can restrict the multiplicities for two reasons:
-
-1. Constraint: Multiplicities can serve as constraints you would like to enforce (e..g, you want Kùzu to error if an application tries to add a second relationship of a particular label to some node)
-2. Performance: Kùzu can store 1-to-1, many-to-1, or 1-to-many relationships (explained momentarily) in more efficient/compressed format, which is also faster to scan.
+For any relationship label E, e.g., , by default there can be multiple relationships from any node v both in the forward and backward direction. In database terminology, relationships are by default many-to-many. For example in the first Follows example above: (i) any User node v can follow multiple User nodes; and (ii) be followed by multiple User nodes. You can also constrain the multiplicity to _at most 1_ (we don't yet support exactly 1 semantics as in foreign key constraints in relational systems) in either direction.
 
 You can optionally declare the multiplicity of relationships by adding `MANY_MANY`, `ONE_MANY`, `MANY_ONE`, or `ONE_ONE` clauses to the end of the `CREATE REL TABLE` command.
 Below are a few examples:
@@ -135,7 +135,7 @@ The DDL above indicates that `Likes` has 1-to-n multiplicity. This DDL command e
 
 In general in a relationship `E`'s multiplicity, if the "source side" is `ONE`, then for each node `v` that can be the destination of `E` relationships, `v` can have at most one backward edge. If the "destination side" is `ONE`, then each node `v` that can be the source of `E` relationships, `v` can have at most one forward edge.
 
-## Create relationship table group
+## Create relationship table group [Deprecated]
 :::note[Note]
 Relationship table group has been deprecated since our v0.8.0 release. Users can now define multiple node table pairs in rel table using multiple `FROM ... TO ...` clauses.
 :::
@@ -143,38 +143,13 @@ Relationship table group has been deprecated since our v0.8.0 release. Users can
 
 You can use relationship table groups to gain added flexibility in your data modelling, by defining a relationship table with multiple node table pairs. This is done via the `CREATE REL TABLE GROUP` statement. This has a similar syntax to `CREATE REL TABLE`, but uses multiple `FROM ... TO ...` clauses. Internally, a relationship table group defines a relationship table for _each_ `FROM ... TO ...` block. Any query to a relationship table group is treated as a query on the union of _all_ relationship tables in the group.
 
-:::note[Note]
-Currently, Kùzu does not allow `COPY FROM` or `CREATE` using a relationship table group. You need to explicitly specify a relationship table
-that you want to insert data into.
-:::
+
 
 ```sql
 CREATE REL TABLE GROUP Knows (FROM User To User, FROM User to City, year INT64);
 ```
 
-The statement above creates a Knows_User_User rel table and a Knows_User_City rel table. And a Knows rel table group refering these two rel tables.
-
-```sql
-CALL SHOW_TABLES() RETURN *;
-```
-
-Output:
-
-```
-----------------------------------------------
-| TableName       | TableType | TableComment |
-----------------------------------------------
-| Knows           | REL_GROUP |              |
-----------------------------------------------
-| Knows_User_City | REL       |              |
-----------------------------------------------
-| Knows_User_User | REL       |              |
-----------------------------------------------
-| User            | NODE      |              |
-----------------------------------------------
-| City            | NODE      |              |
-----------------------------------------------
-```
+The statement above creates a `Knows_User_User` rel table and a `Knows_User_City` rel table. And a `Knows` rel table group refering these two rel tables.
 
 A relationship table group can be used as a regular relationship table for querying purposes.
 
