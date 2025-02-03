@@ -111,7 +111,7 @@ Result:
 
 #### 3. Data type mapping from DuckDB to Kùzu
 
-The table below shows the mapping from duckdb's type to kuzu's type:
+The table below shows the mapping from duckdb's type to Kùzu's type:
 | Data type in DuckDB         | Corresponding data type in Kùzu |
 |-----------------------------|----------------------------------|
 | BIGINT                     | INT64                           |
@@ -353,10 +353,10 @@ The below table lists some common connection string parameters:
 | `password`  | Postgres password | [empty] |
 | `port`      | Port number | 5432 |
 
-#### 3. Data type mapping from PostgreSQL to kuzu
+#### 3. Data type mapping from PostgreSQL to Kùzu
 
-The table below shows the mapping from PostgreSQL's type to kuzu's type:
-| PostgreSQL Data Type                      | Corresponding Data Type in Kuzu |
+The table below shows the mapping from PostgreSQL's type to Kùzu's type:
+| PostgreSQL Data Type                      | Corresponding Data Type in Kùzu |
 |-------------------------------------------|----------------------------------|
 | bigint (int8)                             | INT64                           |
 | bigserial (serial8)                       | INT64                                 |
@@ -572,10 +572,10 @@ the alias `uw`:
 ATTACH 'university.db' AS uw (dbtype sqlite);
 ```
 
-#### 3. Data type mapping from SQLite to kuzu
+#### 3. Data type mapping from SQLite to Kùzu
 
-The table below shows the mapping from SQLite's type to kuzu's type:
-| SQLite Storage Class / Datatype            | Corresponding Data Type in Kuzu |
+The table below shows the mapping from SQLite's type to Kùzu's type:
+| SQLite Storage Class / Datatype            | Corresponding Data Type in Kùzu |
 |--------------------------------------------|----------------------------------|
 | NULL                                       | BLOB                            |
 | INTEGER                                    | INT64                           |
