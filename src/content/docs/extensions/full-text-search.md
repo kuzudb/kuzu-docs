@@ -93,14 +93,14 @@ The following optional parameters are supported:
 The below example shows how to query books related to the `quantum machine` and order the books by their scores:
 ```cypher
 CALL QUERY_FTS_INDEX('Book', 'book_index', 'quantum machine')
-RETURN _node.title, score
+RETURN node.title, score
 ORDER BY score DESC;
 ```
 
 Result:
 ```
 ┌───────────────────┬──────────┐
-│ _node.title       │ score    │
+│ node.title        │ score    │
 │ STRING            │ DOUBLE   │
 ├───────────────────┼──────────┤
 │ The Quantum World │ 0.857996 │
@@ -111,14 +111,14 @@ Result:
 The `conjunctive` option can be used when you want to retrieve only the books containing _all_ the keywords in the query.
 ```cypher
 CALL QUERY_FTS_INDEX('Book', 'book_index', 'dragon magic', conjunctive := true)
-RETURN _node.title, score
+RETURN node.title, score
 ORDER BY score DESC;
 ```
 
 Result:
 ```
 ┌───────────────────┬──────────┐
-│ _node.title       │ score    │
+│ node.title        │ score    │
 │ STRING            │ DOUBLE   │
 ├───────────────────┼──────────┤
 │ The Dragon's Call │ 1.208044 │
@@ -128,14 +128,14 @@ Result:
 If you want to retrieve books with either the `dragon` OR `magic` keywords, set `conjunctive` to `false`
 ```cypher
 CALL QUERY_FTS_INDEX('Book', 'book_index', 'dragon magic', conjunctive := false)
-RETURN _node.title, score
+RETURN node.title, score
 ORDER BY score DESC;
 ```
 
 Result:
 ```
 ┌────────────────────────────┬──────────┐
-│ _node.title                │ score    │
+│ node.title                 │ score    │
 │ STRING                     │ DOUBLE   │
 ├────────────────────────────┼──────────┤
 │ The Dragon's Call          │ 1.208044 │
@@ -185,7 +185,7 @@ A typical use case where parameters are useful is when you want to find books wi
 Example:
 Let's start with preparing a cypher statement which queries the `book_index`.
 ```c++
-auto preparedStatement = conn->prepare("CALL QUERY_FTS_INDEX('Book', 'book_index', $q) RETURN _node.ID, score;");
+auto preparedStatement = conn->prepare("CALL QUERY_FTS_INDEX('Book', 'book_index', $q) RETURN node.ID, score;");
 ```
 Now, we can find books with different contents using the prepared statement without rebinding.
 
