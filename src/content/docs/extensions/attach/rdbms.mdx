@@ -586,7 +586,7 @@ The table below shows the mapping from SQLite's type to kuzu's type:
 | DATE                                       | DATE                           |
 | TIME                                       | TIMESTAMP                      |
 
-Note: Sqlite uses a [dynamic type system](https://www.sqlite.org/datatype3.html), meaning that a column in sqlite can store values with different types. The option: `sqlite_all_varchar_option` is provided to scan such column in kuzu. 
+Note: Sqlite uses a [dynamic type system](https://www.sqlite.org/datatype3.html), meaning that a column in sqlite can store values with different types. The option: `sqlite_all_varchar_option` is provided to scan such columns in Kùzu. 
 Usage:
 ```
 `CALL sqlite_all_varchar_option=<OPTION>`
