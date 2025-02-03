@@ -118,6 +118,10 @@ Copy Knows_User_City FROM 'knows_user_city.csv';
 
 For any relationship label E, e.g., , by default there can be multiple relationships from any node v both in the forward and backward direction. In database terminology, relationships are by default many-to-many. For example in the first Follows example above: (i) any User node v can follow multiple User nodes; and (ii) be followed by multiple User nodes. You can also constrain the multiplicity to _at most 1_ (we don't yet support exactly 1 semantics as in foreign key constraints in relational systems) in either direction.
 
+:::note[Note]
+You can optionally declare the multiplicity of relationships by adding `MANY_MANY`, `ONE_MANY`, `MANY_ONE`, or `ONE_ONE` clauses to the end of the `CREATE REL TABLE` command.
+:::
+
 You can optionally declare the multiplicity of relationships by adding `MANY_MANY`, `ONE_MANY`, `MANY_ONE`, or `ONE_ONE` clauses to the end of the `CREATE REL TABLE` command.
 Below are a few examples:
 
