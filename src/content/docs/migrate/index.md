@@ -35,7 +35,7 @@ EXPORT DATABASE '/path/to/export' (format="parquet");
 ```
 
 :::note[Note]
-The EXPORT DATABASE command also exports all indexes, regardless of whether their dependent extensions have been loaded or not.
+The `EXPORT DATABASE` command only export indexes whose dependent extensions have been loaded.
 :::
 
 ## Import database
