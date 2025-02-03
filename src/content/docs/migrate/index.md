@@ -56,5 +56,5 @@ IMPORT DATABASE '/path/to/export';
 Currently, in case of a failure during the execution of the `IMPORT DATABASE` command,
 automatic rollback is not supported. Therefore, if the `IMPORT DATABASE` command fails, you will need to delete the 
 database directory you are connected to and reload it again.
-2. The `IMPORT DATABASE` command also imports all indexes, regardless of whether their dependent extensions were loaded during export. If an index's dependent extension was loaded at the time of export, it will be automatically loaded during import. However, if the dependent extension was not loaded during export, it will not be automatically loaded during import. In such cases, users must manually load the dependent extensions before querying the index.
+2. The `IMPORT DATABASE` command also imports all indexes, regardless of whether their dependent extensions were loaded during import. If the dependent extension was not loaded during import, it will be automatically loaded during import.
 :::
