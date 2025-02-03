@@ -96,7 +96,7 @@ CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
 ### Bulk insert to relationship table with multiple from-to pairs
 
 Internally, a relationship table with multiple from-to pairs will create a child table per from-to pair. In the example above, the following two children
-tables will be created internally
+tables are created internally
 ```
 Knows_User_User
 Knows_User_City
