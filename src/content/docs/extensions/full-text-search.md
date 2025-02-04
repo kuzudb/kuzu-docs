@@ -35,7 +35,7 @@ In the following sections, we will build a full-text search index on the book ta
 
 ### Create FTS index
 
-Kuzu provides a function `CREATE_FTS_INDEX` to create the full-text search index on a table:
+Kùzu provides a function `CREATE_FTS_INDEX` to create the full-text search index on a table:
 
 ```cypher
 CALL CREATE_FTS_INDEX('TABLE_NAME', 'INDEX_NAME', ['PROP1', 'PROP2', 'PROP3'...], OPTIONAL_PARAM1 := 'OPTIONAL_VAL1')
@@ -70,7 +70,7 @@ the index will be ready to use for full-text search.
 
 ### Query FTS index
 
-Kuzu provides a table function `QUERY_FTS_INDEX` to query the FTS index on a table:
+Kùzu provides a table function `QUERY_FTS_INDEX` to query the FTS index on a table using the [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) scoring algorithm:
 
 ```cypher
 CALL QUERY_FTS_INDEX(
@@ -89,6 +89,8 @@ The following optional parameters are supported:
 1. `conjunctive`: Whether all keywords in the query should appear in order for a document to be retrieved, default to false.
 2. `K`: parameter controls the influence of term frequency saturation. It limits the effect of additional occurrences of a term within a document. Defaults to 1.2.
 3. `B`: parameter controls the degree of length normalization by adjusting the influence of document length. Defaults to 0.75.
+
+Detailed explanation of k and b values can be found [there](https://learn.microsoft.com/en-us/azure/search/index-ranking-similarity)
 
 The below example shows how to query books related to the `quantum machine` and order the books by their scores:
 ```cypher
