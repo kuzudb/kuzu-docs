@@ -23,79 +23,14 @@ npm i kuzu-wasm
 
 ## Example usage
 
-The example shown below sets up a graph database in the browser using Kùzu's WebAssembly implementation.
+We provide a simple example to demonstrate how to use Kùzu-Wasm. In this example, we will create a simple graph and run a few simple queries.
 
-```js
-// Import library
-import kuzu from './index.js';
+We provide three versions of this example: 
+- `browser_in_memory`: This example demonstrates how to use Kùzu-Wasm in a web browser with an in-memory filesystem.
+- `browser_persistent`: This example demonstrates how to use Kùzu-Wasm in a web browser with a persistent IDBFS filesystem.
+- `nodejs`: This example demonstrates how to use Kùzu-Wasm in Node.js.
 
-(async () => {
-  // Write the data into WASM filesystem
-  const userCSV = `Adam,30
-Karissa,40
-Zhang,50
-Noura,25`;
-  const cityCSV = `Waterloo,150000
-Kitchener,200000
-Guelph,75000`;
-  const followsCSV = `Adam,Karissa,2020
-Adam,Zhang,2020
-Karissa,Zhang,2021
-Zhang,Noura,2022`;
-  const livesInCSV = `Adam,Waterloo
-Karissa,Waterloo
-Zhang,Kitchener
-Noura,Guelph`;
-
-  await kuzu.FS.writeFile("/user.csv", userCSV);
-  await kuzu.FS.writeFile("/city.csv", cityCSV);
-  await kuzu.FS.writeFile("/follows.csv", followsCSV);
-  await kuzu.FS.writeFile("/lives-in.csv", livesInCSV);
-
-  // Create an empty database and connect to it
-  const db = new kuzu.Database("./test");
-  const conn = new kuzu.Connection(db);
-
-  // Create the tables
-  await conn.query(
-    "CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))"
-  );
-  await conn.query(
-    "CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))"
-  );
-  await conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
-  await conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
-
-  // Load the data
-  await conn.query('COPY User FROM "user.csv"');
-  await conn.query('COPY City FROM "city.csv"');
-  await conn.query('COPY Follows FROM "follows.csv"');
-  await conn.query('COPY LivesIn FROM "lives-in.csv"');
-  const queryResult = await conn.query("MATCH (u:User) -[l:LivesIn]-> (c:City) RETURN u.name, c.name");
-
-  // Get all rows from the query result
-  const rows = await queryResult.getAllObjects();
-
-  // Print the rows
-  for (const row of rows) {
-    console.log(`User ${row['u.name']} lives in ${row['c.name']}`);
-  }
-})();
-```
-
-This script can be directly embedded in an HTML file, for example:
-
-```html
-<!DOCTYPE html>
-<html>
-<body>
-    <h1>Welcome to WASM Test Server</h1>
-    <script type="module">
-    // Paste the script here
-    </script>
-</body>
-</html>
-```
+The example can be found in [the examples directory](https://github.com/kuzudb/kuzu/tree/master/tools/wasm/examples).
 
 ## Understanding the package
 
@@ -124,7 +59,11 @@ Note that this function must be called before any other function calls to the We
 For the Node.js variant, the worker script can be resolved automatically and you do not need to set the worker path.
 
 ## API documentation
-The API documentation can be found [here](https://kuzudb.com/api-docs/wasm/).
+The API documentation can be found here:
+
+**Synchronous** version: [API documentation](https://kuzudb.com/api-docs/wasm/sync/)
+
+**Asynchronous** version: [API documentation](https://kuzudb.com/api-docs/wasm/async/)
 
 ## Local development
 
