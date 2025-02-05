@@ -62,6 +62,7 @@ CALL CREATE_FTS_INDEX(
     'book_index',   // Index name
     ['abstract', 'title'],   // Properties to build FTS index on
     stemmer := 'porter'   // Stemmer to use (optional)
+)
 ```
 Once the index is created, the index will be ready for querying as shown below.
 
@@ -133,7 +134,7 @@ Result:
 If you want to retrieve books with either the `dragon` OR `magic` keywords, set `conjunctive` to `false`
 ```cypher
 CALL QUERY_FTS_INDEX('Book', 'book_index', 'dragon magic', conjunctive := false)
-RETURN node.title as title, score
+RETURN node.title as title, node.abstract as abstract, score
 ORDER BY score DESC;
 ```
 
