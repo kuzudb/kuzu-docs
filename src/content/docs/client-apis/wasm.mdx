@@ -50,8 +50,8 @@ In each variant, the main module is bundled as one script file. However, the wor
 
 By default, the worker script is resolved under the same directory / URL prefix as the main module. If you want to change the location of the worker script, you can use pass the optional worker path parameter to the `setWorkerPath` function. For example:
 ```javascript
-import { setWorkerPath } from 'kuzu-wasm';
-setWorkerPath('path/to/worker.js');
+import kuzu from "kuzu-wasm";
+kuzu.setWorkerPath('path/to/worker.js');
 ```
 
 Note that this function must be called before any other function calls to the WebAssembly module. After the initialization is started, the worker script path cannot be changed and not finding the worker script will cause an error.
