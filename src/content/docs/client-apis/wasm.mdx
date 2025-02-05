@@ -9,12 +9,11 @@ browsers.
 
 ## Benefits of WASM
 
-Kùzu-Wasm enables the following:
+Several benefits of Kùzu-Wasm are the following:
 
-- Fast, in-browser graph analysis without ever sending data to a server
-- Strong data privacy guarantees, as the data never leaves the browser
-- Real-time interactive dashboards
-- Lightweight, portable solutions that leverage graphs within web applications
+- Fast, in-browser graph analysis without ever sending data to a server.
+- Strong data privacy guarantees, as the data never leaves the browser.
+- Real-time interactive in-browser graph analytics and visualization.
 
 ## Installation
 
@@ -101,7 +100,7 @@ This script can be directly embedded in an HTML file, for example:
 ## Understanding the package
 
 In this package, three different variants of WebAssembly modules are provided:
-- **Default**: This is the default build of the WebAssembly module. It does not support multi-threading and uses Emscripten's default filesystem. This build has the smallest size and works in both Node.js and browser environments. It has the best compatibility and does not require cross-origin isolation. However, the performance maybe limited due to the lack of multithreading support. This build is located at the root level of the package.
+- **Default**: This is the default build of the WebAssembly module. It does not support multi-threading and uses Emscripten's default filesystem. This build has the smallest size and works in both Node.js and browser environments. It has the best compatibility and does not require cross-origin isolation. However, the performance may be limited due to the lack of multithreading support. This build is located at the root level of the package.
 - **Multi-threaded**: This build supports multi-threading and uses Emscripten's default filesystem. This build has a larger size compared to the default build and only requires [cross-origin isolation](https://web.dev/articles/cross-origin-isolation-guide) in the browser environment. This build is located in the `multithreaded` directory.
 - **Node.js**: This build is optimized for Node.js and uses Node.js's filesystem instead of Emscripten's default filesystem (`NODEFS` flag is enabled). This build also supports multi-threading. It is distributed as a CommonJS module rather than an ES module to maximize compatibility. This build is located in the `nodejs` directory. Note that this build only works in Node.js and does not work in the browser environment.
 
