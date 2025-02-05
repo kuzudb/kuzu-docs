@@ -62,6 +62,7 @@ CALL CREATE_FTS_INDEX(
     'book_index',   // Index name
     ['abstract', 'title'],   // Properties to build FTS index on
     stemmer := 'porter'   // Stemmer to use (optional)
+)
 ```
 Once the index is created, the index will be ready for querying as shown below.
 
@@ -133,19 +134,19 @@ Result:
 If you want to retrieve books with either the `dragon` OR `magic` keywords, set `conjunctive` to `false`
 ```cypher
 CALL QUERY_FTS_INDEX('Book', 'book_index', 'dragon magic', conjunctive := false)
-RETURN node.title as title, score
+RETURN node.title as title, node.abstract as abstract, score
 ORDER BY score DESC;
 ```
 
 Result:
 ```
-┌────────────────────────────┬──────────┐
-│ title                      │ score    │
-│ STRING                     │ DOUBLE   │
-├────────────────────────────┼──────────┤
-│ The Dragon's Call          │ 1.208044 │
-│ Chronicles of the Universe │ 0.380211 │
-└────────────────────────────┴──────────┘
+┌────────────────────────────┬─────────────────────────────────────────┬──────────┐
+│ title                      │ abstract                                │ score    │
+│ STRING                     │ STRING                                  │ DOUBLE   │
+├────────────────────────────┼─────────────────────────────────────────┼──────────┤
+│ The Dragon's Call          │ A fantasy tale of dragons and magic.    │ 1.208044 │
+│ Chronicles of the Universe │ A magic journey through time and space. │ 0.380211 │
+└────────────────────────────┴─────────────────────────────────────────┴──────────┘
 ```
 
 ### Drop FTS index
