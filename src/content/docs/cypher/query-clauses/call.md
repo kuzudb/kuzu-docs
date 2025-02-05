@@ -19,6 +19,9 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_WARNINGS()` | returns the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows) |
 | `CLEAR_WARNINGS()` | clears all warnings in the [Warnings Table](/import#warnings-table-inspecting-skipped-rows)  |
 | `TABLE_INFO('tableName')` | returns metadata information of the given table                                              |
+| `SHOW_OFFICIAL_EXTENSIONS` | returns all official [extensions](/extensions) which can be installed by `INSTALL <extension_name>` |
+| `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
+| `SHOW_INDEXES` | returns all indexes built in the system |
 
 ### TABLE_INFO
 
@@ -198,3 +201,151 @@ This function has no output.
 ```cypher
 CALL clear_warnings();
 ```
+
+### SHOW_OFFICIAL_EXTENSIONS
+If you would like to know all official [extensions](../../extensions) available in Kùzu, you can run the `SHOW_OFFICIAL_EXTENSIONS` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| name | name of the extension | STRING |
+| description | description of the extension | STRING |
+
+```cypher
+CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
+```
+
+Output:
+```
+┌──────────┬─────────────────────────────────────────────────────────────────────────┐
+│ name     │ description                                                             │
+│ STRING   │ STRING                                                                  │
+├──────────┼─────────────────────────────────────────────────────────────────────────┤
+│ SQLITE   │ Adds support for reading from SQLITE tables                             │
+│ JSON     │ Adds support for JSON operations                                        │
+│ ICEBERG  │ Adds support for reading from iceberg tables                            │
+│ HTTPFS   │ Adds support for reading and writing files over a HTTP(S)/S3 filesystem │
+│ DELTA    │ Adds support for reading from delta tables                              │
+│ POSTGRES │ Adds support for reading from POSTGRES tables                           │
+│ FTS      │ Adds support for full-text search indexes                               │
+│ DUCKDB   │ Adds support for reading from duckdb tables                             │
+└──────────┴─────────────────────────────────────────────────────────────────────────┘
+```
+
+### SHOW_LOADED_EXTENSIONS
+If you would like to know information about loaded extensions in Kùzu, you can run the `SHOW_LOADED_EXTENSIONS` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| extension name | name of the extension | STRING |
+| extension source | whether the extension is officially supported by Kùzu Inc., or developed by a third-party | STRING |
+| extension path | the path to the extension | STRING |
+
+```cypher
+CALL SHOW_LOADED_EXTENSIONS() RETURN *;
+```
+
+```
+┌────────────────┬──────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│ extension name │ extension source │ extension path                                                              │
+│ STRING         │ STRING           │ STRING                                                                      │
+├────────────────┼──────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│ FTS            │ OFFICIAL         │ extension/fts/build/libfts.kuzu_extension │
+└────────────────┴──────────────────┴─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### SHOW_INDEXES
+If you would like to know information about indexes built in kuzu, you can run the `SHOW_INDEXES` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| table name | the table which the index is built on | STRING |
+| index name | the name of the index | STRING |
+| index type | the type of the index (e.g. FTS, HNSW) | STRING |
+| property names | the properties which the index is built on | STRING[] |
+| extension loaded | whether the depended extension has been loaded | BOOL |
+| index definition | the cypher query to create the index | STRING |
+
+Note:
+Some indexes are implemented within extensions. If a required extension is not loaded, the extension loaded field will display false, and the index definition field will be null.
+
+```cypher
+CALL SHOW_INDEXES() RETURN *;
+```
+
+```
+┌────────────┬────────────┬────────────┬─────────────────────────┬──────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ table name │ index name │ index type │ property names          │ extension loaded │ index definition                                                                                 │
+│ STRING     │ STRING     │ STRING     │ STRING[]                │ BOOL             │ STRING                                                                                           │
+├────────────┼────────────┼────────────┼─────────────────────────┼──────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ book       │ bookIdx    │ FTS        │ [abstract,author,title] │ True             │ CALL CREATE_FTS_INDEX('book', 'bookIdx', ['abstract', 'author', 'title' ], stemmer := 'porter'); │
+└────────────┴────────────┴────────────┴─────────────────────────┴──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Using yield
+The `YIELD` clause in Kuzu is used to rename the return columns of a CALL function to avoid naming conflicition and better readability.
+Usage:
+```
+CALL FUNC()
+YIELD COLUMN0 [AS ALIAS0], COLUMN1 [AS ALIAS1]
+RETURN ALIAS0, ALIAS1
+```
+
+Example:
+To rename the output column name of `current_setting('threads')` from `threads` to `threads_num`, you can use the following query:
+```
+CALL current_setting('threads')
+YIELD threads as threads_num
+RETURN *;
+```
+
+Result:
+```
+┌─────────────┐
+│ threads_num │
+│ STRING      │
+├─────────────┤
+│ 10          │
+└─────────────┘
+```
+
+Another useful scenario is to avoid naming conflicition when two call functions in the same query returns a column with the same name.
+```
+CALL table_info('person')
+YIELD `property id` as person_id,  name as person_name, type as person_type, `default expression` as person_default, `primary key` as person_pk
+CALL table_info('student')
+YIELD `property id` as student_id,  name as student_name, type as student_type, `default expression` as student_default, `primary key` as student_pk 
+RETURN *;
+```
+
+Result:
+```
+┌───────────┬─────────────┬─────────────┬────────────────┬───────────┬────────────┬──────────────┬──────────────┬─────────────────┬────────────┐
+│ person_id │ person_name │ person_type │ person_default │ person_pk │ student_id │ student_name │ student_type │ student_default │ student_pk │
+│ INT32     │ STRING      │ STRING      │ STRING         │ BOOL      │ INT32      │ STRING       │ STRING       │ STRING          │ BOOL       │
+├───────────┼─────────────┼─────────────┼────────────────┼───────────┼────────────┼──────────────┼──────────────┼─────────────────┼────────────┤
+│ 0         │ id          │ INT64       │ NULL           │ True      │ 0          │ id           │ INT64        │ NULL            │ True       │
+└───────────┴─────────────┴─────────────┴────────────────┴───────────┴────────────┴──────────────┴──────────────┴─────────────────┴────────────┘
+```
+
+:::caution[Note]
+1. If the `YIELD` clause is used after a `CALL` function, **all** return columns of the function must appear in the `YIELD` clause.
+
+For example:
+```
+CALL table_info('person')
+YIELD `property id` as person_id
+RETURN person_id
+```
+The query throws an exception since not all returns columns of the `table_info` function appear in the yield clause.
+
+2. The column names to yield must match the original return column names of the call function.
+For example:
+```
+CALL current_setting('threads')
+YIELD thread as threads_num
+RETURN *;
+```
+The query throws an exception since the column name to yield is `thread` which doesn't match the return column name(`threads`) of the call function.
+
+3. The syntax in Kùzu Cypher is different from other systems like Neo4j. In Kùzu, the `YIELD` clause must be followed by a return clause. `YIELD *` is not allowed in Kùzu.
+:::

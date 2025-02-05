@@ -5,7 +5,7 @@ title: "Run prepared Cypher statements"
 Just like we have [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) in relational databases,
 we can also have Cypher injection in graph databases. This is when a user can manipulate the query
 to execute arbitrary code that can threaten the integrity of the data. As a best practice, it's
-generally to provide parameters to your Cypher queries instead of using string literals in your code.
+generally a good idea to provide parameters to your Cypher queries instead of using string literals in your code.
 
 This section shows to run *prepared* Cypher statements with parameters while working with a client
 API in Kùzu.
@@ -17,7 +17,7 @@ Instead of hardcoding the age value into a Cypher query, it would make more sens
 to the query, so that the same query can be reused for other values.
 
 Another situation where parameters are useful is when you want to loop through a list of records and
-write each record to the database. Because records may have differnt values for a given property, it's
+write each record to the database. Because records may have different values for a given property, it's
 a good idea to use parameters to provide the values dynamically.
 
 ## Syntax
@@ -65,6 +65,9 @@ conn.execute(
     """
 )
 ```
-
+:::caution[Note]
+You can also use provide parameters to `CALL QUERY_FTS_INDEX(...)` function calls.
+See the documentation on [FTS Index](/extensions/full-text-search#prepared-statement) for more details.
+:::
 
 

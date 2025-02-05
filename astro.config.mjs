@@ -65,6 +65,7 @@ export default defineConfig({
                         { label: 'Create your first graph', link: '/get-started' },
                         { label: 'Query & visualize your graph', link: '/get-started/cypher-intro' },
                         { label: 'Run prepared Cypher statements', link: '/get-started/prepared-statements' },
+                        { label: 'Scan data from various sources', link: '/get-started/scan'},
                         { label: 'Run graph algorithms', link: '/get-started/graph-algorithms' },
                     ]
                 },
@@ -148,6 +149,7 @@ export default defineConfig({
                         { label: 'Go', link: '/client-apis/go' },
                         { label: 'C++', link: '/client-apis/cpp' },
                         { label: 'C', link: '/client-apis/c' },
+                        { label: 'WebAssembly', link: '/client-apis/wasm' },
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}},
                         { label: 'Elixir', link: '/client-apis/elixir', badge: { text: 'Community', variant: 'caution'}}
                     ],
@@ -197,8 +199,9 @@ export default defineConfig({
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
-                        { label: 'Iceberg', link: '/extensions/iceberg', badge: { text: 'New' }},
-                        { label: 'Delta Lake', link: '/extensions/delta', badge: { text: 'New' }},
+                        { label: 'Iceberg', link: '/extensions/iceberg' },
+                        { label: 'Delta Lake', link: '/extensions/delta' },
+                        { label: 'Full-text search', link: '/extensions/full-text-search', badge: { text: 'New' }},
                     ],
                     autogenerate: { directory: 'reference' },
                 },

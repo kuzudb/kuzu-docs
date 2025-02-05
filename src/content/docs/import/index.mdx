@@ -52,6 +52,15 @@ The following sections show how to bulk import data using `COPY FROM` on various
 
 </CardGrid>
 
+:::caution[Note]
+Similar to the [LOAD FROM](/cypher/query-clauses/load-from.md) clause, the `COPY FROM` clause determines the file format based on the file extension if the `file_format` option is not provided. Alternatively, the `file_format` option can be used in the `COPY FROM` clause to explicitly specify the file format.
+
+Example: To copy from a file ending with an arbitrary extension like `.dsv`, use the `file_format = 'csv'` option to explicitly tell Kùzu to treat the file as a `CSV` file.
+```
+COPY person FROM 'person.dsv' (file_format = 'csv')
+```
+:::
+
 ## `COPY FROM` a partial subset
 
 In certain cases, you may only want to partially fill your Kùzu table using the data from your input
@@ -202,12 +211,19 @@ CALL warning_limit=1024;
 ```
 ### Skippable Errors By Source
 
-Currently `IGNORE_ERRORS` option works when scanning files (and not in-memory data frames or when running
-`COPY/LOAD FROM` on sub-queries). For different files, the errors that can be skipped can be different.
-If the error is not skippable in a file format, `COPY/LOAD FROM` will instead error and fail.
+Currently `IGNORE_ERRORS` option works when scanning files or in-memory data frames (but not when running
+`COPY/LOAD FROM` on sub-queries). For different sources, the errors that can be skipped can be different.
+If the error is not skippable for a specific source, `COPY/LOAD FROM` will instead error and fail.
 Below is a table that shows the errors that are skippable by each source.
 
 ||Parsing Errors|Casting Errors|Duplicate/Null/Missing Primary-Key errors|
-|----|----|----|----|
-|CSV| X | X | X |
-|JSON/Numpy/Parquet|||X|
+|---|:---:|:---:|:---:|
+|CSV| ✅ | ✅ | ✅ |
+|JSON| ❌ | ❌ | ✅ |
+|Numpy| ❌ | ❌ | ✅ |
+|Parquet| ❌ | ❌ | ✅ |
+|PyArrow tables| ❌ | ❌ | ✅ |
+|Pandas DataFrames| ❌ | ❌ | ✅ |
+|Polars DataFrames| ❌ | ❌ | ✅ |
+
+
