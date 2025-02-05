@@ -9,12 +9,11 @@ browsers.
 
 ## Benefits of WASM
 
-Kùzu-Wasm enables the following:
+Several benefits of Kùzu-Wasm are the following:
 
-- Fast, in-browser graph analysis without ever sending data to a server
-- Strong data privacy guarantees, as the data never leaves the browser
-- Real-time interactive dashboards
-- Lightweight, portable solutions that leverage graphs within web applications
+- Fast, in-browser graph analysis without ever sending data to a server.
+- Strong data privacy guarantees, as the data never leaves the browser.
+- Real-time interactive in-browser graph analytics and visualization.
 
 ## Installation
 
@@ -24,84 +23,19 @@ npm i kuzu-wasm
 
 ## Example usage
 
-The example shown below sets up a graph database in the browser using Kùzu's WebAssembly implementation.
+We provide a simple example to demonstrate how to use Kùzu-Wasm. In this example, we will create a simple graph and run a few simple queries.
 
-```js
-// Import library
-import kuzu from './index.js';
+We provide three versions of this example: 
+- `browser_in_memory`: This example demonstrates how to use Kùzu-Wasm in a web browser with an in-memory filesystem.
+- `browser_persistent`: This example demonstrates how to use Kùzu-Wasm in a web browser with a persistent IDBFS filesystem.
+- `nodejs`: This example demonstrates how to use Kùzu-Wasm in Node.js.
 
-(async () => {
-  // Write the data into WASM filesystem
-  const userCSV = `Adam,30
-Karissa,40
-Zhang,50
-Noura,25`;
-  const cityCSV = `Waterloo,150000
-Kitchener,200000
-Guelph,75000`;
-  const followsCSV = `Adam,Karissa,2020
-Adam,Zhang,2020
-Karissa,Zhang,2021
-Zhang,Noura,2022`;
-  const livesInCSV = `Adam,Waterloo
-Karissa,Waterloo
-Zhang,Kitchener
-Noura,Guelph`;
-
-  await kuzu.FS.writeFile("/user.csv", userCSV);
-  await kuzu.FS.writeFile("/city.csv", cityCSV);
-  await kuzu.FS.writeFile("/follows.csv", followsCSV);
-  await kuzu.FS.writeFile("/lives-in.csv", livesInCSV);
-
-  // Create an empty database and connect to it
-  const db = new kuzu.Database("./test");
-  const conn = new kuzu.Connection(db);
-
-  // Create the tables
-  await conn.query(
-    "CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))"
-  );
-  await conn.query(
-    "CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))"
-  );
-  await conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
-  await conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
-
-  // Load the data
-  await conn.query('COPY User FROM "user.csv"');
-  await conn.query('COPY City FROM "city.csv"');
-  await conn.query('COPY Follows FROM "follows.csv"');
-  await conn.query('COPY LivesIn FROM "lives-in.csv"');
-  const queryResult = await conn.query("MATCH (u:User) -[l:LivesIn]-> (c:City) RETURN u.name, c.name");
-
-  // Get all rows from the query result
-  const rows = await queryResult.getAllObjects();
-
-  // Print the rows
-  for (const row of rows) {
-    console.log(`User ${row['u.name']} lives in ${row['c.name']}`);
-  }
-})();
-```
-
-This script can be directly embedded in an HTML file, for example:
-
-```html
-<!DOCTYPE html>
-<html>
-<body>
-    <h1>Welcome to WASM Test Server</h1>
-    <script type="module">
-    // Paste the script here
-    </script>
-</body>
-</html>
-```
+The example can be found in [the examples directory](https://github.com/kuzudb/kuzu/tree/master/tools/wasm/examples).
 
 ## Understanding the package
 
 In this package, three different variants of WebAssembly modules are provided:
-- **Default**: This is the default build of the WebAssembly module. It does not support multi-threading and uses Emscripten's default filesystem. This build has the smallest size and works in both Node.js and browser environments. It has the best compatibility and does not require cross-origin isolation. However, the performance maybe limited due to the lack of multithreading support. This build is located at the root level of the package.
+- **Default**: This is the default build of the WebAssembly module. It does not support multi-threading and uses Emscripten's default filesystem. This build has the smallest size and works in both Node.js and browser environments. It has the best compatibility and does not require cross-origin isolation. However, the performance may be limited due to the lack of multithreading support. This build is located at the root level of the package.
 - **Multi-threaded**: This build supports multi-threading and uses Emscripten's default filesystem. This build has a larger size compared to the default build and only requires [cross-origin isolation](https://web.dev/articles/cross-origin-isolation-guide) in the browser environment. This build is located in the `multithreaded` directory.
 - **Node.js**: This build is optimized for Node.js and uses Node.js's filesystem instead of Emscripten's default filesystem (`NODEFS` flag is enabled). This build also supports multi-threading. It is distributed as a CommonJS module rather than an ES module to maximize compatibility. This build is located in the `nodejs` directory. Note that this build only works in Node.js and does not work in the browser environment.
 
@@ -116,8 +50,8 @@ In each variant, the main module is bundled as one script file. However, the wor
 
 By default, the worker script is resolved under the same directory / URL prefix as the main module. If you want to change the location of the worker script, you can use pass the optional worker path parameter to the `setWorkerPath` function. For example:
 ```javascript
-import { setWorkerPath } from 'kuzu-wasm';
-setWorkerPath('path/to/worker.js');
+import kuzu from "kuzu-wasm";
+kuzu.setWorkerPath('path/to/worker.js');
 ```
 
 Note that this function must be called before any other function calls to the WebAssembly module. After the initialization is started, the worker script path cannot be changed and not finding the worker script will cause an error.
@@ -125,7 +59,11 @@ Note that this function must be called before any other function calls to the We
 For the Node.js variant, the worker script can be resolved automatically and you do not need to set the worker path.
 
 ## API documentation
-The API documentation can be found [here](https://kuzudb.com/api-docs/wasm/).
+The API documentation can be found here:
+
+**Synchronous** version: [API documentation](https://kuzudb.com/api-docs/wasm/sync/)
+
+**Asynchronous** version: [API documentation](https://kuzudb.com/api-docs/wasm/async/)
 
 ## Local development
 

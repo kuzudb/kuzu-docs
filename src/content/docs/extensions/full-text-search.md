@@ -4,12 +4,12 @@ title: "Full Text Search"
 
 ## Usage
 
-The `FTS` (full-text search) extension adds support for matching within the content of a string property
+The full-text search (`FTS`) extension adds support for matching within the content of a string property
 while returning the documents with a proximity score to the query. It is enabled by building an index
 on string properties in a table and allows searching through the strings via a keyword query.
 Currently, Kùzu supports only indexing on a node table's `STRING` properties.
 
-The FTS functionality is not available by default, so you would first need to install the `FTS`
+The FTS functionality is not available by default, so you first need to install the `FTS`
 extension by running the following commands:
 
 ```sql
@@ -31,8 +31,7 @@ CREATE (b:Book {abstract: 'A deep dive into the history of ancient civilizations
 CREATE (b:Book {abstract: 'A fantasy tale of dragons and magic.', title: 'The Dragon\'s Call'});
 ```
 
-In the following sections, we will build a full-text search index on the book table, and demonstrate how to search for books relevant to a keyword query.
-
+In the following sections, we show how to build and query a full-text search index on the book table.
 ### Create FTS index
 
 Kùzu provides a function `CREATE_FTS_INDEX` to create the full-text search index on a table:
@@ -63,15 +62,12 @@ CALL CREATE_FTS_INDEX(
     'book_index',   // Index name
     ['abstract', 'title'],   // Properties to build FTS index on
     stemmer := 'porter'   // Stemmer to use (optional)
-)
 ```
-
-Depending on the size of the dataset, the index creation may take some time. Once the index creation is complete,
-the index will be ready to use for full-text search.
+Once the index is created, the index will be ready for querying as shown below.
 
 ### Query FTS index
 
-Kùzu provides a table function `QUERY_FTS_INDEX` to query the FTS index on a table using the [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) scoring algorithm:
+Kùzu provides the `QUERY_FTS_INDEX` function to query the FTS index on a table using the [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) scoring algorithm:
 
 ```cypher
 CALL QUERY_FTS_INDEX(
@@ -82,17 +78,22 @@ CALL QUERY_FTS_INDEX(
 )
 RETURN node, score
 ```
-- `TABLE_NAME`: The name of the table to query
-- `INDEX_NAME`: The name of the FTS index to query
-- `QUERY`: The query string
+- `TABLE_NAME`: The name of the table to query.
+- `INDEX_NAME`: The name of the FTS index to query. 
+- `QUERY`: The query string that contains the keywords to search.
 
+:::caution[Note]
+Uniqueness of index names: If you build multiple FTS indices on a table, they 
+must have different names. However, multiple FTS indices can have the same
+name as long as each one is built on a separate table.
+:::
 The following optional parameters are supported:
 
-1. `conjunctive`: Whether all keywords in the query should appear in order for a document to be retrieved, default to false.
-2. `K`: parameter controls the influence of term frequency saturation. It limits the effect of additional occurrences of a term within a document. Defaults to 1.2.
-3. `B`: parameter controls the degree of length normalization by adjusting the influence of document length. Defaults to 0.75.
+1. `conjunctive`: Whether all keywords in the query should appear in order for a document to be retrieved. Defaults to false.
+2. `K`: controls the influence of term frequency saturation. This limits the effect of additional occurrences of a term within a document. Defaults to 1.2.
+3. `B`: controls the degree of length normalization by adjusting the influence of document length. Defaults to 0.75.
 
-Detailed explanation of k and b values can be found [there](https://learn.microsoft.com/en-us/azure/search/index-ranking-similarity)
+Detailed explanation of k and b values can be found [here](https://learn.microsoft.com/en-us/azure/search/index-ranking-similarity).
 
 The below example shows how to query books related to the `quantum machine` and order the books by their scores:
 ```cypher
@@ -163,14 +164,14 @@ CALL DROP_FTS_INDEX('Book', 'book_index')
 
 ### Show FTS indexes
 
-There is no function specifically to show FTS indexes, but there is a general function [`SHOW_INDEXES`](/cypher/query-clauses/call) that
+There is no function to specifically show FTS indexes, but there is a general function [`SHOW_INDEXES`](/cypher/query-clauses/call) that
 can be used to show all the indexes available in the database.
 
 ```cypher
 CALL SHOW_INDEXES() RETURN *;
 ```
 This will return a list of all the indexes available in the database, while also listing the type of each
-index. Scan the table to find the FTS indexes that are currently available.
+index.
 
 ```
 ┌────────────┬────────────┬────────────┬──────────────────┬──────────────────┬──────────────────────────────────────────────────────────────────────────────────────────┐
@@ -184,21 +185,20 @@ index. Scan the table to find the FTS indexes that are currently available.
 ### Prepared statement
 
 [Prepared statements](/get-started/prepared-statements) allows you to execute a query with different parameter values without rebinding the same query.
-A typical use case where parameters are useful is when you want to find books with different contents.
-
-Example:
-Let's start with preparing a cypher statement which queries the `book_index`.
+You can parameterize your `CALL QUERY_FTS_INDEX` calls. For example,
+suppose you want to find books with different keywords. We give
+an example below using our C++ API but you can create prepared statements in other APIs as well.
+We first prepare a Cypher statement which queries the `book_index` with a parameter `q`.
 ```c++
 auto preparedStatement = conn->prepare("CALL QUERY_FTS_INDEX('Book', 'book_index', $q) RETURN node.ID, score;");
 ```
-Now, we can find books with different contents using the prepared statement without rebinding.
-
-#### Find books related to `machine learning`
+Now, we can find books with different keywords using the prepared statement and 
+specifying different values for `q`. For example, to query the index with keywords `machine learning`, we can do:
 ```c++
 auto result = conn->execute(prepared.get, std::make_pair(std::string("q"), std::string("machine learning")));
 ```
 
-#### Find books related to `dragons`
+Similarly, to query the index with the keyword `dragons`, we can do:
 ```c++
 auto result = conn->execute(prepared.get, std::make_pair(std::string("q"), std::string("dragons")));
 ```
