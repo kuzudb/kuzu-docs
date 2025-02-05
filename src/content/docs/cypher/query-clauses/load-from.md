@@ -21,14 +21,20 @@ Some example usage for the `LOAD FROM` clause is shown below.
 
 ```cypher
 LOAD FROM "user.csv" (header = true)
-WHERE CAST(age, INT64) > 25
+WHERE age > 25
 RETURN COUNT(*);
-----------------
-| COUNT_STAR() |
-----------------
-| 3            |
-----------------
 ```
+This returns:
+```
+┌──────────────┐
+│ COUNT_STAR() │
+│ INT64        │
+├──────────────┤
+│ 3            │
+└──────────────┘
+```
+
+### Skipping lines
 
 To skip the first 2 lines of the CSV file, you can use the `SKIP` parameter as follows:
 
@@ -38,20 +44,28 @@ RETURN *;
 ```
 
 ### Create nodes from input file
-```cypher
-LOAD FROM "user.csv" (header = true)
-CREATE (:User {name: name, age: CAST(age, INT64)});
 
-MATCH (u:User) RETURN u;
-----------------------------------------------------
-| u                                                |
-----------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30}    |
-----------------------------------------------------
-| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} |
-----------------------------------------------------
-| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}   |
-----------------------------------------------------
+You can pass the contents of `LOAD FROM` to a 
+
+```cypher
+// Create a node table
+// Scan file and use its contents to create nodes
+LOAD FROM "user.csv" (header = true)
+CREATE (:User {name: name, age: CAST(age AS INT64)});
+
+// Return the nodes we just created
+MATCH (u:User) RETURN u.name, u.age;
+```
+```
+┌─────────┬───────┐
+│ u.name  │ u.age │
+│ STRING  │ INT64 │
+├─────────┼───────┤
+│ Adam    │ 30    │
+│ Karissa │ 40    │
+│ Zhang   │ 50    │
+│ Noura   │ 25    │
+└─────────┴───────┘
 ```
 
 ### Reorder and subset columns
@@ -64,16 +78,16 @@ input file has more columns specified in a different order.
 // Return age column before the name column
 LOAD FROM "user.csv" (header = true)
 RETURN age, name LIMIT 3;
-
---------------------
-| age | name       |
---------------------
-| 30  | Adam       |
---------------------
-| 40  | Karissa    |
---------------------
-| 50  | Zhang      |
---------------------
+```
+```
+┌───────┬─────────┐
+│ age   │ name    │
+│ INT64 │ STRING  │
+├───────┼─────────┤
+│ 30    │ Adam    │
+│ 40    │ Karissa │
+│ 50    │ Zhang   │
+└───────┴─────────┘
 ```
 
 ### Bound variable names and data types
@@ -97,11 +111,12 @@ WHERE name =~ 'Adam*'
 RETURN name, age;
 ```
 ```
---------------
-| name | age |
---------------
-| Adam | 30  |
---------------
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Adam   │ 30    │
+└────────┴───────┘
 ```
 
 :::caution[Note]
