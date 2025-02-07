@@ -85,7 +85,7 @@ Output:
 
 #### `LIST` functions
 
-Full list of functions used to transform or manipulate lists can be found [here](/cypher/expressions/list-functions.md).
+A full list of functions used to transform or manipulate lists can be found [here](/cypher/expressions/list-functions).
 
 ## ARRAY
 
@@ -165,4 +165,4 @@ Output:
 
 #### `ARRAY` functions
 
-Full list of functions used to transform or manipulate arrays can be found [here](/cypher/expressions/array-functions.md).
+A full list of functions used to transform or manipulate arrays can be found [here](/cypher/expressions/array-functions).
