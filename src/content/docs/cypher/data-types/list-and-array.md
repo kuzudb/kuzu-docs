@@ -83,6 +83,10 @@ Output:
 (1 column)
 ```
 
+#### `LIST` functions
+
+A full list of functions used to transform or manipulate lists can be found [here](/cypher/expressions/list-functions).
+
 ## ARRAY
 
 `ARRAY` is a special case of `LIST`, in which the number of elements is fixed. Just like a `LIST`,
@@ -158,3 +162,7 @@ Output:
 (6 tuples)
 (1 column)
 ```
+
+#### `ARRAY` functions
+
+A full list of functions used to transform or manipulate arrays can be found [here](/cypher/expressions/array-functions).
