@@ -64,3 +64,44 @@ ecosystem. Click on the links below to open and run the notebooks.
     href="https://colab.research.google.com/drive/16FscFHwSKQNXFprChdQufMP7G6u8cMTS"
   />
 </CardGrid>
+
+## Other language tutorials:
+For toher language APIs which Kùzu supports, we will be using the following dataset to explore the extensive abilities which graph database is able to provide.
+
+The network which we will be using in this tutorial is suppose to simulate a community of users in a social network. The data for the network is in this [zip file](https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip).
+
+The schema of the community is of follows:
+
+![Graph Schema](./Graph_Schema.png)
+
+## Nodes
+### **User**: 
+The User node represents users within the social network. Each user has their information attached, such as:
+- **user_id** (INT64): This is an unique id which is used to sort and find users. 
+- **username** (STRING): This is the unique username which each user will have.
+- **account_creation_date** (DATE): This represents the date which the account was created.
+
+### **Post**:
+The Post node represents the posts which has been made on the social network. Each post has its information attached, such as:
+- **post_id** (INT64): This is an unique id which is used to sort and find posts.
+- **creation_date** (DATE): This represents the date which the account was created.
+- **like_count** (INT64): This represents the amount of likes the post has received.
+- **retweet_count** (INT64): This represents the amount of retweets the post has received.
+
+## Relations
+### **FOLLOWS**
+The relationship `FOLLOWS` goes from `User` node to `User` node. This relation represents a user following another user on the social network.
+
+### **POSTS** 
+The relationship `POSTS` goes from `User` node to `Post` node. This relation represents a user posting the post on the social network.
+
+### **LIKES**
+The relationship `Likes` goes from `User` node to `Post` node. This relation represents a user liking the post on the social network.
+
+<CardGrid>
+  <LinkCard
+    title="Rust"
+    description="Tutorial for Kùzu's Rust API"
+    href="/tutorials/rust/rust_tutorial"
+  />
+</CardGrid>
