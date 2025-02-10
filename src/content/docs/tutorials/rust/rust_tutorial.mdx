@@ -44,18 +44,6 @@ Replace `main.rs` with the following code snippet:
 ```rs
 use kuzu::{Connection, Database, Error, SystemConfig};
 
-// We will be using this function to print results to the terminal
-fn print_result(result: Vec<Vec<&str>>) {
-    for row in result {
-        let row_str = row.iter()
-            .map(|col| col.to_string())  
-            .collect::<Vec<String>>()    
-            .join(", ");              
-
-        println!("{}", row_str);
-    }
-}
-
 fn main() -> Result<(), Error> {
     // This is where our queries will be inputted and executed.
 
@@ -117,11 +105,12 @@ let result = conn.query("CALL SHOW_TABLES() RETURN *")?;
 ```
 Returns:
 ```
-2, FOLLOWS, REL, local(kuzu), 
-1, Post, NODE, local(kuzu),
-0, User, NODE, local(kuzu),
-4, LIKES, REL, local(kuzu),
-3, POSTS, REL, local(kuzu),
+id|name|type|database name|comment
+2|FOLLOWS|REL|local(kuzu)|
+1|Post|NODE|local(kuzu)|
+0|User|NODE|local(kuzu)|
+4|LIKES|REL|local(kuzu)|
+3|POSTS|REL|local(kuzu)|
 ```
 
 Alternatively, we can also export the data into csv files for external processing.
@@ -156,11 +145,12 @@ let result = conn.query("
     RETURN u2.username
     LIMIT 5
     ")?;
-print_result(result);
+result.display();
 ```
 
 Returns:
 ```
+u2.username
 epicwolf202
 epicwolf202
 epicwolf202
@@ -179,15 +169,16 @@ let result = conn.query("
     RETURN u2.username, count(u2) as follower_count 
     LIMIT 5
     ")?;
-print_result(result);
+println!("{}", result.display());
 ```
 Returns
 ```
-coolwolf752, 3
-stormfox762, 5
-darkdog878, 6
-brightninja683, 5
-stormcat597, 2
+u2.username|follower_count
+fastgirl798|4
+epicking81|3
+stormcat597|2
+epiccat105|4
+darkdog878|6
 ```
 This is a lot more useful! we can now clearly see how many follower each user has.
 3. Lastly, we use `ORDER BY` and `LIMIT` to order the usernames by their amount of followers, and return only the first entry. This is the user we are looking for, and how many followers that user has:
@@ -198,11 +189,12 @@ let result = conn.query("
     ORDER BY follower_count DESC 
     LIMIT 1
     ")?;
-print_result(result);
+println!("{}", result.display());
 ```
 Returns:
 ```
-darkdog878, 6
+u2.username|follower_count
+darkdog878|6
 ```
 
 ### Q2: What is the shortest path between two users?
@@ -216,11 +208,12 @@ result = conn.query("
     AND u2.username = 'epicwolf202'
     RETURN p
     ")?;
-print_result(result);
+println!("{}", result.display());
 ```
 Returns:
 ```
-{_NODES: [(label:User, 0:19, {user_id:20,username:silentguy245,account_creation_date:2022-10-11}),(label:User, 0:14, {user_id:15,username:mysticwolf198,account_creation_date:2021-01-04}),(label:User, 0:0, {user_id:1,username:epicwolf202,account_creation_date:2022-09-09})], _RELS: [(0:19)-[label:FOLLOWS, {}]->(0:14),(0:14)-[label:FOLLOWS, {}]->(0:0)]}
+p
+{_NODES: [{_ID: 0:19, _LABEL: User, user_id: 20, username: silentguy245, account_creation_date: 2022-10-11},{_ID: 0:14, _LABEL: User, user_id: 15, username: mysticwolf198, account_creation_date: 2021-01-04},{_ID: 0:0, _LABEL: User, user_id: 1, username: epicwolf202, account_creation_date: 2022-09-09}], _RELS: [(0:19)-{_LABEL: FOLLOWS, _ID: 2:64}->(0:14),(0:14)-{_LABEL: FOLLOWS, _ID: 2:47}->(0:0)]}
 ```
 This will return us a result in `RECURSIVE_REL` datatype, which is diffcult to interpret.
 2. We will then simplify the result using some [recursive relationship functions](/cypher/expressions/recursive-rel-functions)
@@ -231,10 +224,11 @@ result = conn.query("
     AND u2.username = 'epicwolf202'
     RETURN properties(nodes(p), 'username')
     ")?;
-print_result(result);
+println!("{}", result.display());
 ```
 Returns:
 ```
+PROPERTIES(NODES(p),username)
 [silentguy245,mysticwolf198,epicwolf202]
 ```
 
@@ -245,10 +239,11 @@ result = conn.query("
     MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
     RETURN count(u4)
     ")?;
-print_result(result);
+println!("{}", result.display());
 ```
 Returns:
 ```
+COUNT(u4._ID)
 667
 ```
 Meaning that there are 667 3-hop paths altogether.
@@ -264,31 +259,21 @@ let query = format!("
     RETURN count(u4)
     ", u1, u2, u3, u3);
 result = conn.query(&query)?;
-print_result(result);
+println!("{}", result.display());
 ```
 Returns
 ```
+COUNT(u4._ID)
 1
 ```
 Meaning there is exactly one 3-hop path between the three users specified.
 
+## Summary
 In summary, we've shown how to use Kùzu's Rust API to view our data as a graph, query it in Cypher, and output the results in various formats. Try these methods out on your own datasets, and have fun using Kùzu!
 
 Entire `main.rs`:
 ```rs
 use kuzu::{QueryResult, Connection, Database, Error, SystemConfig};
-
-// We will be using this function to print results to the terminal
-fn print_result(result: QueryResult) {
-    for row in result {
-        let row_str = row.iter()
-            .map(|col| col.to_string())  
-            .collect::<Vec<String>>()    
-            .join(", ");              
-
-        println!("{}", row_str);
-    }
-}
 
 fn create_table(conn: &Connection) -> Result<(), Error> {
     conn.query("
@@ -333,14 +318,14 @@ fn query_one(conn: &Connection) -> Result<(), Error> {
         RETURN u2.username
         LIMIT 5
     ")?;
-    print_result(result);   
+    println!("{}", result.display()); 
 
     result = conn.query("
         MATCH (u1:User)-[f:FOLLOWS]->(u2:User) 
         RETURN u2.username, count(u2) as follower_count 
         LIMIT 5
     ")?;
-    print_result(result);
+    println!("{}", result.display());
 
     result = conn.query("
         MATCH (u1:User)-[f:FOLLOWS]->(u2:User) 
@@ -348,7 +333,7 @@ fn query_one(conn: &Connection) -> Result<(), Error> {
         ORDER BY follower_count DESC 
         LIMIT 1
     ")?;
-    print_result(result);
+    println!("{}", result.display());
     Ok(())
 }
 
@@ -360,7 +345,7 @@ fn query_two(conn: &Connection) -> Result<(), Error> {
         AND u2.username = 'epicwolf202'
         RETURN p
     ")?;
-    print_result(result);
+    println!("{}", result.display());
 
     result = conn.query("
         MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
@@ -368,7 +353,7 @@ fn query_two(conn: &Connection) -> Result<(), Error> {
         AND u2.username = 'epicwolf202'
         RETURN properties(nodes(p), 'username')
     ")?;
-    print_result(result);
+    println!("{}", result.display());
     Ok(())
 }
 
@@ -378,7 +363,7 @@ fn query_three(conn: &Connection) -> Result<(), Error> {
         MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
         RETURN count(u4)
     ")?;
-    print_result(result);
+    println!("{}", result.display());
 
     let u1 = "'epicwolf202'";
     let u2 = "'stormcat597'";
@@ -389,7 +374,7 @@ fn query_three(conn: &Connection) -> Result<(), Error> {
         RETURN count(u4)
         ", u1, u2, u3, u3);
     result = conn.query(&query)?;
-    print_result(result);
+    println!("{}", result.display());
     Ok(())
 }
 
@@ -400,6 +385,8 @@ fn main() -> Result<(), Error> {
     let conn = Connection::new(&db)?;
     create_table(&conn);
     populate_data(&conn);
+    let mut result = conn.query("CALL SHOW_TABLES() RETURN *")?;
+    println!("{}", result.display());
     query_one(&conn);
     query_two(&conn);
     query_three(&conn);
