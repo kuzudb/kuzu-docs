@@ -100,7 +100,7 @@ let result = conn.query("CALL SHOW_TABLES() RETURN *")?;
 ```
 
 Alternatively, we can also export the data into csv files for external processing.
-``` Rust
+```rs
 conn.query("
     COPY (CALL SHOW_TABLES() RETURN *) 
     TO 'tables.csv' (header=true)
@@ -207,6 +207,10 @@ result = conn.query("
     RETURN properties(nodes(p), 'username')
     ")?;
 print_result(result);
+```
+Returns:
+```
+[silentguy245,mysticwolf198,epicwolf202]
 ```
 
 ### Q3: How many 3-hop paths exist between userA and userB that passes through userC?

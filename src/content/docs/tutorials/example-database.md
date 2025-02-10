@@ -1,3 +1,7 @@
+---
+title: Example database
+---
+
 The schema of the community is of follows:
 
 ![Graph Schema](./Graph_Schema.png)
