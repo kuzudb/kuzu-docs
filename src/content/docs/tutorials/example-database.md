@@ -9,7 +9,7 @@ The schema of the community is of follows:
 ## Nodes
 ### **User**: 
 The User node represents users within the social network. Each user has their information attached, such as:
-- **user_id** (INT64): This is an unique id which is used to sort and find users. 
+- **user_id** (INT64): This is an unique id which is used to sort and find users.
 - **username** (STRING): This is the unique username which each user will have.
 - **account_creation_date** (DATE): This represents the date which the account was created.
 ```

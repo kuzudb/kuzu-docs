@@ -28,6 +28,17 @@ cargo add kuzu
 ```
 
 Create a new directory at the root level of the project called `data`. Next, [download the zipped data](https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip), unzip the files and copy them to the `data` directory.
+Your directory should look like:
+```
+data/
+├── node/
+│   ├── user.csv
+│   ├── post.csv
+├── relation/
+│   ├── FOLLOWS.csv
+│   ├── POSTS.csv
+│   ├── LIKES.csv
+```
 
 Replace `main.rs` with the following code snippet:
 ```rs
@@ -57,11 +68,11 @@ We are now ready to start the tutorial.
 In order to create the graph in Kùzu, we first need to create a new Kùzu database. We do this by using the following commands in Rust:
 ```rs
 // Create an empty on-disk database and connect to it
-let db = Database::new("./demo_db", SystemConfig::default())?;
+let db = Database::new("./social_network_rs_db", SystemConfig::default())?;
 let conn = Connection::new(&db)?;
 ```
-This will create a database directory called `./demo_db`, where our data will be stored. Kùzu also supports `in-memory mode` in which case the lifetime of the database will be only during the execution of the Rust program.
-For more information, please refer to our docs on [Create your first graph](/get-started/index.mdx)
+This will create a database directory called `./social_network_rs_db`, where our data will be stored. Kùzu also supports `in-memory mode` in which case the lifetime of the database will be only during the execution of the Rust program.
+For more information, please refer to our docs on [Create your first graph](/get-started/#index).
 
 ## Define schema
 The first step in building any Kùzu graph is schema definition. We will define the node and relationships tables as per our desired schema as follows:
@@ -91,12 +102,26 @@ conn.query("
     CREATE REL TABLE LIKES(FROM User TO Post)
     ")?;
 ```
-For more information on the syntax of table creation, please refer to our documentation on [Syntax](/cypher/syntax.md)
+:::caution[note]
+When creating table, it is required to provide the column name and column type, with `,` separating each column. 
+It is also required that exactly one column is explicitly stated to be the PRIMARY KEY column. This is the column which is used to sort entries in the table. 
+User may define this PRIMARY KEY by appending the keyword `PRIMARY KEY` after any of the column definitions, or by appending `PRIMARY KEY(column_name)` as the last parameter of the creation clause. 
+
+For more information on the syntax of table creation, please refer to our documentation on [Syntax](/cypher/syntax)
+:::
 
 ## Checking table information
 We can check information on the tables we have in the database with the following commands:
 ```rs
 let result = conn.query("CALL SHOW_TABLES() RETURN *")?;
+```
+Returns:
+```
+2, FOLLOWS, REL, local(kuzu), 
+1, Post, NODE, local(kuzu),
+0, User, NODE, local(kuzu),
+4, LIKES, REL, local(kuzu),
+3, POSTS, REL, local(kuzu),
 ```
 
 Alternatively, we can also export the data into csv files for external processing.
@@ -106,7 +131,7 @@ conn.query("
     TO 'tables.csv' (header=true)
     ")?;
 ```
-For more information on data exporting, please referring to our documentation on [Export data](/export/index.mdx);
+For more information on data exporting, please referring to our documentation on [export data](/export/#index).
 
 ## Import data
 After creating the tables, we can import the data. We do so by using the `COPY FROM` commands, like this:
@@ -117,7 +142,7 @@ conn.query("COPY FOLLOWS FROM './data/relation/FOLLOWS.csv'")?;
 conn.query("COPY POSTS FROM './data/relation/POSTS.csv'")?;
 conn.query("COPY LIKES FROM './data/relation/LIKES.csv'")?;
 ```
-For more information on loading in data, please refer to our documentation on  [import data](/import/csv.md)
+For more information on loading in data, please refer to our documentation on  [import data](/import/csv).
 
 ## Querying queries
 We can now proceed to querying the database to answer some questions about the social network. Here are some examples of what queries can be answered with ease using Kùzu:
@@ -143,7 +168,7 @@ silentninja637
 silentninja637
 ```
 
-For more information on `MATCH`, please refer to our documentation in [Cypher Manual](/cypher/index.md).
+For more information on `MATCH`, please refer to our documentation in [Cypher Manual](/cypher/#index).
 
 For each relation `FOLLOWS`, this will return the followee's username of that relation. While this doesn't provide much useful information yet, we may improve on this query by using aggregation.
 
@@ -183,7 +208,7 @@ darkdog878, 6
 ### Q2: What is the shortest path between two users?
 Another question which we might be interested in answering is finding the shortest path between two users. 
 For example, how many follows does it take to get from user `silentguy245` to `epicwolf202`? 
-1. We can query this by using [recursive match](/cypher/query-clauses/match.md) to find shortest path length:
+1. We can query this by using [recursive match](/cypher/query-clauses/match) to find shortest path length:
 ```rs
 result = conn.query("
     MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
@@ -198,7 +223,7 @@ Returns:
 {_NODES: [(label:User, 0:19, {user_id:20,username:silentguy245,account_creation_date:2022-10-11}),(label:User, 0:14, {user_id:15,username:mysticwolf198,account_creation_date:2021-01-04}),(label:User, 0:0, {user_id:1,username:epicwolf202,account_creation_date:2022-09-09})], _RELS: [(0:19)-[label:FOLLOWS, {}]->(0:14),(0:14)-[label:FOLLOWS, {}]->(0:0)]}
 ```
 This will return us a result in `RECURSIVE_REL` datatype, which is diffcult to interpret.
-2. We will then simplify the result using some [recursive relationship functions](/cypher/expressions/recursive-rel-functions.md)
+2. We will then simplify the result using some [recursive relationship functions](/cypher/expressions/recursive-rel-functions)
 ```rs
 result = conn.query("
     MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
