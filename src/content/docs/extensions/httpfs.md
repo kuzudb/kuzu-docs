@@ -21,7 +21,7 @@ LOAD EXTENSION httpfs;
 Example:
 
 ```sql
-LOAD FROM "https://extension.kuzudb.com/dataset/test/city.csv" 
+LOAD FROM "https://extension.kuzudb.com/dataset/test/city.csv"
 RETURN *;
 ```
 
@@ -116,10 +116,10 @@ Supported environments are:
 | S3 url style | S3_URL_STYLE |
 
 ## Local cache for remote files
-Remote file system calls can be expensive and highly dependent on the user's network conditions (bandwidth, latency). 
-Queries involving a large number of file operations (read, write, glob) can be slow. 
+Remote file system calls can be expensive and highly dependent on the user's network conditions (bandwidth, latency).
+Queries involving a large number of file operations (read, write, glob) can be slow.
 To expedite such queries, we introduce a new option: `HTTP_CACHE_FILE`.
-A local file cache is initialized when Kùzu requests the file for the first time. 
+A local file cache is initialized when Kùzu requests the file for the first time.
 Subsequent remote file operations will be translated as local file operation on the cache file.
 For example the below `CALL` statement enables the local cache for remote files:
 ```sql
@@ -130,9 +130,9 @@ Cached files are visible per transaction. Therefore, if you have
 set `HTTP_CACHE_FILE=TRUE` and then run a `LOAD FROM` statement on a remote file, say
 `LOAD FROM "https://.../test/city.csv RETURN *;"`, then this file will be downloaded first
 and then scanned locally from the downloaded file. If you run the same `LOAD FROM` statement again,
-it will be downloaded again from the remote URL. This is because the second statement is executed as a separate 
+it will be downloaded again from the remote URL. This is because the second statement is executed as a separate
 transaction and we do not know if the already downloaded remote file has changed since the last time Kùzu
-downloaded it. 
+downloaded it.
 
 If you need to scan the same remote file multiple times and benefit from caching across multiple scans,
 you can run all the `LOAD FROM` statements in the same transaction. Here is an example:
@@ -146,3 +146,74 @@ COMMIT;
 Now the second `LOAD FROM` statement will run much faster because the file is already downloaded and cached and
 the second scan is within the same transaction as the first one.
 :::
+
+## GCS file system
+The extension also allows users to read/write files hosted on Google Cloud Storage.
+
+### GCS credential management
+
+Before reading and writing from private GCS buckets, users will need to configure kuzu with their credentials.
+
+#### CALL statement
+
+The first way is to use the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement to update the following settings:
+
+| Option name | Description |
+|----------|----------|
+| `gcs_access_key_id` | GCS access key id |
+| `gcs_secret_access_key` | GCS secret access key |
+
+For example to set the access key id, you would run
+
+```sql
+CALL gcs_access_key_id={access_key_id};
+```
+
+#### Environment variables
+
+Another way is to provide the credentials through environment variables:
+
+| Setting | System environment variable |
+|----------|----------|
+| GCS access key ID | `GCS_ACCESS_KEY_ID` |
+| GCS secret access key | `GCS_SECRET_ACCESS_KEY` |
+
+### Additional configurations
+
+Since kuzu communicates with GCS through its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#s3-file-system-configuration).
+
+| Option name |
+|----------|
+| `s3_uploader_max_num_parts_per_file` |
+| `s3_uploader_max_filesize` |
+| `s3_uploader_threads_limit` |
+
+## Reading from GCS
+
+Files in GCS can be accessed through URLs with the formats
+
+- `gs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
+- `gcs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
+
+For example, if you wish to scan the file `follows.parquet` located in the root directory of bucket `kuzu-test` you could use the following query:
+
+```sql
+LOAD FROM 'gs://kuzu-test/follows.parquet'
+RETURN *;
+```
+
+## Uploading to GCS
+
+Just like with reading, you can write to files in GCS using URLs in the formats
+- `gs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
+- `gcs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
+
+For example, the following query will write to the file located at path `output/location.parquet` in the bucket `kuzu-dataset-us`:
+
+```sql
+COPY (
+    MATCH (p:Location)
+    RETURN p.*
+)
+TO 'gcs://kuzu-dataset-us/output/location.parquet'
+```
