@@ -32,7 +32,9 @@ Therefore you don't need to prefix your node and relationship tables.
 Instead you will use the alias to `DETACH` from the external Kùzu database.
 
 Suppose you are connected to a local database `./demo_db`. The below example shows how the Kùzu database hosted on S3 directory
-`'s3://kuzu-example/university` can be attached to using the alias `uw`. If you wish to attach to a database hosted on GCS instead, just replace the prefix `s3://` with `gs://` (in this case it would become `'gs://kuzu-example/university`):
+`'s3://kuzu-example/university` can be attached to using the alias `uw`.
+
+If you wish to attach to a database hosted on GCS instead, just replace the prefix `s3://` with `gs://` (in this case it would become `'gs://kuzu-example/university`). For more information on how to set up Kùzu with GCS, see [here](/extensions/httpfs#gcs-file-system).
 
 ```sql
 ATTACH 's3://kuzu-example/university' AS uw (dbtype kuzu);

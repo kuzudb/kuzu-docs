@@ -152,7 +152,7 @@ The extension also allows users to read/write files hosted on Google Cloud Stora
 
 ### GCS credential management
 
-Before reading and writing from private GCS buckets, users will need to configure kuzu with their credentials.
+Before reading and writing from private GCS buckets, users will need to configure Kùzu with their credentials.
 
 #### CALL statement
 
@@ -180,7 +180,7 @@ Another way is to provide the credentials through environment variables:
 
 ### Additional configurations
 
-Since kuzu communicates with GCS through its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#s3-file-system-configuration).
+Since Kùzu communicates with GCS through its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#s3-file-system-configuration).
 
 | Option name |
 |----------|
