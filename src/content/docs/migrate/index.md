@@ -17,21 +17,18 @@ are needed to be able to import this database to a new Kùzu version:
 - `Data files`: These files contain the actual database data (in CSV or Parquet format).
 
 The parameters for `EXPORT DATABASE` are the same as those used
-when running [`COPY TO`](https://docs.kuzudb.com/export/csv) statements. Here's an example of how to export a database
+when running [`COPY TO`](https://docs.kuzudb.com/export/) statements. The example below shows how to export a database using default configurations.
+```cypher
+EXPORT DATABASE '/path/to/export'
+```
+Table data is exported as `PARQUET` format by default for better compatibility and performance, however the `format` parameter can be used to change the output format of exported table data.
+The `format` parameter can either be `csv` or `parquet`.
+
+Here's an example of how to export a database
 using the CSV format for data files.
 
 ```cypher
 EXPORT DATABASE '/path/to/export' (format="csv", header=true);
-```
-
-The `format` parameter can be either be `csv` or `parquet`and if it is omitted, by default, it is set to `csv`. 
-When `format` is `csv`, you can provide an additional parameter, `header=true`, to specify that the header
-should be included in the CSV file.
-
-For more compact storage, you can export the data files in Parquet format as follows:
-
-```cypher
-EXPORT DATABASE '/path/to/export' (format="parquet");
 ```
 
 :::note[Note]
