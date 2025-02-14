@@ -47,13 +47,16 @@ The following optional parameters are supported:
 
 - `stemmer`: The text normalization technique to use. Should be one of: `arabic`, `basque`, `catalan`, `danish`, `dutch`, `english`, `finnish`, `french`, `german`, `greek`, `hindi`, `hungarian`, `indonesian`, `irish`, `italian`, `lithuanian`, `nepali`, `norwegian`, `porter`, `portuguese`, `romanian`, `russian`, `serbian`, `spanish`, `swedish`, `tamil`, `turkish`, or `none` if no stemming is to be used. Defaults to `english`,
 which uses a Snowball stemmer.
-
-The example below shows how to create an FTS index on the book table with the `abstract` and `title` properties using the `porter` stemmer.
+- `stopWords`: To prevent a full-text search index from becoming bloated, the full-text search engine omits commonly occurring string keywords(stopwords) when building and querying the full-text search index. By default, the built-in english stopwords is used. Stopwords list can be customized using the `stopWords` parameter. Kùzu accepts `stopWords` given in the following format:
+1. A node table with only a single string column of stopwords.
+2. A text file with each stopword on a separate line. This file can be stored in cloud storage platforms like Amazon S3 or Google Cloud Storage (GCS) or made accessible via HTTPS. If hosted remotely, ensure the httpfs extension is enabled and valid credentials (e.g., access keys) are configured to authenticate and securely access the file.
+The example below shows how to create an FTS index on the book table with the `abstract` and `title` properties using the `porter` stemmer and a customized stopwords list.
 
 :::caution[Note]
 1. Kùzu uses special syntax for optional parameters. Note how the `:=` operator is used to assign a value
 to an optional parameter in the example below.
 2. Users can only build full text search indexes on node tables.
+3. Once a full-text search index is created, the stopword list becomes immutable. All queries against the index will permanently reference the original stopword list used during its creation. To update the stopword configuration, you must rebuild the index with the revised stopword list.
 :::
 
 ```cypher
@@ -61,8 +64,9 @@ CALL CREATE_FTS_INDEX(
     'Book',   // Table name
     'book_index',   // Index name
     ['abstract', 'title'],   // Properties to build FTS index on
-    stemmer := 'porter'   // Stemmer to use (optional)
-)
+    stemmer := 'porter',   // Stemmer to use (optional)
+    stopWords := 'https://stopwords/porter.txt' // Configure customized stopwords list
+);
 ```
 Once the index is created, the index will be ready for querying as shown below.
 
