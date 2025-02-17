@@ -21,7 +21,7 @@ when running [`COPY TO`](https://docs.kuzudb.com/export/) statements. The exampl
 ```cypher
 EXPORT DATABASE '/path/to/export'
 ```
-Table data is exported as `PARQUET` format by default for better compatibility and performance, however the `format` parameter can be used to change the output format of exported table data.
+The default behaviour is to export the data tables to Parquet format. This is done to reduce scope of formatting errors and to improve performance. You can use the `format` parameter to output to other formats, for e.g. CSV.
 The `format` parameter can either be `csv` or `parquet`.
 
 Here's an example of how to export a database
