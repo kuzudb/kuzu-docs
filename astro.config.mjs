@@ -191,16 +191,17 @@ export default defineConfig({
                         { label: 'Overview', link: '/extensions'},
                         { label: 'HTTP File System (httpfs)', link: '/extensions/httpfs'},
                         {
-                            label: 'External databases',
+                            label: 'External data sources',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kùzu databases', link: '/extensions/attach/kuzu' },
                                 { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
+                                { label: 'Iceberg', link: '/extensions/iceberg' },
+                                { label: 'Delta Lake', link: '/extensions/delta' },
+                                { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
-                        { label: 'Iceberg', link: '/extensions/iceberg' },
-                        { label: 'Delta Lake', link: '/extensions/delta' },
                         { label: 'Full-text search', link: '/extensions/full-text-search', badge: { text: 'New' }},
                     ],
                     autogenerate: { directory: 'reference' },
