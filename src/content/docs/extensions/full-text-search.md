@@ -47,7 +47,7 @@ The following optional parameters are supported:
 
 - `stemmer`: The text normalization technique to use. Should be one of: `arabic`, `basque`, `catalan`, `danish`, `dutch`, `english`, `finnish`, `french`, `german`, `greek`, `hindi`, `hungarian`, `indonesian`, `irish`, `italian`, `lithuanian`, `nepali`, `norwegian`, `porter`, `portuguese`, `romanian`, `russian`, `serbian`, `spanish`, `swedish`, `tamil`, `turkish`, or `none` if no stemming is to be used. Defaults to `english`,
 which uses a Snowball stemmer.
-- `stopWords`: To prevent a full-text search index from becoming bloated, the full-text search engine omits commonly occurring string keywords(stopwords) when building and querying the full-text search index. By default, the built-in english stopwords is used. Stopwords list can be customized using the `stopWords` parameter. Kùzu accepts `stopWords` given in the following format:
+- `stopwords`: To make the full-text search results more useful, it's useful to provide a list of omitted words that are excluded when building and querying the full-text search index. These are termed "stopwords". A default list of built-in english stopwords is used, but these can be customized by using the `stopwords` parameter. Kùzu accepts stopwords in the following formats:
 1. A node table with only a single string column of stopwords.
 2. A PARQUET/CSV file with only a single string column of stopwords(no header required). This file can be stored in cloud storage platforms like Amazon S3 or Google Cloud Storage (GCS) or made accessible via HTTPS. If hosted remotely, ensure the httpfs extension is enabled and valid credentials (e.g., access keys) are configured to authenticate and securely access the file.
 The example below shows how to create an FTS index on the book table with the `abstract` and `title` properties using the `porter` stemmer and a customized stopwords list.
@@ -65,7 +65,7 @@ CALL CREATE_FTS_INDEX(
     'book_index',   // Index name
     ['abstract', 'title'],   // Properties to build FTS index on
     stemmer := 'porter',   // Stemmer to use (optional)
-    stopWords := 'https://stopwords/porter.txt' // Configure customized stopwords list
+    stopwords := 'https://stopwords/porter.txt' // Configure customized stopwords list
 );
 ```
 Once the index is created, the index will be ready for querying as shown below.
