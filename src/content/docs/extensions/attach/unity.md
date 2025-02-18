@@ -2,6 +2,8 @@
 title: Attaching to unity catalog
 ---
 
+Note: This is an experimental extension of Kùzu demonstrating the unity catalog integration.
+
 Kùzu supports directly scanning from delta tables registed in unity catalog using the `LOAD FROM` statement.
 
 
