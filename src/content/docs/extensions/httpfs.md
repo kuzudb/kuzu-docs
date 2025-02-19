@@ -3,8 +3,15 @@ title: HTTP File System (httpfs)
 ---
 
 The `httpfs` extension extends the Kùzu file system by allowing reading from/writing to files hosted on
-remote file systems. Over plain HTTP(S), the extension only supports reading files.
-When using object storage via the S3 API, the extension supports reading, writing and globbing files.
+remote file systems. The following remote file systems are supported:
+
+- Plain HTTP(S)
+- Object storage via the AWS S3 API
+- Object storage via the Google Cloud Storage (GCS) API
+
+Over plain HTTP(S), the extension only supports reading files.
+When using object storage via the S3 or GCS API, the extension supports reading, writing and globbing files.
+See the subsections below for more details.
 
 # Usage
 
@@ -17,7 +24,7 @@ LOAD EXTENSION httpfs;
 ```
 
 ## HTTP(S) file system
-`httpfs` allows users to read from a file hosted on a http(s) server in the same way as from a local file.
+`httpfs` allows you to read from a file hosted on a http(s) server in the same way as from a local file.
 Example:
 
 ```sql
@@ -33,13 +40,18 @@ Kitchener|200000
 Guelph|75000
 ```
 
-## S3 file system
+#### Improve performance via caching
+
+Scanning the same file multiple times can be slow and redundant.
+To avoid this, you can locally cache remote files to improve performance for repeated scans.
+See the [Local cache](#local-cache) section for more details.
+
+## AWS S3 file system
 The extension also allows users to read/write/glob files hosted on object storage servers using the S3 API.
 
-### S3 file system configuration
-Before reading and writing from S3, users have to configure using the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
+Before reading and writing from S3, you have to configure using the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
 
-Supported options:
+The following options are supported:
 
 | Option name | Description |
 |----------|----------|
@@ -52,7 +64,20 @@ Supported options:
 | `s3_uploader_max_filesize` | Used for [part size calculation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html) |
 | `s3_uploader_threads_limit` | Maximum number of uploader threads |
 
-## Requirements on the S3 server API
+### Credential management
+
+You can set the necessary AWS configuration parameters through environment variables:
+Supported environments are:
+
+| Setting | System environment variable |
+|----------|----------|
+| S3 key ID | S3_ACCESS_KEY_ID |
+| S3 secret key | S3_SECRET_ACCESS_KEY |
+| S3 endpoint | S3_ENDPOINT |
+| S3 region | S3_REGION |
+| S3 url style | S3_URL_STYLE |
+
+#### Requirements on the S3 server API
 
 | Feature | Required S3 API features |
 |----------|----------|
@@ -61,18 +86,18 @@ Supported options:
 | File glob | ListObjectV2 |
 | File writes | Multipart upload |
 
-## Reading from S3:
-Reading from S3 is as simple as reading from regular files:
+### Scan data from S3
+Scanning from S3 is as simple as scanning from regular files:
 
 ```sql
 LOAD FROM 's3://kuzu-test/follows.parquet'
 RETURN *;
 ```
 
-## Glob
+### Glob data from S3
 
 Globbing is implemented using the S3 [ListObjectV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html)
-API, and allows the user to glob files as they would in their local filesystem.
+API, and allows you to glob files as they would in their local filesystem.
 
 ```sql
 CREATE NODE TABLE tableOfTypes (
@@ -90,7 +115,7 @@ CREATE NODE TABLE tableOfTypes (
 COPY tableOfTypes FROM "s3://kuzu-dataset-us/glob-test/types_50k_*.parquet"
 ```
 
-## Uploading to S3
+### Write data to S3
 
 Writing to S3 uses the AWS [multipart upload API](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html).
 
@@ -102,57 +127,19 @@ COPY (
 TO 's3://kuzu-dataset-us/output/location.parquet'
 ```
 
-## AWS credential management
+#### Improve performance via caching
 
-Users can set configuration parameters through environment variables:
-Supported environments are:
-
-| Setting | System environment variable |
-|----------|----------|
-| S3 key ID | S3_ACCESS_KEY_ID |
-| S3 secret key | S3_SECRET_ACCESS_KEY |
-| S3 endpoint | S3_ENDPOINT |
-| S3 region | S3_REGION |
-| S3 url style | S3_URL_STYLE |
-
-## Local cache for remote files
-Remote file system calls can be expensive and highly dependent on the user's network conditions (bandwidth, latency).
-Queries involving a large number of file operations (read, write, glob) can be slow.
-To expedite such queries, we introduce a new option: `HTTP_CACHE_FILE`.
-A local file cache is initialized when Kùzu requests the file for the first time.
-Subsequent remote file operations will be translated as local file operation on the cache file.
-For example the below `CALL` statement enables the local cache for remote files:
-```sql
-CALL HTTP_CACHE_FILE=TRUE;
-```
-:::note[Tip]
-Cached files are visible per transaction. Therefore, if you have
-set `HTTP_CACHE_FILE=TRUE` and then run a `LOAD FROM` statement on a remote file, say
-`LOAD FROM "https://.../test/city.csv RETURN *;"`, then this file will be downloaded first
-and then scanned locally from the downloaded file. If you run the same `LOAD FROM` statement again,
-it will be downloaded again from the remote URL. This is because the second statement is executed as a separate
-transaction and we do not know if the already downloaded remote file has changed since the last time Kùzu
-downloaded it.
-
-If you need to scan the same remote file multiple times and benefit from caching across multiple scans,
-you can run all the `LOAD FROM` statements in the same transaction. Here is an example:
-
-```sql
-BEGIN TRANSACTION;
-LOAD FROM "https://.../test/city.csv" RETURN *;
-LOAD FROM "https://.../test/city.csv" RETURN *;
-COMMIT;
-```
-Now the second `LOAD FROM` statement will run much faster because the file is already downloaded and cached and
-the second scan is within the same transaction as the first one.
-:::
+Scanning the same file multiple times can be slow and redundant.
+To avoid this, you can locally cache remote files to improve performance for repeated scans.
+See the [Local cache](#local-cache) section for more details.
 
 ## GCS file system
-The extension also allows users to read/write files hosted on Google Cloud Storage.
 
-### GCS credential management
+This section shows how to scan from/write to files hosted on Google Cloud Storage.
 
-Before reading and writing from private GCS buckets, users will need to configure Kùzu with their credentials.
+### Credential management
+
+Before reading and writing from private GCS buckets, you will need to configure Kùzu with your Google Cloud credentials.
 
 #### CALL statement
 
@@ -178,9 +165,9 @@ Another way is to provide the credentials through environment variables:
 | GCS access key ID | `GCS_ACCESS_KEY_ID` |
 | GCS secret access key | `GCS_SECRET_ACCESS_KEY` |
 
-### Additional configurations
+#### Additional configurations
 
-Since Kùzu communicates with GCS through its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#s3-file-system-configuration).
+Since Kùzu communicates with GCS using its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#s3-file-system-configuration).
 
 | Option name |
 |----------|
@@ -188,7 +175,7 @@ Since Kùzu communicates with GCS through its [interoperability mode](https://cl
 | `s3_uploader_max_filesize` |
 | `s3_uploader_threads_limit` |
 
-## Reading from GCS
+### Scan data from GCS
 
 Files in GCS can be accessed through URLs with the formats
 
@@ -202,7 +189,7 @@ LOAD FROM 'gs://kuzu-test/follows.parquet'
 RETURN *;
 ```
 
-## Uploading to GCS
+### Write data to GCS
 
 Just like with reading, you can write to files in GCS using URLs in the formats
 - `gs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
@@ -217,3 +204,44 @@ COPY (
 )
 TO 'gcs://kuzu-dataset-us/output/location.parquet'
 ```
+
+#### Improve performance via caching
+
+Scanning the same file multiple times can be slow and redundant.
+To avoid this, you can locally cache remote files to improve performance for repeated scans.
+See the [Local cache](#local-cache) section for more details.
+
+---
+
+## Local cache
+
+Remote file system calls can be expensive and highly dependent on your network conditions (bandwidth, latency).
+Queries involving a large number of file operations (read, write, glob) can be slow.
+To expedite such queries, we introduce a new option: `HTTP_CACHE_FILE`.
+A local file cache is initialized when Kùzu requests the file for the first time.
+Subsequent remote file operations will be translated as local file operation on the cache file.
+For example the below `CALL` statement enables the local cache for remote files:
+```sql
+CALL HTTP_CACHE_FILE=TRUE;
+```
+:::note[Tip]
+Cached files are visible per transaction. Therefore, if you have
+set `HTTP_CACHE_FILE=TRUE` and then run a `LOAD FROM` statement on a remote file, say
+`LOAD FROM "https://.../test/city.csv RETURN *;"`, then this file will be downloaded first
+and then scanned locally from the downloaded file. If you run the same `LOAD FROM` statement again,
+it will be downloaded again from the remote URL. This is because the second statement is executed as a separate
+transaction and we do not know if the already downloaded remote file has changed since the last time Kùzu
+downloaded it.
+:::
+
+If you need to scan the same remote file multiple times and benefit from caching across multiple scans,
+you can run all the `LOAD FROM` statements in the same transaction. Here is an example:
+
+```sql
+BEGIN TRANSACTION;
+LOAD FROM "https://.../test/city.csv" RETURN *;
+LOAD FROM "https://.../test/city.csv" RETURN *;
+COMMIT;
+```
+Now the second `LOAD FROM` statement will run much faster because the file is already downloaded and cached and
+the second scan is within the same transaction as the first one.
