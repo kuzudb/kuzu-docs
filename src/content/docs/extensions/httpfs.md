@@ -90,7 +90,7 @@ Supported environments are:
 Scanning from S3 is as simple as scanning from regular files:
 
 ```sql
-LOAD FROM 's3://kuzu-test/follows.parquet'
+LOAD FROM 's3://kuzu-datasets/follows.parquet'
 RETURN *;
 ```
 
@@ -112,7 +112,7 @@ CREATE NODE TABLE tableOfTypes (
     listOfListOfInt64 INT64[][],
     structColumn STRUCT(ID int64, name STRING),
     PRIMARY KEY (id));
-COPY tableOfTypes FROM "s3://kuzu-dataset-us/glob-test/types_50k_*.parquet"
+COPY tableOfTypes FROM "s3://kuzu-datasets/types/types_50k_*.parquet"
 ```
 
 ### Write data to S3
@@ -124,7 +124,7 @@ COPY (
     MATCH (p:Location)
     RETURN p.*
 )
-TO 's3://kuzu-dataset-us/output/location.parquet'
+TO 's3://kuzu-datasets/saved/location.parquet'
 ```
 
 #### Improve performance via caching
@@ -182,10 +182,10 @@ Files in GCS can be accessed through URLs with the formats
 - `gs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
 - `gcs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
 
-For example, if you wish to scan the file `follows.parquet` located in the root directory of bucket `kuzu-test` you could use the following query:
+For example, if you wish to scan the file `follows.parquet` located in the root directory of bucket `kuzu-datasets` you could use the following query:
 
 ```sql
-LOAD FROM 'gs://kuzu-test/follows.parquet'
+LOAD FROM 'gs://kuzu-datasets/follows.parquet'
 RETURN *;
 ```
 
@@ -208,18 +208,18 @@ COPY person FROM "gs://tinysnb/vPerson*.csv"(header=true);
 
 ### Write data to GCS
 
-Just like with reading, you can write to files in GCS using URLs in the formats
+You can also write to files in GCS using URLs in the formats
 - `gs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
 - `gcs://⟨gcs_bucket⟩/⟨path_to_file_in_bucket⟩`
 
-For example, the following query will write to the file located at path `output/location.parquet` in the bucket `kuzu-dataset-us`:
+For example, the following query will write to the file located at path `saved/location.parquet` in the bucket `kuzu-datasets`:
 
 ```sql
 COPY (
     MATCH (p:Location)
     RETURN p.*
 )
-TO 'gcs://kuzu-dataset-us/output/location.parquet'
+TO 'gcs://kuzu-datasets/saved/location.parquet'
 ```
 
 #### Improve performance via caching
@@ -244,7 +244,7 @@ CALL HTTP_CACHE_FILE=TRUE;
 :::note[Tip]
 Cached files are visible per transaction. Therefore, if you have
 set `HTTP_CACHE_FILE=TRUE` and then run a `LOAD FROM` statement on a remote file, say
-`LOAD FROM "https://.../test/city.csv RETURN *;"`, then this file will be downloaded first
+`LOAD FROM "https://example.com/city.csv RETURN *;"`, then this file will be downloaded first
 and then scanned locally from the downloaded file. If you run the same `LOAD FROM` statement again,
 it will be downloaded again from the remote URL. This is because the second statement is executed as a separate
 transaction and we do not know if the already downloaded remote file has changed since the last time Kùzu
@@ -256,8 +256,8 @@ you can run all the `LOAD FROM` statements in the same transaction. Here is an e
 
 ```sql
 BEGIN TRANSACTION;
-LOAD FROM "https://.../test/city.csv" RETURN *;
-LOAD FROM "https://.../test/city.csv" RETURN *;
+LOAD FROM "https://example.com/city.csv" RETURN *;
+LOAD FROM "https://example.com/city.csv" RETURN *;
 COMMIT;
 ```
 Now the second `LOAD FROM` statement will run much faster because the file is already downloaded and cached and
