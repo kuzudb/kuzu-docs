@@ -167,7 +167,7 @@ Another way is to provide the credentials through environment variables:
 
 #### Additional configurations
 
-Since Kùzu communicates with GCS using its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#s3-file-system-configuration).
+Since Kùzu communicates with GCS using its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#aws-s3-file-system).
 
 | Option name |
 |----------|
