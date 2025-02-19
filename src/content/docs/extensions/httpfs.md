@@ -189,6 +189,23 @@ LOAD FROM 'gs://kuzu-test/follows.parquet'
 RETURN *;
 ```
 
+### Glob data from GCS
+
+Like with S3, globbing is implemented for GCS.
+
+For example, if the following files are in the bucket `tinysnb`:
+
+```
+gs://tinysnb/vPerson.csv
+gs://tinysnb/vPerson2.csv
+```
+
+The following query will copy the contents of both `vPerson.csv` and `vPerson2.csv` into the table `person`:
+
+```sql
+copy person from "gs://tinysnb/vPerson*.csv"(header=true);
+```
+
 ### Write data to GCS
 
 Just like with reading, you can write to files in GCS using URLs in the formats
