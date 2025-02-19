@@ -202,7 +202,7 @@ COPY (
     MATCH (p:Location)
     RETURN p.*
 )
-TO 'gcs://kuzu-dataset/saved/location.parquet'
+TO 'gcs://kuzu-datasets/saved/location.parquet'
 ```
 
 #### Improve performance via caching
