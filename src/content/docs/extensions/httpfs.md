@@ -79,7 +79,7 @@ Supported environments are:
 
 #### Requirements on the S3 server API
 
-| Feature | Required S3 API features |
+| Feature | Required S3 API |
 |----------|----------|
 | Public file reads | HTTP Range request |
 | Private file reads | Secret key authentication|
