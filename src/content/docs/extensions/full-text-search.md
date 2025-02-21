@@ -51,9 +51,10 @@ which uses a Snowball stemmer.
 1. A node table with only a single column of stopwords.
 2. A PARQUET/CSV file with only a single string column of stopwords(no header required). This file can be stored in cloud storage platforms like Amazon S3 or Google Cloud Storage (GCS) or made accessible via HTTPS. If hosted remotely, ensure the httpfs extension is enabled and valid credentials (e.g., access keys) are configured to authenticate and securely access the file.
 
-Note:
+:::caution[Note]
 1. If the provided stopwords parameter matches both a node table and a file with the same name, the node table takes precedence and will be used.
 2. For optimal accuracy, it is strongly suggested to provide stopwords in their stemmed form. 
+:::
 
 The example below shows how to create an FTS index on the book table with the `abstract` and `title` properties using the `porter` stemmer and a customized stopwords list.
 
