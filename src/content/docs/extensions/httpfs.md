@@ -64,7 +64,7 @@ The following options are supported:
 | `s3_uploader_max_filesize` | Used for [part size calculation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html) |
 | `s3_uploader_threads_limit` | Maximum number of uploader threads |
 
-### Credential management
+### Environment Variables
 
 You can set the necessary AWS configuration parameters through environment variables:
 Supported environments are:
@@ -137,13 +137,7 @@ See the [Local cache](#local-cache) section for more details.
 
 This section shows how to scan from/write to files hosted on Google Cloud Storage.
 
-### Credential management
-
-Before reading and writing from private GCS buckets, you will need to configure Kùzu with your Google Cloud credentials.
-
-#### CALL statement
-
-The first way is to use the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement to update the following settings:
+Before reading and writing from private GCS buckets, you will need to configure Kùzu with your Google Cloud credentials. You can do this by configuring the following options with the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement:
 
 | Option name | Description |
 |----------|----------|
@@ -153,12 +147,12 @@ The first way is to use the [CALL](https://kuzudb.com/docusaurus/cypher/configur
 For example to set the access key id, you would run
 
 ```sql
-CALL gcs_access_key_id={access_key_id};
+CALL gcs_access_key_id=${access_key_id};
 ```
 
-#### Environment variables
+### Environment Variables
 
-Another way is to provide the credentials through environment variables:
+Another way is to provide the credentials is through environment variables:
 
 | Setting | System environment variable |
 |----------|----------|
