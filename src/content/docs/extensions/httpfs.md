@@ -121,17 +121,17 @@ TO 's3://kuzu-datasets/saved/location.parquet'
 
 #### Requirements on the S3 server API
 
-S3 offers a standard set of APIs for read and write operations. The `httpfs` extension should also work
+S3 offers a standard set of APIs for read and write operations. The `httpfs` extension uses these APIs to communicate with remote storage services and thus should also work
 with other services that are compatible with the S3 API (such as [Cloudflare R2](https://www.cloudflare.com/en-gb/developer-platform/r2/)).
 
-The table below shows features in Kùzu needs which parts of the S3 API to work.
+The table below shows which parts of the S3 API are needed for each feature of the extension to work.
 
 | Feature | Required S3 API |
 |----------|----------|
 | Public file reads | HTTP Range request |
 | Private file reads | Secret key authentication|
-| File glob | ListObjectV2 |
-| File writes | Multipart upload |
+| File glob | [ListObjectV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html) |
+| File writes | [Multipart upload](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html) |
 
 
 #### Improve performance via caching
