@@ -48,8 +48,7 @@ See the [Local cache](#local-cache) section for more details.
 
 ## AWS S3 file system
 The extension also allows users to read/write/glob files hosted on object storage servers using the S3 API.
-
-Before reading and writing from S3, you have to configure using the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
+Before reading and writing from S3, you have to configure your AWS credentials using the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
 
 The following options are supported:
 
@@ -76,15 +75,6 @@ Supported environments are:
 | S3 endpoint | S3_ENDPOINT |
 | S3 region | S3_REGION |
 | S3 url style | S3_URL_STYLE |
-
-#### Requirements on the S3 server API
-
-| Feature | Required S3 API |
-|----------|----------|
-| Public file reads | HTTP Range request |
-| Private file reads | Secret key authentication|
-| File glob | ListObjectV2 |
-| File writes | Multipart upload |
 
 ### Scan data from S3
 Scanning from S3 is as simple as scanning from regular files:
@@ -126,6 +116,23 @@ COPY (
 )
 TO 's3://kuzu-datasets/saved/location.parquet'
 ```
+
+### Additional configurations
+
+#### Requirements on the S3 server API
+
+S3 offers a standard set of APIs for read and write operations. The `httpfs` extension should also work
+with other services that are compatible with the S3 API (such as [Cloudflare R2](https://www.cloudflare.com/en-gb/developer-platform/r2/)).
+
+The table below shows features in Kùzu needs which parts of the S3 API to work.
+
+| Feature | Required S3 API |
+|----------|----------|
+| Public file reads | HTTP Range request |
+| Private file reads | Secret key authentication|
+| File glob | ListObjectV2 |
+| File writes | Multipart upload |
+
 
 #### Improve performance via caching
 
