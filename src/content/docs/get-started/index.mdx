@@ -242,7 +242,7 @@ Kùzu's Java client library is available on [Maven Central](https://central.sona
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzu</artifactId>
-    <version>0.8.0</version>
+    <version>0.8.2</version>
 </dependency>
 ```
 
@@ -250,13 +250,13 @@ Alternatively, if you are using Gradle, you can add the following snippet to you
 
 For Groovy DSL:
 ```groovy
-implementation 'com.kuzudb:kuzu:0.8.0'
+implementation 'com.kuzudb:kuzu:0.8.2'
 ```
 
 For Kotlin DSL:
 
 ```kotlin
-implementation("com.kuzudb:kuzu:0.8.0")
+implementation("com.kuzudb:kuzu:0.8.2")
 ```
 
 Below is an example Gradle project structure for a simple Java application that creates a graph schema and inserts
@@ -287,7 +287,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation 'com.kuzudb:kuzu:0.8.0'
+    implementation 'com.kuzudb:kuzu:0.8.2'
 }
 ```
 
@@ -713,7 +713,7 @@ When using the Kùzu CLI's shell, you can create an on-disk database by specifyi
 the `kuzu` command in the terminal.
 
 ```bash
-$ kuzu ./demo_db
+kuzu ./demo_db
 ```
 ```
 Opened the database at path: ./demo_db in read-write mode.
@@ -721,53 +721,50 @@ Enter ":help" for usage hints.
 kuzu> 
 ```
 
-You can create an in-memory database by omitting the path entirely, and just calling `kuzu`:
-
-```bash
-$ kuzu
-```
+:::note[In-memory database]
+You can create an in-memory database by omitting the path entirely, and just calling `kuzu`.
+This will create a database in memory that will be lost when the process finishes.
 ```
 Opened the database under in-memory mode.
 Enter ":help" for usage hints.
 kuzu> 
 ```
+:::
 
-Then, proceed to enter the following Cypher statements separated by semicolons. Note that you _must_
+Proceed to enter the following Cypher statements separated by semicolons. Note that you _must_
 indicate the end of each query statement with a semicolon in the shell, otherwise it will not be parsed
 correctly and fail to execute.
 
 ```cypher
 // Create schema
-kuzu> CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name));
-kuzu> CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name));
-kuzu> CREATE REL TABLE Follows(FROM User TO User, since INT64);
-kuzu> CREATE REL TABLE LivesIn(FROM User TO City);
+CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name));
+CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name));
+CREATE REL TABLE Follows(FROM User TO User, since INT64);
+CREATE REL TABLE LivesIn(FROM User TO City);
 
 // Insert data
-kuzu> COPY User FROM "./data/user.csv";
-kuzu> COPY City FROM "./data/city.csv";
-kuzu> COPY Follows FROM "./data/follows.csv";
-kuzu> COPY LivesIn FROM "./data/lives-in.csv";
+COPY User FROM "./data/user.csv";
+COPY City FROM "./data/city.csv";
+COPY Follows FROM "./data/follows.csv";
+COPY LivesIn FROM "./data/lives-in.csv";
 
 // Execute Cypher query
-kuzu> MATCH (a:User)-[f:Follows]->(b:User)
-      RETURN a.name, b.name, f.since;
+MATCH (a:User)-[f:Follows]->(b:User)
+RETURN a.name, b.name, f.since;
 ```
 
 The following result is obtained:
 
 ```bash
--------------------------------
-| a.name  | b.name  | f.since |
--------------------------------
-| Adam    | Karissa | 2020    |
--------------------------------
-| Adam    | Zhang   | 2020    |
--------------------------------
-| Karissa | Zhang   | 2021    |
--------------------------------
-| Zhang   | Noura   | 2022    |
--------------------------------
+┌─────────┬─────────┬─────────┐
+│ a.name  │ b.name  │ f.since │
+│ STRING  │ STRING  │ INT64   │
+├─────────┼─────────┼─────────┤
+│ Adam    │ Karissa │ 2020    │
+│ Adam    │ Zhang   │ 2020    │
+│ Karissa │ Zhang   │ 2021    │
+│ Zhang   │ Noura   │ 2022    │
+└─────────┴─────────┴─────────┘
 ```
 
 </TabItem>
