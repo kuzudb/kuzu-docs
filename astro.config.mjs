@@ -33,13 +33,52 @@ export default defineConfig({
             customCss: ['./src/styles/custom.css'],
             expressiveCode: true,
             head: [
+                // Basic OG tags
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:type', content: 'website' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:url', content: site },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:title', content: 'Kùzu - Graph Database' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:description', content: 'Documentation for Kùzu, an open source, embedded graph database' },
+                },
                 {
                     tag: 'meta',
                     attrs: { property: 'og:image', content: site + '/img/og.png' },
                 },
+                
+                // Twitter specific tags
                 {
                     tag: 'meta',
-                    attrs: { property: 'twitter:image', content: site + '/img/og.png' },
+                    attrs: { name: 'twitter:card', content: 'summary_large_image' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'twitter:domain', content: 'docs.kuzudb.com' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'twitter:url', content: site },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { name: 'twitter:title', content: 'Kùzu - Graph Database' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { name: 'twitter:description', content: 'Documentation for Kùzu, an open source, embedded graph database' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { name: 'twitter:image', content: site + '/img/og.png' },
                 },
             ],
             components: {
