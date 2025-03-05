@@ -67,11 +67,12 @@ From within the terminal, you can then run `./kuzu.exe`.
 
 ## Python
 
-Use `pip` to install the Kùzu Python client library.
+You can use `pip` or `uv` (recommended)to install the Kùzu Python client library.
+The instructions are the same for macOS, Linux, and Windows.
 
 <Tabs>
 
-<TabItem label="macOS">
+<TabItem label="pip">
 
 ```bash
 pip install kuzu
@@ -79,18 +80,11 @@ pip install kuzu
 
 </TabItem>
 
-<TabItem label="Linux">
+<TabItem label="uv">
 
 ```bash
-pip install kuzu
-```
-
-</TabItem>
-
-<TabItem label="Windows">
-
-```bash
-pip install kuzu
+uv init
+uv add kuzu
 ```
 
 </TabItem>
@@ -291,7 +285,7 @@ curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.8.2/libkuzu-windo
 
 If you want access to the bleeding edge feature set in Kùzu, install from our nightly build pipeline.
 
-- Python: `pip install --pre kuzu`
+- Python: `pip install --pre kuzu` (or `uv pip install --pre kuzu` if you're using uv)
 - Node.js: `npm i kuzu@next`
 - Java: The latest snapshot version is available on [GitHub Packages](https://github.com/kuzudb/kuzu/packages/2258307)
 - For the CLI, C/C++ shared libraries, and Rust, the latest nightly versions for each can be
