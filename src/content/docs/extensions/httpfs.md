@@ -2,7 +2,7 @@
 title: HTTP File System (httpfs)
 ---
 
-The `httpfs` extension extends the Kùzu file system by allowing reading from/writing to files hosted on
+The `httpfs` extension extends the Kuzu file system by allowing reading from/writing to files hosted on
 remote file systems. The following remote file systems are supported:
 
 - Plain HTTP(S)
@@ -15,7 +15,7 @@ See the subsections below for more details.
 
 # Usage
 
-`httpfs` is an official extension developed and maintained by Kùzu.
+`httpfs` is an official extension developed and maintained by Kuzu.
 It can be installed and loaded using the following commands:
 
 ```sql
@@ -144,7 +144,7 @@ See the [Local cache](#local-cache) section for more details.
 
 This section shows how to scan from/write to files hosted on Google Cloud Storage.
 
-Before reading and writing from private GCS buckets, you will need to configure Kùzu with your Google Cloud credentials. You can do this by configuring the following options with the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement:
+Before reading and writing from private GCS buckets, you will need to configure Kuzu with your Google Cloud credentials. You can do this by configuring the following options with the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement:
 
 | Option name | Description |
 |----------|----------|
@@ -168,7 +168,7 @@ Another way is to provide the credentials is through environment variables:
 
 #### Additional configurations
 
-Since Kùzu communicates with GCS using its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#aws-s3-file-system).
+Since Kuzu communicates with GCS using its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#aws-s3-file-system).
 
 | Option name |
 |----------|
@@ -236,7 +236,7 @@ See the [Local cache](#local-cache) section for more details.
 Remote file system calls can be expensive and highly dependent on your network conditions (bandwidth, latency).
 Queries involving a large number of file operations (read, write, glob) can be slow.
 To expedite such queries, we introduce a new option: `HTTP_CACHE_FILE`.
-A local file cache is initialized when Kùzu requests the file for the first time.
+A local file cache is initialized when Kuzu requests the file for the first time.
 Subsequent remote file operations will be translated as local file operation on the cache file.
 For example the below `CALL` statement enables the local cache for remote files:
 ```sql
@@ -248,7 +248,7 @@ set `HTTP_CACHE_FILE=TRUE` and then run a `LOAD FROM` statement on a remote file
 `LOAD FROM "https://example.com/city.csv RETURN *;"`, then this file will be downloaded first
 and then scanned locally from the downloaded file. If you run the same `LOAD FROM` statement again,
 it will be downloaded again from the remote URL. This is because the second statement is executed as a separate
-transaction and we do not know if the already downloaded remote file has changed since the last time Kùzu
+transaction and we do not know if the already downloaded remote file has changed since the last time Kuzu
 downloaded it.
 :::
 
