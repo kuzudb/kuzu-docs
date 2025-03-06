@@ -1,35 +1,35 @@
 ---
-title: Visualize graphs in Kùzu Explorer
+title: Visualize graphs in Kuzu Explorer
 ---
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-## What is Kùzu Explorer?
+## What is Kuzu Explorer?
 
-Kùzu Explorer is a browser-based frontend to visualize and explore Kùzu database schemas
+Kuzu Explorer is a browser-based frontend to visualize and explore Kuzu database schemas
 and query results in the form of a graph, table, or JSON. This is a useful tool for exploring
 your graph data and debugging your data model during the prototyping phase.
 An example visualization is shown below.
 
 <img src="/img/visualization/query-result-graph-view.png" />
 
-## Launching Kùzu Explorer
+## Launching Kuzu Explorer
 
-Kùzu Explorer is a web application that is launched from a deployed Docker image.
+Kuzu Explorer is a web application that is launched from a deployed Docker image.
 Please refer to the [Docker documentation](https://docs.docker.com/get-docker/) for details on how to install and use Docker.
 
-Below we show two different ways to launch Kùzu Explorer. Each of these options make
-Kùzu Explorer accessible on [http://localhost:8000](http://localhost:8000). If the launching is successful, you should see the logs similar to the following in your shell:
+Below we show two different ways to launch Kuzu Explorer. Each of these options make
+Kuzu Explorer accessible on [http://localhost:8000](http://localhost:8000). If the launching is successful, you should see the logs similar to the following in your shell:
 
 ```bash
 Access mode: READ_WRITE
-Version of Kùzu: v0.0.11
+Version of Kuzu: v0.0.11
 Deployed server started on port: 8000
 ```
 
 ### Option 1: Using an existing database
 
-To access an existing Kùzu database, you can mount its path to the `/database` directory as follows:
+To access an existing Kuzu database, you can mount its path to the `/database` directory as follows:
 
 ```bash
 docker run -p 8000:8000 \
@@ -44,8 +44,8 @@ The `--rm` flag tells docker that the container should automatically be removed 
 
 ### Option 2: Start with an empty database with example data
 
-You can also launch Kùzu Explorer without specifying an existing database. Kùzu Explorer comes with
-bundled datasets that you can use to explore the basic functionalities of Kùzu.
+You can also launch Kuzu Explorer without specifying an existing database. Kuzu Explorer comes with
+bundled datasets that you can use to explore the basic functionalities of Kuzu.
 This is simply done by removing the `-v` flag in the example above. If no database path is specified
 with `-v`, the server will be started with an empty database.
 
@@ -54,8 +54,8 @@ docker run -p 8000:8000 --rm kuzudb/explorer:latest
 ```
 
 Click on the `Datasets` tab on the top right corner and then: (i) you can select one of the bundled dataset
-of your choice from the drow-down menu; (ii) load it into Kùzu by clicking the "Load Dataset" button; and (iii)
-finally use Kùzu Explorer to explore it.
+of your choice from the drow-down menu; (ii) load it into Kuzu by clicking the "Load Dataset" button; and (iii)
+finally use Kuzu Explorer to explore it.
 
 <img src="/img/visualization/datasets-panel.png" />
 
@@ -63,8 +63,8 @@ finally use Kùzu Explorer to explore it.
 
 ### Access mode
 
-By default, Kùzu Explorer is launched in `READ_WRITE` mode, which means that you can modify the database.
-If you want to launch Kùzu Explorer in read-only mode, you can do so by setting the `MODE`
+By default, Kuzu Explorer is launched in `READ_WRITE` mode, which means that you can modify the database.
+If you want to launch Kuzu Explorer in read-only mode, you can do so by setting the `MODE`
 environment variable to `READ_ONLY` as shown below. 
 
 ```bash
@@ -80,8 +80,8 @@ database schema.
 
 ### In-memory mode
 
-By default, Kùzu Explorer is launched under on-disk mode, in which the database exists on disk.
-If you want to launch Kùzu Explorer to operate on an in-memory database,
+By default, Kuzu Explorer is launched under on-disk mode, in which the database exists on disk.
+If you want to launch Kuzu Explorer to operate on an in-memory database,
 you can do so by setting the `KUZU_IN_MEMORY` environment variable to true as follows.
 
 ```bash
@@ -101,9 +101,9 @@ can only be opened with `READ_WRITE` access.
 
 ### Buffer pool size
 
-By default, Kùzu Explorer is launched with a maximum buffer pool size of 80% of the available memory. If you want to launch Kùzu Explorer with a different buffer pool size, you can do so by setting the `KUZU_BUFFER_POOL_SIZE` environment variable to the desired value in bytes as follows.
+By default, Kuzu Explorer is launched with a maximum buffer pool size of 80% of the available memory. If you want to launch Kuzu Explorer with a different buffer pool size, you can do so by setting the `KUZU_BUFFER_POOL_SIZE` environment variable to the desired value in bytes as follows.
 
-For example, to launch Kùzu Explorer with a buffer pool size of 1GB, you can run the following command.
+For example, to launch Kuzu Explorer with a buffer pool size of 1GB, you can run the following command.
 
 ```bash
 docker run -p 8000:8000 \
@@ -114,7 +114,7 @@ docker run -p 8000:8000 \
 
 #### Accessing data files in the container
 
-As mentioned above, Kùzu Explorer is launched from a Docker image. If you want to access the data files in the container, you can do so by mounting a directory on your host machine as follows:
+As mentioned above, Kuzu Explorer is launched from a Docker image. If you want to access the data files in the container, you can do so by mounting a directory on your host machine as follows:
 
 ```bash
 docker run -p 8000:8000 \
@@ -133,7 +133,7 @@ Note that it is possible to mount multiple directories in the container. For mor
 
 ## Panels
 
-Kùzu Explorer comes with the following panels, accessible on the top-right of the menu bar.
+Kuzu Explorer comes with the following panels, accessible on the top-right of the menu bar.
 You can refer to the corresponding cards below for more details.
 
 <CardGrid>
@@ -157,7 +157,7 @@ You can refer to the corresponding cards below for more details.
 
 ## Deep dive tutorial
 
-For a deep dive walkthrough of Kùzu Explorer, check out the following video on YouTube:
+For a deep dive walkthrough of Kuzu Explorer, check out the following video on YouTube:
 
 <div class="video-container">
   <iframe
@@ -169,11 +169,11 @@ For a deep dive walkthrough of Kùzu Explorer, check out the following video on 
   </iframe>
 </div>
 
-## Development build of Kùzu Explorer
+## Development build of Kuzu Explorer
 
-If you are working with the nightly build of Kùzu to access the bleeding edge features, the stable
-release of Kùzu Explorer may not be compatible with it due to storage format changes. In this case,
-you can use the development build of Kùzu Explorer, which we also make available on DockerHub.
+If you are working with the nightly build of Kuzu to access the bleeding edge features, the stable
+release of Kuzu Explorer may not be compatible with it due to storage format changes. In this case,
+you can use the development build of Kuzu Explorer, which we also make available on DockerHub.
 
 To install the dev build, you can attach the `dev` tag to the docker command as follows:
 
@@ -183,16 +183,16 @@ docker run -p 8000:8000 \
            --rm kuzudb/explorer:dev
 ```
 
-The dev build of Kùzu Explorer is compatible with the nightly build of Kùzu, but it's not guaranteed to be stable
-(and can contain bugs), so the dev build of Kùzu Explorer is recommended for testing purposes only.
+The dev build of Kuzu Explorer is compatible with the nightly build of Kuzu, but it's not guaranteed to be stable
+(and can contain bugs), so the dev build of Kuzu Explorer is recommended for testing purposes only.
 
 :::caution[Note]
-If you try to use the development build of Kùzu Explorer with the stable (or outdated) release of Kùzu,
+If you try to use the development build of Kuzu Explorer with the stable (or outdated) release of Kuzu,
 it will produce an error that looks like the following, because the storage formats are not compatible:
 
 ```
-ERROR (1): Error getting version of Kùzu: Error: std::bad_alloc
+ERROR (1): Error getting version of Kuzu: Error: std::bad_alloc
 ```
-To resolve this, simply pull the latest version of Kùzu Explorer's dev build from DockerHub, and
-install the latest nightly build of Kùzu.
+To resolve this, simply pull the latest version of Kuzu Explorer's dev build from DockerHub, and
+install the latest nightly build of Kuzu.
 :::
