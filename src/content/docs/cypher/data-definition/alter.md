@@ -31,15 +31,15 @@ ALTER TABLE User ADD grade INT64 DEFAULT 40;
 
 ## Add column if not exists
 
-If the given column name already exists in the table, Kùzu throws an exception when you try to create it.
-To avoid the exception being raised, use the `IF NOT EXISTS` clause. This tells Kùzu to do nothing when
+If the given column name already exists in the table, Kuzu throws an exception when you try to create it.
+To avoid the exception being raised, use the `IF NOT EXISTS` clause. This tells Kuzu to do nothing when
 the given column name already exists in the table.
 
 Example:
 ```sql
 ALTER TABLE User ADD IF NOT EXISTS grade INT64;
 ```
-This query tells Kùzu to only create the `grade` column if it doesn't exist.
+This query tells Kuzu to only create the `grade` column if it doesn't exist.
 
 The same applies to relationship tables.
 
@@ -54,15 +54,15 @@ ALTER TABLE User DROP age;
 
 ## Drop column if exists
 
-If the given column name does not exists in the table, Kùzu throws an exception when you try to drop it.
-To avoid the exception being raised, use the `IF EXISTS` clause. This tells Kùzu to do nothing when
+If the given column name does not exists in the table, Kuzu throws an exception when you try to drop it.
+To avoid the exception being raised, use the `IF EXISTS` clause. This tells Kuzu to do nothing when
 the given column name does not exists in the table.
 
 Example:
 ```sql
 ALTER TABLE User DROP IF EXISTS grade;
 ```
-This query tells Kùzu to only drop the `grade` column if it exists.
+This query tells Kuzu to only drop the `grade` column if it exists.
 
 The same applies to relationship tables.
 
