@@ -4,15 +4,15 @@ title: Attaching to Unity Catalog
 
 :::caution[Note]
 This is an experimental extension that is a starting point towards a larger integration
-of Kùzu with the lakehouse ecosystem. It may have unresolved issues from upstream. To address these
+of Kuzu with the lakehouse ecosystem. It may have unresolved issues from upstream. To address these
 issues or to discuss your use case further, please reach out to us on [Discord](https://kuzudb.com/chat).
 :::
 
-Kùzu supports directly scanning from delta tables registed in Unity Catalog using the `LOAD FROM` statement.
+Kuzu supports directly scanning from delta tables registed in Unity Catalog using the `LOAD FROM` statement.
 
 ## Usage
 
-The Unity Catalog extension can be installed and loaded by running the following commands using the Kùzu CLI
+The Unity Catalog extension can be installed and loaded by running the following commands using the Kuzu CLI
 or your preferred language client API:
 
 ```sql
@@ -42,17 +42,17 @@ ATTACH [CATALOG_NAME] AS [alias] (dbtype UC_CATALOG)
 ```
 
 - `CATALOG_NAME`: The catalog name to attach to in the Unity Catalog
-- `alias`: Database alias to use in Kùzu - If not provided, the catalog name will be used.
+- `alias`: Database alias to use in Kuzu - If not provided, the catalog name will be used.
   When attaching multiple databases, it's recommended to use aliasing.
 
 :::note[Note]
-Kùzu attaches to the `default` schema under the given catalog name. Specifying the schema to attach is not supported right now.
+Kuzu attaches to the `default` schema under the given catalog name. Specifying the schema to attach is not supported right now.
 :::
 
-#### 3. Data type mapping from Unity Catalog to Kùzu
+#### 3. Data type mapping from Unity Catalog to Kuzu
 
-The table below shows the mapping from Unity Catalog's type to Kùzu's type:
-| Data type in Unity Catalog         | Corresponding data type in Kùzu |
+The table below shows the mapping from Unity Catalog's type to Kuzu's type:
+| Data type in Unity Catalog         | Corresponding data type in Kuzu |
 |-----------------------------|----------------------------------|
 | BOOLEAN                     | BOOLEAN                           |
 | BYTE                        | UNSUPPORTED                          |
@@ -105,7 +105,7 @@ Result:
 ```
 
 :::caution[Note]
-Currently, Kùzu only supports scanning from Delta Lake tables registered in the Unity Catalog.
+Currently, Kuzu only supports scanning from Delta Lake tables registered in the Unity Catalog.
 :::
 
 #### 5. `USE` statement
@@ -131,17 +131,17 @@ RETURN *
 
 #### 6. Copy data from table
 
-One important use case of the Unity Catalog extension is to facilitate seamless data transfer from tables in Unity Catalog to Kùzu.
+One important use case of the Unity Catalog extension is to facilitate seamless data transfer from tables in Unity Catalog to Kuzu.
 In this example, we continue using the `unity` database, but this time,
-we copy the data and persist it to Kùzu. This is done with the `COPY FROM` statement. Here is an example:
+we copy the data and persist it to Kuzu. This is done with the `COPY FROM` statement. Here is an example:
 
-We first create a `numbers` table in Kùzu. In this example we will make `numbers` have the same schema as the one defined in the Unity Catalog.
+We first create a `numbers` table in Kuzu. In this example we will make `numbers` have the same schema as the one defined in the Unity Catalog.
 
 ```cypher
 CREATE NODE TABLE numbers (id INT32, score DOUBLE , PRIMARY KEY(id));
 ```
 
-When the schemas are the same, we can copy the data from the external Unity Catalog table to the Kùzu table simply as follows.
+When the schemas are the same, we can copy the data from the external Unity Catalog table to the Kuzu table simply as follows.
 
 ```sql
  copy numbers from unity.numbers;
@@ -152,9 +152,9 @@ If the schemas are not the same, e.g., `numbers` contains only `score` property 
 COPY numbers FROM (LOAD FROM unity.numbers RETURN score);
 ```
 
-#### 7. Query the data in Kùzu
+#### 7. Query the data in Kuzu
 
-Finally, we can verify the data in the `numbers` table in Kùzu.
+Finally, we can verify the data in the `numbers` table in Kuzu.
 
 ```cypher
 MATCH (n:numbers) RETURN n.*;

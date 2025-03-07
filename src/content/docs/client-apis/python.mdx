@@ -5,7 +5,7 @@ title: Python API
 import { LinkCard } from '@astrojs/starlight/components';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Kùzu provides a Python package that you can install via PyPI. A full list of the available functions and classes
+Kuzu provides a Python package that you can install via PyPI. A full list of the available functions and classes
 can be found in the Python API documentation, linked below.
 
 <LinkCard
@@ -17,7 +17,7 @@ Some useful features of the Python API are explained in the following sections.
 
 ## DataFrames and Arrow Tables
 
-In Python, Kùzu supports the use of Pandas and Polars DataFrames, as well as PyArrow Tables. This
+In Python, Kuzu supports the use of Pandas and Polars DataFrames, as well as PyArrow Tables. This
 allows you to leverage the data manipulation capabilities of these libraries in your graph workflows.
 
 ### Output query results
@@ -154,8 +154,8 @@ p.name: [["Adam","Karissa","Zhang"]]
 
 ### LOAD FROM
 
-You can scan a Pandas DataFrame, Polars DataFrame, or PyArrow Table in Kùzu using the `LOAD FROM` clause.
-Scanning a DataFrame or Table does *not* copy the data into Kùzu, it only reads the data.
+You can scan a Pandas DataFrame, Polars DataFrame, or PyArrow Table in Kuzu using the `LOAD FROM` clause.
+Scanning a DataFrame or Table does *not* copy the data into Kuzu, it only reads the data.
 
 <Tabs>
 
@@ -253,7 +253,7 @@ age: [[30,40,50]]
 
 <TabItem label="Pandas">
 
-Copy from a Pandas DataFrame into a Kùzu table using the `COPY FROM` command:
+Copy from a Pandas DataFrame into a Kuzu table using the `COPY FROM` command:
 
 ```py
 import kuzu
@@ -285,7 +285,7 @@ Using the `get_as_df()` method on your query result returns the result as a Pand
 
 <TabItem label="Polars">
 
-Copy from a Polars DataFrame into a Kùzu table using the `COPY FROM` command:
+Copy from a Polars DataFrame into a Kuzu table using the `COPY FROM` command:
 
 ```py
 import kuzu
@@ -323,7 +323,7 @@ shape: (3, 2)
 
 <TabItem label="Arrow Table">
 
-Copy from a PyArrow Table into a Kùzu table using the `COPY FROM` command:
+Copy from a PyArrow Table into a Kuzu table using the `COPY FROM` command:
 
 ```py
 import kuzu
@@ -361,10 +361,10 @@ p.age: [[30,40,50]]
 
 ## Type notation
 
-This section summarizes the type notation used in Kùzu's Python API. Below is a table from Python
-types to a Kùzu `LogicalTypeID`, which will be used to infer types via Python type annotations.
+This section summarizes the type notation used in Kuzu's Python API. Below is a table from Python
+types to a Kuzu `LogicalTypeID`, which will be used to infer types via Python type annotations.
 
-|Python type|Kùzu `LogicalTypeID`|
+|Python type|Kuzu `LogicalTypeID`|
 |---|---|
 |`bool`|`BOOL`|
 |`int`|`INT64`|
@@ -379,13 +379,13 @@ types to a Kùzu `LogicalTypeID`, which will be used to infer types via Python t
 
 ## UDF
 
-Kùzu's Python API also supports the registration of User Defined Functions (UDFs),
+Kuzu's Python API also supports the registration of User Defined Functions (UDFs),
 allowing you to define custom functions in Python and use them in your Cypher queries. This can allow
-you to quickly extend Kùzu with new functions you need in your Python applications.
+you to quickly extend Kuzu with new functions you need in your Python applications.
 
 :::caution[Note]
 There are performance implications of writing UDFs in Python. Before writing your own UDF, it's
-recommended to check if an equivalent Cypher function in Kùzu exists, as native functions run faster
+recommended to check if an equivalent Cypher function in Kuzu exists, as native functions run faster
 than UDFs.
 :::
 
@@ -415,7 +415,7 @@ conn.create_function("difference", difference, parameters, return_type)
 ```
 
 Note that in the example above, we explicitly declared the expected types of the parameters and the
-return value in Kùzu, prior to registering the UDF. 
+return value in Kuzu, prior to registering the UDF. 
 
 Alternatively, you can simply use Python type annotations to denote the type signature of the
 parameters and return value.
@@ -481,7 +481,7 @@ conn.remove_function(difference)
 
 When working with UDFs, you can also specify nested or complex types, though in this case, there are some differences
 from the examples shown above. With these additional types, a string representation should be given
-for the parameters which are then manually casted to the respective Kùzu type.
+for the parameters which are then manually casted to the respective Kuzu type.
 
 Some examples of where this is relevant are listed below:
 
@@ -514,6 +514,6 @@ conn.create_function(
 )
 ```
 
-The second parameter is a built-in native type in Kùzu, i.e., `kuzu.Type.BOOL`. For the first parameter,
-we need to specify a string, i.e. `"DECIMAL(7,2)"` that's then parsed and used by the binder in Kùzu
+The second parameter is a built-in native type in Kuzu, i.e., `kuzu.Type.BOOL`. For the first parameter,
+we need to specify a string, i.e. `"DECIMAL(7,2)"` that's then parsed and used by the binder in Kuzu
 to map to the internal Decimal representation.

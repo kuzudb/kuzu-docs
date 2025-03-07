@@ -4,17 +4,17 @@ description: Create table DDL statements for node and relationship tables
 ---
 
 As a first step to creating your database, you need to define your node and directed relationships.
-In the property graph model, nodes and relationships have labels. In Kùzu, every node or
+In the property graph model, nodes and relationships have labels. In Kuzu, every node or
 relationship can have one label. The node and relationships and the predefined properties on them are
 defined through `CREATE NODE TABLE` and `CREATE REL TABLE` statements.
 The choice of using the term "table" over "label" is intentional and explained below.
 
 :::note[Why are there no "labels"?]
-Kùzu uses the term **table** rather than **label** because, like other GDBMSs, Kùzu is
+Kuzu uses the term **table** rather than **label** because, like other GDBMSs, Kuzu is
 ultimately a relational system in the sense that it stores and processes sets of tuples, i.e., tables
 or relations.
 
-In fact, Kùzu's data model can be viewed as a _structured_ property graph model, in
+In fact, Kuzu's data model can be viewed as a _structured_ property graph model, in
 which you tag your tables as "node" and "relationship" tables depending on their roles in your
 application data. Nodes are generally
 well-suited for representing entities, while relationships are used to represent the
@@ -55,7 +55,7 @@ MATCH (a:User) RETURN *
 
 ### Primary key
 
-Kùzu requires a primary key column for node table which can be either a `STRING`, numeric, `DATE`, or `BLOB` property of the node. Kùzu will generate an index to do quick lookups on the primary key (e.g., `name` in the above example). Alternatively, you can use the [`SERIAL`](/cypher/data-types/#serial) data type to generate an auto-increment column as primary key.
+Kuzu requires a primary key column for node table which can be either a `STRING`, numeric, `DATE`, or `BLOB` property of the node. Kuzu will generate an index to do quick lookups on the primary key (e.g., `name` in the above example). Alternatively, you can use the [`SERIAL`](/cypher/data-types/#serial) data type to generate an auto-increment column as primary key.
 
 ### Default value
 
@@ -170,14 +170,14 @@ As you can imagine, the more relationships you want to selectively query on, the
 
 ## Create table if not exists
 
-If the given table name already exists in the database, Kùzu throws an exception when you try to create it.
-To avoid the exception being raised, use the `IF NOT EXISTS` clause. This tells Kùzu to do nothing when
+If the given table name already exists in the database, Kuzu throws an exception when you try to create it.
+To avoid the exception being raised, use the `IF NOT EXISTS` clause. This tells Kuzu to do nothing when
 the given table name already exists in the database.
 
 Example:
 ```sql
 CREATE NODE TABLE IF NOT EXISTS UW(ID INT64, PRIMARY KEY(ID))
 ```
-This query tells Kùzu to only create the `UW` table if it doesn't exist.
+This query tells Kuzu to only create the `UW` table if it doesn't exist.
 
 The same applies to relationship tables as well.

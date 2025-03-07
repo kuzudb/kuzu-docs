@@ -3,7 +3,7 @@ title: Join order hints
 description: Join order hint that allow users to enforce a specific join order
 ---
 
-`HINT` is an optional clause, available since Kùzu 0.5.0 and upward, that allows you to enforce a specific query plan 
+`HINT` is an optional clause, available since Kuzu 0.5.0 and upward, that allows you to enforce a specific query plan 
 for some of your queries. Specifically, you can explicitly declare the join order and/or sometimes the
 join algorithm used by the system. 
 
@@ -15,7 +15,7 @@ MATCH (a:person)-[e:LivesIn]->(b:City)
 WHERE b.ID = 0
 RETURN *;
 ```
-The Kùzu optimizer has the freedom to generate a query plan that matches all relationships from `a` to `b` using 
+The Kuzu optimizer has the freedom to generate a query plan that matches all relationships from `a` to `b` using 
 forward adjacency lists or from `b` to `a` using a backward adjacency lists. 
 Both query plans are correct and will generate the same query result. However, there is a potential performance difference because 
 there may be different number of nodes matching to `a` and `b`, i.e., `a` and `b` may have different cardinalities.
@@ -52,7 +52,7 @@ same plan because such joins are compiled as scanning node table followed by sca
 
 ### MULTI_JOIN clause: Worst-case optimal join plans
 
-Kùzu plans can use a combination of binary join operators and [worst-case optimal join (WCOJ)](https://blog.kuzudb.com/post/wcoj/) operators.
+Kuzu plans can use a combination of binary join operators and [worst-case optimal join (WCOJ)](https://blog.kuzudb.com/post/wcoj/) operators.
 WCOJ operators which
 are useful if your `MATCH` pattern contains cycles, e.g., when finding triangles or larger cliques of nodes in your databases.
 Using HINT, you can also force the optimizer to use a WCOJ operator as follows:
@@ -69,10 +69,10 @@ That is, this component looks like `((probeNode) MULTI_JOIN e1 MULTI_JOIN e2 ...
 of how the properties of c, if needed would be placed in the join plan (see above for the details of build and probe sides).
 
 When we perform the k-way join between the probeNode and `k-1` relationships, for each input tuple from the probeNode subplan, we find an adjacency list from each edge table and sort-merge join them on the intersected node.
-That's the essence of the WCOJ operator in Kùzu.
+That's the essence of the WCOJ operator in Kuzu.
 
-For example, in the following triangle query,  Kùzu will compute `(a JOIN e1)`, which will produce a set of `(a, e1, b)` tuples.
-Then for each `(a, e1, b)` tuple, the Kùzu's WCOJ operator will find the forward adjacency list for `e2` and `e3` and intersect them to
+For example, in the following triangle query,  Kuzu will compute `(a JOIN e1)`, which will produce a set of `(a, e1, b)` tuples.
+Then for each `(a, e1, b)` tuple, the Kuzu's WCOJ operator will find the forward adjacency list for `e2` and `e3` and intersect them to
 produce  `(a, e1, b, e2, e3, c)` outputs.
 ```cypher
 MATCH (a:person)<-[e1:knows]-(b:person)-[e2:knows]->(c:person),

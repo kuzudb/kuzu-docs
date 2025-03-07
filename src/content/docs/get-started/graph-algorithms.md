@@ -2,14 +2,14 @@
 title: "Run graph algorithms"
 ---
 
-One of the overarching goals of Kùzu is to function as the go-to graph database for data science
+One of the overarching goals of Kuzu is to function as the go-to graph database for data science
 use cases. NetworkX is a popular library in Python for graph algorithms and data science. In this
-section, we demonstrate Kùzu's ease of use in exporting subgraphs to the NetworkX format using the
+section, we demonstrate Kuzu's ease of use in exporting subgraphs to the NetworkX format using the
 `get_as_networkx()` function in the Python API. In addition, the following two capabilities are
 demonstrated.
 
-- Graph Visualization: We visualize subgraphs of interest via Kùzu explorer
-- PageRank: We compute PageRank on an extracted subgraph, store these values back in Kùzu's node
+- Graph Visualization: We visualize subgraphs of interest via Kuzu explorer
+- PageRank: We compute PageRank on an extracted subgraph, store these values back in Kuzu's node
 tables and query them.
 
 The dataset we will use for this exercise is the MovieLens dataset, available [here](https://github.com/kuzudb/kuzudb.github.io/tree/main/data/movielens-sm).
@@ -30,9 +30,9 @@ wget https://kuzudb.com/data/movie-lens/tags.csv
 Place the CSV files in a directory named `movie_data` in the same directory in which you want the
 database to be stored.
 
-## Insert data to Kùzu
+## Insert data to Kuzu
 
-The data is copied to a Kùzu database via the Python API as follows:
+The data is copied to a Kuzu database via the Python API as follows:
 
 ```py
 import shutil
@@ -56,9 +56,9 @@ conn = kuzu.Connection(db)
 load_data(conn)
 ```
 
-## Visualize subgraphs in Kùzu Explorer
+## Visualize subgraphs in Kuzu Explorer
 
-You can visualize the data in Kùzu Explorer as shown in the [previous section](/get-started/cypher-intro).
+You can visualize the data in Kuzu Explorer as shown in the [previous section](/get-started/cypher-intro).
 An example is shown below.
 
 ```cypher
@@ -121,9 +121,9 @@ user_df = user_df.reset_index(names=["id"])
 user_df.sort_values(by="pagerank", ascending=False).head()
 ```
 
-## Write PageRank values back to Kùzu
+## Write PageRank values back to Kuzu
 
-To write the values back to Kùzu, first update the node table schemas to include a new property
+To write the values back to Kuzu, first update the node table schemas to include a new property
 `pagerank`.
 
 ```py
@@ -136,8 +136,8 @@ except RuntimeError:
   pass
 ```
 
-An important feature of Kùzu is its ability to natively scan Pandas DataFrames in a zero-copy
-manner. This allows for efficient data transfer between your data in Python and Kùzu. The following
+An important feature of Kuzu is its ability to natively scan Pandas DataFrames in a zero-copy
+manner. This allows for efficient data transfer between your data in Python and Kuzu. The following
 code snippet shows how this is done for the movie nodes.
 
 ```py
@@ -184,7 +184,7 @@ y = conn.execute(
 4  5      0.000151
 ```
 
-## Query PageRank values in Kùzu
+## Query PageRank values in Kuzu
 
 You can run a query to print the top 20 pagerank movies to test that the upload worked:
 
@@ -236,9 +236,9 @@ print(res2.get_as_df())
 
 ## Further work
 
-You've now seen how to use NetworkX to run algorithms on a Kùzu graph, and move data back and
-forth between Kùzu and Python.
+You've now seen how to use NetworkX to run algorithms on a Kuzu graph, and move data back and
+forth between Kuzu and Python.
 
 There are numerous additional computations you can perform in NetworkX and store these results
-in Kùzu. See the [tutorial notebook](https://colab.research.google.com/drive/1_AK-CHELz0fLAc2RCPvPgD-R7-NGyrGu)
+in Kuzu. See the [tutorial notebook](https://colab.research.google.com/drive/1_AK-CHELz0fLAc2RCPvPgD-R7-NGyrGu)
 on Google Colab to try it for yourself!

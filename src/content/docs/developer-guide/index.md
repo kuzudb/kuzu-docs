@@ -1,15 +1,15 @@
 ---
-title: Build Kùzu from source
+title: Build Kuzu from source
 ---
 
 :::caution[Note]
-This page is intended for developers who want to build Kùzu from source. If you are a user of Kùzu,
+This page is intended for developers who want to build Kuzu from source. If you are a user of Kuzu,
 please refer to the [installation guide](https://docs.kuzudb.com/installation) for downloading pre-built binaries for your platform.
 :::
 
-To build from source code, Kùzu requires CMake(`>=3.15`), Python(`>=3.9`), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 11, Clang 14, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
+To build from source code, Kuzu requires CMake(`>=3.15`), Python(`>=3.9`), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 11, Clang 14, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
 
-Below are the instructions for building Kùzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. These instructions should also work for other similar platforms:
+Below are the instructions for building Kuzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. These instructions should also work for other similar platforms:
 
 - For other Debian-based Linux distros, such as *Debian*, *Linux Mint*, and *Pop!\_OS*, the instructions should be similar to Ubuntu 22.04 LTS.
 - For other Red Hat-based Linux distros, such as *Red Hat Enterprise Linux (RHEL)*, *CentOS*, *Fedora*, *Rocky Linux*, and *Oracle Linux*, the instructions should be similar to AlmaLinux 9.2.
@@ -28,7 +28,7 @@ apt update
 apt install -y build-essential cmake gcc g++ python3
 ```
 
-#### Build Kùzu
+#### Build Kuzu
 
 ```bash
 make release NUM_THREADS=$(nproc)
@@ -43,7 +43,7 @@ dnf update
 dnf install -y cmake gcc gcc-c++ python3
 ```
 
-#### Build Kùzu
+#### Build Kuzu
 
 ```bash
 make release NUM_THREADS=$(nproc)
@@ -58,7 +58,7 @@ pacman -Syu
 pacman -S --needed base-devel cmake gcc python
 ```
 
-#### Build Kùzu
+#### Build Kuzu
 
 ```bash
 make release NUM_THREADS=$(nproc)
@@ -82,7 +82,7 @@ Follow the instructions at [https://brew.sh/](https://brew.sh/).
 brew install cmake python
 ```
 
-#### Build Kùzu
+#### Build Kuzu
 
 ```bash
 make release NUM_THREADS=$(sysctl -n hw.physicalcpu)
@@ -108,7 +108,7 @@ choco install -y python3 make ninja
 
 Follow the instructions at [Microsoft's documentation](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line).
 
-#### Build Kùzu
+#### Build Kuzu
 
 ```powershell
 make release NUM_THREADS=$env:NUMBER_OF_PROCESSORS

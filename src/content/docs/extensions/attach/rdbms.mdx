@@ -5,11 +5,11 @@ title: Attaching to external RDBMSs
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-Kùzu supports directly scanning from a variety of relational databases using the `LOAD FROM` statement.
-Because RDBMSs are a common source of structured data in enterprises, the purpose behind this set of Kùzu
+Kuzu supports directly scanning from a variety of relational databases using the `LOAD FROM` statement.
+Because RDBMSs are a common source of structured data in enterprises, the purpose behind this set of Kuzu
 extensions is currently twofold: (1) to allow users to scan data from external RDBMSs without having to copy it
 to a graph database; and (2) if data will be copied over from an RDBMS, this feature also simplifies the pipeline
-for copying data from an external RDBMS into Kùzu tables.
+for copying data from an external RDBMS into Kuzu tables.
 
 The currently available relational database extensions, as well as their minimum required versions,
 are shown below:
@@ -28,7 +28,7 @@ Click through each tab in this section to see the example usage for your extensi
 
 <TabItem label="DuckDB">
 
-The DuckDB extension can be installed and loaded by running the following commands using the Kùzu CLI
+The DuckDB extension can be installed and loaded by running the following commands using the Kuzu CLI
 or your preferred language client API:
 
 ```
@@ -61,13 +61,13 @@ ATTACH [DB_PATH] AS [alias] (dbtype duckdb, skip_unsupported_table = OPTION, sch
 ```
 
 - `DB_PATH`: Path to the DuckDB database instance (can be a relative/absolute/https/s3 path)
-- `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used.
+- `alias`: Database alias to use in Kuzu - If not provided, the database name from DuckDB will be used.
   When attaching multiple databases, it's recommended to use aliasing.
-- `skip_unsupported_table`: Whether Kùzu should throw an exception or skip when encountering a table with unsupported datatype. 
+- `skip_unsupported_table`: Whether Kuzu should throw an exception or skip when encountering a table with unsupported datatype. 
    Supported options are: TRUE/FALSE. Default is FALSE.
-- `schema`: The name of the schema in duckdb to attach. Kùzu attaches to the `main` schema of duckdb by default.
+- `schema`: The name of the schema in duckdb to attach. Kuzu attaches to the `main` schema of duckdb by default.
 
-The below example shows how the `university.db` DuckDB database can be attached to Kùzu using
+The below example shows how the `university.db` DuckDB database can be attached to Kuzu using
 the alias `uw`:
 
 ```sql
@@ -109,10 +109,10 @@ Result:
 └──────────────┘
 ```
 
-#### 3. Data type mapping from DuckDB to Kùzu
+#### 3. Data type mapping from DuckDB to Kuzu
 
-The table below shows the mapping from duckdb's type to Kùzu's type:
-| Data type in DuckDB         | Corresponding data type in Kùzu |
+The table below shows the mapping from duckdb's type to Kuzu's type:
+| Data type in DuckDB         | Corresponding data type in Kuzu |
 |-----------------------------|----------------------------------|
 | BIGINT                     | INT64                           |
 | BIT                        | UNSUPPORTED                          |
@@ -200,17 +200,17 @@ RETURN *
 
 #### 6. Copy data from DuckDB tables
 
-One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kùzu.
+One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kuzu.
 In this example, we continue using the `university.db` database created in the last step, but this time,
-we copy the data and persist it to Kùzu. This is done with the `COPY FROM` statement. Here is an example:
+we copy the data and persist it to Kuzu. This is done with the `COPY FROM` statement. Here is an example:
 
-We first create a `Person` table in Kùzu. In this example we will make `Person` have the same schema as the one defined in the external RDBMS.
+We first create a `Person` table in Kuzu. In this example we will make `Person` have the same schema as the one defined in the external RDBMS.
 
 ```cypher
 CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 ```
 
-When the schemas are the same, we can copy the data from the external DBMS table to the Kùzu table simply as follows.
+When the schemas are the same, we can copy the data from the external DBMS table to the Kuzu table simply as follows.
 
 ```sql
 COPY Person FROM uw.person;
@@ -221,9 +221,9 @@ If the schemas are not the same, e.g., `Person` contains only `name` property wh
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
-#### 7. Query the data in Kùzu
+#### 7. Query the data in Kuzu
 
-Finally, we can verify the data in the `Person` table in Kùzu.
+Finally, we can verify the data in the `Person` table in Kuzu.
 
 ```cypher
 MATCH (p:Person) RETURN p.*;
@@ -246,7 +246,7 @@ Result:
 
 #### 8. Clear attached database schema cache
 
-To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
+To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
 via an alternate connection to attached RDBMSs, such as creation or deletion of tables, the cached
 schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
@@ -270,7 +270,7 @@ DETACH uw
 
 <TabItem label="Postgres">
 
-The PostgreSQL extension can be installed and loaded by running the following commands using the Kùzu CLI
+The PostgreSQL extension can be installed and loaded by running the following commands using the Kuzu CLI
 or your preferred language client API:
 
 ```
@@ -326,11 +326,11 @@ asyncio.run(main())
 ATTACH [PG_CONNECTION_STRING] AS [alias] (dbtype postgres, skip_unsupported_table = OPTION, schema = SCHEMA_NAME)
 ```
 
-- `skip_unsupported_table`: Whether Kùzu should throw an exception or skip when encountering a table with unsupported datatype.
+- `skip_unsupported_table`: Whether Kuzu should throw an exception or skip when encountering a table with unsupported datatype.
    Supported options are: TRUE or FALSE. Default is FALSE.
-- `schema`: The name of the schema in Postgres to attach. Kùzu attaches to the `public` schema of postgres by default.
+- `schema`: The name of the schema in Postgres to attach. Kuzu attaches to the `public` schema of postgres by default.
 
-The below example shows how the `university` PostgreSQL database can be attached to Kùzu using
+The below example shows how the `university` PostgreSQL database can be attached to Kuzu using
 the alias `uw`:
 
 ```sql
@@ -340,7 +340,7 @@ ATTACH 'dbname=university user=postgres host=localhost password=testpassword por
 The `ATTACH` statement requires the following parameters:
 
 - `PG_CONNECTION_STRING`: PostgreSQL connection string with the necessary parameters
-- `alias`: Database alias to use in Kùzu - If not provided, the database name from PostgreSQL will be used.
+- `alias`: Database alias to use in Kuzu - If not provided, the database name from PostgreSQL will be used.
   When attaching multiple databases, it's recommended to use aliasing.
 
 The below table lists some common connection string parameters:
@@ -353,10 +353,10 @@ The below table lists some common connection string parameters:
 | `password`  | Postgres password | [empty] |
 | `port`      | Port number | 5432 |
 
-#### 3. Data type mapping from PostgreSQL to Kùzu
+#### 3. Data type mapping from PostgreSQL to Kuzu
 
-The table below shows the mapping from PostgreSQL's type to Kùzu's type:
-| PostgreSQL Data Type                      | Corresponding Data Type in Kùzu |
+The table below shows the mapping from PostgreSQL's type to Kuzu's type:
+| PostgreSQL Data Type                      | Corresponding Data Type in Kuzu |
 |-------------------------------------------|----------------------------------|
 | bigint (int8)                             | INT64                           |
 | bigserial (serial8)                       | INT64                                 |
@@ -456,17 +456,17 @@ RETURN *
 
 #### 6. Copy data from PostgreSQL tables
 
-One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kùzu.
+One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kuzu.
 In this example, we continue using the `university.db` database created in the last step, but this time,
-we copy the data and persist it to Kùzu. This is done with the `COPY FROM` statement. Here is an example:
+we copy the data and persist it to Kuzu. This is done with the `COPY FROM` statement. Here is an example:
 
-We first create a `Person` table in Kùzu. In this example we will make `Person` have the same schema as the one defined in the external RDBMS.
+We first create a `Person` table in Kuzu. In this example we will make `Person` have the same schema as the one defined in the external RDBMS.
 
 ```cypher
 CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 ```
 
-When the schemas are the same, we can copy the data from the external DBMS table to the Kùzu table simply as follows.
+When the schemas are the same, we can copy the data from the external DBMS table to the Kuzu table simply as follows.
 
 ```sql
 COPY Person FROM uw.person;
@@ -477,9 +477,9 @@ If the schemas are not the same, e.g., `Person` contains only `name` property wh
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
-#### 7. Query the data in Kùzu
+#### 7. Query the data in Kuzu
 
-Finally, we can verify the data in the `Person` table in Kùzu.
+Finally, we can verify the data in the `Person` table in Kuzu.
 
 ```cypher
 MATCH (p:Person) RETURN p.*;
@@ -502,7 +502,7 @@ Result:
 
 #### 8. Clear attached database schema cache
 
-To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
+To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
 via an alternate connection to attached RDBMSs, such as creation or deletion of tables, the cached
 schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
@@ -526,7 +526,7 @@ DETACH uw
 
 <TabItem label="SQLite">
 
-The SQLite extension can be installed and loaded by running the following commands using the Kùzu CLI
+The SQLite extension can be installed and loaded by running the following commands using the Kuzu CLI
 or your preferred language client API:
 
 ```
@@ -560,22 +560,22 @@ ATTACH [DB_PATH] AS [alias] (dbtype sqlite, skip_unsupported_table = OPTION)
 ```
 
 - `DB_PATH`: Path to the SQLite database instance (can be relative or absolute path)
-- `alias`: Database alias to use in Kùzu - If not provided, the database name from DuckDB will be used.
+- `alias`: Database alias to use in Kuzu - If not provided, the database name from DuckDB will be used.
   When attaching multiple databases, it's recommended to use aliasing.
-- `skip_unsupported_table`: Whether Kùzu should throw an exception or skip when encountering a table with unsupported datatype. Supported options: `TRUE` or `FALSE`.
+- `skip_unsupported_table`: Whether Kuzu should throw an exception or skip when encountering a table with unsupported datatype. Supported options: `TRUE` or `FALSE`.
 
 
-The below example shows how the `university.db` SQLite database can be attached to Kùzu using
+The below example shows how the `university.db` SQLite database can be attached to Kuzu using
 the alias `uw`:
 
 ```sql
 ATTACH 'university.db' AS uw (dbtype sqlite);
 ```
 
-#### 3. Data type mapping from SQLite to Kùzu
+#### 3. Data type mapping from SQLite to Kuzu
 
-The table below shows the mapping from SQLite's type to Kùzu's type:
-| SQLite Storage Class / Datatype            | Corresponding Data Type in Kùzu |
+The table below shows the mapping from SQLite's type to Kuzu's type:
+| SQLite Storage Class / Datatype            | Corresponding Data Type in Kuzu |
 |--------------------------------------------|----------------------------------|
 | NULL                                       | BLOB                            |
 | INTEGER                                    | INT64                           |
@@ -586,7 +586,7 @@ The table below shows the mapping from SQLite's type to Kùzu's type:
 | DATE                                       | DATE                           |
 | TIME                                       | TIMESTAMP                      |
 
-Note: Sqlite uses a [dynamic type system](https://www.sqlite.org/datatype3.html), meaning that a column in sqlite can store values with different types. The option: `sqlite_all_varchar_option` is provided to scan such columns in Kùzu. 
+Note: Sqlite uses a [dynamic type system](https://www.sqlite.org/datatype3.html), meaning that a column in sqlite can store values with different types. The option: `sqlite_all_varchar_option` is provided to scan such columns in Kuzu. 
 Usage:
 ```
 `CALL sqlite_all_varchar_option=<OPTION>`
@@ -648,17 +648,17 @@ RETURN *
 
 #### 6. Copy data from SQLite tables
 
-One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kùzu.
+One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kuzu.
 In this example, we continue using the `university.db` database created in the last step, but this time,
-we copy the data and persist it to Kùzu. This is done with the `COPY FROM` statement. Here is an example:
+we copy the data and persist it to Kuzu. This is done with the `COPY FROM` statement. Here is an example:
 
-We first create a `Person` table in Kùzu. In this example we will make `Person` have the same schema as the one defined in the external RDBMS.
+We first create a `Person` table in Kuzu. In this example we will make `Person` have the same schema as the one defined in the external RDBMS.
 
 ```cypher
 CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
 ```
 
-When the schemas are the same, we can copy the data from the external DBMS table to the Kùzu table simply as follows.
+When the schemas are the same, we can copy the data from the external DBMS table to the Kuzu table simply as follows.
 
 ```sql
 COPY Person FROM uw.person;
@@ -669,9 +669,9 @@ If the schemas are not the same, e.g., `Person` contains only `name` property wh
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
-#### 7. Query the data in Kùzu
+#### 7. Query the data in Kuzu
 
-Finally, we can verify the data in the `Person` table in Kùzu.
+Finally, we can verify the data in the `Person` table in Kuzu.
 
 ```cypher
 MATCH (p:Person) RETURN p.*;
@@ -694,7 +694,7 @@ Result:
 
 #### 8. Clear attached database schema cache
 
-To avoid redundantly retrieving schema information from attached databases, Kùzu maintains a schema cache
+To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
 via an alternate connection to attached RDBMSs, such as creation or deletion of tables, the cached
 schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached

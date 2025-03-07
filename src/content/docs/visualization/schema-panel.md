@@ -2,10 +2,10 @@
 title: Schema Panel
 ---
 
-If you click on the `Schema` tab on the top right corner of Kùzu Explorer, you get to the Schema Panel,
+If you click on the `Schema` tab on the top right corner of Kuzu Explorer, you get to the Schema Panel,
 where you can see the existing node and relationship tables in your database in a graph view.
 The screenshot below shows the default schema you would see if you loaded the `demo-db` database that is bundled
-with Kùzu Explorer.
+with Kuzu Explorer.
 
 <img src="/img/visualization/schema-panel.png" />
 

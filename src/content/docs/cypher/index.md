@@ -22,8 +22,8 @@ There are a few other differences between SQL and Cypher. Yet, like other high-l
 query languages, most of its semantics can be understood as mappings to relational algebra operators
 for selections, joins, projections and aggregations.
 
-Kùzu implements openCypher's[^1] standard predicates and expressions. The following sections in this
-chapter covers all Cypher statements, clauses, expressions and functions implemented in Kùzu.
+Kuzu implements openCypher's[^1] standard predicates and expressions. The following sections in this
+chapter covers all Cypher statements, clauses, expressions and functions implemented in Kuzu.
 
 ## Statements vs. clauses
 
@@ -50,7 +50,7 @@ MATCH (p2:Person)
 WHERE p2.age > 18
 RETURN p2.name AS adult;
 ```
-When you copy-paste the above blocks into the Kùzu CLI and press Enter, it will execute each block
+When you copy-paste the above blocks into the Kuzu CLI and press Enter, it will execute each block
 sequentially, so you don't have to send individual queries one at a time.
 
 ---

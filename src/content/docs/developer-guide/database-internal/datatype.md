@@ -2,7 +2,7 @@
 title: Data type classes
 ---
 
-There are two data type classes in Kùzu, `LogicalType` and `PhysicalType`.
+There are two data type classes in Kuzu, `LogicalType` and `PhysicalType`.
 
 ## LogicalType
 

@@ -11,7 +11,7 @@ to define more predicates on the patterns that are matched.
 - Similar to other high-level database query languages, nodes and relationships in the patterns 
 are bound to variables, which can be referenced in other clauses (e.g., WHERE or RETURN) of the query.
 openCypher allows you to omit these variables, if you do not need to reference them.
-- Node/relationship table names in Kùzu are case sensitive. So you need to specify the labels of nodes/relationships
+- Node/relationship table names in Kuzu are case sensitive. So you need to specify the labels of nodes/relationships
 using the same letter cases you used in your node/relationship table schema definitions.
 :::
 
@@ -378,7 +378,7 @@ Output:
 ```
 
 By default, recursive relationship follows a `WALK` semantic, in which nodes and relationships can be visited repeatedly. 
-Kùzu also supports `TRAIL` and `ACYCLIC` semantics, which can be specified inside the recursive pattern after `*`.
+Kuzu also supports `TRAIL` and `ACYCLIC` semantics, which can be specified inside the recursive pattern after `*`.
 
 A `TRAIL` is a walk in which all relationships are distinct.
 
@@ -469,7 +469,7 @@ Our filter grammar is similar to that used by [Memgraph](https://memgraph.com/do
 You can project a subset of properties for the intermediate nodes and relationships that bind within a recursive
 relationship. You can define the projection list of intermediate nodes and relationships within two curly brackets `{}` `{}` at 
 the end of the recursive relationship. The first `{}` is used for projecting relationship properties and the second `{}` for 
-node properties. Currently, Kùzu only supports directly projecting properties and not of expressions using
+node properties. Currently, Kuzu only supports directly projecting properties and not of expressions using
 the properties. Projecting properties of intermediate nodes and relationships can improve both performance and memory footprint.
 
 Below is an example that projects only the `since` property of the intermediate relationship and the `name` property of the 
@@ -535,14 +535,14 @@ Output:
 ```
 
 :::note[Note]
-To avoid ambiguity, Kùzu forces the lower bound of shortest path to be 1.
+To avoid ambiguity, Kuzu forces the lower bound of shortest path to be 1.
 There are two interpretations when the lower bound is greater than 1:
 - Compute shortest path and then return the path whose length is greater than the lower bound.
 - Compute the path with length greater than lower bound and then return the shortest path.
 :::
 
 ## Named paths
-Kùzu treats paths as a first-class citizen, so users can assign a named variable to a path (i.e. connected graph ) and use it later on.
+Kuzu treats paths as a first-class citizen, so users can assign a named variable to a path (i.e. connected graph ) and use it later on.
 
 The following query returns all paths between `Adam` and `Karissa`.
 ```cypher

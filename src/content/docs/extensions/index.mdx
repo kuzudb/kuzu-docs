@@ -5,11 +5,11 @@ title: Extensions
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-Kùzu has an extension framework designed to extend its capabilities. Our goal is to implement
+Kuzu has an extension framework designed to extend its capabilities. Our goal is to implement
 more and more extensions over time, such as supporting new data types, functions and
 indices, or to better integrate with external systems.
 
-Extensions expose several internal interfaces of Kùzu, for example, the FileSystem, and can have
+Extensions expose several internal interfaces of Kuzu, for example, the FileSystem, and can have
 multiple implementations. Extensions are implementations of these interfaces that can be
 dynamically loaded at runtime.
 
@@ -31,7 +31,7 @@ The following extensions are implemented, with more to come:
 
 | Extension Name | Description |
 |----------|----------|
-| [httpfs](/extensions/httpfs) | Read and write files over HTTP(s) protocol. Also used for [attaching to a remote Kùzu database](/extensions/attach/kuzu). |
+| [httpfs](/extensions/httpfs) | Read and write files over HTTP(s) protocol. Also used for [attaching to a remote Kuzu database](/extensions/attach/kuzu). |
 | [duckdb](/extensions/attach/rdbms) | Scan data from an attached DuckDB database |
 | [postgres](/extensions/attach/rdbms) | Scan data from an attached PostgreSQL database |
 | [sqlite](/extensions/attach/rdbms) | Scan data from an attached SQLite database |
@@ -39,13 +39,13 @@ The following extensions are implemented, with more to come:
 | [delta](/extensions/delta) | Scan data from a delta table |
 | [iceberg](/extensions/iceberg) | Scan iceberg data |
 
-## Using Extensions in Kùzu
+## Using Extensions in Kuzu
 
-This section describes how to use officially supported extensions in Kùzu.
+This section describes how to use officially supported extensions in Kuzu.
 
 ### Installing an official extension
 
-Kùzu requires the user to install the extension before loading and using it.
+Kuzu requires the user to install the extension before loading and using it.
 Official extensions can be simply installed by running the install command:
 
 ```sql
@@ -55,7 +55,7 @@ INSTALL <extension_name>
 Where `extension_name` is the name of the extension to be installed.
 
 ### Loading an official extension
-After installation, a load command is required to ask Kùzu to dynamically load the shared library.
+After installation, a load command is required to ask Kuzu to dynamically load the shared library.
 Extensions installed using the `INSTALL` command can be loaded directly as follows: 
 
 ```sql
@@ -64,6 +64,6 @@ LOAD EXTENSION <extension_name>
 
 :::note[Note]
 A new Database object at the C++ level is instantiated every time a new CLI session is started, or
-when a client script that embeds Kùzu is run. For this reason, the `LOAD EXTENSION` command must be
+when a client script that embeds Kuzu is run. For this reason, the `LOAD EXTENSION` command must be
 run every time a new CLI session is started or a client script is run.
 :::

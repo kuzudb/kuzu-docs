@@ -2,15 +2,15 @@
 title: Migrate your database
 ---
 
-You can migrate databases between different versions of Kùzu without manually writing DDL and COPY statements.
-To perform a migration, you would first export the database from an existing Kùzu version using the command `EXPORT DATABASE`.
-Then, you would import this database into another Kùzu version using `IMPORT DATABASE`.
+You can migrate databases between different versions of Kuzu without manually writing DDL and COPY statements.
+To perform a migration, you would first export the database from an existing Kuzu version using the command `EXPORT DATABASE`.
+Then, you would import this database into another Kuzu version using `IMPORT DATABASE`.
 
 ## Export database
 
-The `EXPORT DATABASE` command exports all the contents of a Kùzu database to the specified directory.
+The `EXPORT DATABASE` command exports all the contents of a Kuzu database to the specified directory.
 The command generates the following files under the `/path/to/export` directory, which
-are needed to be able to import this database to a new Kùzu version:  
+are needed to be able to import this database to a new Kuzu version:  
 - `schema.cypher`: Contains the definitions of all node and edge tables.
 - `macro.cypher`: Includes the definitions of all macro functions.
 - `copy.cypher`: Contains `COPY FROM` statements for reimporting data.
@@ -38,9 +38,9 @@ The `EXPORT DATABASE` command only export indexes whose dependent extensions hav
 ## Import database
 
 The `IMPORT DATABASE` command imports the contents of the database from a specific directory to which
-a Kùzu database was exported to using `EXPORT DATABASE` command. Under the hood, this command uses the
+a Kuzu database was exported to using `EXPORT DATABASE` command. Under the hood, this command uses the
 Cypher and data files that were created by the `EXPORT DATABASE` command to recreate the necessary databases
-and tables in the new Kùzu version you are migrating to.
+and tables in the new Kuzu version you are migrating to.
 
 The query below imports the database from a directory named `/path/to/export` to
 the current database directory that your session points to:

@@ -4,7 +4,7 @@ title: Data types
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-Kùzu supports a set of primitive and nested data types both for node and relationship properties as
+Kuzu supports a set of primitive and nested data types both for node and relationship properties as
 well as for forming expressions whose outputs are specified using these data types. This section
 shows all built-in data types.
 
@@ -214,7 +214,7 @@ Output:
 │           │
 └───────────┘
 ```
-Kùzu's CLI returns an empty cell to indicate nulls.
+Kuzu's CLI returns an empty cell to indicate nulls.
 
 ## DATE
 
@@ -271,7 +271,7 @@ Output:
 | 4 bytes | date/time difference | DURATION
 
 `INTERVAL` consists of multiple date parts and represents the total time length of these date parts.
-Kùzu follows [DuckDB's implementation](https://duckdb.org/docs/sql/data_types/interval) for the
+Kuzu follows [DuckDB's implementation](https://duckdb.org/docs/sql/data_types/interval) for the
 interval format.
 
 Example:
@@ -418,7 +418,7 @@ Functions that work on `UNION` data types can be found [here](/cypher/expression
 | variable | arbitrary binary object | BYTEA
 
 `BLOB`(**B**inary **L**arge **OB**ject) allows storage of an arbitrary binary object with up to
-4KB in size in Kùzu. The database processes it as binary data because it has no knowledge as to what
+4KB in size in Kuzu. The database processes it as binary data because it has no knowledge as to what
 the underlying data represents (e.g. image, video).
 
 Below is an example of how to create a blob object with 3 bytes (188, 189, 186, 170):
@@ -588,7 +588,7 @@ Output:
 
 ## LIST and ARRAY
 
-Kùzu supports two list-like data types: (i) variable-length lists, simply called `LIST`, and
+Kuzu supports two list-like data types: (i) variable-length lists, simply called `LIST`, and
 (ii) fixed-length lists, called `ARRAY`. Click on the card below to learn more about them.
 
 <LinkCard
@@ -601,10 +601,10 @@ Kùzu supports two list-like data types: (i) variable-length lists, simply calle
 ## JSON
 
 :::note[Requires the JSON extension]
-The JSON data type is not natively available in Kùzu, and requires the [JSON extension](/extensions/json)
+The JSON data type is not natively available in Kuzu, and requires the [JSON extension](/extensions/json)
 :::
 
-Using the Kùzu JSON extension, you can model store properties as JSON natively via the `JSON`
+Using the Kuzu JSON extension, you can model store properties as JSON natively via the `JSON`
 logical type, which is interpreted as parsed as JSON, rather than as a string.
 
 <LinkCard

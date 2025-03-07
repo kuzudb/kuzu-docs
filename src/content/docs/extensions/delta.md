@@ -6,7 +6,7 @@ title: "Delta Lake"
 
 The `delta` extension adds support for scanning/copying from the [`Delta Lake open-source storage format`](https://delta.io/).
 Delta Lake is an open-source storage framework that enables building a format agnostic Lakehouse architecture.
-Using this extension, you can interact with Delta tables from within Kùzu using the `LOAD FROM` and `COPY FROM` clauses.
+Using this extension, you can interact with Delta tables from within Kuzu using the `LOAD FROM` and `COPY FROM` clauses.
 
 The Delta functionality is not available by default, so you would first need to install the `DELTA`
 extension by running the following commands:
@@ -43,7 +43,7 @@ then proceed to copy the data and construct a node table.
 
 ### Scan the Delta table
 `LOAD FROM` is a Cypher clause that scans a file or object element by element, but doesn’t actually
-move the data into a Kùzu table.
+move the data into a Kuzu table.
 
 To scan the Delta table created above, you can do the following:
 
@@ -61,12 +61,12 @@ LOAD FROM '/tmp/student' (file_format='delta') RETURN *;
 └────────┴───────┘
 ```
 :::note[Note]
-Note: The `file_format` parameter is used to explicitly specify the file format of the given file instead of letting Kùzu autodetect the file format at runtime.
-When scanning from the Delta table, `file_format` option must be provided since Kùzu is not capable of autodetecting Delta tables.
+Note: The `file_format` parameter is used to explicitly specify the file format of the given file instead of letting Kuzu autodetect the file format at runtime.
+When scanning from the Delta table, `file_format` option must be provided since Kuzu is not capable of autodetecting Delta tables.
 :::
 
 ### Copy the Delta table into a node table
-You can then use a `COPY FROM` statement to directly copy the contents of the Delta table into a Kùzu node table.
+You can then use a `COPY FROM` statement to directly copy the contents of the Delta table into a Kuzu node table.
 
 ```cypher
 CREATE NODE TABLE student (name STRING, ID INT64, PRIMARY KEY(ID));
@@ -100,7 +100,7 @@ COPY student FROM '/tmp/student' (file_format='delta');
 ```
 
 ### Access Delta tables hosted on S3
-Kùzu also supports scanning/copying a Delta table hosted on S3 in the same way as from a local file system.
+Kuzu also supports scanning/copying a Delta table hosted on S3 in the same way as from a local file system.
 Before reading and writing from S3, you have to configure the connection using the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
 
 #### Supported options
@@ -139,7 +139,7 @@ COPY student FROM 's3://kuzu-sample/student-delta' (file_format='delta')
 
 ## Limitations
 
-When using the Delta Lake extension in Kùzu, keep the following limitations in mind.
+When using the Delta Lake extension in Kuzu, keep the following limitations in mind.
 
-- Writing (i.e., exporting to) Delta files from Kùzu is currently not supported.
+- Writing (i.e., exporting to) Delta files from Kuzu is currently not supported.
 

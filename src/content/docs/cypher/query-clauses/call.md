@@ -11,7 +11,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | Function | Description                                                                                  |
 | ----------- |----------------------------------------------------------------------------------------------|
 | `CURRENT_SETTING('setting')` | returns the value of the given setting                                                       |
-| `DB_VERSION()` | returns the version of Kùzu                                                                  |
+| `DB_VERSION()` | returns the version of Kuzu                                                                  |
 | `SHOW_TABLES()` | returns the name, type, comment of all tables in the database                                |
 | `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database             |
 | `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases                                             |
@@ -203,7 +203,7 @@ CALL clear_warnings();
 ```
 
 ### SHOW_OFFICIAL_EXTENSIONS
-If you would like to know all official [extensions](../../extensions) available in Kùzu, you can run the `SHOW_OFFICIAL_EXTENSIONS` function.
+If you would like to know all official [extensions](../../extensions) available in Kuzu, you can run the `SHOW_OFFICIAL_EXTENSIONS` function.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
@@ -232,7 +232,7 @@ Output:
 ```
 
 ### SHOW_LOADED_EXTENSIONS
-If you would like to know information about loaded extensions in Kùzu, you can run the `SHOW_LOADED_EXTENSIONS` function.
+If you would like to know information about loaded extensions in Kuzu, you can run the `SHOW_LOADED_EXTENSIONS` function.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
@@ -347,5 +347,5 @@ RETURN *;
 ```
 The query throws an exception since the column name to yield is `thread` which doesn't match the return column name(`threads`) of the call function.
 
-3. The syntax in Kùzu Cypher is different from other systems like Neo4j. In Kùzu, the `YIELD` clause must be followed by a return clause. `YIELD *` is not allowed in Kùzu.
+3. The syntax in Kuzu Cypher is different from other systems like Neo4j. In Kuzu, the `YIELD` clause must be followed by a return clause. `YIELD *` is not allowed in Kuzu.
 :::

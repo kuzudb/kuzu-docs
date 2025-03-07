@@ -14,8 +14,8 @@ on how to skip erroneous CSV rows during the import.
 :::caution[Guidelines]
 - **Copy nodes before relationships:** In order to copy a relationship table `R` from a csv file `RFile`, the nodes that appear in `RFile` need to
   already exist in the database (either imported in bulk or inserted through Cypher data manipulation commands).
-- **Wrap strings inside quotes:** Kùzu will accept strings in string columns both with and without quotes, though it's recommended to wrap strings in quotes to avoid any ambiguity with delimiters.
-- **Avoid leading and trailing spaces**: As per the CSV standard, Kùzu does not ignore leading and trailing spaces (e.g., if you input `   213   ` for
+- **Wrap strings inside quotes:** Kuzu will accept strings in string columns both with and without quotes, though it's recommended to wrap strings in quotes to avoid any ambiguity with delimiters.
+- **Avoid leading and trailing spaces**: As per the CSV standard, Kuzu does not ignore leading and trailing spaces (e.g., if you input `   213   ` for
   an integer value, that will be read as malformed integer and the corresponding node/rel property will be set to NULL.
   :::
 
@@ -43,7 +43,7 @@ COPY User FROM "user.csv" (header=true);
 
 ## Import to relationship table
 
-When loading into a relationship table, Kùzu assumes the first two columns in the file are:
+When loading into a relationship table, Kuzu assumes the first two columns in the file are:
 
 - `FROM` Node Column: The primary key of the `FROM` nodes.
 - `TO` Node Column: The primary key of the `TO` nodes.
@@ -80,7 +80,7 @@ COPY Follows FROM "follows.csv" (SKIP=3);
 ## Import multiple files to a single table
 
 It is common practice to divide a large CSV file into several smaller files for cleaner data management.
-Kùzu can read multiple files with the same structure, consolidating their data into a single node or relationship table.
+Kuzu can read multiple files with the same structure, consolidating their data into a single node or relationship table.
 You can specify that multiple files are loaded in the following ways:
 
 ### Glob pattern
@@ -115,7 +115,7 @@ configurations can be manually set by specifying parameters inside `( )` at the
 end of the `COPY FROM` clause. Several of the supported configurations, such as the header and delimiter characters,
 are automatically detected if they are not manually specified at the end of  `COPY FROM` clause.
 See the [Auto Detecting Configurations](#auto-detecting-configurations) section for more details
-how Kùzu automatically detects these configurations.
+how Kuzu automatically detects these configurations.
 
 The following table shows the configuration parameters supported:
 
@@ -145,33 +145,33 @@ Finally, the assignment operator `=` can also be omitted and replaced with space
 
 ### Auto Detecting Configurations
 If any of the following configuration options are not manually specified at the end of the `COPY FROM` statement,
-by default Kùzu will try to automatically detect them:
+by default Kuzu will try to automatically detect them:
 - HEADER
 - DELIM
 - QUOTE
 - ESCAPE
 
 If you specify a subset of these manually but not the others, then only those that have not been specified will be automatically detected.
-You can turn off auto-detection by setting `(auto_detect=false)` as a parameter, in which case Kùzu will default to using the default values
+You can turn off auto-detection by setting `(auto_detect=false)` as a parameter, in which case Kuzu will default to using the default values
 for any of the unspecified configurations. For example, consider the example from above again:
 ```cypher
 COPY User FROM "user.csv" (HEADER=true, DELIM="|");
 ```
 In this case (which is equivalent to `COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=true)`),
-Kùzu will try to automatically detect the `QUOTE` and `ESCAPE` characters.
+Kuzu will try to automatically detect the `QUOTE` and `ESCAPE` characters.
 It will not try to automatically detect if the first line is a header line or the `DELIM` character,
 since those configurations are manually specified in the query.
 If instead the query was:
 ```cypher
 COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
 ```
-Then, Kùzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `"` respectively (and use
+Then, Kuzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `"` respectively (and use
 the manually specified configurations for `HEADER` and `DELIM`).
 
-**sample_size**: By default, Kùzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
+**sample_size**: By default, Kuzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
 If you want to use a different number of lines, you can specify the `sample_size` parameter.
 
-For interested users, below are more details of how Kùzu automatically tries to detect these configurations.
+For interested users, below are more details of how Kuzu automatically tries to detect these configurations.
 
 **HEADER auto detection** parses the first line of the CSV into columns and
 checks if each column can be cast to the data type of the target column in the node or rel table that is being copied into.
@@ -179,13 +179,13 @@ If so, the line is assumed to be a valid "data" line and inserted as a record in
 a header line and skipped.
 
 **DELIM, QUOTE, ESCAPE auto detection**
-Kùzu uses the first `sample_size` lines to auto detect any configuration that has not been manually specified.
+Kuzu uses the first `sample_size` lines to auto detect any configuration that has not been manually specified.
 The possible configurations for different configurations are:
 - DELIM: `,`, `|`, `;`, `\t`.
 - QUOTE: `"`, `'` and (no quote character)
 - ESCAPE: `"`, `'`, `\` and (no escape character)
 
-For the unspecified configurations, Kùzu considers parsing the samples lines it scans (see the `sample_size` parameter)
+For the unspecified configurations, Kuzu considers parsing the samples lines it scans (see the `sample_size` parameter)
 for each possible configuration combination and then picks the configuration combination that successfully parses the most lines and with the most consistent number of columns in each row.
 
 ## Ignore erroneous rows

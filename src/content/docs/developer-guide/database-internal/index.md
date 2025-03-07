@@ -8,7 +8,7 @@ The following sections describes the role of each module under `src/` directory.
 
 ### Parser
 
-The parser transforms an input string statement into Kùzu's internal AST, called a `Statement`. Parser validates the syntax correctness of the input statement. An input statement will first be parsed into an antlr4 AST according to the grammar file under `src/antlr4/Cypher.g4`. We then perform a bottom-up traversal over the antlr4 AST and transform into `Statement` through `Transformer`.
+The parser transforms an input string statement into Kuzu's internal AST, called a `Statement`. Parser validates the syntax correctness of the input statement. An input statement will first be parsed into an antlr4 AST according to the grammar file under `src/antlr4/Cypher.g4`. We then perform a bottom-up traversal over the antlr4 AST and transform into `Statement` through `Transformer`.
 
 ### Binder
 

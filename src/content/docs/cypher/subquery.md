@@ -4,7 +4,7 @@ title: Subqueries
 
 A subquery is a query that's called from an enclosing outer query, and executes within its own scope.
 It is defined in Cypher within curly braces `{}`, and unlike [DDL subqueries](/import/copy-from-subquery), a Cypher subquery
-cannot contain a `RETURN` clause. The supported subqueries in Kùzu's implementation of openCypher are listed below.
+cannot contain a `RETURN` clause. The supported subqueries in Kuzu's implementation of openCypher are listed below.
 
 ## EXISTS
 
