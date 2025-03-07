@@ -211,8 +211,7 @@ CALL warning_limit=1024;
 ```
 ### Skippable Errors By Source
 
-Currently `IGNORE_ERRORS` option works when scanning files or in-memory data frames (but not when running
-`COPY/LOAD FROM` on sub-queries). For different sources, the errors that can be skipped can be different.
+When the `IGNORE_ERRORS` option is enabled, the errors that can be skipped can be different depending on the scan source.
 If the error is not skippable for a specific source, `COPY/LOAD FROM` will instead error and fail.
 Below is a table that shows the errors that are skippable by each source.
 
@@ -225,5 +224,4 @@ Below is a table that shows the errors that are skippable by each source.
 |PyArrow tables| ❌ | ❌ | ✅ |
 |Pandas DataFrames| ❌ | ❌ | ✅ |
 |Polars DataFrames| ❌ | ❌ | ✅ |
-
-
+|Subquery| ❌ | ❌ | ✅ |
