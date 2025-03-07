@@ -7,37 +7,34 @@ features, Cypher and its integration with the Python data science and machine le
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-## Getting started with Kuzu
+## Cypher tutorial
 
-If you're new to graph databases and Cypher, we recommend getting started with our
-[introductory video playlist](https://www.youtube.com/playlist?list=PLnMU6rfAdE1CSgarQ3SpDqeudCe42PzuD)
-that covers the basics of Cypher and how to get started with Kuzu.
-Click on the link below to watch one of the videos, and subscribe to our YouTube
-[channel](https://www.youtube.com/@Kuzudb) for more such content.
+If you're just getting started with Kuzu, we recommend starting with our introductory tutorial on
+Cypher, the query language used in Kuzu.
 
-<div class="video-container">
-  <iframe
-    height="480"
-    src="https://www.youtube.com/embed/wV2iphFc_f0"
-    title="YouTube video player" frameborder="0"
-    allowfullscreen
-    >
-  </iframe>
-</div>
+<LinkCard
+  title="Intro to Cypher"
+  description="Become familiar with Cypher syntax"
+  href="/tutorials/cypher"
+/>
 
+## Video tutorials
 
-## Python notebooks
+Once you get the basics of Cypher, we recommend getting started with our
+[introductory video playlist](https://www.youtube.com/playlist?list=PLnMU6rfAdE1CSgarQ3SpDqeudCe42PzuD).
+Each video in the series covers a particular feature or use case in Kuzu.
 
-For Python users, we've compiled a series of notebooks on Google Colab that demonstrate how Kuzu can
-be used and integrated with the Python data science and machine learning
-ecosystem. Click on the links below to open and run the notebooks.
+## Python
+
+For users in the Python ecosystem, see the following tutorials.
+
+### Colab notebooks
+
+We've compiled a series of Google Colab 
+notebooks that demonstrate how Kuzu can be used and integrated with the Python data science, machine 
+learning and AI ecosystem.
 
 <CardGrid>
-  <LinkCard
-    title="Intro to Cypher"
-    description="Become familiar with Cypher syntax"
-    href="https://colab.research.google.com/drive/1zgTCEOFdskYRQ45COYRww7sA6fTXE66S"
-  />
   <LinkCard
     title="Kuzu and NetworkX"
     description="Working with NetworkX & graph algorithms using a Kuzu graph"
@@ -64,3 +61,13 @@ ecosystem. Click on the links below to open and run the notebooks.
     href="https://colab.research.google.com/drive/16FscFHwSKQNXFprChdQufMP7G6u8cMTS"
   />
 </CardGrid>
+
+## Rust
+
+For users in the Rust ecosystem, see the following tutorial.
+
+<LinkCard
+title="Rust tutorial"
+description="Tutorial for Kuzu's Rust API"
+href="/tutorials/rust/rust_tutorial"
+/>
