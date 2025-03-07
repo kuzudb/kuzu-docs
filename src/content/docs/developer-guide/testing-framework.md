@@ -4,7 +4,7 @@ title: Testing framework
 
 ## Introduction
 
-Testing is a crucial part of Kùzu to ensure the correct functioning of the
+Testing is a crucial part of Kuzu to ensure the correct functioning of the
 system. Our general principle for testing is to avoid testing components individually --
 instead we route all tests, when possible, end-to-end (e2e) via Cypher statements.
 
@@ -151,7 +151,7 @@ dataset is required, use the keyword 'empty'.
 | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY, KUZU or empty<br/> **Dataset name:** the name of the directory inside `dataset/`. i.e. tinysnb. |
 
-The `KUZU` dataset type is a Kùzu database directory.
+The `KUZU` dataset type is a Kuzu database directory.
 
 Examples:
 
@@ -334,7 +334,7 @@ The following variables are available to use inside the statements:
 
 | Variable                 | Description                                                                                                                                                      |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `${KUZU_ROOT_DIRECTORY}` | Kùzu directory path                                                                                                                                              |
+| `${KUZU_ROOT_DIRECTORY}` | Kuzu directory path                                                                                                                                              |
 | `${DATABASE_PATH}`       | When a test case runs, a temporary database path is created and cleaned up after the suite finishes. This variable represents the path of the running test case. |
 
 ### Multiple queries

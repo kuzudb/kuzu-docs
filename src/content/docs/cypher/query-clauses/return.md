@@ -76,7 +76,7 @@ Output:
 -----------------------------
 ```
 
-As a syntactic sugar, Kùzu supports returning all properties of node or rel with `*`.
+As a syntactic sugar, Kuzu supports returning all properties of node or rel with `*`.
 
 ```cypher
 MATCH (a:User) RETURN a.*;
@@ -157,7 +157,7 @@ The semantics is exactly the same as SQL's semantics, which is a 3-step process:
 1. For each group G, compute the (or or more) aggregations in the query.
 1. Output for each group G, G's key(s) and the result of the aggregations. 
 
-You can find the list of aggregation functions supported in Kùzu [here](/cypher/expressions/aggregate-functions).
+You can find the list of aggregation functions supported in Kuzu [here](/cypher/expressions/aggregate-functions).
 
 :::caution[Note on NULLS]
 The handling of NULLs in group by keys and values also follow the SQL semantics:

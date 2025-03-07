@@ -14,7 +14,7 @@ export default defineConfig({
         sitemap(),
         starlight({
             favicon: '/img/favicon.ico',
-            title: 'Kùzu',
+            title: 'Kuzu',
             logo: {
                 light: '/src/assets/logo/kuzu-logo.png',
                 dark: '/src/assets/logo/kuzu-logo-inverse.png',
@@ -44,11 +44,11 @@ export default defineConfig({
                 },
                 {
                     tag: 'meta',
-                    attrs: { property: 'og:title', content: 'Kùzu - Graph Database' },
+                    attrs: { property: 'og:title', content: 'Kuzu - Graph Database' },
                 },
                 {
                     tag: 'meta',
-                    attrs: { property: 'og:description', content: 'Documentation for Kùzu, an open source, embedded graph database' },
+                    attrs: { property: 'og:description', content: 'Documentation for Kuzu, an open source, embedded graph database' },
                 },
                 {
                     tag: 'meta',
@@ -70,11 +70,11 @@ export default defineConfig({
                 },
                 {
                     tag: 'meta',
-                    attrs: { name: 'twitter:title', content: 'Kùzu - Graph Database' },
+                    attrs: { name: 'twitter:title', content: 'Kuzu - Graph Database' },
                 },
                 {
                     tag: 'meta',
-                    attrs: { name: 'twitter:description', content: 'Documentation for Kùzu, an open source, embedded graph database' },
+                    attrs: { name: 'twitter:description', content: 'Documentation for Kuzu, an open source, embedded graph database' },
                 },
                 {
                     tag: 'meta',
@@ -90,10 +90,10 @@ export default defineConfig({
                     link: '/',
                 },
                 {
-                    label: 'Install Kùzu',
+                    label: 'Install Kuzu',
                     collapsed: true,
                     items: [
-                        { label: 'Install Kùzu', link: '/installation', },
+                        { label: 'Install Kuzu', link: '/installation', },
                         { label: 'System requirements', link: '/system-requirements'},
                     ]
                 },
@@ -148,7 +148,7 @@ export default defineConfig({
                     label: 'Visualize graphs',
                     collapsed: true,
                     items: [
-                        { label: 'Intro to Kùzu Explorer', link: '/visualization'},
+                        { label: 'Intro to Kuzu Explorer', link: '/visualization'},
                         { label: 'Shell panel', link: '/visualization/shell-panel'},
                         { label: 'Schema panel', link: '/visualization/schema-panel' },
                         { label: 'Import panel', link: '/visualization/import-panel' },
@@ -208,7 +208,7 @@ export default defineConfig({
                     label: 'Developer guide',
                     collapsed: true,
                     items: [
-                        { label: 'Build Kùzu from source', link: '/developer-guide' },
+                        { label: 'Build Kuzu from source', link: '/developer-guide' },
                         { label: 'Performance debugging', link: '/developer-guide/performance-debugging' },
                         { label: 'Testing framework', link: '/developer-guide/testing-framework' },
                         { label: 'Join order hints', link: '/developer-guide/join-order-hint' },
@@ -241,7 +241,7 @@ export default defineConfig({
                             label: 'External data sources',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
-                                { label: 'External Kùzu databases', link: '/extensions/attach/kuzu' },
+                                { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
                                 { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
                                 { label: 'Iceberg', link: '/extensions/iceberg' },
                                 { label: 'Delta Lake', link: '/extensions/delta' },

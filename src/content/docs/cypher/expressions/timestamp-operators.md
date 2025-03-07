@@ -3,7 +3,7 @@ title: Timestamp operators
 description: Timestamp operators are used to work with timestamp values.
 ---
 
-Kùzu supports the following operators to work with timestamp and interval values:
+Kuzu supports the following operators to work with timestamp and interval values:
 
 <div class="scroll-table">
 

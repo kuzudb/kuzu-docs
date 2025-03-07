@@ -4,7 +4,7 @@ title: Copy from subquery
 
 You can bulk import the results of a subquery like `MATCH ....` by attaching
 that query as a subquery of a `COPY FROM` statement. Because the `COPY FROM` command is part of
-the Data Definition Language (DDL) in Kùzu, it follows SQL's semantics and hence, a subquery
+the Data Definition Language (DDL) in Kuzu, it follows SQL's semantics and hence, a subquery
 is passed within parentheses `()` that contains a `RETURN` clause.
 
 Copy using a subquery is useful when you need to transform data
@@ -61,7 +61,7 @@ conn.execute("COPY Person FROM (LOAD FROM df WHERE age < 30 RETURN *)")
 ```
 
 You can similarly use this approach to subset your data, for example, read only a part of your
-DataFrame, Parquet or CSV file, and then copy that subset into Kùzu.
+DataFrame, Parquet or CSV file, and then copy that subset into Kuzu.
 
 ```python
 # Load specific columns only

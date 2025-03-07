@@ -2,7 +2,7 @@
 title: "Copy from JSON"
 ---
 
-You can copy from JSON directly into Kùzu using the `COPY FROM` command. To use this feature,
+You can copy from JSON directly into Kuzu using the `COPY FROM` command. To use this feature,
 you have to install the `JSON` extension using the instructions shown [here](/extensions/json).
 
 Consider the following JSON file:
@@ -140,6 +140,6 @@ See the [`JSON`](/extensions/json) extension documentation for more related feat
 
 ## Ignoring erroneous rows
 
-Like for CSV files, Kùzu can skip rows when some types of errors are encountered when importing from JSON.
+Like for CSV files, Kuzu can skip rows when some types of errors are encountered when importing from JSON.
 However, now every error type that is skippable by the CSV reader can be skipped by the JSON reader.
 See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.

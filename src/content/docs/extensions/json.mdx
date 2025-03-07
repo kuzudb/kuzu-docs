@@ -153,7 +153,7 @@ then proceed to copy the JSON data and construct a graph.
 ### Scan the JSON file
 
 `LOAD FROM` is a Cypher query that scans a file or object element by element, but doesn’t actually
-move the data into a Kùzu table.
+move the data into a Kuzu table.
 
 Because the JSON format contains simple data types without type information, the structure will be inferred.
 To declare type information explicitly, you can use `LOAD WITH HEADERS` like you would for CSV files.
@@ -174,7 +174,7 @@ LOAD FROM 'patient.json' RETURN *;
 └────────┴─────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Because `info` is a nested object, its type in Kùzu is inferred as a `STRUCT`, that itself contains
+Because `info` is a nested object, its type in Kuzu is inferred as a `STRUCT`, that itself contains
 other types, like `DOUBLE`, `UINT8`, `STRING`, and `STRUCT`.
 
 #### Missing keys
@@ -244,7 +244,7 @@ The following optional parameters are supported:
 
 ### Copy JSON files to a table
 
-The `COPY FROM` statement allows you to copy data from a JSON file into a node or relationship table in Kùzu.
+The `COPY FROM` statement allows you to copy data from a JSON file into a node or relationship table in Kuzu.
 In this section we will walk through the example dataset shown above and build a graph from the JSON data.
 
 #### Copy to node tables
@@ -502,7 +502,7 @@ The output JSON would look like this:
 
 ### Takeaways
 
-When using the JSON extension, keep in mind the following considerations when copying data to Kùzu tables:
+When using the JSON extension, keep in mind the following considerations when copying data to Kuzu tables:
 
 1. The order of the keys in the JSON file doesn't need to match with the order of the columns defined
 in the schema (just the names need to match)
@@ -516,7 +516,7 @@ so it's not necessary to write your relationships to an intermediate file prior 
 
 ## JSON data type
 
-Using the Kùzu JSON extension, you can model and store properties as JSON natively via the `JSON` logical type,
+Using the Kuzu JSON extension, you can model and store properties as JSON natively via the `JSON` logical type,
 which is interpreted as parsed as JSON, rather than as a string.
 
 The following example creates a node table `Person` with a `JSON` column `description`,
@@ -564,7 +564,7 @@ Result:
 
 ## JSON functions
 
-This section lists the built-in functions that operate on the JSON data type within Kùzu.
+This section lists the built-in functions that operate on the JSON data type within Kuzu.
 
 ### `to_json`
 
@@ -572,7 +572,7 @@ Signature: `ANY -> JSON`
 
 `to_json(any)`
 
-Converts `any` Kùzu value to `JSON`.
+Converts `any` Kuzu value to `JSON`.
 
 Example 1:
 
@@ -918,7 +918,7 @@ Signature: `JSON -> STRING`
 
 `json_structure(json)`
 
-Returns the structure of the `json` in Kùzu type notation. Integer widths are automatically inferred from input values.
+Returns the structure of the `json` in Kuzu type notation. Integer widths are automatically inferred from input values.
 
 Example:
 ```cypher

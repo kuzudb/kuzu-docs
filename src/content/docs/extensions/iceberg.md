@@ -4,7 +4,7 @@ title: "Iceberg"
 
 The `iceberg` extension adds support for scanning and copying from the [Apache Iceberg format](https://iceberg.apache.org/).
 Iceberg is an open-source table format originally developed at Netflix for large-scale analytical datasets.
-Using this extension, you can interact with Iceberg tables from within Kùzu using the `LOAD FROM` and `COPY FROM` clauses.
+Using this extension, you can interact with Iceberg tables from within Kuzu using the `LOAD FROM` and `COPY FROM` clauses.
 
 The Iceberg functionality is not available by default, so you would first need to install the `iceberg`
 extension by running the following commands:
@@ -29,7 +29,7 @@ and place the contents in the `/tmp` directory.
 ### Scan the Iceberg table
 
 `LOAD FROM` is a Cypher query that scans a file or object element by element, but doesn’t actually
-move the data into a Kùzu table.
+move the data into a Kuzu table.
 
 Here's how you would scan an Iceberg table:
 
@@ -51,8 +51,8 @@ LOAD FROM '/tmp/iceberg_tables/university' (file_format='iceberg', allow_moved_p
 
 :::note[Notes]
 - The `file_format` parameter is used to explicitly specify the file format of the given file instead of
-letting Kùzu autodetect the file format at runtime. When scanning from the Iceberg table,
-the `file_format` option must be provided since Kùzu is not capable of autodetecting Iceberg tables.
+letting Kuzu autodetect the file format at runtime. When scanning from the Iceberg table,
+the `file_format` option must be provided since Kuzu is not capable of autodetecting Iceberg tables.
 - The `allow_moved_paths` option ensures that proper path resolution is performed, which allows scanning
 Iceberg tables that are moved from their original location.
 :::
@@ -97,11 +97,11 @@ At the heart of Iceberg’s table structure is the metadata, which tracks everyt
 and snapshots of the table's state. This is particularly useful for understanding the underlying structure, tracking data
 changes, and debugging issues in Iceberg datasets.
 
-The `ICEBERG_METADATA` function lists the metadata files for an Iceberg table via the `CALL` function in Kùzu.
+The `ICEBERG_METADATA` function lists the metadata files for an Iceberg table via the `CALL` function in Kuzu.
 
 :::caution[Note]
 Ensure you use `:=` operator to set the variable in `CALL` function, not the `=` operator.
-The `:=` operator is required within `CALL` functions in Kùzu.
+The `:=` operator is required within `CALL` functions in Kuzu.
 :::
 
 ```cypher
@@ -200,7 +200,7 @@ RETURN *;
 ```
 
 ### Access an Iceberg table hosted on S3
-Kùzu also supports scanning/copying a Iceberg table hosted on S3 in the same way as from a local file system.
+Kuzu also supports scanning/copying a Iceberg table hosted on S3 in the same way as from a local file system.
 Before reading and writing from S3, you have to configure the connection using the [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
 
 #### Supported options
@@ -240,7 +240,7 @@ COPY student FROM 's3://path/to/iceberg_table' (file_format='iceberg', allow_mov
 
 ## Limitations
 
-When using the Iceberg extension in Kùzu, keep the following limitations in mind.
+When using the Iceberg extension in Kuzu, keep the following limitations in mind.
 
-- Writing (i.e., exporting to) Iceberg tables from Kùzu is currently not supported.
+- Writing (i.e., exporting to) Iceberg tables from Kuzu is currently not supported.
 - We currently do not support scanning/copying nested data (i.e., of type `STRUCT`) in the Iceberg table columns.

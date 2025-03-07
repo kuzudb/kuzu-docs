@@ -4,7 +4,7 @@ title: "Create your first graph"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Kùzu implements a **structured property graph model** and requires a pre-defined schema.
+Kuzu implements a **structured property graph model** and requires a pre-defined schema.
 
 - Schema definition involves declaring node and relationship tables and their associated properties.
 - Each property key is strongly typed (types must be explicitly declared)
@@ -13,13 +13,13 @@ Kùzu implements a **structured property graph model** and requires a pre-define
 
 ## Persistence
 
-Kùzu supports both **on-disk** and **in-memory** modes of operation. The mode is determined
+Kuzu supports both **on-disk** and **in-memory** modes of operation. The mode is determined
 at the time of creating the database, explained below.
 
 ### On-disk database
 
-At the time of creating your database, if you specify a database path, for example, `./demo_db`, Kùzu
-will be opened under **on-disk** mode. In this mode, Kùzu will persist all data to disk at the specified
+At the time of creating your database, if you specify a database path, for example, `./demo_db`, Kuzu
+will be opened under **on-disk** mode. In this mode, Kuzu will persist all data to disk at the specified
 path. All transactions are logged in the Write-Ahead Log (WAL), in which any changes will be merged into the
 database files during checkpoints.
 
@@ -31,7 +31,7 @@ while also providing transactional guarantees and persistence.
 ### In-memory database
 
 At the time of creating your database, if you omit the database path, specify it as an empty string
-`""`, or explicitly specify the path as `:memory:`, Kùzu will be opened under **in-memory** mode.
+`""`, or explicitly specify the path as `:memory:`, Kuzu will be opened under **in-memory** mode.
 In this mode, there are **no writes to the WAL**, and no data is persisted to
 disk. All data is lost when the process finishes.
 
@@ -42,12 +42,12 @@ quick graph querying and analysis on subsets of records, without the need to per
 
 ## Quick start
 
-To create your first graph, ensure that you have installed the Kùzu CLI or your preferred client API installed
+To create your first graph, ensure that you have installed the Kuzu CLI or your preferred client API installed
 as per the instructions in the [Installation](/installation) section.
 The example below uses a graph schema with two node types, `User` and `City`, and two relationship types, `Follows` and `LivesIn`.
 The dataset in CSV format can be found [here](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
 
-Because Kùzu is an embedded database, there are no servers to set up -- you can simply import
+Because Kuzu is an embedded database, there are no servers to set up -- you can simply import
 the `kuzu` module in your preferred client library and begin interacting with the database in your
 client API of choice. The examples below demonstrate how to create a graph schema and insert data
 into an on-disk database.
@@ -236,7 +236,7 @@ Result:
 
 <TabItem label="Java">
 
-Kùzu's Java client library is available on [Maven Central](https://central.sonatype.com/artifact/com.kuzudb/kuzu). You can add the following snippet to your `pom.xml` to get it installed:
+Kuzu's Java client library is available on [Maven Central](https://central.sonatype.com/artifact/com.kuzudb/kuzu). You can add the following snippet to your `pom.xml` to get it installed:
 
 ```xml
 <dependency>
@@ -246,7 +246,7 @@ Kùzu's Java client library is available on [Maven Central](https://central.sona
 </dependency>
 ```
 
-Alternatively, if you are using Gradle, you can add the following snippet to your build.gradle file to include Kùzu's Java client library:
+Alternatively, if you are using Gradle, you can add the following snippet to your build.gradle file to include Kuzu's Java client library:
 
 For Groovy DSL:
 ```groovy
@@ -344,7 +344,7 @@ Zhang|2022|Noura
 
 <TabItem label="Rust">
 
-When installing the `kuzu` crate via Cargo, it will by default build and statically link Kùzu's C++
+When installing the `kuzu` crate via Cargo, it will by default build and statically link Kuzu's C++
 library from source. You can also link against the dynamic release libraries (see the Rust
 [crate docs](https://docs.rs/kuzu/0.1.1-pre.31/kuzu/) for details).
 
@@ -480,7 +480,7 @@ Result:
 
 <TabItem label="C++">
 
-The Kùzu C++ client is distributed as `so`/`dylib`/`dll+lib` library files along with a header file (`kuzu.hpp`).
+The Kuzu C++ client is distributed as `so`/`dylib`/`dll+lib` library files along with a header file (`kuzu.hpp`).
 Once you've downloaded and extracted the C++ files into a directory, it's ready to use without
 any additional installation. You just need to specify the library search path for the linker.
 
@@ -582,7 +582,7 @@ Zhang 2022 Noura
 
 <TabItem label="C">
 
-The Kùzu C API shares the same `so`/`dylib` library files with the C++ API and can be used by
+The Kuzu C API shares the same `so`/`dylib` library files with the C++ API and can be used by
 including the C header file (`kuzu.h`).
 
 In this example, we assume that the `so`/`dylib`, the header file, the CSV files, and the C code file
@@ -709,7 +709,7 @@ Zhang follows Noura since 2022
 
 <TabItem label="Shell">
 
-When using the Kùzu CLI's shell, you can create an on-disk database by specifying a path after
+When using the Kuzu CLI's shell, you can create an on-disk database by specifying a path after
 the `kuzu` command in the terminal.
 
 ```bash
@@ -774,5 +774,5 @@ The following result is obtained:
 ---
 
 :::tip[Congratulations]
-You've now created and queried your first graph in Kùzu!
+You've now created and queried your first graph in Kuzu!
 :::

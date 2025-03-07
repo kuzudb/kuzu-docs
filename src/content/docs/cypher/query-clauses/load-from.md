@@ -92,7 +92,7 @@ RETURN age, name LIMIT 3;
 
 ### Bound variable names and data types
 
-By default, Kùzu will infer the column names and data types from the scan source automatically.
+By default, Kuzu will infer the column names and data types from the scan source automatically.
 - For Parquet, Pandas, Polars and PyArrow, column names and data types are always available in the data source
 - For CSV: The behavior is determined by the [CSV scanning configuration](/import/csv#csv-configurations), which are specified at the end of `LOAD FROM`,  inside `()`, similar
 to `COPY FROM` statements. We review the details of this behavior [below](#csv).
@@ -121,8 +121,8 @@ RETURN name, age;
 
 :::caution[Note]
 If `WITH HEADERS` is specified manually:
-- Kùzu will throw an exception if the given number of columns in `WITH HEADERS` does not the match number of columns in the file.
-- Kùzu will always try to cast to the type specified header. An exception will be thrown if the
+- Kuzu will throw an exception if the given number of columns in `WITH HEADERS` does not the match number of columns in the file.
+- Kuzu will always try to cast to the type specified header. An exception will be thrown if the
 casting operation fails.
 :::
 
@@ -174,7 +174,7 @@ RETURN *
 
 
 Below we give examples of using `LOAD FROM` to scan data from each of these formats. We assume `WITH HEADERS`
-is not used in the examples below, so we discuss how Kùzu infers the variable names and data types of
+is not used in the examples below, so we discuss how Kuzu infers the variable names and data types of
 that bind to the scanned tuples.
 
 ### CSV
@@ -186,7 +186,7 @@ See the
 The configurations documented in those pages can also be specified after the `LOAD FROM` statement inside `()` when scanning
 CSV files. For example, you can indicate that the first line should
 be interpreted as a header line by setting `(headers = true)` or that the CSV delimiter is '|' by setting `(DELIM="|")`.
-Some of these configurations are also by default [automatically detected](/import/csv#auto-detecting-configurations) by Kùzu when scanning CSV files.
+Some of these configurations are also by default [automatically detected](/import/csv#auto-detecting-configurations) by Kuzu when scanning CSV files.
 These configurations determine the names and data types of the 
 variables that bind to the fields scanned from CSV files.
 This page does not document those options in detail. We refer you to [CSV Configurations](/import/csv#csv-configurations) and 
@@ -209,7 +209,7 @@ Karissa,40
 Zhang,50
 ```
 
-Then if you run the following query, Kùzu will infer the column names `name` and `age` from the first line of the CSV:
+Then if you run the following query, Kuzu will infer the column names `name` and `age` from the first line of the CSV:
 
 ```cypher
 LOAD FROM "user.csv" (header = true) RETURN *;
@@ -247,7 +247,7 @@ LOAD FROM "user.csv" (header = false) RETURN *;
 
 ### Parquet
 
-Since Parquet files contain schema information in their metadata, Kùzu will always use the available
+Since Parquet files contain schema information in their metadata, Kuzu will always use the available
 schema information when loading from Parquet files (except again
 if `LOAD WITH HEADERS (...) FROM` is used). Suppose we have a Parquet file `user.parquet` with two columns `f0` and `f1` 
 and the same content as in the `user.csv` file above. Then the query below will scan the Parquet file and output the following:
@@ -266,7 +266,7 @@ LOAD FROM "user.parquet" RETURN *;
 
 ### Pandas
 
-Kùzu allows zero-copy access to Pandas DataFrames. The variable names and data types of scanned columns 
+Kuzu allows zero-copy access to Pandas DataFrames. The variable names and data types of scanned columns 
 within a Pandas DataFrame will be
 inferred from the schema information of the data frame. Here is an example:
 
@@ -296,12 +296,12 @@ Here `name` and `age` have string and integer types in the define Pandas Datafra
 contains two columns with the same names and data types.
 
 :::note[Note]
-Pandas can use either a NumPy or Arrow backend - Kùzu can natively scan from either backend.
+Pandas can use either a NumPy or Arrow backend - Kuzu can natively scan from either backend.
 :::
 
 ### Polars
 
-Kùzu can also scan Polars DataFrames via the underlying PyArrow layer. The rules for determining the 
+Kuzu can also scan Polars DataFrames via the underlying PyArrow layer. The rules for determining the 
 variable names and data types is identical to scanning Pandas data frames. Here is an example:
 
 ```python
@@ -363,5 +363,5 @@ age: [[30,40,50]]
 ```
 
 ### JSON
-Kùzu can scan JSON files using `LOAD FROM`, but only upon installation of the JSON extension.
+Kuzu can scan JSON files using `LOAD FROM`, but only upon installation of the JSON extension.
 See the documentation on the [JSON extension](/extensions/json#load-from) for details.

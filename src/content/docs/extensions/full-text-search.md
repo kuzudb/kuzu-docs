@@ -7,7 +7,7 @@ title: "Full Text Search"
 The full-text search (`FTS`) extension adds support for matching within the content of a string property
 while returning the documents with a proximity score to the query. It is enabled by building an index
 on string properties in a table and allows searching through the strings via a keyword query.
-Currently, Kùzu supports only indexing on a node table's `STRING` properties.
+Currently, Kuzu supports only indexing on a node table's `STRING` properties.
 
 The FTS functionality is not available by default, so you first need to install the `FTS`
 extension by running the following commands:
@@ -34,7 +34,7 @@ CREATE (b:Book {abstract: 'A fantasy tale of dragons and magic.', title: 'The Dr
 In the following sections, we show how to build and query a full-text search index on the book table.
 ### Create FTS index
 
-Kùzu provides a function `CREATE_FTS_INDEX` to create the full-text search index on a table:
+Kuzu provides a function `CREATE_FTS_INDEX` to create the full-text search index on a table:
 
 ```cypher
 CALL CREATE_FTS_INDEX('TABLE_NAME', 'INDEX_NAME', ['PROP1', 'PROP2', 'PROP3'...], OPTIONAL_PARAM1 := 'OPTIONAL_VAL1')
@@ -47,7 +47,7 @@ The following optional parameters are supported:
 
 - `stemmer`: The text normalization technique to use. Should be one of: `arabic`, `basque`, `catalan`, `danish`, `dutch`, `english`, `finnish`, `french`, `german`, `greek`, `hindi`, `hungarian`, `indonesian`, `irish`, `italian`, `lithuanian`, `nepali`, `norwegian`, `porter`, `portuguese`, `romanian`, `russian`, `serbian`, `spanish`, `swedish`, `tamil`, `turkish`, or `none` if no stemming is to be used. Defaults to `english`,
 which uses a Snowball stemmer.
-- `stopwords`: To make the full-text search results more useful, it's useful to provide a list of omitted words that are excluded when building and querying the full-text search index. These are termed "stopwords". A default list of built-in english stopwords is used, but these can be customized by using the `stopwords` parameter. Kùzu accepts stopwords in the following formats:
+- `stopwords`: To make the full-text search results more useful, it's useful to provide a list of omitted words that are excluded when building and querying the full-text search index. These are termed "stopwords". A default list of built-in english stopwords is used, but these can be customized by using the `stopwords` parameter. Kuzu accepts stopwords in the following formats:
 1. A node table with only a single column of stopwords.
 2. A PARQUET/CSV file with only a single string column of stopwords(no header required). This file can be stored in cloud storage platforms like Amazon S3 or Google Cloud Storage (GCS) or made accessible via HTTPS. If hosted remotely, ensure the httpfs extension is enabled and valid credentials (e.g., access keys) are configured to authenticate and securely access the file.
 
@@ -59,7 +59,7 @@ which uses a Snowball stemmer.
 The example below shows how to create an FTS index on the book table with the `abstract` and `title` properties using the `porter` stemmer and a customized stopwords list.
 
 :::caution[Note]
-1. Kùzu uses special syntax for optional parameters. Note how the `:=` operator is used to assign a value
+1. Kuzu uses special syntax for optional parameters. Note how the `:=` operator is used to assign a value
 to an optional parameter in the example below.
 2. Users can only build full text search indexes on node tables.
 3. Once a full-text search index is created, the stopword list becomes immutable. All queries against the index will permanently reference the original stopword list used during its creation. To update the stopword configuration, you must rebuild the index with the revised stopword list.
@@ -78,7 +78,7 @@ Once the index is created, the index will be ready for querying as shown below.
 
 ### Query FTS index
 
-Kùzu provides the `QUERY_FTS_INDEX` function to query the FTS index on a table using the [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) scoring algorithm:
+Kuzu provides the `QUERY_FTS_INDEX` function to query the FTS index on a table using the [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) scoring algorithm:
 
 ```cypher
 CALL QUERY_FTS_INDEX(
