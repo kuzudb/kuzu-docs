@@ -159,10 +159,10 @@ export default defineConfig({
                     label: 'Tutorials',
                     collapsed: true,
                     items: [
-                        {
-                            label: 'Learning resources',
-                            link: '/tutorials#python',
-                        }
+                        { label: 'Overview', link: '/tutorials' },
+                        { label: 'Cypher tutorial', link: '/tutorials#cypher' },
+                        { label: 'Python tutorial', link: '/tutorials#python' },
+                        { label: 'Rust tutorial', link: '/tutorials#rust' },
                     ]
                 },
                 {

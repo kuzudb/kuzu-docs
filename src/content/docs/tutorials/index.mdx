@@ -2,82 +2,72 @@
 title: Tutorials
 ---
 
-In this section, we link to some learning resources to become more familiar with Kùzu's usability
+In this section, we link to some learning resources to become more familiar with Kuzu's usability
 features, Cypher and its integration with the Python data science and machine learning ecosystem.
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-## Getting started with Kùzu
+## Cypher tutorial
 
-If you're new to graph databases and Cypher, we recommend getting started with our
-[introductory video playlist](https://www.youtube.com/playlist?list=PLnMU6rfAdE1CSgarQ3SpDqeudCe42PzuD)
-that covers the basics of Cypher and how to get started with Kùzu.
-Click on the link below to watch one of the videos, and subscribe to our YouTube
-[channel](https://www.youtube.com/@Kuzudb) for more such content.
+If you're just getting started with Kuzu, we recommend starting with our introductory tutorial on
+Cypher, the query language used in Kuzu.
 
-<div class="video-container">
-  <iframe
-    height="480"
-    src="https://www.youtube.com/embed/wV2iphFc_f0"
-    title="YouTube video player" frameborder="0"
-    allowfullscreen
-    >
-  </iframe>
-</div>
+<LinkCard
+  title="Intro to Cypher"
+  description="Become familiar with Cypher syntax"
+  href="/tutorials/cypher"
+/>
 
+## Video tutorials
 
-## Python notebooks
+Once you get the basics of Cypher, we recommend getting started with our
+[introductory video playlist](https://www.youtube.com/playlist?list=PLnMU6rfAdE1CSgarQ3SpDqeudCe42PzuD).
+Each video in the series covers a particular feature or use case in Kuzu.
 
-For Python users, we've compiled a series of notebooks on Google Colab that demonstrate how Kùzu can
-be used and integrated with the Python data science and machine learning
-ecosystem. Click on the links below to open and run the notebooks.
+## Python
+
+For users in the Python ecosystem, see the following tutorials
+
+### Colab notebooks
+
+We've compiled a series of Google Colab 
+notebooks that demonstrate how Kuzu can be used and integrated with the Python data science, machine 
+learning and AI ecosystem.
 
 <CardGrid>
   <LinkCard
-    title="Intro to Cypher"
-    description="Become familiar with Cypher syntax"
-    href="https://colab.research.google.com/drive/1zgTCEOFdskYRQ45COYRww7sA6fTXE66S"
-  />
-  <LinkCard
-    title="Kùzu and NetworkX"
-    description="Working with NetworkX & graph algorithms using a Kùzu graph"
+    title="Kuzu and NetworkX"
+    description="Working with NetworkX & graph algorithms using a Kuzu graph"
     href="https://colab.research.google.com/drive/1_AK-CHELz0fLAc2RCPvPgD-R7-NGyrGu"
   />
   <LinkCard
-    title="Kùzu and PyTorch Geometric (1)"
+    title="Kuzu and PyTorch Geometric (1)"
     description="Node property prediction"
     href="https://colab.research.google.com/drive/1ijFoPN4USr4umUzRoCfRPFNZfbhKKLcC"
   />
   <LinkCard
-    title="Kùzu and PyTorch Geometric (2)"
+    title="Kuzu and PyTorch Geometric (2)"
     description="Link prediction"
     href="https://colab.research.google.com/drive/1OxlDLUYZL8jTkqKdVebFtek7yZ5of7FK"
   />
   <LinkCard
-    title="LlamaIndex-Kùzu Integration"
-    description="Using Kùzu as a property graph store for LlamaIndex"
+    title="LlamaIndex-Kuzu Integration"
+    description="Using Kuzu as a property graph store for LlamaIndex"
     href="https://colab.research.google.com/drive/1brAdNRNLG2XHD7Jv3ZwSQCOCJ_wmfd1B"
   />
   <LinkCard
-    title="LangChain-Kùzu Integration"
-    description="Using Kùzu as a property graph store for LangChain"
+    title="LangChain-Kuzu Integration"
+    description="Using Kuzu as a property graph store for LangChain"
     href="https://colab.research.google.com/drive/16FscFHwSKQNXFprChdQufMP7G6u8cMTS"
   />
 </CardGrid>
 
-## Other language tutorials:
-For other language APIs which Kùzu supports, we will be using the following dataset to explore the extensive abilities which graph database is able to provide.
+## Rust
+
+For users in the Rust ecosystem, see the following tutorial.
 
 <LinkCard
-title="Example Database"
-description="Database schema used in API tutorials"
-href="/tutorials/example-database"
-/>
-
-The network which we will be using in this tutorial is suppose to simulate a community of users in a social network. The data for the network is in this [zip file](https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip).
-
-<LinkCard
-title="Rust"
-description="Tutorial for Kùzu's Rust API"
+title="Rust tutorial"
+description="Tutorial for Kuzu's Rust API"
 href="/tutorials/rust/rust_tutorial"
 />
