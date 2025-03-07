@@ -19,9 +19,9 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-color-green: hsl(var(--sl-hue-green), 65%, 55%);
   --sl-color-green-high: hsl(var(--sl-hue-green), 82%, 75%);
 
-  --sl-color-accent-low: #208bc2;
-  --sl-color-accent: #239bd7;
-  --sl-color-accent-high: #35a6de;
+  --sl-color-accent-low: #ca5921;
+  --sl-color-accent: #dc6428;
+  --sl-color-accent-high: #e0743e;
 
   --sl-color-text: var(--sl-color-gray-2);
   --sl-color-text-accent: var(--sl-color-accent-high);

@@ -33,13 +33,52 @@ export default defineConfig({
             customCss: ['./src/styles/custom.css'],
             expressiveCode: true,
             head: [
+                // Basic OG tags
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:type', content: 'website' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:url', content: site },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:title', content: 'Kùzu - Graph Database' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'og:description', content: 'Documentation for Kùzu, an open source, embedded graph database' },
+                },
                 {
                     tag: 'meta',
                     attrs: { property: 'og:image', content: site + '/img/og.png' },
                 },
+                
+                // Twitter specific tags
                 {
                     tag: 'meta',
-                    attrs: { property: 'twitter:image', content: site + '/img/og.png' },
+                    attrs: { name: 'twitter:card', content: 'summary_large_image' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'twitter:domain', content: 'docs.kuzudb.com' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { property: 'twitter:url', content: site },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { name: 'twitter:title', content: 'Kùzu - Graph Database' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { name: 'twitter:description', content: 'Documentation for Kùzu, an open source, embedded graph database' },
+                },
+                {
+                    tag: 'meta',
+                    attrs: { name: 'twitter:image', content: site + '/img/og.png' },
                 },
             ],
             components: {
@@ -95,7 +134,7 @@ export default defineConfig({
                         { label: 'Overview', link: '/export' },
                         { label: 'Copy to CSV', link: '/export/csv' },
                         { label: 'Copy to Parquet', link: '/export/parquet' },
-                        { label: 'Copy to JSON', link: '/export/json', badge: { text: 'New'}},
+                        { label: 'Copy to JSON', link: '/export/json'},
                     ]
                 },
                 {
@@ -189,18 +228,27 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        { label: 'HTTP File System (httpfs)', link: '/extensions/httpfs'},
+                        { 
+                            label: 'HTTP File System (httpfs)',
+                            collapsed: true,
+                            items: [
+                                { label: 'HTTPS', link: '/extensions/httpfs#https-file-system'},
+                                { label: 'Amazon S3', link: '/extensions/httpfs#aws-s3-file-system'},
+                                { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system', badge: { text: 'New' }},
+                            ]
+                        },
                         {
-                            label: 'External databases',
+                            label: 'External data sources',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kùzu databases', link: '/extensions/attach/kuzu' },
                                 { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
+                                { label: 'Iceberg', link: '/extensions/iceberg' },
+                                { label: 'Delta Lake', link: '/extensions/delta' },
+                                { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
-                        { label: 'Iceberg', link: '/extensions/iceberg' },
-                        { label: 'Delta Lake', link: '/extensions/delta' },
                         { label: 'Full-text search', link: '/extensions/full-text-search', badge: { text: 'New' }},
                     ],
                     autogenerate: { directory: 'reference' },

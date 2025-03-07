@@ -237,7 +237,7 @@ If you would like to know information about loaded extensions in Kùzu, you can 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
 | extension name | name of the extension | STRING |
-| extension source | whether the extension is officially supported by Kùzu Inc., or developed by a third-party | STRING |
+| extension source | whether the extension is officially supported by the Kuzu team or is developed by a third-party | STRING |
 | extension path | the path to the extension | STRING |
 
 ```cypher
