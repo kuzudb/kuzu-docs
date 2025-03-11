@@ -109,6 +109,16 @@ export default defineConfig({
                     ]
                 },
                 {
+                    label: 'Tutorials',
+                    collapsed: true,
+                    items: [
+                        { label: 'Overview', link: '/tutorials' },
+                        { label: 'Cypher', link: '/tutorials#cypher' },
+                        { label: 'Python', link: '/tutorials#python' },
+                        { label: 'Rust', link: '/tutorials#rust' },
+                    ]
+                },
+                {
                     label: 'Import data',
                     collapsed: true,
                     items: [
@@ -188,22 +198,12 @@ export default defineConfig({
                         { label: 'Go', link: '/client-apis/go' },
                         { label: 'C++', link: '/client-apis/cpp' },
                         { label: 'C', link: '/client-apis/c' },
-                        { label: 'WebAssembly', link: '/client-apis/wasm' },
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}},
                         { label: 'Elixir', link: '/client-apis/elixir', badge: { text: 'Community', variant: 'caution'}}
                     ],
                 },
+                { label: 'Kuzu-Wasm', link: '/client-apis/wasm' },
                 { label: 'Connections & concurrency', link: '/concurrency' },
-                {
-                    label: 'Tutorials',
-                    collapsed: true,
-                    items: [
-                        { label: 'Overview', link: '/tutorials' },
-                        { label: 'Cypher tutorial', link: '/tutorials#cypher' },
-                        { label: 'Python tutorial', link: '/tutorials#python' },
-                        { label: 'Rust tutorial', link: '/tutorials#rust' },
-                    ]
-                },
                 {
                     label: 'Developer guide',
                     collapsed: true,
