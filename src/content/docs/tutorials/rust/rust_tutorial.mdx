@@ -35,7 +35,7 @@ rm tutorial_data.zip
 
 Before we can start querying the data, we need to create a new Kuzu database
 and import the CSV files. Since this is a one-time operation, we will use a
-separate executable target.
+separate Cargo target.
 
 Create a new file called `create-db.rs` inside `src/bin`:
 ```rs
@@ -62,9 +62,9 @@ kuzu_social_network
         └── POSTS.csv
 ```
 
-Test that everything is setup correctly by doing a test run. Note that the first
-`cargo run` will take some time to build Kuzu. The second and subsequent runs
-should be faster.
+Test the setup by running the Cargo target programs. Note that the first
+`cargo run` will take some time as it compiles Kuzu from scratch. The second 
+and subsequent runs should be faster.
 ```bash
 $ cargo run --bin kuzu_social_network
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 3m 18s
@@ -143,7 +143,7 @@ conn.query(
 
 ### Import CSV data
 
-We can now copy the CSV file into the node and relationship tables:
+We can now import the CSV data into the node and relationship tables:
 ```rs
 conn.query("COPY User FROM './tutorial_data/node/user.csv'")?;
 conn.query("COPY Post FROM './tutorial_data/node/post.csv'")?;
@@ -162,7 +162,7 @@ println!("{}", result.display());
 ```
 ### Running the code
 
-We can now run `create-db.rs` to create the Kuzu database and import the CSV files:
+Run `create-db.rs` to create the Kuzu database and import the CSV files:
 ```bash
 $ cargo run --bin create-db
 id|name|type|database name|comment
@@ -172,11 +172,11 @@ id|name|type|database name|comment
 3|POSTS|REL|local(kuzu)|
 4|LIKES|REL|local(kuzu)|
 ```
-The data has been copied into a new Kuzu database in `./social_network_db`.
+The CSV data has been copied into a new Kuzu database in `./social_network_db`.
 
 :::note[Note]
-If you run the program again, you'll get an error about duplicated primary key.
-This is because the same data has already been imported into the Kuzu database.
+If you run the program again, you'll get an error about duplicated primary keys.
+This is because the data has already been imported into the Kuzu database.
 :::
 
 ## Query the graph
@@ -204,7 +204,7 @@ cargo run --bin kuzu_social_network
 
 ### Q1: Which user has the most followers? And how many followers do they have?
 
-First, we use a simple `MATCH` query to explore the data. List all users who are folowed by some other user:
+First, we use a simple `MATCH` query to list some users who are folowed by some other user:
 ```rs
 let mut result1 = conn.query(
     "
@@ -225,8 +225,6 @@ stormninja678
 darkdog878
 brightninja683
 ```
-
-For more information on `MATCH`, please refer to our documentation in [Cypher Manual](/cypher/#index).
 
 For each relation `FOLLOWS`, this will simply return the followee's username of that relation. Next, we will improve on this query by using aggregation.
 
@@ -313,7 +311,7 @@ user, `mysticwolf198`, in between them.
 
 ### Q3: How many 3-hop paths exist between userA and userB that passes through userC?
 
-To answer this query, we can follow a similar approach to Q1. We first count the number of 3-hop queries:
+To answer this query, we will follow a similar approach as Q1. We first count the number of 3-hop queries:
 
 ```rs
 let mut result6 = conn.query(
@@ -378,7 +376,7 @@ cargo run --bin kuzu_social_network
 ```
 
 <Tabs>
-<TabItem label="main.rs">
+<TabItem label="bin/create-db.rs">
 
 ```rs
 use kuzu::{Connection, Database, Error, SystemConfig};
@@ -437,7 +435,7 @@ fn main() -> Result<(), Error> {
 ```
 
 </TabItem>
-<TabItem label="bin/query.rs">
+<TabItem label="main.rs">
 
 ```rs
 use kuzu::{Connection, Database, Error, SystemConfig, Value};
