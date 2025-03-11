@@ -332,23 +332,22 @@ This tells us that there are 667 paths of length 3 in the graph. Next, we use a 
 ### Run a prepared statement
 
 We will now modify the query to only match paths with userA, userB, and userC.
-Here, we will introduce [prepared statements](/get-started/prepared-statements/), to separate the query from its _parameters_. We arbitrarily choose userA to
-be `epicwolf202`, userB to be `stormcat597`,
-and userC to be `stormfox762`.
+Here, we will use [prepared statements](/get-started/prepared-statements/) to separate the query from its _parameters_.
+We arbitrarily choose userA to be `epicwolf202`, userB to be `stormcat597`, and userC to be `stormfox762`.
 
 ```rs
-let u1 = "epicwolf202";
-let u2 = "stormcat597";
-let u3 = "stormfox762";
-let query = format!(
+let query =
     "
     MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
-    WHERE u1.username= '{}' AND u4.username= '{}' AND (u2.username= '{}' OR u3.username= '{}')
+    WHERE u1.username= $usersrc AND u4.username= $userdst AND (u2.username= $userint OR u3.username= $userint)
     RETURN count(u4)
-    ",
-    u1, u2, u3, u3
-);
-let mut result7 = conn.query(&query)?;
+    ";
+let mut prepared_query = conn.prepare(query)?;
+let u1 = "epicwolf202".to_string();
+let u2 = "stormcat597".to_string();
+let u3 = "stormfox762".to_string();
+let params = vec![("usersrc", Value::String(u1)), ("userdst", Value::String(u2)), ("userint", Value::String(u3))];
+let mut result7 = conn.execute(&mut prepared_query, params)?;
 println!("{}", result7.display());
 ```
 Returns:
@@ -503,7 +502,7 @@ fn main() -> Result<(), Error> {
     let query =
         "
         MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
-        WHERE u1.username= '$usersrc' AND u4.username= '$userdst' AND (u2.username= '$userint' OR u3.username= '$userint')
+        WHERE u1.username= $usersrc AND u4.username= $userdst AND (u2.username= $userint OR u3.username= $userint)
         RETURN count(u4)
         ";
     let mut prepared_query = conn.prepare(query)?;
