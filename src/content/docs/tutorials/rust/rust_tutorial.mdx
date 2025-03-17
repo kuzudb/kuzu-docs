@@ -37,10 +37,10 @@ Before we can start querying the data, we need to create a new Kuzu database
 and import the CSV files. Since this is a one-time operation, we will use a
 separate Cargo target.
 
-Create a new file called `create-db.rs` inside `src/bin`:
+Create a new file called `create_db.rs` inside `src/bin`:
 ```rs
 mkdir src/bin
-cp src/main.rs src/bin/create-db.rs
+cp src/main.rs src/bin/create_db.rs
 ```
 
 Your directory should now look something like this:
@@ -50,7 +50,7 @@ kuzu_social_network
 ├── Cargo.toml
 ├── src
 │   ├── bin
-│   │   └── create-db.rs
+│   │   └── create_db.rs
 │   └── main.rs
 └── tutorial_data
     ├── node
@@ -71,9 +71,9 @@ $ cargo run --bin kuzu_social_network
      Running `target/debug/kuzu_social_network`
 Hello, world!
 
-$ cargo run --bin create-db
+$ cargo run --bin create_db
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s
-     Running `target/debug/create-db`
+     Running `target/debug/create_db`
 Hello, world!
 ```
 
@@ -81,7 +81,7 @@ We are now ready to start the tutorial.
 
 ## Create the database
 
-Replace the contents of `src/bin/create-db.rs` with the following code snippet:
+Replace the contents of `src/bin/create_db.rs` with the following code snippet:
 ```rs
 use kuzu::{Connection, Database, Error, SystemConfig};
 
@@ -105,16 +105,14 @@ Kuzu also supports an `in-memory mode` where the database is active only during 
 The first step in building a Kuzu graph is to define a schema. For our example dataset, we need the following node and relationships tables:
 ```rs
 conn.query(
-    "
-    CREATE NODE TABLE IF NOT EXISTS User(
+    "CREATE NODE TABLE User(
         user_id INT64 PRIMARY KEY,
         username STRING,
         account_creation_date DATE
     )",
 )?;
 conn.query(
-    "
-    CREATE NODE TABLE IF NOT EXISTS Post(
+    "CREATE NODE TABLE Post(
         post_id INT64 PRIMARY KEY,
         post_date DATE,
         like_count INT64,
@@ -122,20 +120,17 @@ conn.query(
     )",
 )?;
 conn.query(
-    "
-    CREATE REL TABLE IF NOT EXISTS FOLLOWS(
+    "CREATE REL TABLE FOLLOWS(
         FROM User TO User
     )",
 )?;
 conn.query(
-    "
-    CREATE REL TABLE IF NOT EXISTS POSTS(
+    "CREATE REL TABLE POSTS(
         FROM User TO Post
     )",
 )?;
 conn.query(
-    "
-    CREATE REL TABLE IF NOT EXISTS LIKES(
+    "CREATE REL TABLE LIKES(
         FROM User TO Post
     )",
 )?;
@@ -162,9 +157,9 @@ println!("{}", result.display());
 ```
 ### Running the code
 
-Run `create-db.rs` to create the Kuzu database and import the CSV files:
+Run `create_db.rs` to create the Kuzu database and import the CSV files:
 ```bash
-$ cargo run --bin create-db
+$ cargo run --bin create_db
 id|name|type|database name|comment
 0|User|NODE|local(kuzu)|
 2|FOLLOWS|REL|local(kuzu)|
@@ -368,14 +363,14 @@ Here's the full code from the tutorial that you can use to follow along. Reminde
 
 ```bash
 # Copy data from CSV files to the database
-cargo run --bin create-db
+cargo run --bin create_db
 
 # Run queries on the database
 cargo run --bin kuzu_social_network
 ```
 
 <Tabs>
-<TabItem label="bin/create-db.rs">
+<TabItem label="bin/create_db.rs">
 
 ```rs
 use kuzu::{Connection, Database, Error, SystemConfig};
@@ -385,16 +380,14 @@ fn main() -> Result<(), Error> {
     let conn = Connection::new(&db)?;
 
     conn.query(
-        "
-        CREATE NODE TABLE IF NOT EXISTS User(
+        "CREATE NODE TABLE User(
             user_id INT64 PRIMARY KEY,
             username STRING,
             account_creation_date DATE
         )",
     )?;
     conn.query(
-        "
-        CREATE NODE TABLE IF NOT EXISTS Post(
+        "CREATE NODE TABLE Post(
             post_id INT64 PRIMARY KEY,
             post_date DATE,
             like_count INT64,
@@ -402,20 +395,17 @@ fn main() -> Result<(), Error> {
         )",
     )?;
     conn.query(
-        "
-        CREATE REL TABLE IF NOT EXISTS FOLLOWS(
+        "CREATE REL TABLE FOLLOWS(
             FROM User TO User
         )",
     )?;
     conn.query(
-        "
-        CREATE REL TABLE IF NOT EXISTS POSTS(
+        "CREATE REL TABLE POSTS(
             FROM User TO Post
         )",
     )?;
     conn.query(
-        "
-        CREATE REL TABLE IF NOT EXISTS LIKES(
+        "CREATE REL TABLE LIKES(
             FROM User TO Post
         )",
     )?;
