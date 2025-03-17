@@ -7,7 +7,7 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 This tutorial will get you started using Kuzu's Rust API to analyze a dataset.
 
-See the link below for the example dataset used in this tutorial.
+In this tutorial, we will use the following social network dataset that consists of users and their posts.
 
 <LinkCard
   title="Example dataset"
@@ -15,173 +15,198 @@ See the link below for the example dataset used in this tutorial.
   href="/tutorials/example-database"
 />
 
-The dataset is a social network dataset of users and posts. Download the dataset and unzip it
-in your current working directory.
-
 ## Setup
 
-First ensure that you have Rust installed on your system. Install the Rust API of Kuzu
-via the following steps:
+Ensure that you have Rust [installed](https://www.rust-lang.org/learn/get-started) on your system.
+Create a new Cargo project with Kuzu as a dependency:
 
 ```bash
-# Initialize a new Rust project
-cargo new social_network_rs
-cd social_network_rs
-# Install the Rust API of Kuzu into the project
+cargo new kuzu_social_network
+cd kuzu_social_network
 cargo add kuzu
 ```
 
-Create a new directory at the root level of the project called `social_network_rs`. Next, [download the zipped data](https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip),
-unzip the files and copy them to the `tutorial_data` directory at the root level of the project.
-
-Then, run the following command to initialize a Rust project at the root level of the project:
+Next, [download the zipped data](https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip) and unzip the files.
 ```bash
-cd social_network_rs
-cargo init
+curl -o tutorial_data.zip https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip
+unzip tutorial_data.zip
+rm tutorial_data.zip
 ```
 
-Your directory will look something like this:
-```
-tutorial_data/
-├── node/
-│   ├── user.csv
-│   └── post.csv
-└── relation/
-│   ├── FOLLOWS.csv
-│   ├── POSTS.csv
-│   └── LIKES.csv
-social_network_rs/
-├── src/
-│   ├── main.rs
-│   ├── Cargo.toml
-│   └── Cargo.lock
-└── bin
-    └── query.rs
-```
+Before we can start querying the data, we need to create a new Kuzu database
+and import the CSV files. Since this is a one-time operation, we will use a
+separate Cargo target.
 
-Replace `main.rs` with the following code snippet:
+Create a new file called `create_db.rs` inside `src/bin`:
 ```rs
-use kuzu::{Connection, Database, Error, SystemConfig};
+mkdir src/bin
+cp src/main.rs src/bin/create_db.rs
+```
 
-fn main() -> Result<(), Error> {
-    // This is where our queries will be inputted and executed.
+Your directory should now look something like this:
+```
+kuzu_social_network
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   ├── bin
+│   │   └── create_db.rs
+│   └── main.rs
+└── tutorial_data
+    ├── node
+    │   ├── post.csv
+    │   └── user.csv
+    └── relation
+        ├── FOLLOWS.csv
+        ├── LIKES.csv
+        └── POSTS.csv
+```
 
-}
+Test the setup by running the Cargo target programs. Note that the first
+`cargo run` will take some time as it [compiles Kuzu from scratch](https://docs.rs/kuzu/latest/kuzu/).
+The second and subsequent runs should be faster.
+```bash
+$ cargo run --bin kuzu_social_network
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3m 18s
+     Running `target/debug/kuzu_social_network`
+Hello, world!
+
+$ cargo run --bin create_db
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/create_db`
+Hello, world!
 ```
 
 We are now ready to start the tutorial.
 
-## Create an instance of the database
-In order to create the graph in Kuzu, we first need to create a new Kuzu database. We do this by using the following commands in Rust:
+## Create the database
+
+Replace the contents of `src/bin/create_db.rs` with the following code snippet:
 ```rs
-// Create an empty on-disk database and connect to it
-let db = Database::new("./social_network_rs_db", SystemConfig::default())?;
+use kuzu::{Connection, Database, Error, SystemConfig};
+
+fn main() -> Result<(), Error> {
+    // Rest of the code goes here.
+
+    Ok(())
+}
+```
+
+Create and connect to an empty Kuzu database:
+```rs
+let db = Database::new("./social_network_db", SystemConfig::default())?;
 let conn = Connection::new(&db)?;
 ```
-This will create a database directory called `./social_network_rs_db`, where our data will be stored.
-Kuzu also supports `in-memory mode` in which case the lifetime of the database will be only during the execution of the Rust program.
-For more information, refer to the example in the [create your first graph](/get-started/#index) section.
+This will create a database directory `./social_network_db` where the imported csv data will be stored.
 
-## Define schema
-The first step in building any Kuzu graph is schema definition. We will define the node and relationships tables
-as per our desired schema as follows:
+Kuzu also supports an `in-memory mode` where the database is active only during the execution of the Rust program. For more information, refer to the example in the [create your first graph](/get-started/#index) section.
+
+### Define schema
+The first step in building a Kuzu graph is to define a schema. For our example dataset, we need the following node and relationships tables:
 ```rs
-conn.query("
-CREATE NODE TABLE IF NOT EXISTS User(
-    user_id INT64 PRIMARY KEY,
-    username STRING,
-    account_creation_date DATE
-)
-")?;
-conn.query("
-    CREATE NODE TABLE IF NOT EXISTS Post(
-        post_id INT64 PRIMARY KEY, 
-        post_date DATE, 
-        like_count INT64, 
+conn.query(
+    "CREATE NODE TABLE User(
+        user_id INT64 PRIMARY KEY,
+        username STRING,
+        account_creation_date DATE
+    )",
+)?;
+conn.query(
+    "CREATE NODE TABLE Post(
+        post_id INT64 PRIMARY KEY,
+        post_date DATE,
+        like_count INT64,
         retweet_count INT64
-    )")?;
-conn.query("
-    CREATE REL TABLE IF NOT EXISTS FOLLOWS(
+    )",
+)?;
+conn.query(
+    "CREATE REL TABLE FOLLOWS(
         FROM User TO User
-    )")?;
-conn.query("
-    CREATE REL TABLE IF NOT EXISTS POSTS(
+    )",
+)?;
+conn.query(
+    "CREATE REL TABLE POSTS(
         FROM User TO Post
-    )")?;
-conn.query("
-    CREATE REL TABLE IF NOT EXISTS LIKES(
+    )",
+)?;
+conn.query(
+    "CREATE REL TABLE LIKES(
         FROM User TO Post
-    )")?;
+    )",
+)?;
 ```
 
-## Show table information
+### Import CSV data
 
-We can check information on the tables we have in the database with the following commands:
+We can now import the CSV data into the node and relationship tables:
+```rs
+conn.query("COPY User FROM './tutorial_data/node/user.csv'")?;
+conn.query("COPY Post FROM './tutorial_data/node/post.csv'")?;
+conn.query("COPY FOLLOWS FROM './tutorial_data/relation/FOLLOWS.csv'")?;
+conn.query("COPY POSTS FROM './tutorial_data/relation/POSTS.csv'")?;
+conn.query("COPY LIKES FROM './tutorial_data/relation/LIKES.csv'")?;
+```
+See the documentation on [importing data](/import/csv) for more details on the parameters for CSV import.
+
+### Show table information
+
+Finally, we can check the schema of the newly created tables:
 ```rs
 let mut result = conn.query("CALL SHOW_TABLES() RETURN *")?;
 println!("{}", result.display());
 ```
-Returns:
-```
+### Running the code
+
+Run `create_db.rs` to create the Kuzu database and import the CSV files:
+```bash
+$ cargo run --bin create_db
 id|name|type|database name|comment
 0|User|NODE|local(kuzu)|
-1|Post|NODE|local(kuzu)|
 2|FOLLOWS|REL|local(kuzu)|
+1|Post|NODE|local(kuzu)|
 3|POSTS|REL|local(kuzu)|
 4|LIKES|REL|local(kuzu)|
 ```
+The CSV data has been copied into a new Kuzu database in `./social_network_db`.
 
-## Copy data
-
-After creating the tables, we can copy them into the node and relationship tables. We do so by using the
-`COPY FROM` commands.
-
-```rs
-conn.query("COPY User FROM '../tutorial_data/node/user.csv'")?;
-conn.query("COPY Post FROM '../tutorial_data/node/post.csv'")?;
-conn.query("COPY FOLLOWS FROM '../tutorial_data/relation/FOLLOWS.csv'")?;
-conn.query("COPY POSTS FROM '../tutorial_data/relation/POSTS.csv'")?;
-conn.query("COPY LIKES FROM '../tutorial_data/relation/LIKES.csv'")?;
-```
-See the documentation on [importing data](/import/csv) for more details on the parameters for CSV import.
-
-To run the above code, we simply run the following command:
-```bash
-cargo run --bin social_network_rs
-```
-The data is now copied into the database.
+:::note[Note]
+If you run the program again, you'll get an error about duplicated primary keys.
+This is because the data has already been imported into the Kuzu database.
+:::
 
 ## Query the graph
 
-We can now proceed to querying the graph to answer some questions about the social network. Below are
-some examples.
+We can now start querying the graph to answer some questions about the social network.
 
-To keep the query logic separated from the copy logic, we will create a new file called `./bin/query.rs` and
-move the queries to this file.
+Replace the contents of `src/main.rs` with the following code snippet:
+```rs
+use kuzu::{Connection, Database, Error, SystemConfig, Value};
 
-To run the `query.rs` file, we can run the following command:
-```bash
-cargo run --bin query
+fn main() -> Result<(), Error> {
+    let db = Database::new("./social_network_db", SystemConfig::default())?;
+    let conn = Connection::new(&db)?;
+
+    // Rest of the code goes here.
+
+    Ok(())
+}
 ```
 
-:::note[Note]
-The `query.rs` file is a separate executable that is built when running `cargo run --bin query`.
-We do this so that we can separate the query logic from the data ingestion (copy) logic.
-To be able to run this file separately, we need to add it to the `bin` directory, one level below the
-`src` directory.
-:::
+Then for each the following queries, type in the code and run the program as:
+```bash
+cargo run --bin kuzu_social_network
+```
 
 ### Q1: Which user has the most followers? And how many followers do they have?
 
-We first use the `MATCH` query to find the relationship specified. In this case, we want to retrieve
-the `User` node `u2` at the end of the relation `FOLLOWS`:
+First, we use a simple `MATCH` query to list some users who are folowed by some other user:
 ```rs
 let mut result1 = conn.query(
     "
-MATCH (u1:User)-[f:FOLLOWS]->(u2:User) 
-RETURN u2.username
-LIMIT 5
-",
+    MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+    RETURN u2.username
+    LIMIT 5
+    ",
 )?;
 println!("{}", result1.display());
 ```
@@ -196,18 +221,16 @@ darkdog878
 brightninja683
 ```
 
-For more information on `MATCH`, please refer to our documentation in [Cypher Manual](/cypher/#index).
+For each relation `FOLLOWS`, this will simply return the followee's username of that relation. Next, we will improve on this query by using aggregation.
 
-For each relation `FOLLOWS`, this will return the followee's username of that relation. While this doesn't provide much useful information yet, we may improve on this query by using aggregation.
-
-We can then use aggregation function to count the number of appearnces of a followee, by adding `count(u2) as follower_count` to the `RETURN` statement:
+Let's count the number of appearances of a followee by using the `count()` function:
 ```rs
 let mut result2 = conn.query(
     "
-MATCH (u1:User)-[f:FOLLOWS]->(u2:User) 
-RETURN u2.username, count(u2) as follower_count
-LIMIT 5
-",
+    MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+    RETURN u2.username, count(u2) as follower_count
+    LIMIT 5
+    ",
 )?;
 println!("{}", result2.display());
 ```
@@ -222,16 +245,16 @@ stormqueen831|4
 ```
 This is a lot more useful! We can now clearly see how many followers each user has.
 
-Lastly, we use `ORDER BY` and `LIMIT` to order the usernames by their amount of followers, and
-return only the first entry. This is the user we are looking for, and how many followers that user has:
+Lastly, we use `ORDER BY` and `LIMIT` to order the usernames by their followers count, and
+return only the first entry. This is the user we are looking for, including the count of how many followers that user has:
 ```rs
 let mut result3 = conn.query(
     "
-MATCH (u1:User)-[f:FOLLOWS]->(u2:User) 
-RETURN u2.username, count(u2) as follower_count 
-ORDER BY follower_count DESC 
-LIMIT 1
-",
+    MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+    RETURN u2.username, count(u2) as follower_count
+    ORDER BY follower_count DESC
+    LIMIT 1
+    ",
 )?;
 println!("{}", result3.display());
 ```
@@ -242,35 +265,35 @@ stormninja678|6
 ```
 
 ### Q2: What is the shortest path between two users?
-Another question which we might be interested in answering is finding the shortest path between two users. 
-For example, how many follows does it take to get from user `silentguy245` to `epicwolf202`? 
+We might also be interested in finding the shortest path between two users.
+For example, how many follows does it take to get from user `silentguy245` to `epicwolf202`?
 1. We can query this by using [recursive match](/cypher/query-clauses/match) to find shortest path length:
 ```rs
-result = conn.query("
+let mut result4 = conn.query("
     MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
-    WHERE u1.username = 'silentguy245' 
+    WHERE u1.username = 'silentguy245'
     AND u2.username = 'epicwolf202'
     RETURN p
     ")?;
-println!("{}", result.display());
+println!("{}", result4.display());
 ```
 Returns:
 ```
 {_NODES: [{_ID: 0:19, _LABEL: User, user_id: 20, username: silentguy245, account_creation_date: 2022-10-11},{_ID: 0:14, _LABEL: User, user_id: 15, username: mysticwolf198, account_creation_date: 2021-01-04},{_ID: 0:0, _LABEL: User, user_id: 1, username: epicwolf202, account_creation_date: 2022-09-09}], _RELS: [(0:19)-{_LABEL: FOLLOWS, _ID: 2:64}->(0:14),(0:14)-{_LABEL: FOLLOWS, _ID: 2:47}->(0:0)]}
 ```
-This will return us a result of the `RECURSIVE_REL` datatype, which is diffcult to interpret.
+This will return a result of the `RECURSIVE_REL` datatype, which as you can see is difficult to interpret.
 
-To make this more useful, let's collect the interesting parts in the result by using [recursive relationship functions](/cypher/expressions/recursive-rel-functions)
+To make this more useful, we will collect just the usernames in the path by using a [recursive relationship function](/cypher/expressions/recursive-rel-functions)
 ```rs
-let mut result = conn.query(
+let mut result5 = conn.query(
     "
-MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
-WHERE u1.username = 'silentguy245' 
-AND u2.username = 'epicwolf202'
-RETURN properties(nodes(p), 'username')
-",
+    MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
+    WHERE u1.username = 'silentguy245'
+    AND u2.username = 'epicwolf202'
+    RETURN properties(nodes(p), 'username')
+    ",
 )?;
-println!("{}", result.display());
+println!("{}", result5.display());
 ```
 Returns:
 ```
@@ -278,51 +301,49 @@ PROPERTIES(NODES(p),username)
 [silentguy245,mysticwolf198,epicwolf202]
 ```
 
-This is a lot more useful! We can now clearly see the shortest path between the two users with one
+This is much easier to read! We can now clearly see the shortest path between the two users with one
 user, `mysticwolf198`, in between them.
 
 ### Q3: How many 3-hop paths exist between userA and userB that passes through userC?
 
-To answer this query, we can follow a similar approach to Q1. We first match all 3-hop queries:
+To answer this query, we will follow a similar approach as Q1. We first count the number of 3-hop queries:
 
 ```rs
-let mut result = conn.query(
+let mut result6 = conn.query(
     "
-MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
-RETURN count(u4)
-",
+    MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
+    RETURN count(u4)
+    ",
 )?;
-println!("{}", result.display());
+println!("{}", result6.display());
 ```
 Returns:
 ```
 COUNT(u4._ID)
 667
 ```
-This tells us that there are 667 paths of length 3 in the graph.
+This tells us that there are 667 paths of length 3 in the graph. Next, we use a prepared statement to construct queries involving particular users.
 
 ### Run a prepared statement
 
-Next, we add to the query to match only cases concerning with userA, userB, and userC. In this case,
-we want to introduce the idea of [prepared statements](/get-started/prepared-statements/),
-so that we can easily swap out elements of the query for other users. We arbitrarily choose userA to
-be `epicwolf202`, userB to be `stormcat597`,
-and userC to be `stormfox762`.
+We will now modify the query to only match paths with userA, userB, and userC.
+Here, we will use [prepared statements](/get-started/prepared-statements/) to separate the query from its _parameters_.
+We arbitrarily choose userA to be `epicwolf202`, userB to be `stormcat597`, and userC to be `stormfox762`.
 
 ```rs
-let u1 = "epicwolf202";
-let u2 = "stormcat597";
-let u3 = "stormfox762";
-let query = format!(
+let query =
     "
     MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
-    WHERE u1.username= '{}' AND u4.username= '{}' AND (u2.username= '{}' OR u3.username= '{}')
+    WHERE u1.username= $usersrc AND u4.username= $userdst AND (u2.username= $userint OR u3.username= $userint)
     RETURN count(u4)
-    ",
-    u1, u2, u3, u3
-);
-let mut result = conn.query(&query)?;
-println!("{}", result.display());
+    ";
+let mut prepared_query = conn.prepare(query)?;
+let u1 = "epicwolf202".to_string();
+let u2 = "stormcat597".to_string();
+let u3 = "stormfox762".to_string();
+let params = vec![("usersrc", Value::String(u1)), ("userdst", Value::String(u2)), ("userint", Value::String(u3))];
+let mut result7 = conn.execute(&mut prepared_query, params)?;
+println!("{}", result7.display());
 ```
 Returns:
 ```
@@ -332,122 +353,158 @@ COUNT(u4._ID)
 This tells us that there is exactly one path of length 3 between the three users specified.
 
 ## Summary
-In summary, we've shown how to use Kuzu's Rust API to view our data as a graph, query it in Cypher,
-and output the results in various formats.
+In this tutorial, we've shown how to use Kuzu's Rust API to import CSV data as a graph and query it using Cypher.
 
-Try these methods out on your own datasets, and have fun using Kuzu!
+You're now ready to import your own datasets into Kuzu and query them using Kuzu's Rust API!
 
 ## Code
 
-To reproduce the above tutorial, you can copy-paste the following code into their respective files.
-Note that to run the `query.rs` file separately from the `main.rs` (that creates and copies data to the database),
-you need to run the `main.rs` file first to create the database, and store the query file
-in the path `bin/query.rs`.
+Here's the full code from the tutorial that you can use to follow along. Reminder that you can run the code as follows:
 
 ```bash
 # Copy data from CSV files to the database
-cargo run --bin social_network_rs
+cargo run --bin create_db
 
 # Run queries on the database
-cargo run --bin query
+cargo run --bin kuzu_social_network
 ```
 
 <Tabs>
-<TabItem label="main.rs">
+<TabItem label="bin/create_db.rs">
 
 ```rs
 use kuzu::{Connection, Database, Error, SystemConfig};
 
-// Copy data from CSV files to the database
 fn main() -> Result<(), Error> {
-    // This is where our queries will be inputted and executed.
-    let db = Database::new("./social_network_rs_db", SystemConfig::default())?;
+    let db = Database::new("./social_network_db", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
     conn.query(
-        "
-    CREATE NODE TABLE IF NOT EXISTS User(
-        user_id INT64 PRIMARY KEY,
-        username STRING,
-        account_creation_date DATE
-    )
-    ",
+        "CREATE NODE TABLE User(
+            user_id INT64 PRIMARY KEY,
+            username STRING,
+            account_creation_date DATE
+        )",
     )?;
     conn.query(
-        "
-        CREATE NODE TABLE IF NOT EXISTS Post(
-            post_id INT64 PRIMARY KEY, 
-            post_date DATE, 
-            like_count INT64, 
+        "CREATE NODE TABLE Post(
+            post_id INT64 PRIMARY KEY,
+            post_date DATE,
+            like_count INT64,
             retweet_count INT64
         )",
     )?;
     conn.query(
-        "
-        CREATE REL TABLE IF NOT EXISTS FOLLOWS(
+        "CREATE REL TABLE FOLLOWS(
             FROM User TO User
         )",
     )?;
     conn.query(
-        "
-        CREATE REL TABLE IF NOT EXISTS POSTS(
+        "CREATE REL TABLE POSTS(
             FROM User TO Post
         )",
     )?;
     conn.query(
-        "
-        CREATE REL TABLE IF NOT EXISTS LIKES(
+        "CREATE REL TABLE LIKES(
             FROM User TO Post
         )",
     )?;
 
-    println!("Finished creating tables");
+    conn.query("COPY User FROM './tutorial_data/node/user.csv'")?;
+    conn.query("COPY Post FROM './tutorial_data/node/post.csv'")?;
+    conn.query("COPY FOLLOWS FROM './tutorial_data/relation/FOLLOWS.csv'")?;
+    conn.query("COPY POSTS FROM './tutorial_data/relation/POSTS.csv'")?;
+    conn.query("COPY LIKES FROM './tutorial_data/relation/LIKES.csv'")?;
 
     let mut result = conn.query("CALL SHOW_TABLES() RETURN *")?;
     println!("{}", result.display());
-
-    conn.query("COPY User FROM '../tutorial_data/node/user.csv'")?;
-    conn.query("COPY Post FROM '../tutorial_data/node/post.csv'")?;
-    conn.query("COPY FOLLOWS FROM '../tutorial_data/relation/FOLLOWS.csv'")?;
-    conn.query("COPY POSTS FROM '../tutorial_data/relation/POSTS.csv'")?;
-    conn.query("COPY LIKES FROM '../tutorial_data/relation/LIKES.csv'")?;
-
-    println!("Finished copying tables");
 
     Ok(())
 }
 ```
 
 </TabItem>
-<TabItem label="bin/query.rs">
+<TabItem label="main.rs">
 
 ```rs
-use kuzu::{Connection, Database, Error, SystemConfig};
+use kuzu::{Connection, Database, Error, SystemConfig, Value};
 
-// Run queries on the database
 fn main() -> Result<(), Error> {
-    // Open existing database
-    let db = Database::new("./social_network_rs_db", SystemConfig::default())?;
+    let db = Database::new("./social_network_db", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
-    // Add your queries here
-    let u1 = "epicwolf202";
-    let u2 = "stormcat597";
-    let u3 = "stormfox762";
-    let query = format!(
+    let mut result1 = conn.query(
+        "
+        MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+        RETURN u2.username
+        LIMIT 5
+        ",
+    )?;
+    println!("{}", result1.display());
+
+    let mut result2 = conn.query(
+        "
+        MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+        RETURN u2.username, count(u2) as follower_count
+        LIMIT 5
+        ",
+    )?;
+    println!("{}", result2.display());
+
+    let mut result3 = conn.query(
+        "
+        MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+        RETURN u2.username, count(u2) as follower_count
+        ORDER BY follower_count DESC
+        LIMIT 1
+        ",
+    )?;
+    println!("{}", result3.display());
+
+    let mut result4 = conn.query(
+        "
+        MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
+        WHERE u1.username = 'silentguy245'
+        AND u2.username = 'epicwolf202'
+        RETURN p
+    ",
+    )?;
+    println!("{}", result4.display());
+
+    let mut result5 = conn.query(
+        "
+        MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
+        WHERE u1.username = 'silentguy245'
+        AND u2.username = 'epicwolf202'
+        RETURN properties(nodes(p), 'username')
+        ",
+    )?;
+    println!("{}", result5.display());
+
+    let mut result6 = conn.query(
         "
         MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
-        WHERE u1.username= '{}' AND u4.username= '{}' AND (u2.username= '{}' OR u3.username= '{}')
         RETURN count(u4)
         ",
-        u1, u2, u3, u3
-    );
-    let mut result = conn.query(&query)?;
-    println!("{}", result.display());
+    )?;
+    println!("{}", result6.display());
+
+    let query =
+        "
+        MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
+        WHERE u1.username= $usersrc AND u4.username= $userdst AND (u2.username= $userint OR u3.username= $userint)
+        RETURN count(u4)
+        ";
+    let mut prepared_query = conn.prepare(query)?;
+    let u1 = "epicwolf202".to_string();
+    let u2 = "stormcat597".to_string();
+    let u3 = "stormfox762".to_string();
+    let params = vec![("usersrc", Value::String(u1)), ("userdst", Value::String(u2)), ("userint", Value::String(u3))];
+    let mut result7 = conn.execute(&mut prepared_query, params)?;
+    println!("{}", result7.display());
 
     Ok(())
 }
-
 ```
 </TabItem>
 
