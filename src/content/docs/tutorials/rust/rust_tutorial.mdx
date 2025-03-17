@@ -202,11 +202,9 @@ cargo run --bin kuzu_social_network
 First, we use a simple `MATCH` query to list some users who are folowed by some other user:
 ```rs
 let mut result1 = conn.query(
-    "
-    MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+    "MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
     RETURN u2.username
-    LIMIT 5
-    ",
+    LIMIT 5",
 )?;
 println!("{}", result1.display());
 ```
@@ -226,11 +224,9 @@ For each relation `FOLLOWS`, this will simply return the followee's username of 
 Let's count the number of appearances of a followee by using the `count()` function:
 ```rs
 let mut result2 = conn.query(
-    "
-    MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+    "MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
     RETURN u2.username, count(u2) as follower_count
-    LIMIT 5
-    ",
+    LIMIT 5",
 )?;
 println!("{}", result2.display());
 ```
@@ -249,12 +245,10 @@ Lastly, we use `ORDER BY` and `LIMIT` to order the usernames by their followers 
 return only the first entry. This is the user we are looking for, including the count of how many followers that user has:
 ```rs
 let mut result3 = conn.query(
-    "
-    MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+    "MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
     RETURN u2.username, count(u2) as follower_count
     ORDER BY follower_count DESC
-    LIMIT 1
-    ",
+    LIMIT 1",
 )?;
 println!("{}", result3.display());
 ```
@@ -269,12 +263,12 @@ We might also be interested in finding the shortest path between two users.
 For example, how many follows does it take to get from user `silentguy245` to `epicwolf202`?
 1. We can query this by using [recursive match](/cypher/query-clauses/match) to find shortest path length:
 ```rs
-let mut result4 = conn.query("
-    MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
+let mut result4 = conn.query(
+    "MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
     WHERE u1.username = 'silentguy245'
     AND u2.username = 'epicwolf202'
-    RETURN p
-    ")?;
+    RETURN p",
+)?;
 println!("{}", result4.display());
 ```
 Returns:
@@ -286,12 +280,10 @@ This will return a result of the `RECURSIVE_REL` datatype, which as you can see 
 To make this more useful, we will collect just the usernames in the path by using a [recursive relationship function](/cypher/expressions/recursive-rel-functions)
 ```rs
 let mut result5 = conn.query(
-    "
-    MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
+    "MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
     WHERE u1.username = 'silentguy245'
     AND u2.username = 'epicwolf202'
-    RETURN properties(nodes(p), 'username')
-    ",
+    RETURN properties(nodes(p), 'username')",
 )?;
 println!("{}", result5.display());
 ```
@@ -310,10 +302,8 @@ To answer this query, we will follow a similar approach as Q1. We first count th
 
 ```rs
 let mut result6 = conn.query(
-    "
-    MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
-    RETURN count(u4)
-    ",
+    "MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
+    RETURN count(u4)",
 )?;
 println!("{}", result6.display());
 ```
@@ -332,16 +322,18 @@ We arbitrarily choose userA to be `epicwolf202`, userB to be `stormcat597`, and 
 
 ```rs
 let query =
-    "
-    MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
+    "MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
     WHERE u1.username= $usersrc AND u4.username= $userdst AND (u2.username= $userint OR u3.username= $userint)
-    RETURN count(u4)
-    ";
+    RETURN count(u4)";
 let mut prepared_query = conn.prepare(query)?;
-let u1 = "epicwolf202".to_string();
-let u2 = "stormcat597".to_string();
-let u3 = "stormfox762".to_string();
-let params = vec![("usersrc", Value::String(u1)), ("userdst", Value::String(u2)), ("userint", Value::String(u3))];
+let u1 = "epicwolf202";
+let u2 = "stormcat597";
+let u3 = "stormfox762";
+let params = vec![
+    ("usersrc", Value::String(u1.to_string())),
+    ("userdst", Value::String(u2.to_string())),
+    ("userint", Value::String(u3.to_string())),
+];
 let mut result7 = conn.execute(&mut prepared_query, params)?;
 println!("{}", result7.display());
 ```
@@ -434,72 +426,62 @@ fn main() -> Result<(), Error> {
     let conn = Connection::new(&db)?;
 
     let mut result1 = conn.query(
-        "
-        MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+        "MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
         RETURN u2.username
-        LIMIT 5
-        ",
+        LIMIT 5",
     )?;
     println!("{}", result1.display());
 
     let mut result2 = conn.query(
-        "
-        MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+        "MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
         RETURN u2.username, count(u2) as follower_count
-        LIMIT 5
-        ",
+        LIMIT 5",
     )?;
     println!("{}", result2.display());
 
     let mut result3 = conn.query(
-        "
-        MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
+        "MATCH (u1:User)-[f:FOLLOWS]->(u2:User)
         RETURN u2.username, count(u2) as follower_count
         ORDER BY follower_count DESC
-        LIMIT 1
-        ",
+        LIMIT 1",
     )?;
     println!("{}", result3.display());
 
     let mut result4 = conn.query(
-        "
-        MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
+        "MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
         WHERE u1.username = 'silentguy245'
         AND u2.username = 'epicwolf202'
-        RETURN p
-    ",
+        RETURN p",
     )?;
     println!("{}", result4.display());
 
     let mut result5 = conn.query(
-        "
-        MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
+        "MATCH p = (u1:user)-[f:FOLLOWS* SHORTEST 1..4]->(u2:User)
         WHERE u1.username = 'silentguy245'
         AND u2.username = 'epicwolf202'
-        RETURN properties(nodes(p), 'username')
-        ",
+        RETURN properties(nodes(p), 'username')",
     )?;
     println!("{}", result5.display());
 
     let mut result6 = conn.query(
-        "
-        MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
-        RETURN count(u4)
-        ",
+        "MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
+        RETURN count(u4)",
     )?;
     println!("{}", result6.display());
 
     let query =
-        "
-        MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
+        "MATCH (u1:User)-[f1:FOLLOWS]->(u2:User)-[f2:Follows]->(u3:User)-[f3:FOLLOWS]->(u4:User)
         WHERE u1.username= $usersrc AND u4.username= $userdst AND (u2.username= $userint OR u3.username= $userint)
-        RETURN count(u4)
-        ";
+        RETURN count(u4)";
     let mut prepared_query = conn.prepare(query)?;
-    let u1 = "epicwolf202".to_string();
-    let u2 = "stormcat597".to_string();
-    let u3 = "stormfox762".to_string();
-    let params = vec![("usersrc", Value::String(u1)), ("userdst", Value::String(u2)), ("userint", Value::String(u3))];
+    let u1 = "epicwolf202";
+    let u2 = "stormcat597";
+    let u3 = "stormfox762";
+    let params = vec![
+        ("usersrc", Value::String(u1.to_string())),
+        ("userdst", Value::String(u2.to_string())),
+        ("userint", Value::String(u3.to_string())),
+    ];
     let mut result7 = conn.execute(&mut prepared_query, params)?;
     println!("{}", result7.display());
 
