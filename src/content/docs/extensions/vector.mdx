@@ -80,7 +80,9 @@ CALL CREATE_HNSW_INDEX(
 );
 ```
 
-**Note that for optional parameters in the function, we use `:=`, instead of `=` to specify values.**
+:::note
+For optional parameters, use `:=` instead of `=` to specify values.
+:::
 
 We support following options during index creation.
 | option name | description |
@@ -138,7 +140,7 @@ The result is as follows:
 └───────────────────┘
 ```
 
-The results show that our vector index successfully found books related to both quantum physics and machine learning, demonstrating effective semantic search capabilities.
+The results show that our vector index successfully found books related to both quantum physics and machine learning.
 
 ### Index Management
 
