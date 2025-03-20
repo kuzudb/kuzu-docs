@@ -4,7 +4,7 @@ title: "Vector search"
 
 The `VECTOR` extension provides an on-disk [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world)-based vector index for accelerating similarity search over float array columns in tables.
 
-This feature is experimental and will evolve over time. Current limitations include:
+This feature has some limitations for now, but will evolve over time:
 
 - **Immutable Index**: Once created, the index cannot be modified. You must drop and re-create the index to reflect changes in the underlying tables.
 - **Float Array Support Only**: Currently only supports float array columns. Support for additional data types is planned for future releases.
@@ -122,6 +122,10 @@ CALL QUERY_VECTOR_INDEX(
 ) RETURN nn.id ORDER BY _distance;
 ```
 
+We return nodes, which can be referenced by `nn` and their distance from the query vector, which can be referenced by `_distance`.
+By default, the returned result from `QUERY_VECTOR_INDEX` is not sorted.
+To get sorted result on distance, you need to manually specify `ORDER BY _distance` in the `RETURN` clause.
+
 #### Search Options
 The following options can be used to tune the search behavior:
 
@@ -230,8 +234,8 @@ A projected graph is kept alive until:
 We use lazy evaluation to evaluate the predicate. The predicate is only evaluated when the projected graph is queried. As
 a result, the project graph operation always runs instantly.
 
-#### Filtered vector search using a projected graph
-Here's an example that demonstrates how to perform vector search for only books published after 2010:
+#### Filtered Search using Projected Graph
+Here's an example that demonstrates how to find books similar to the concept of "quantum machine learning" only among those published after 2010:
 
 ```cypher
 // Step 1: Create a projected graph that filters books by publication year
