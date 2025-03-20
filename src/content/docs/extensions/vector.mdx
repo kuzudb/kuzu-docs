@@ -4,7 +4,6 @@ title: "Vector search"
 
 The `VECTOR` extension provides an on-disk [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world)-based vector index for accelerating similarity search over float array columns in tables.
 
-:::caution[Experimental Feature]
 This feature is experimental and will evolve over time. Current limitations include:
 
 - **Immutable Index**: Once created, the index cannot be modified. You must drop and re-create the index to reflect changes in the underlying tables.
