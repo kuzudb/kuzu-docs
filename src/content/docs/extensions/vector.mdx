@@ -123,6 +123,7 @@ CALL QUERY_VECTOR_INDEX(
 ```
 
 We return nodes, which can be referenced by `nn` and their distance from the query vector, which can be referenced by `_distance`.
+You can use `YIELD` to rename the result columns. More details on `YIELD` can be found [here](cypher/query-clauses/call/#using-yield).
 By default, the returned result from `QUERY_VECTOR_INDEX` is not sorted.
 To get sorted result on distance, you need to manually specify `ORDER BY _distance` in the `RETURN` clause.
 
