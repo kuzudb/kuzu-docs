@@ -171,6 +171,42 @@ Example output:
 
 ## Advanced Usage
 
+#### Projected Graph
+A projected graph is a subset of the original graph that contains only the nodes and relationships that meet user-given table names and predicates.
+The grammar is as follows:
+```cypher
+// Create a projected graph
+CALL CREATE_PROJECTED_GRAPH(
+    'projected_graph_name', // Name of the projected graph
+    {                      // Node tables to project
+        'table_name': {
+            'filter': 'predicate' // Optional predicate to filter nodes
+        }
+    },
+    [                      // Relationship tables to project
+        'table_name'
+    ]
+);
+// Drop a projected graph
+CALL DROP_PROJECTED_GRAPH('projected_graph_name');
+```
+
+**Predicate**
+
+There are several rules with projected graph predicates
+- The predicate must depends only on its node/relationship table, i.e. predicates involving multiple tables is not supported.
+- Since we don't assign a variable to the node/relationship table, we use `n` to reference the node and `r` to reference the relationship table. So properties need to be in the form of `n.property_name` or `r.property_name`.
+
+**Life Cycle**
+
+A projected graph is alive until
+- it is dropped explicitly; or
+- the connection is closed (not persist on disk).
+
+**Evaluation**
+
+We use lazy evaluation to evaluate the predicate. The predicate is evaluated when the projected graph is queried. So projecting a graph always finishes instantly.
+
 ### Filtered Search
 Kuzu allows you to perform vector similarity search over a filtered subset of your data by combining vector index with projected graphs.
 
