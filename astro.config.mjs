@@ -249,7 +249,8 @@ export default defineConfig({
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
-                        { label: 'Full-text search', link: '/extensions/full-text-search', badge: { text: 'New' }},
+                        { label: 'Full-text search', link: '/extensions/full-text-search' },
+                        { label: 'Vector search', link: '/extensions/vector', badge: { text: 'New' }},
                     ],
                     autogenerate: { directory: 'reference' },
                 },
