@@ -113,9 +113,9 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/tutorials' },
-                        { label: 'Cypher', link: '/tutorials#cypher' },
+                        { label: 'Cypher', link: '/tutorials/cypher' },
                         { label: 'Python', link: '/tutorials#python' },
-                        { label: 'Rust', link: '/tutorials#rust' },
+                        { label: 'Rust', link: '/tutorials/rust' },
                     ]
                 },
                 {
