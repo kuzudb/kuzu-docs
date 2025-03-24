@@ -13,7 +13,7 @@ extension by running the following commands:
 
 ```sql
 INSTALL DELTA;
-LOAD EXTENSION DELTA;
+LOAD DELTA;
 ```
 
 ### Example dataset

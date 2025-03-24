@@ -17,7 +17,7 @@ extension by running the following commands:
 
 ```sql
 INSTALL json;
-LOAD EXTENSION json;
+LOAD json;
 ```
 
 See our YouTube video for a walkthrough on how to use the JSON extension:
@@ -525,7 +525,7 @@ it then creates two `json` objects in this column using `to_json` function, and 
 Example:
 ```cypher
 INSTALL json;
-LOAD EXTENSION json;
+LOAD json;
 
 CREATE NODE TABLE Person (id INT64, description JSON, primary key(id));
 CREATE (p:Person {id: 20, description: to_json({height: 52, age: 32, scores: [1,2,5]})});
