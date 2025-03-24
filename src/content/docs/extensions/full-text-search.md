@@ -63,6 +63,13 @@ The example below shows how to create an FTS index on the book table with the `a
 to an optional parameter in the example below.
 2. Users can only build full text search indexes on node tables.
 3. Once a full-text search index is created, the stopword list becomes immutable. All queries against the index will permanently reference the original stopword list used during its creation. To update the stopword configuration, you must rebuild the index with the revised stopword list.
+4. `CREATE_FTS_INDEX` can only be executed in a query which doesn't have other statements.
+
+E.g. 
+```cypher
+create node table doc (name string, primary key(name)); call create_fts_index('doc', 'docIdx', ['name'])
+```
+throws an exception since `create_fts_index` is not the only statement in the above query.
 :::
 
 ```cypher
