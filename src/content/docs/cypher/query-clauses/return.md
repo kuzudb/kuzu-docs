@@ -94,6 +94,7 @@ Output:
 -------------------
 | Noura   | 25    |
 -------------------
+```
 
 ```cypher
 MATCH (a:User)-[e:Follows]->(b:User) WHERE a.name='Adam' RETURN e.*;
@@ -113,7 +114,7 @@ Output:
 You can use RETURN DISTINCT to do duplicate elimination of the returned tuples.
 For example, if we instead wrote `RETURN DISTINCT` in the above query, we would
 eliminate one of the 2 (Adam, 30, 2020) tuples above:
-```
+```cypher
 MATCH (a:User)-[e:Follows]->(b:User)
 RETURN DISTINCT a.name, a.age, e.since;
 ```
