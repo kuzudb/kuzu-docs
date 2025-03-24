@@ -8,7 +8,6 @@ title: Difference in Cypher Implemetations
 
 Different from Neo4j, Kuzu requires a schema to be defined before any data can be inserted into the database. The schema provides a logical grouping of node and relationship tables, along with their associated properties and data types that define the structure of the graph database. See [DDL](/cypher/data-definition/create-table.md) for more information. 
 
-
 ## Clauses
 
 ### CREATE and MERGE
@@ -75,9 +74,45 @@ Kuzu supports `EXISTS` and `COUNT` subquery. See [Subqueries](/cypher/subquery.m
 
 ## Data Types
 
+Kuzu following Postgres typing system. For `LIST` type, all elements should be of the same type. For `MAP` type, all keys should be of the same type and all values should be of the same type. For more information, see [Data Types](/cypher/data-types/index.mdx).
+
 ## Functions
+
+- `labels()` function is named as  `label()` instead.
+- type predicate expression `n.property IS :: INTEGER` is supported as `typeOf(n.property)=INT64`
+- internal id function `elementId` is supported as `id()`.
+- spatial functions are not supported.
+
+### Aggregate functions
+- `percentileCont`, `percentileDisc`, `stDev` and `stDevP` are supported.
+
+### List functions
+
+- Most list functions are named with `list_` prefix, e.g. `list_concat`, `list_reverse`, `list_reduce`, etc...
+- `tail` is supported as `list_slice()`.
+- `head` and `tail` are supported as `list_extract()` or `list[]`.
+
+### Casting functions
+- `toXXX` functions are supported as `cast(input, targetType)` function.
+
+### Mathematical functions
+- `isNaN` is not supported.
+- `e()` is not supported.
+- `haversin` is not supported.
+- `pi()` is not supported.
+
+### String functions
+- `char_length` and `character_length` are supported as `size`.
+
+### Temporal functions
+- `date()` is supported as `current_date()`. `timestamp()` is supported as `current_timestamp()`.
+- local datetime, real time clock, transaction time clock are not supported.
+
+### Vector similarity functions
+- cosine similarity is named as `ARRAY_COSINE_SIMILARITY()`
+- euclidean distance is named as `ARRAY_DISTANCE()`
 
 ## Indexes and Constraints
 
-Kuzu does not support manually creating indexes or constraints.
+Kuzu does not support manually creating indexes or constraints. Instead Kuzu creates a primary key index (which also guarantees non-null and uniqueness) on user specificed primary key column on node table.
 
