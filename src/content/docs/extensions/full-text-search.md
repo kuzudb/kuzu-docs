@@ -93,6 +93,10 @@ RETURN node, score
 - `INDEX_NAME`: The name of the FTS index to query. 
 - `QUERY`: The query string that contains the keywords to search.
 
+Users can use `YIELD` to rename the result columns. More details on `YIELD` can be found [here](cypher/query-clauses/call/#using-yield).
+By default, the returned result from `QUERY_FTS_INDEX` is not sorted.
+To get sorted result based on BM25 scores, you need to manually specify `ORDER BY score` in the `RETURN` clause.
+
 :::caution[Note]
 Uniqueness of index names: If you build multiple FTS indices on a table, they 
 must have different names. However, multiple FTS indices can have the same
