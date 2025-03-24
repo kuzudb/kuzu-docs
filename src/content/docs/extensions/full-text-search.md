@@ -63,9 +63,9 @@ The example below shows how to create an FTS index on the book table with the `a
 to an optional parameter in the example below.
 2. Users can only build full text search indexes on node tables.
 3. Once a full-text search index is created, the stopword list becomes immutable. All queries against the index will permanently reference the original stopword list used during its creation. To update the stopword configuration, you must rebuild the index with the revised stopword list.
-4. `CREATE_FTS_INDEX` can only be executed in a query which doesn't have other statements.
+4. `CREATE_FTS_INDEX` cannot be executed in a multi-statement query block that also includes other statements.
 
-E.g. 
+For example:
 ```cypher
 create node table doc (name string, primary key(name)); call create_fts_index('doc', 'docIdx', ['name'])
 ```
@@ -100,7 +100,7 @@ RETURN node, score
 - `INDEX_NAME`: The name of the FTS index to query. 
 - `QUERY`: The query string that contains the keywords to search.
 
-Users can use `YIELD` to rename the result columns. More details on `YIELD` can be found [here](cypher/query-clauses/call/#using-yield).
+You can use `YIELD` to rename the result columns. More details on `YIELD` can be found [here](cypher/query-clauses/call/#using-yield).
 By default, the returned result from `QUERY_FTS_INDEX` is not sorted.
 To get sorted result based on BM25 scores, you need to manually specify `ORDER BY score` in the `RETURN` clause.
 
