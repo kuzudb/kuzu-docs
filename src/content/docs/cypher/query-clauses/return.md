@@ -94,6 +94,7 @@ Output:
 -------------------
 | Noura   | 25    |
 -------------------
+```
 
 ```cypher
 MATCH (a:User)-[e:Follows]->(b:User) WHERE a.name='Adam' RETURN e.*;
