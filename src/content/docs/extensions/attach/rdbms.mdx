@@ -429,7 +429,7 @@ Result:
 
 #### 5. Scan from arbitrary SQL queries
 
-The `sql_query` table function allows users to execute any read SQL queries on any attached POSTGRESQL database and retrieve the result. The function takes in two parameters:
+The `sql_query` table function allows users to execute any read SQL queries on any attached POSTGRESQL database and retrieve the result in Kuzu. The function takes in two parameters:
 `ATTACHED_PG_NAME`: the name of the attached postgres database to execute SQL queries.
 `SQL_QUERY`: the read SQL query to execute.
 The below query shows an example to scan from a SQL query which filters out all people who is younger than 20:
