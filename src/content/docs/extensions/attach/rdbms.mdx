@@ -427,7 +427,30 @@ Result:
 ---------------
 ```
 
-#### 5. USE: Reference database without alias
+#### 5. Scan from arbitrary SQL queries
+
+The `sql_query` table function allows users to execute any read SQL queries on any attached POSTGRESQL database and retrieve the result. The function takes in two parameters:
+`ATTACHED_PG_NAME`: the name of the attached postgres database to execute SQL queries.
+`SQL_QUERY`: the read SQL query to execute.
+The below query shows an example to scan from a SQL query which filters out all people who is younger than 20:
+```sql
+CALL SQL_QUERY('uw', 'select * from person where age > 20') 
+RETURN *
+```
+
+Result:
+
+```
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 30    │
+│ Bob    │ 27    │
+│ Dan    │ 25    │
+└────────┴───────┘
+```
+#### 6. USE: Reference database without alias
 
 You can use the `USE` statement for attached databases to use a default database name for future operations.
 This can be used when reading from an attached database to avoid specifying the full database name
@@ -454,7 +477,7 @@ LOAD FROM person
 RETURN *
 ```
 
-#### 6. Copy data from PostgreSQL tables
+#### 7. Copy data from PostgreSQL tables
 
 One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kuzu.
 In this example, we continue using the `university.db` database created in the last step, but this time,
@@ -477,7 +500,7 @@ If the schemas are not the same, e.g., `Person` contains only `name` property wh
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
-#### 7. Query the data in Kuzu
+#### 8. Query the data in Kuzu
 
 Finally, we can verify the data in the `Person` table in Kuzu.
 
@@ -500,7 +523,7 @@ Result:
 ------------------
 ```
 
-#### 8. Clear attached database schema cache
+#### 9. Clear attached database schema cache
 
 To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
@@ -514,7 +537,7 @@ CALL clear_attached_db_cache()
 Note: If you have attached to databases from different
 RDBMSs, say Postgres, DuckDB, and Sqlite, this call will clear the cache for all of them.
 
-#### 9. Detach database
+#### 10. Detach database
 
 To detach a database, use `DETACH [ALIAS]` as follows:
 
