@@ -33,7 +33,7 @@ or your preferred language client API:
 
 ```
 INSTALL duckdb;
-LOAD EXTENSION duckdb;
+LOAD duckdb;
 ```
 
 #### 1. Create a DuckDB database
@@ -258,7 +258,7 @@ CALL clear_attached_db_cache()
 Note: If you have attached to databases from different
 RDBMSs, say Postgres, DuckDB, and Sqlite, this call will clear the cache for all of them.
 
-#### 8. Detach database
+#### 9. Detach database
 
 To detach a database, use `DETACH [ALIAS]` as follows:
 
@@ -275,7 +275,7 @@ or your preferred language client API:
 
 ```
 INSTALL postgres;
-LOAD EXTENSION postgres;
+LOAD postgres;
 ```
 
 #### Set up a PostgreSQL server via Docker
@@ -402,7 +402,7 @@ The table below shows the mapping from PostgreSQL's type to Kuzu's type:
 | xml                                       | STRING                                 |
 
 
-#### 4. Scan from PostgreSQL tables
+#### 4. Scan from PostgreSQL tables with Cypher
 
 Finally, we can utilize the `LOAD FROM` statement to scan the `Person` table.
 
@@ -414,27 +414,27 @@ RETURN *
 Result:
 
 ```
----------------
-| name  | age |
----------------
-| Alice | 30  |
----------------
-| Bob   | 27  |
----------------
-| Carol | 19  |
----------------
-| Dan   | 25  |
----------------
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 30    │
+│ Bob    │ 27    │
+│ Carol  │ 19    │
+│ Dan    │ 25    │
+└────────┴───────┘
 ```
 
-#### 5. Scan from arbitrary SQL queries
+#### 5. Scan from PostgreSQL tables with SQL
 
-The `sql_query` table function allows users to execute any read SQL queries on any attached POSTGRESQL database and retrieve the result in Kuzu. The function takes in two parameters:
-`ATTACHED_PG_NAME`: the name of the attached postgres database to execute SQL queries.
-`SQL_QUERY`: the read SQL query to execute.
-The below query shows an example to scan from a SQL query which filters out all people who is younger than 20:
+Starting from v0.9.0, Kuzu provides a `sql_query` table function allows you to execute arbitrary **read-only** 
+SQL queries on any attached Postgres database and retrieve its results for use in Kuzu. The function takes in two parameters:
+- `ATTACHED_PG_NAME`: the name of the attached postgres database to execute SQL queries.
+- `SQL_QUERY`: the read SQL query to execute.
+
+The example below shows how to scan from a SQL query which filters out all people who are younger than 20:
 ```sql
-CALL SQL_QUERY('uw', 'select * from person where age > 20') 
+CALL SQL_QUERY('uw', 'SELECT * FROM person WHERE age > 20') 
 RETURN *
 ```
 
@@ -510,17 +510,15 @@ MATCH (p:Person) RETURN p.*;
 
 Result:
 ```
-------------------
-| s.name | s.age |
-------------------
-| Alice  | 30    |
-------------------
-| Bob    | 27    |
-------------------
-| Carol  | 19    |
-------------------
-| Dan    | 25    |
-------------------
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 30    │
+│ Bob    │ 27    │
+│ Carol  │ 19    │
+│ Dan    │ 25    │
+└────────┴───────┘
 ```
 
 #### 9. Clear attached database schema cache
@@ -554,7 +552,7 @@ or your preferred language client API:
 
 ```
 INSTALL sqlite;
-LOAD EXTENSION sqlite;
+LOAD sqlite;
 ```
 
 #### 1. Create a SQLite database
