@@ -60,11 +60,11 @@ After installation, a load command is required to ask Kuzu to dynamically load t
 Extensions installed using the `INSTALL` command can be loaded directly as follows: 
 
 ```sql
-LOAD EXTENSION <extension_name>
+LOAD <extension_name>
 ```
 
 :::note[Note]
 A new Database object at the C++ level is instantiated every time a new CLI session is started, or
-when a client script that embeds Kuzu is run. For this reason, the `LOAD EXTENSION` command must be
+when a client script that embeds Kuzu is run. For this reason, the `LOAD` command must be
 run every time a new CLI session is started or a client script is run.
 :::

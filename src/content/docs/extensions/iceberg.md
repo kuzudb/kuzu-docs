@@ -11,7 +11,7 @@ extension by running the following commands:
 
 ```sql
 INSTALL iceberg;
-LOAD EXTENSION iceberg;
+LOAD iceberg;
 ```
 
 At a high level, the `iceberg` extension provides the following functionality:

@@ -14,7 +14,7 @@ extension by running the following commands:
 
 ```sql
 INSTALL FTS;
-LOAD EXTENSION FTS;
+LOAD FTS;
 ```
 
 ### Example dataset

@@ -20,7 +20,7 @@ It can be installed and loaded using the following commands:
 
 ```sql
 INSTALL httpfs;
-LOAD EXTENSION httpfs;
+LOAD httpfs;
 ```
 
 ## HTTP(S) file system

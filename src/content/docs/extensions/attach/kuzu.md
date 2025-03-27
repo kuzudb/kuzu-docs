@@ -11,7 +11,7 @@ As a first step, you need to install the `httpfs` extension with the following c
 
 ```sql
 INSTALL httpfs;
-LOAD EXTENSION httpfs;
+LOAD httpfs;
 ```
 Then you use the `ATTACH` statement to attach to a remote Kuzu database. The basic syntax is as follows:
 ```sql
