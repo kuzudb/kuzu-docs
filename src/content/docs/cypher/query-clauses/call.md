@@ -15,7 +15,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | Function | Description                                                                                  |
 | ----------- |----------------------------------------------------------------------------------------------|
 | `CURRENT_SETTING('setting')` | returns the value of the given setting                                                       |
-| `DB_VERSION()` | returns the version of kuzu                                                                  |
+| `DB_VERSION()` | returns the version of Kuzu                                                                  |
 | `SHOW_TABLES()` | returns the name, type, comment of all tables in the database                                |
 | `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database             |
 | `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases                                             |
@@ -293,7 +293,7 @@ CALL SHOW_INDEXES() RETURN *;
 ```
 
 ### SHOW_PROJECTED_GRAPH
-If you would like to know all projected graph created in kuzu, you can run the `SHOW_PROJECTED_GRAPH` function.
+To list all projected graphs in a Kuzu database, you can use the `SHOW_PROJECTED_GRAPH` function.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
