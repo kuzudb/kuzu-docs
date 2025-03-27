@@ -9,11 +9,117 @@ Kuzu provides a Python package that you can install via PyPI. A full list of the
 can be found in the Python API documentation, linked below.
 
 <LinkCard
-  title="Python API documentation"
+  title="Python API source documentation"
   href="https://kuzudb.com/api-docs/python"
 />
 
-Some useful features of the Python API are explained in the following sections.
+## Sync and Async APIs
+
+Kuzu provides both a synchronous and an asynchronous Python API. The synchronous API is the default
+and is more convenient to use.
+
+<Tabs>
+
+<TabItem label="Sync API">
+
+The synchronous API is the default and is a common way to work with Kuzu in Python.
+
+```python
+import kuzu
+
+def main() -> None:
+    # Create an empty on-disk database and connect to it
+    db = kuzu.Database("./demo_db")
+    conn = kuzu.Connection(db)
+
+    # Create schema 
+    conn.execute("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))")
+    conn.execute("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))")
+    conn.execute("CREATE REL TABLE Follows(FROM User TO User, since INT64)")
+    conn.execute("CREATE REL TABLE LivesIn(FROM User TO City)")
+
+    # Insert data
+    conn.execute('COPY User FROM "./data/user.csv"')
+    conn.execute('COPY City FROM "./data/city.csv"')
+    conn.execute('COPY Follows FROM "./data/follows.csv"')
+    conn.execute('COPY LivesIn FROM "./data/lives-in.csv"')
+
+    # Execute Cypher query
+    response = conn.execute(
+        """
+        MATCH (a:User)-[f:Follows]->(b:User)
+        RETURN a.name, b.name, f.since;
+        """
+    )
+    while response.has_next():
+        print(response.get_next())
+```
+
+</TabItem>
+
+<TabItem label="Async API">
+
+The asynchronous API is useful for running Kuzu in an async context,
+such as in web frameworks like FastAPI or cases where you need to concurrently run queries in Kuzu.
+
+```python
+import asyncio
+import shutil
+
+import kuzu
+
+shutil.rmtree("test_db", ignore_errors=True)
+db = kuzu.Database("test_db")
+# Create the async connection
+# The undelying connection pool will be automatically created and managed by the async connection
+conn = kuzu.AsyncConnection(db, max_concurrent_queries=4)
+
+async def create_tables(conn: kuzu.AsyncConnection) -> None:
+    """Create the node and relationship tables"""
+    await conn.execute("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)")
+    await conn.execute("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)")
+    await conn.execute("CREATE REL TABLE Follows(FROM User TO User, since INT64)")
+    await conn.execute("CREATE REL TABLE LivesIn(FROM User TO City)")
+
+async def copy_data(conn: kuzu.AsyncConnection) -> None:
+    """Copy the data from the CSV files to the node and relationship tables"""
+    await conn.execute("COPY User FROM 'example_data/user.csv' (header=true)")
+    await conn.execute("COPY City FROM 'example_data/city.csv'")
+    await conn.execute("COPY Follows FROM 'example_data/follows.csv'")
+    await conn.execute("COPY LivesIn FROM 'example_data/lives-in.csv'")
+
+async def query_1(conn: kuzu.AsyncConnection) -> None:
+    result = await conn.execute("MATCH (u:User)-[:LivesIn]->(c:City) RETURN u.*")
+    while result.has_next():
+        print(result.get_next())
+
+async def main():
+    await create_tables(conn)
+    await copy_data(conn)
+    # Run queries
+    await query_1(conn)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+The async API in Python is backed by a thread pool. The thread pool is automatically
+created and managed by the async connection -- all you need to do is pass in the `max_concurrent_queries`
+parameter to the async connection constructor.
+
+:::caution[Note]
+When using the async API, you may currently encounter the following error:
+```
+Binder exception: Variable df is not in scope.
+```
+This is likely due to the fact that async connections execute queries using a separate thread from the
+calling thread, and thus the dataframe isn't in scope for the executing thread. This will be handled
+appropriately and addressed in a future release.
+:::
+
+</TabItem>
+
+</Tabs>
 
 ## DataFrames and Arrow Tables
 
