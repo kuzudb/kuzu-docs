@@ -77,8 +77,7 @@ CALL CREATE_FTS_INDEX(
     'Book',   // Table name
     'book_index',   // Index name
     ['abstract', 'title'],   // Properties to build FTS index on
-    stemmer := 'porter',   // Stemmer to use (optional)
-    stopwords := 'https://stopwords/porter.txt' // Configure customized stopwords list
+    stemmer := 'porter'   // Stemmer to use (optional)
 );
 ```
 Once the index is created, the index will be ready for querying as shown below.
