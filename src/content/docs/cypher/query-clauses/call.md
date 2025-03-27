@@ -15,7 +15,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | Function | Description                                                                                  |
 | ----------- |----------------------------------------------------------------------------------------------|
 | `CURRENT_SETTING('setting')` | returns the value of the given setting                                                       |
-| `DB_VERSION()` | returns the version of Kuzu                                                                  |
+| `DB_VERSION()` | returns the version of kuzu                                                                  |
 | `SHOW_TABLES()` | returns the name, type, comment of all tables in the database                                |
 | `SHOW_CONNECTION('tableName')` | returns the source/destination nodes for a relationship/relgroup in the database             |
 | `SHOW_ATTACHED_DATABASES()` | returns the name, type of all attached databases                                             |
@@ -26,6 +26,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_OFFICIAL_EXTENSIONS` | returns all official [extensions](/extensions) which can be installed by `INSTALL <extension_name>` |
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
+| `SHOW_PROJECTED_GRAPH` | returns all projected graph created in the system |
 
 </div>
 
@@ -289,6 +290,28 @@ CALL SHOW_INDEXES() RETURN *;
 ├────────────┼────────────┼────────────┼─────────────────────────┼──────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ book       │ bookIdx    │ FTS        │ [abstract,author,title] │ True             │ CALL CREATE_FTS_INDEX('book', 'bookIdx', ['abstract', 'author', 'title' ], stemmer := 'porter'); │
 └────────────┴────────────┴────────────┴─────────────────────────┴──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### SHOW_PROJECTED_GRAPH
+If you would like to know all projected graph created in kuzu, you can run the `SHOW_PROJECTED_GRAPH` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| name | the name of the projected graph | STRING |
+| nodes | the nodes with predicates in the projected graph | STRING |
+| rels | the rels with predicates in the projected graph | STRING |
+
+```cypher
+CALL SHOW_PROJECTED_GRAPH() RETURN *;
+```
+
+```
+┌────────────────┬───────────────────────┬──────────────────────┐
+│ name           │ nodes                 │ rels                 │
+│ STRING         │ STRING                │ STRING               │
+├────────────────┼───────────────────────┼──────────────────────┤
+│ social_network │ {{'table': 'person'}} │ {{'table': 'knows'}} │
+└────────────────┴───────────────────────┴──────────────────────┘
 ```
 
 ## YIELD
