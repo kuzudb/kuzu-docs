@@ -238,11 +238,19 @@ export default defineConfig({
                             ]
                         },
                         {
-                            label: 'External data sources',
+                            label: 'Tabular data sources',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
-                                { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
+                                {
+                                    label: 'External relational databases ',
+                                    collapsed: true,
+                                    items: [
+                                        { label: 'PostgreSQL', link: '/extensions/attach/postgres' },
+                                        { label: 'DuckDB', link: '/extensions/attach/duckdb' },
+                                        { label: 'SQLite', link: '/extensions/attach/sqlite' },
+                                    ]
+                                },
                                 { label: 'Iceberg', link: '/extensions/iceberg' },
                                 { label: 'Delta Lake', link: '/extensions/delta' },
                                 { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
