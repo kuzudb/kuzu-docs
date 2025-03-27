@@ -238,7 +238,7 @@ export default defineConfig({
                             ]
                         },
                         {
-                            label: 'External data sources',
+                            label: 'Tabular data sources',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
