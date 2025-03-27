@@ -32,13 +32,15 @@ The following extensions are implemented, with more to come:
 | Extension Name | Description |
 |----------|----------|
 | [httpfs](/extensions/httpfs) | Read and write files over HTTP(s) protocol. Also used for [attaching to a remote Kuzu database](/extensions/attach/kuzu). |
-| [duckdb](/extensions/attach/rdbms) | Scan data from an attached DuckDB database |
-| [postgres](/extensions/attach/rdbms) | Scan data from an attached PostgreSQL database |
-| [sqlite](/extensions/attach/rdbms) | Scan data from an attached SQLite database |
+| [duckdb](/extensions/attach/duckdb) | Scan data from an attached DuckDB database |
+| [postgres](/extensions/attach/postgres) | Scan data from an attached PostgreSQL database |
+| [sqlite](/extensions/attach/sqlite) | Scan data from an attached SQLite database |
 | [json](/extensions/json) | Scan and manipulate JSON data |
-| [delta](/extensions/delta) | Scan data from a delta table |
-| [iceberg](/extensions/iceberg) | Scan iceberg data |
-| [vector](/extensions/vector) | Accelerate similarity search over float array data |
+| [delta](/extensions/delta) | Scan data from Delta Lake tables |
+| [iceberg](/extensions/iceberg) | Scan data from Iceberg tables |
+| [unity](/extensions/unity) | Scan data from Unity Catalog tables |
+| [fts](/extensions/full-text-search) | Perform full-text search using BM25 |
+| [vector](/extensions/vector) | Perform vector similarity search |
 
 ## Using Extensions in Kuzu
 

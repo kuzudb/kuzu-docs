@@ -1,0 +1,279 @@
+---
+title: Attaching to PostgreSQL databases
+---
+
+The PostgreSQL extension can be installed and loaded by running the following commands using the Kuzu CLI
+or your preferred language client API:
+
+```sql
+INSTALL postgres;
+LOAD postgres;
+```
+
+## Set up a PostgreSQL server via Docker
+
+During local development, it's convenient to set up a PostgreSQL server using Docker. Run the following
+command to start a PostgreSQL server locally:
+
+```sh
+docker run --name kuzu-postgres \
+       -e POSTGRES_PASSWORD=testpassword \
+       -p 5432:5432 \
+       --rm postgres:latest
+```
+
+Note that the storage volume for this database is not persistent and will be deleted once the
+container is stopped. Moreover, the password in this case is provided via plain text, which is not
+recommended in a real use case, so the below example is for **testing purposes only**.
+
+##  1. Create a sample PostgreSQL database
+
+To illustrate the usage of the extension, we create a sample Postgres database of university
+students. We will use [asyncpg](https://magicstack.github.io/asyncpg/current/index.html),
+an asynchronous PostgreSQL client library for Python, to create the database and insert some sample data
+via a Python script.
+This step assumes you have run `pip install asyncpg` to install the library, and are using Python 3.10+.
+
+```py
+import asyncio
+import asyncpg
+
+async def main():
+    conn = await asyncpg.connect('postgresql://postgres:testpassword@localhost:5432/postgres')
+    # Create and insert data to a new table
+    try:
+        await conn.execute("CREATE TABLE IF NOT EXISTS person (name VARCHAR, age INTEGER);")
+        await conn.execute("INSERT INTO person (name, age) VALUES ('Alice', 30)")
+        await conn.execute("INSERT INTO person (name, age) VALUES ('Bob', 27)")
+        await conn.execute("INSERT INTO person (name, age) VALUES ('Carol', 19)")
+        await conn.execute("INSERT INTO person (name, age) VALUES ('Dan', 25)")
+    except asyncpg.exceptions.DuplicateTableError:
+        print(f"Table already exists, skipping creation and insertion...")
+    # Check results
+    print(await conn.fetch("SELECT * FROM person"))
+
+asyncio.run(main())
+```
+
+##  2. Attach database
+
+```sql
+ATTACH [PG_CONNECTION_STRING] AS [alias] (dbtype postgres, skip_unsupported_table = OPTION, schema = SCHEMA_NAME)
+```
+
+- `skip_unsupported_table`: Whether Kuzu should throw an exception or skip when encountering a table with unsupported datatype.
+   Supported options are: TRUE or FALSE. Default is FALSE.
+- `schema`: The name of the schema in Postgres to attach. Kuzu attaches to the `public` schema of postgres by default.
+
+The below example shows how the `university` PostgreSQL database can be attached to Kuzu using
+the alias `uw`:
+
+```sql
+ATTACH 'dbname=university user=postgres host=localhost password=testpassword port=5432' AS uw (dbtype postgres);
+```
+
+The `ATTACH` statement requires the following parameters:
+
+- `PG_CONNECTION_STRING`: PostgreSQL connection string with the necessary parameters
+- `alias`: Database alias to use in Kuzu - If not provided, the database name from PostgreSQL will be used.
+  When attaching multiple databases, it's recommended to use aliasing.
+
+The below table lists some common connection string parameters:
+
+| Parameter | Description | Default |
+|-----------|-------------| ------- |
+| `dbname`    | Database name | [user defined] |
+| `host`      | Host IP address | `localhost` |
+| `user`      | Postgres username | `postgres` |
+| `password`  | Postgres password | [empty] |
+| `port`      | Port number | 5432 |
+
+##  3. Data type mapping from PostgreSQL to Kuzu
+
+The table below shows the mapping from PostgreSQL's type to Kuzu's type:
+| PostgreSQL Data Type                      | Corresponding Data Type in Kuzu |
+|-------------------------------------------|----------------------------------|
+| bigint (int8)                             | INT64                           |
+| bigserial (serial8)                       | INT64                                 |
+| bit [ (n) ]                               | STRING                                 |
+| bit varying [ (n) ] (varbit [ (n) ])      | STRING                                 |
+| boolean (bool)                            | BOOL                            |
+| box                                       | DOUBLE[]                                 |
+| bytea                                     | BLOB                            |
+| character [ (n) ] (char [ (n) ])          | STRING                          |
+| character varying [ (n) ] (varchar [ (n)])| STRING                          |
+| cidr                                      | STRING                                 |
+| circle                                    | DOUBLE[]                                 |
+| date                                      | DATE                            |
+| double precision (float8)                 | DOUBLE                          |
+| inet                                      | STRING                                 |
+| integer (int, int4)                       | INT32                           |
+| interval [ fields ] [ (p) ]               | INTERVAL                                |
+| json                                      | JSON                            |
+| line                                      | DOUBLE[]                                 |
+| lseg                                      | DOUBLE[]                                 |
+| macaddr                                   | STRING                                 |
+| macaddr8                                  | STRING                                 |
+| money                                     | STRING                                 |
+| numeric [ (p, s) ] (decimal [ (p, s) ])   | DECIMAL                         |
+| path                                      | DOUBLE[]                                 |
+| pg_lsn                                    | STRING                                 |
+| pg_snapshot                               | STRING                                 |
+| point                                     | STRUCT(x DOUBLE, y DOUBLE)                                 |
+| polygon                                   | DOUBLE[]                                 |
+| real (float4)                             | FLOAT                         |
+| smallint (int2)                           | INT16                           |
+| smallserial (serial2)                     | INT16                                 |
+| serial (serial4)                          | INT32                                 |
+| text                                      | STRING                          |
+| time [ (p) ] [ without time zone ]        | UNSUPPORTED                            |
+| time [ (p) ] with time zone (timetz)      | UNSUPPORTED                                 |
+| timestamp [ (p) ] [ without time zone ]   | TIMESTAMP                        |
+| timestamp [ (p) ] with time zone (timestamptz) | UNSUPPORTED                      |
+| tsquery                                   | STRING                                 |
+| tsvector                                  | STRING                                 |
+| txid_snapshot                             | STRING                                 |
+| uuid                                      | UUID                            |
+| xml                                       | STRING                                 |
+
+
+##  4. Scan from PostgreSQL tables with Cypher
+
+Finally, we can utilize the `LOAD FROM` statement to scan the `Person` table.
+
+```sql
+LOAD FROM uw.person
+RETURN *
+```
+
+Result:
+
+```
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 30    │
+│ Bob    │ 27    │
+│ Carol  │ 19    │
+│ Dan    │ 25    │
+└────────┴───────┘
+```
+
+##  5. Scan from PostgreSQL tables with SQL
+
+Starting from v0.9.0, Kuzu provides a `sql_query` table function allows you to execute arbitrary **read-only** 
+SQL queries on any attached Postgres database and retrieve its results for use in Kuzu. The function takes in two parameters:
+- `ATTACHED_PG_NAME`: the name of the attached postgres database to execute SQL queries.
+- `SQL_QUERY`: the read SQL query to execute.
+
+The example below shows how to scan from a SQL query which filters out all people who are younger than 20:
+```sql
+CALL SQL_QUERY('uw', 'SELECT * FROM person WHERE age > 20') 
+RETURN *
+```
+
+Result:
+
+```
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 30    │
+│ Bob    │ 27    │
+│ Dan    │ 25    │
+└────────┴───────┘
+```
+##  6. USE: Reference database without alias
+
+You can use the `USE` statement for attached databases to use a default database name for future operations.
+This can be used when reading from an attached database to avoid specifying the full database name
+as a prefix to the table name.
+
+Consider the same attached database as above:
+
+```sql
+ATTACH 'university' AS uw (dbtype postgres);
+```
+
+Instead of defining the database name for each subsequent clause like this:
+
+```sql
+LOAD FROM uw.person
+RETURN *
+```
+
+You can do:
+
+```sql
+USE uw;
+LOAD FROM person
+RETURN *
+```
+
+##  7. Copy data from PostgreSQL tables
+
+One important use case of the external RDBMS extensions is to facilitate seamless data transfer from the external RDBMS to Kuzu.
+In this example, we continue using the `university.db` database created in the last step, but this time,
+we copy the data and persist it to Kuzu. This is done with the `COPY FROM` statement. Here is an example:
+
+We first create a `Person` table in Kuzu. In this example we will make `Person` have the same schema as the one defined in the external RDBMS.
+
+```cypher
+CREATE NODE TABLE Person (name STRING, age INT32, PRIMARY KEY(name));
+```
+
+When the schemas are the same, we can copy the data from the external DBMS table to the Kuzu table simply as follows.
+
+```sql
+COPY Person FROM uw.person;
+```
+If the schemas are not the same, e.g., `Person` contains only `name` property while the external `uw.person` contains
+`name` and `age`, we can still use `COPY FROM` but with a subquery as follows:
+```sql
+COPY Person FROM (LOAD FROM uw.person RETURN name);
+```
+
+##  8. Query the data in Kuzu
+
+Finally, we can verify the data in the `Person` table in Kuzu.
+
+```cypher
+MATCH (p:Person) RETURN p.*;
+```
+
+Result:
+```
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Alice  │ 30    │
+│ Bob    │ 27    │
+│ Carol  │ 19    │
+│ Dan    │ 25    │
+└────────┴───────┘
+```
+
+##  9. Clear attached database schema cache
+
+To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
+including table names and their respective columns and types. Should modifications occur in the schema
+via an alternate connection to attached RDBMSs, such as creation or deletion of tables, the cached
+schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
+schema information in such cases.
+
+```sql
+CALL clear_attached_db_cache()
+```
+Note: If you have attached to databases from different
+RDBMSs, say Postgres, DuckDB, and Sqlite, this call will clear the cache for all of them.
+
+##  10. Detach database
+
+To detach a database, use `DETACH [ALIAS]` as follows:
+
+```
+DETACH uw
+```
