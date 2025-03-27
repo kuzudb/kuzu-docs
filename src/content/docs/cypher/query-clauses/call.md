@@ -26,6 +26,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_OFFICIAL_EXTENSIONS` | returns all official [extensions](/extensions) which can be installed by `INSTALL <extension_name>` |
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
+| `SHOW_PROJECTED_GRAPH` | returns all projected graph created in the system |
 
 </div>
 
@@ -289,6 +290,28 @@ CALL SHOW_INDEXES() RETURN *;
 ├────────────┼────────────┼────────────┼─────────────────────────┼──────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ book       │ bookIdx    │ FTS        │ [abstract,author,title] │ True             │ CALL CREATE_FTS_INDEX('book', 'bookIdx', ['abstract', 'author', 'title' ], stemmer := 'porter'); │
 └────────────┴────────────┴────────────┴─────────────────────────┴──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### SHOW_PROJECTED_GRAPH
+To list all projected graphs in a Kuzu database, you can use the `SHOW_PROJECTED_GRAPH` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| name | the name of the projected graph | STRING |
+| nodes | the nodes with predicates in the projected graph | STRING |
+| rels | the rels with predicates in the projected graph | STRING |
+
+```cypher
+CALL SHOW_PROJECTED_GRAPH() RETURN *;
+```
+
+```
+┌────────────────┬───────────────────────┬──────────────────────┐
+│ name           │ nodes                 │ rels                 │
+│ STRING         │ STRING                │ STRING               │
+├────────────────┼───────────────────────┼──────────────────────┤
+│ social_network │ {{'table': 'person'}} │ {{'table': 'knows'}} │
+└────────────────┴───────────────────────┴──────────────────────┘
 ```
 
 ## YIELD
