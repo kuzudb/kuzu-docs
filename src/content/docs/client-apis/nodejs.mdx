@@ -3,6 +3,7 @@ title: Node.js API
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 See the following link for the full documentation of the Node.js API.
 
@@ -10,3 +11,96 @@ See the following link for the full documentation of the Node.js API.
   title="Node.js API documentation"
   href="https://kuzudb.com/api-docs/nodejs"
 />
+
+## Sync and Async APIs
+
+Kuzu provides both a sync and an async Node.js API. The async API is the default
+and more commonly used when building Kuzu applications in Node.js.
+
+<Tabs>
+
+<TabItem label="Async API">
+
+The asynchronous API is commonly used when writing Kuzu applications in Node.js.
+
+```js
+const kuzu = require("kuzu");
+
+(async () => {
+  // Create an empty on-disk database and connect to it
+  const db = new kuzu.Database("./demo_db");
+  const conn = new kuzu.Connection(db);
+
+  // Create the tables
+  await conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
+  await conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+  await conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
+  await conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
+
+  // Load the data
+  await conn.query('COPY User FROM "./data/user.csv"');
+  await conn.query('COPY City FROM "./data/city.csv"');
+  await conn.query('COPY Follows FROM "./data/follows.csv"');
+  await conn.query('COPY LivesIn FROM "./data/lives-in.csv"');
+
+  const queryResult = await conn.query("MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;");
+
+  // Get all rows from the query result
+  const rows = await queryResult.getAll();
+
+  // Print the rows
+  for (const row of rows) {
+    console.log(row);
+  }
+})();
+```
+
+</TabItem>
+
+<TabItem label="Sync API">
+
+In addition to the standard async Node.js API, Kuzu also provides a synchronous Node.js API.
+This is useful for running Kuzu in a synchronous context, such as debugging or applications
+where async operations are not desired.
+
+```js
+const kuzu = require("kuzu");
+
+// Create an empty on-disk database and connect to it
+const db = new kuzu.Database("./demo_db");
+const conn = new kuzu.Connection(db);
+
+// Create the tables
+conn.querySync("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
+conn.querySync("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+conn.querySync("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
+conn.querySync("CREATE REL TABLE LivesIn(FROM User TO City)");
+
+// Load the data
+conn.querySync('COPY User FROM "./data/user.csv"');
+conn.querySync('COPY City FROM "./data/city.csv"');
+conn.querySync('COPY Follows FROM "./data/follows.csv"');
+conn.querySync('COPY LivesIn FROM "./data/lives-in.csv"');
+
+const queryResult = conn.querySync(
+    """
+    MATCH (a:User)-[f:Follows]->(b:User)
+    RETURN a.name, f.since, b.name;
+    """
+);
+
+// Get all rows from the query result
+const rows = queryResult.getAllSync();
+
+// Print the rows
+for (const row of rows) {
+  console.log(row);
+}
+```
+
+</TabItem>
+
+</Tabs>
+
+See the [Node.js API documentation](https://api-docs.kuzudb.com/nodejs/) for more details
+on the methods available in the sync and async APIs.
