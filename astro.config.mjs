@@ -172,6 +172,7 @@ export default defineConfig({
                         },
                         {
                             label: 'Third-party integrations',
+                            badge: { text: 'New' },
                             collapsed: true,
                             items: [
                                 { label: 'G.V()', link: '/visualization/third-party-integrations/gdotv'},
