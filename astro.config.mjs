@@ -158,13 +158,27 @@ export default defineConfig({
                     label: 'Visualize graphs',
                     collapsed: true,
                     items: [
-                        { label: 'Intro to Kuzu Explorer', link: '/visualization'},
-                        { label: 'Shell panel', link: '/visualization/shell-panel'},
-                        { label: 'Schema panel', link: '/visualization/schema-panel' },
-                        { label: 'Import panel', link: '/visualization/import-panel' },
-                        { label: 'Settings panel', link: '/visualization/settings-panel' },
+                        {
+                            label: 'Kuzu Explorer',
+                            collapsed: true,
+                            items: [
+                                { label: 'Intro to Kuzu Explorer', link: '/visualization/kuzu-explorer'},
+                                { label: 'Shell panel', link: '/visualization/kuzu-explorer/shell-panel'},
+                                { label: 'Schema panel', link: '/visualization/kuzu-explorer/schema-panel' },
+                                { label: 'Import panel', link: '/visualization/kuzu-explorer/import-panel' },
+                                { label: 'Settings panel', link: '/visualization/kuzu-explorer/settings-panel' },
+                            ],
+                            autogenerate: { directory: 'reference' },
+                        },
+                        {
+                            label: 'Third-party integrations',
+                            collapsed: true,
+                            items: [
+                                { label: 'G.V()', link: '/visualization/third-party-integrations/gdotv'},
+                            ],
+                            autogenerate: { directory: 'reference' },
+                        },
                     ],
-                    autogenerate: { directory: 'reference' },
                 },
                 {
                     label: 'Cypher manual',
