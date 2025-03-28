@@ -52,6 +52,10 @@ Scroll to the right to see the example usage in the below table.
 | `list_filter(list, lambda)` | returns list containing elements whose lambda function result is true | `list_filter([1,2,3], x->x>1)` | [2,3] |
 | `list_reduce(list, lambda)` | returns single value by applying the lambda function on a running result and the next list element.| `list_reduce([1,2,3], (x,y)->x+y)` | 6 |
 | `list_has_all(list, sub-list)` | returns true if all elements of sub-list exist in list. | `list_has_all([5, 7, 2], [5, 2])` | true |
+| `all(variable IN list WHERE predicate)` | returns true if the predicate holds for all elements in the given LIST. | `all(x in [5,6,7] where x > 3)` | true |
+| `any(variable IN list WHERE predicate)` | returns true if the predicate holds for any element in the given LIST | `any(x in [1,3,5] where x > 4)` | true |
+| `none(variable IN list WHERE predicate)` | returns true if the predicate doesn't hold for any element in the given LIST | `none(x in [16,22,33] where x < 10)` | true |
+| `single(variable IN list WHERE predicate)` | returns true if the predicate holds for only one element in the given LIST | `single(x in [1,3,5] where x = 3)` | true |
 
 </div>
 
@@ -70,11 +74,12 @@ RETURN list_sort([3,10, NULL, 4], 'DESC') AS result;
 ```
 Output:
 ```
--------------
-| result    |
--------------
-| [,10,4,3] |
--------------
+┌───────────┐
+│ result    │
+│ INT64[]   │
+├───────────┤
+│ [,10,4,3] │
+└───────────┘
 ```
 
 ### NULLS LAST
@@ -87,11 +92,12 @@ RETURN list_sort([3,10, NULL, 4], 'DESC', 'NULLS LAST') AS result;
 ```
 Output:
 ```
--------------
-| result    |
--------------
-| [10,4,3,] |
--------------
+┌───────────┐
+│ result    │
+│ INT64[]   │
+├───────────┤
+│ [10,4,3,] │
+└───────────┘
 ```
 
 ## RANGE
@@ -100,11 +106,12 @@ Output:
 
 ```cypher
 RETURN range(1,3);
---------------
-| RANGE(1,3) |
---------------
-| [1,2,3]    |
---------------
+┌────────────┐
+│ RANGE(1,3) │
+│ INT64[]    │
+├────────────┤
+│ [1,2,3]    │
+└────────────┘
 ```
 
 `range(start, stop, step)` returns a list of value from start to stop with the given step.
@@ -112,11 +119,12 @@ Both ends are inclusive.
 
 ```cypher
 RETURN range(1,10,2);
------------------
-| RANGE(1,10,2) |
------------------
-| [1,3,5,7,9]   |
------------------
+┌───────────────┐
+│ RANGE(1,10,2) │
+│ INT64[]       │
+├───────────────┤
+│ [1,3,5,7,9]   │
+└───────────────┘
 ```
 
 ## COALESCE and IFNULL
@@ -130,12 +138,12 @@ RETURN coalesce(NULL, 'a', NULL) AS result;
 
 Output:
 ```
------------
-| result  |
------------
-| 'a'     |
------------
-
+┌────────┐
+│ result │
+│ STRING │
+├────────┤
+│ a      │
+└────────┘
 ```
 
 ```cypher
@@ -144,9 +152,11 @@ RETURN ifnull(NULL, 'a') AS result;
 
 Output:
 ```
------------
-| result  |
------------
-| 'a'     |
------------
+┌────────┐
+│ result │
+│ STRING │
+├────────┤
+│ a      │
+└────────┘
 ```
+
