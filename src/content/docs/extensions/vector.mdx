@@ -94,6 +94,8 @@ For optional parameters, we use `:=` instead of `=` to specify values.
 :::
 
 We support following options during index creation.
+Our index is structured with two hierarchical layers. 
+The lower layer includes all vectors, while the upper layer contains a sampled subset.
 | option name | description | default |
 | ------------ | ------------ | ---------- |
 | mu                | max degree of nodes in the upper graph. It should be smaller than ml. A higher value leads to a more accurate index, but increase the index size and construction time. | 30 |
