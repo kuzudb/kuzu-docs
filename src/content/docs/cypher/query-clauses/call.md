@@ -26,7 +26,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_OFFICIAL_EXTENSIONS` | returns all official [extensions](/extensions) which can be installed by `INSTALL <extension_name>` |
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
-| `SHOW_PROJECTED_GRAPH` | returns all projected graph created in the system |
+| `SHOW_PROJECTED_GRAPHS` | returns all projected graph created in the system |
 
 </div>
 
