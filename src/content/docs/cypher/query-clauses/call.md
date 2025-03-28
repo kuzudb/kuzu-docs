@@ -360,9 +360,9 @@ Result:
 └───────────┴─────────────┴─────────────┴────────────────┴───────────┴────────────┴──────────────┴──────────────┴─────────────────┴────────────┘
 ```
 
-### Must return all columns
+#### All columns must appear in the `YIELD` clause
 
-If the `YIELD` clause is used after a `CALL` function, **all** return columns of the function must appear in the `YIELD` clause.
+If the `YIELD` clause is used after a `CALL` function, **all** return columns of the function must appear in the `YIELD` clause. Using `YIELD *` is not allowed in Kuzu.
 
 For example:
 ```cypher
@@ -372,7 +372,7 @@ RETURN person_id
 ```
 The query throws an exception since not all returns columns of the `table_info` function appear in the yield clause.
 
-### Column names must match
+#### Column names must match origin
 
 The column names to yield must match the original return column names of the call function.
 For example:
@@ -382,8 +382,3 @@ YIELD thread as threads_num
 RETURN *;
 ```
 The query throws an exception since the column name to yield is `thread` which doesn't match the return column name(`threads`) of the call function.
-
-### Must be followed by a return clause
-
-In Kuzu, the `YIELD` clause must be followed by a return clause.
-This may be different from the syntax you are used to from other systems like Neo4j. `YIELD *` is not allowed in Kuzu.
