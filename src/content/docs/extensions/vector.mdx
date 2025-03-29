@@ -4,11 +4,14 @@ title: "Vector search"
 
 The `VECTOR` extension provides an on-disk [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world)-based vector index for accelerating similarity search over float array columns in tables.
 
-This feature has some limitations for now, but will evolve over time:
+:::caution[Current status]
+It's worth knowing the following details about the vector index in Kuzu before you begin. The feature will continually improve over time and some of these limitations will
+be addressed in future releases.
 
-- **Immutable Index**: Once created, the index cannot be modified. You must drop and re-create the index to reflect changes in the underlying tables.
-- **Float Array Support Only**: Currently only supports float array columns. Support for additional data types is planned for future releases.
+- **`FLOAT` Array Support Only**: Currently only supports 32-bit `FLOAT` type array columns. Support for 64-bit floats, i.e., `DOUBLE` type array columns is coming soon.
 - **Single Node Table Column Indexing**: Limited to indexing a single column in node tables.
+- **Immutable Index**: Once created, the index cannot be modified. You must drop and re-create the index to reflect changes in the underlying tables.
+:::
 
 The vector extension provides the following functions:
 | Function | Description |
