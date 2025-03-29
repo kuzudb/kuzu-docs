@@ -77,6 +77,16 @@ To skip the first 3 lines of the CSV file, you can use the `SKIP` parameter as f
 COPY Follows FROM "follows.csv" (SKIP=3);
 ```
 
+### Relationship table with multiple `FROM-TO` pairs
+
+If a relationship table has multiple `FROM-TO` pairs, you need to specify which pair to insert through `from, to` options. For example
+
+```sql
+Copy Knows FROM 'knows_user_user.csv' (from='User', to='User');
+```
+
+More information can be found [here](/cypher/data-definition/create-table)
+
 ## Import multiple files to a single table
 
 It is common practice to divide a large CSV file into several smaller files for cleaner data management.

@@ -138,6 +138,16 @@ COPY HAS_CONDITION FROM 'has_condition.json'
 
 See the [`JSON`](/extensions/json) extension documentation for more related features on working with JSON files.
 
+### Relationship table with multiple `FROM-TO` pairs
+
+If a relationship table has multiple `FROM-TO` pairs, you need to specify which pair to insert through `from, to` options. For example
+
+```sql
+Copy Knows FROM 'knows_user_user.json' (from='User', to='User');
+```
+
+More information can be found [here](/cypher/data-definition/create-table).
+
 ## Ignoring erroneous rows
 
 Like for CSV files, Kuzu can skip rows when some types of errors are encountered when importing from JSON.
