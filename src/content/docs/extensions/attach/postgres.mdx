@@ -235,6 +235,11 @@ If the schemas are not the same, e.g., `Person` contains only `name` property wh
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
+Note that you can use the `SQL_QUERY` function as a subquery as well.
+```sql
+COPY Person FROM (CALL SQL_QUERY('uw', 'SELECT name FROM person'));
+```
+
 ##  8. Query the data in Kuzu
 
 Finally, we can verify the data in the `Person` table in Kuzu.
