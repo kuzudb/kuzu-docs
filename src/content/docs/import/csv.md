@@ -79,10 +79,10 @@ COPY Follows FROM "follows.csv" (SKIP=3);
 
 ### Relationship table with multiple `FROM-TO` pairs
 
-If a relationship table has multiple `FROM-TO` pairs, you need to specify which pair to insert through `from, to` options. For example
+If a relationship table has multiple `FROM-TO` pairs, you need to specify which pair to insert by specifying `from` and `to` parameters. For example:
 
 ```sql
-Copy Knows FROM 'knows_user_user.csv' (from='User', to='User');
+COPY Knows FROM 'knows_user_user.csv' (from='User', to='User');
 ```
 
 More information can be found [here](/cypher/data-definition/create-table)
