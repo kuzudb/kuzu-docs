@@ -197,6 +197,7 @@ export default defineConfig({
                         { label: 'Transactions', link: '/cypher/transaction' },
                         { label: 'Attach/Detach To External Databases', link: '/cypher/attach' },
                         { label: 'Configuration', link: '/cypher/configuration' },
+                        { label: 'Differences with Neo4j', link: '/cypher/difference' },
                     ],
                     autogenerate: { directory: 'reference' },
                 },
