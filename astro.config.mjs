@@ -158,13 +158,28 @@ export default defineConfig({
                     label: 'Visualize graphs',
                     collapsed: true,
                     items: [
-                        { label: 'Intro to Kuzu Explorer', link: '/visualization'},
-                        { label: 'Shell panel', link: '/visualization/shell-panel'},
-                        { label: 'Schema panel', link: '/visualization/schema-panel' },
-                        { label: 'Import panel', link: '/visualization/import-panel' },
-                        { label: 'Settings panel', link: '/visualization/settings-panel' },
+                        {
+                            label: 'Kuzu Explorer',
+                            collapsed: true,
+                            items: [
+                                { label: 'Intro to Kuzu Explorer', link: '/visualization/kuzu-explorer'},
+                                { label: 'Shell panel', link: '/visualization/kuzu-explorer/shell-panel'},
+                                { label: 'Schema panel', link: '/visualization/kuzu-explorer/schema-panel' },
+                                { label: 'Import panel', link: '/visualization/kuzu-explorer/import-panel' },
+                                { label: 'Settings panel', link: '/visualization/kuzu-explorer/settings-panel' },
+                            ],
+                            autogenerate: { directory: 'reference' },
+                        },
+                        {
+                            label: 'Third-party integrations',
+                            badge: { text: 'New' },
+                            collapsed: true,
+                            items: [
+                                { label: 'G.V()', link: '/visualization/third-party-integrations/gdotv'},
+                            ],
+                            autogenerate: { directory: 'reference' },
+                        },
                     ],
-                    autogenerate: { directory: 'reference' },
                 },
                 {
                     label: 'Cypher manual',
@@ -182,6 +197,7 @@ export default defineConfig({
                         { label: 'Transactions', link: '/cypher/transaction' },
                         { label: 'Attach/Detach To External Databases', link: '/cypher/attach' },
                         { label: 'Configuration', link: '/cypher/configuration' },
+                        { label: 'Differences with Neo4j', link: '/cypher/difference' },
                     ],
                     autogenerate: { directory: 'reference' },
                 },
@@ -238,18 +254,27 @@ export default defineConfig({
                             ]
                         },
                         {
-                            label: 'External data sources',
+                            label: 'Tabular data sources',
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
-                                { label: 'External relational databases ', link: '/extensions/attach/rdbms' },
+                                {
+                                    label: 'External relational databases ',
+                                    collapsed: true,
+                                    items: [
+                                        { label: 'PostgreSQL', link: '/extensions/attach/postgres' },
+                                        { label: 'DuckDB', link: '/extensions/attach/duckdb' },
+                                        { label: 'SQLite', link: '/extensions/attach/sqlite' },
+                                    ]
+                                },
                                 { label: 'Iceberg', link: '/extensions/iceberg' },
                                 { label: 'Delta Lake', link: '/extensions/delta' },
                                 { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
-                        { label: 'Full-text search', link: '/extensions/full-text-search', badge: { text: 'New' }},
+                        { label: 'Full-text search', link: '/extensions/full-text-search' },
+                        { label: 'Vector search', link: '/extensions/vector', badge: { text: 'New' }},
                     ],
                     autogenerate: { directory: 'reference' },
                 },

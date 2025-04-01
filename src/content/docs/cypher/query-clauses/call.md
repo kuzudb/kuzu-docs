@@ -4,9 +4,13 @@ description: CALL clause is a reading clause used for executing schema functions
 ---
 
 The `CALL` clause is used for executing schema functions. This way of using `CALL` needs to be followed
-with other query clauses, such as `RETURN` (see below for many examples) and is
-different from the standalone [`CALL` statement](/cypher/configuration) used for changing configuration.
+with other query clauses, such as `RETURN` or `YIELD` (see below for example usage). Note that the `CALL` clause
+defined here is different from the standalone [`CALL`](/cypher/configuration) **statement** used for changing
+the database configuration.
+
 The following tables lists the built-in schema functions you can use with the `CALL` clause:
+
+<div class="scroll-table">
 
 | Function | Description                                                                                  |
 | ----------- |----------------------------------------------------------------------------------------------|
@@ -22,6 +26,13 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_OFFICIAL_EXTENSIONS` | returns all official [extensions](/extensions) which can be installed by `INSTALL <extension_name>` |
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
+| `SHOW_PROJECTED_GRAPHS` | returns all projected graph created in the system |
+
+</div>
+
+## Functions
+
+This section describes the schema functions that you can use with the `CALL` clause.
 
 ### TABLE_INFO
 
@@ -281,18 +292,40 @@ CALL SHOW_INDEXES() RETURN *;
 └────────────┴────────────┴────────────┴─────────────────────────┴──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Using yield
-The `YIELD` clause in Kuzu is used to rename the return columns of a CALL function to avoid naming conflicition and better readability.
-Usage:
+### SHOW_PROJECTED_GRAPH
+To list all projected graphs in a Kuzu database, you can use the `SHOW_PROJECTED_GRAPH` function.
+
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| name | the name of the projected graph | STRING |
+| nodes | the nodes with predicates in the projected graph | STRING |
+| rels | the rels with predicates in the projected graph | STRING |
+
+```cypher
+CALL SHOW_PROJECTED_GRAPH() RETURN *;
 ```
+
+```
+┌────────────────┬───────────────────────┬──────────────────────┐
+│ name           │ nodes                 │ rels                 │
+│ STRING         │ STRING                │ STRING               │
+├────────────────┼───────────────────────┼──────────────────────┤
+│ social_network │ {{'table': 'person'}} │ {{'table': 'knows'}} │
+└────────────────┴───────────────────────┴──────────────────────┘
+```
+
+## YIELD
+
+The `YIELD` clause in Kuzu is used to rename the return columns of a `CALL` function to avoid naming conflicition and better readability.
+Usage:
+```cypher
 CALL FUNC()
 YIELD COLUMN0 [AS ALIAS0], COLUMN1 [AS ALIAS1]
 RETURN ALIAS0, ALIAS1
 ```
 
-Example:
-To rename the output column name of `current_setting('threads')` from `threads` to `threads_num`, you can use the following query:
-```
+Below is an example. To rename the output column name of `current_setting('threads')` from `threads` to `threads_num`, you can use the following query:
+```cypher
 CALL current_setting('threads')
 YIELD threads as threads_num
 RETURN *;
@@ -309,7 +342,7 @@ Result:
 ```
 
 Another useful scenario is to avoid naming conflicition when two call functions in the same query returns a column with the same name.
-```
+```cypher
 CALL table_info('person')
 YIELD `property id` as person_id,  name as person_name, type as person_type, `default expression` as person_default, `primary key` as person_pk
 CALL table_info('student')
@@ -327,25 +360,25 @@ Result:
 └───────────┴─────────────┴─────────────┴────────────────┴───────────┴────────────┴──────────────┴──────────────┴─────────────────┴────────────┘
 ```
 
-:::caution[Note]
-1. If the `YIELD` clause is used after a `CALL` function, **all** return columns of the function must appear in the `YIELD` clause.
+#### All columns must appear in the `YIELD` clause
+
+If the `YIELD` clause is used after a `CALL` function, **all** return columns of the function must appear in the `YIELD` clause. Using `YIELD *` is not allowed in Kuzu.
 
 For example:
-```
+```cypher
 CALL table_info('person')
 YIELD `property id` as person_id
 RETURN person_id
 ```
 The query throws an exception since not all returns columns of the `table_info` function appear in the yield clause.
 
-2. The column names to yield must match the original return column names of the call function.
+#### Column names must match origin
+
+The column names to yield must match the original return column names of the call function.
 For example:
-```
+```cypher
 CALL current_setting('threads')
 YIELD thread as threads_num
 RETURN *;
 ```
 The query throws an exception since the column name to yield is `thread` which doesn't match the return column name(`threads`) of the call function.
-
-3. The syntax in Kuzu Cypher is different from other systems like Neo4j. In Kuzu, the `YIELD` clause must be followed by a return clause. `YIELD *` is not allowed in Kuzu.
-:::

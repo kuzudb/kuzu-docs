@@ -13,14 +13,14 @@ Over plain HTTP(S), the extension only supports reading files.
 When using object storage via the S3 or GCS API, the extension supports reading, writing and globbing files.
 See the subsections below for more details.
 
-# Usage
+## Usage
 
 `httpfs` is an official extension developed and maintained by Kuzu.
 It can be installed and loaded using the following commands:
 
 ```sql
 INSTALL httpfs;
-LOAD EXTENSION httpfs;
+LOAD httpfs;
 ```
 
 ## HTTP(S) file system

@@ -17,7 +17,7 @@ or your preferred language client API:
 
 ```sql
 INSTALL unity_catalog;
-LOAD EXTENSION unity_catalog;
+LOAD unity_catalog;
 ```
 
 #### 1. Setup Unity Catalog server
