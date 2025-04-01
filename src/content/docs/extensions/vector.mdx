@@ -128,8 +128,8 @@ The lower layer includes all vectors, while the upper layer contains a sampled s
 | :---------: | ------------ | ---------- |
 | `mu`                | Max degree of nodes in the upper graph. It should be smaller than ml. A higher value leads to a more accurate index, but increase the index size and construction time. | 30 |
 | `ml`                 | Max degree of nodes in the lower graph. It should be larger than mu. A higher value leads to a more accurate index, but increase the index size and construction time. | 60 |
-| `pu`                | Percentage of nodes sampled into the upper graph | 0.05 |
-| `metric`       | Metric (distance computation) functions. Supported values are `cosine`, `l2`, `l2sq`, and `dotproduct` (dot_product). | cosine |
+| `pu`                | Percentage of nodes sampled into the upper graph in the range of `[0.0, 1.0]`. | 0.05 |
+| `metric`       | Metric (distance computation) functions. Supported values are `cosine`, `l2`, `l2sq`, and `dotproduct`. | cosine |
 | `efc`               | The number of candidate vertices to consider during the construction of the index. A higher value will result in a more accurate index, but will also increase the time it takes to build the index. | 200 |
 
 In our example, we create a vector index over the `title_embedding` column from `Book` table.
