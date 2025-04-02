@@ -1,0 +1,31 @@
+name: Update Kuzu version to latest release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Optional override version'
+        type: string
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  create-new-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Push new version
+        run: bash ./scripts/release.sh
+        env:
+            KUZU_NEW_VERSION: ${{ inputs.version }}
+            GH_TOKEN: ${{ github.token }}
