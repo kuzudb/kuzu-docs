@@ -1,9 +1,9 @@
-name: New release
+name: Update versions to latest release
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Override version (default is latest release)'
+        description: 'Optional override version'
         type: string
 
 permissions:
