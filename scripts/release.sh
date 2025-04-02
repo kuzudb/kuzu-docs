@@ -47,7 +47,7 @@ git push origin "$UPDATE_BRANCH"
 
 echo "Creating PR..."
 gh pr create \
-    --base dev \
+    --base main \
     --head "$UPDATE_BRANCH" \
     --title "release: version $KUZU_VERSION" \
     --body ""
