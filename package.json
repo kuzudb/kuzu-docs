@@ -1,7 +1,7 @@
 {
-  "name": "",
+  "name": "kuzu-docs",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -10,12 +10,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^5.1.1",
-    "@astrojs/sitemap": "^3.1.2",
-    "@astrojs/starlight": "^0.21.2",
-    "astro": "^4.3.5",
-    "rehype-autolink-headings": "^7.1.0",
-    "sharp": "^0.32.5",
-    "starlight-links-validator": "^0.6.0"
+    "@astrojs/markdown-remark": "^6.3.1",
+    "@astrojs/sitemap": "^3.3.0",
+    "@astrojs/starlight": "^0.32.5",
+    "astro": "^5.5.6",
+    "sharp": "^0.33.5",
+    "starlight-links-validator": "^0.14.3"
   }
 }
