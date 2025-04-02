@@ -1,4 +1,4 @@
-name: Update versions to latest release
+name: Update Kuzu version to latest release
 on:
   workflow_dispatch:
     inputs:
