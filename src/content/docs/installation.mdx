@@ -14,16 +14,6 @@ If you don't need Kuzu embedded in your application, you can use the CLI shell. 
 executable with no dependencies that can be used to interact with a Kuzu database using just Cypher.
 
 <Tabs>
-<TabItem label="macOS">
-
-You can install the Kuzu CLI using Homebrew.
-
-```bash
-brew install kuzu
-```
-
-</TabItem>
-
 <TabItem label="Linux">
 
 Use a tool like cURL to download the latest version of the Kuzu CLI to your local machine. Alternatively,
@@ -43,7 +33,20 @@ curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.9.0/kuzu_cli-linu
 curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.9.0/kuzu_cli-linux-aarch64.tar.gz
 ```
 
-Double-click the `kuzu_cli-linux-*.tar.gz` file to extract a file named `kuzu`.
+Extract the `kuzu_cli-linux-*.tar.gz` archive to obtain a file named `kuzu`:
+```bash
+tar xzf kuzu_cli-linux-*.tar.gz
+```
+
+</TabItem>
+
+<TabItem label="macOS">
+
+You can install the Kuzu CLI using Homebrew.
+
+```bash
+brew install kuzu
+```
 
 </TabItem>
 
@@ -67,18 +70,10 @@ From within the terminal, you can then run `./kuzu.exe`.
 
 ## Python
 
-You can use `pip` or `uv` (recommended)to install the Kuzu Python client library.
+You can use `uv` (recommended)  or `pip` to install the Kuzu Python client library.
 The instructions are the same for macOS, Linux, and Windows.
 
 <Tabs>
-
-<TabItem label="pip">
-
-```bash
-pip install kuzu
-```
-
-</TabItem>
 
 <TabItem label="uv">
 
@@ -89,48 +84,28 @@ uv add kuzu
 
 </TabItem>
 
+<TabItem label="pip">
+
+```bash
+pip install kuzu
+```
+
+</TabItem>
+
 </Tabs>
 
 ## Node.js
 
 Use `npm` to install the Kuzu Node.js client library.
 
-<Tabs>
-
-<TabItem label="macOS">
-
 ```bash
 npm install kuzu
 ```
-
-</TabItem>
-
-<TabItem label="Linux">
-
-```bash
-npm install kuzu
-```
-
-</TabItem>
-
-<TabItem label="Windows">
-
-```bash
-npm install kuzu
-```
-
-</TabItem>
-
-</Tabs>
 
 ## Java
 
 The latest stable version is available on [Maven Central](https://central.sonatype.com/artifact/com.kuzudb/kuzu).
 
-<Tabs>
-
-<TabItem label="macOS">
-
 ```xml
 <dependency>
     <groupId>com.kuzudb</groupId>
@@ -138,32 +113,6 @@ The latest stable version is available on [Maven Central](https://central.sonaty
     <version>0.9.0</version>
 </dependency>
 ```
-
-</TabItem>
-
-<TabItem label="Linux">
-
-```xml
-<dependency>
-    <groupId>com.kuzudb</groupId>
-    <artifactId>kuzu</artifactId>
-    <version>0.9.0</version>
-</dependency>
-```
-
-</TabItem>
-
-<TabItem label="Windows">
-
-```xml
-<dependency>
-    <groupId>com.kuzudb</groupId>
-    <artifactId>kuzu</artifactId>
-    <version>0.9.0</version>
-</dependency>
-```
-
-</TabItem>
 
 ## Rust
 
@@ -171,33 +120,9 @@ Use Cargo to install the Kuzu Rust client library. This will by default build an
 library from source. You can also link against the dynamic release libraries (see the Rust
 [crate docs](https://docs.rs/kuzu/latest/kuzu/) for details).
 
-<Tabs>
-
-<TabItem label="macOS">
-
 ```bash
 cargo add kuzu
 ```
-
-</TabItem>
-
-<TabItem label="Linux">
-
-```bash
-cargo add kuzu
-```
-
-</TabItem>
-
-<TabItem label="Windows">
-
-```bash
-cargo add kuzu
-```
-
-</TabItem>
-
-</Tabs>
 
 ## Go
 
@@ -207,7 +132,7 @@ in the directory. If you need to create a new Go module, follow [this tutorial](
 
 <Tabs>
 
-<TabItem label="macOS">
+<TabItem label="Linux">
 
 ```bash
 go get github.com/kuzudb/go-kuzu
@@ -215,7 +140,7 @@ go get github.com/kuzudb/go-kuzu
 
 </TabItem>
 
-<TabItem label="Linux">
+<TabItem label="macOS">
 
 ```bash
 go get github.com/kuzudb/go-kuzu
@@ -244,14 +169,6 @@ any additional installation. You just need to specify the library search path fo
 
 <Tabs>
 
-<TabItem label="macOS">
-
-```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.9.0/libkuzu-osx-universal.tar.gz
-```
-
-</TabItem>
-
 <TabItem label="Linux">
 
 **x86-64**
@@ -268,6 +185,14 @@ curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.9.0/libkuzu-linux
 
 </TabItem>
 
+<TabItem label="macOS">
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.9.0/libkuzu-osx-universal.tar.gz
+```
+
+</TabItem>
+
 <TabItem label="Windows">
 
 ```bash
@@ -278,14 +203,12 @@ curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.9.0/libkuzu-windo
 
 </Tabs>
 
-</Tabs>
-
 
 ## Nightly Builds
 
 If you want access to the bleeding edge feature set in Kuzu, install from our nightly build pipeline.
 
-- Python: `pip install --pre kuzu` (or `uv pip install --pre kuzu` if you're using uv)
+- Python: `uv pip install --pre kuzu` or `pip install --pre kuzu`
 - Node.js: `npm i kuzu@next`
 - Java: The latest snapshot version is available on [GitHub Packages](https://github.com/kuzudb/kuzu/packages/2258307)
 - For the CLI, C/C++ shared libraries, and Rust, the latest nightly versions for each can be
