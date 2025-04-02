@@ -1,11 +1,11 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
-import { rehypeHeadingIds } from '@astrojs/markdown-remark';
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import starlightLinksValidator from "starlight-links-validator";
 
 const site = "https://docs.kuzudb.com";
+
+process.env.ASTRO_TELEMETRY_DISABLED = '1';
 
 // https://astro.build/config
 export default defineConfig({
@@ -168,7 +168,6 @@ export default defineConfig({
                                 { label: 'Import panel', link: '/visualization/kuzu-explorer/import-panel' },
                                 { label: 'Settings panel', link: '/visualization/kuzu-explorer/settings-panel' },
                             ],
-                            autogenerate: { directory: 'reference' },
                         },
                         {
                             label: 'Third-party integrations',
@@ -177,7 +176,6 @@ export default defineConfig({
                             items: [
                                 { label: 'G.V()', link: '/visualization/third-party-integrations/gdotv'},
                             ],
-                            autogenerate: { directory: 'reference' },
                         },
                     ],
                 },
@@ -199,7 +197,6 @@ export default defineConfig({
                         { label: 'Configuration', link: '/cypher/configuration' },
                         { label: 'Differences with Neo4j', link: '/cypher/difference' },
                     ],
-                    autogenerate: { directory: 'reference' },
                 },
                 {
                     label: 'Use client APIs',
@@ -276,7 +273,6 @@ export default defineConfig({
                         { label: 'Full-text search', link: '/extensions/full-text-search' },
                         { label: 'Vector search', link: '/extensions/vector', badge: { text: 'New' }},
                     ],
-                    autogenerate: { directory: 'reference' },
                 },
             ],
             plugins: process.env.CHECK_LINKS
