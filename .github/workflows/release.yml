@@ -1,0 +1,67 @@
+name: New release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New version'
+        required: true
+        type: string
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  create-new-version:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Check existing branch
+        run: |
+          if git ls-remote --exit-code --quiet --heads origin refs/heads/version-${{ inputs.version }} > /dev/null;then
+            echo "Branch already exists: origin -> version-${{ inputs.version }}"
+            exit 1
+          fi
+
+      - name: Create branch
+        run: git checkout -b version-${{ inputs.version }}
+
+      - name: Edit file
+        run: |
+          sed --in-place --regexp-extended \
+            -e 's;(kuzu/releases/download/v)[0-9\.]+;\1${{ inputs.version }};' \
+            -e 's;(<version>)[0-9\.]+(</version>);\1${{ inputs.version }}\2;' \
+            -e 's;(com.kuzudb:kuzu:)[0-9\.]+;\1${{ inputs.version }};' \
+            $(find src/ -type f -name '*.mdx' -o -name '*.md')
+
+      - name: Push changes
+        run: |
+          if git diff-index --quiet HEAD -- ;then
+            echo "No files were updated to version ${{ inputs.version }}"
+            exit 1
+          fi
+
+          echo "Committing files..."
+          git status
+          git add .
+          git commit -m "release: version ${{ inputs.version }}"
+
+          echo "Pushing branch..."
+          git push origin version-${{ inputs.version }}
+
+          echo "Creating PR..."
+          gh pr create \
+            --base main \
+            --head version-${{ inputs.version }} \
+            --title "release: version ${{ inputs.version }}" \
+            --body ""
+        env:
+            GH_TOKEN: ${{ github.token }}
