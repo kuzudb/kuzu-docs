@@ -16,6 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.version }}
     steps:
+      - name: Validate version
+        run: |
+          if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' ;then
+            echo "Input version is not valid: ${{ inputs.version }}"
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -59,7 +66,7 @@ jobs:
 
           echo "Creating PR..."
           gh pr create \
-            --base main \
+            --base dev \
             --head version-${{ inputs.version }} \
             --title "release: version ${{ inputs.version }}" \
             --body ""
