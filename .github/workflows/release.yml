@@ -3,8 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'New version'
-        required: true
+        description: 'Override version (default is latest release)'
         type: string
 
 permissions:
@@ -14,61 +13,69 @@ permissions:
 jobs:
   create-new-version:
     runs-on: ubuntu-latest
-    if: ${{ inputs.version }}
     steps:
-      - name: Validate version
-        run: |
-          if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' ;then
-            echo "Input version is not valid: ${{ inputs.version }}"
-            exit 1
-          fi
-
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: dev
 
       - name: Configure Git
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-      - name: Check existing branch
+      - name: Push new version
         run: |
-          if git ls-remote --exit-code --quiet --heads origin refs/heads/version-${{ inputs.version }} > /dev/null;then
-            echo "Branch already exists: origin -> version-${{ inputs.version }}"
+          if [[ -n "${{ inputs.version }}" ]];then
+            echo "Using user specified version..."
+            version="${{ inputs.version }}"
+          else
+            echo "Getting latest release version..."
+            version="$(curl -s https://api.github.com/repos/kuzudb/kuzu/releases/latest | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4 | sed 's/^v//')"
+          fi
+          
+          if ! echo "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' ;then
+            echo "Error: version is not a valid SEMVER: $version"
             exit 1
           fi
 
-      - name: Create branch
-        run: git checkout -b version-${{ inputs.version }}
+          echo "Updating to version: $version"
+          KUZU_VERSION=$version
+          UPDATE_BRANCH=version-$version
 
-      - name: Edit file
-        run: |
+          if git ls-remote --exit-code --quiet --heads origin refs/heads/"$UPDATE_BRANCH" > /dev/null;then
+            echo "Error: branch already exists: origin -> $UPDATE_BRANCH"
+            exit 1
+          fi
+
+          echo "Creating new branch..."
+          git checkout -b "$UPDATE_BRANCH"
+
+          echo "Updating version in files..."
           sed --in-place --regexp-extended \
-            -e 's;(kuzu/releases/download/v)[0-9\.]+;\1${{ inputs.version }};' \
-            -e 's;(<version>)[0-9\.]+(</version>);\1${{ inputs.version }}\2;' \
-            -e 's;(com.kuzudb:kuzu:)[0-9\.]+;\1${{ inputs.version }};' \
+            -e "s;(kuzu/releases/download/v)[0-9\.]+;\1$KUZU_VERSION;" \
+            -e "s;(<version>)[0-9\.]+(</version>);\1$KUZU_VERSION\2;" \
+            -e "s;(com.kuzudb:kuzu:)[0-9\.]+;\1$KUZU_VERSION;" \
             $(find src/ -type f -name '*.mdx' -o -name '*.md')
 
-      - name: Push changes
-        run: |
           if git diff-index --quiet HEAD -- ;then
-            echo "No files were updated to version ${{ inputs.version }}"
+            echo "Error: no files were updated to version $KUZU_VERSION"
             exit 1
           fi
 
           echo "Committing files..."
           git status
           git add .
-          git commit -m "release: version ${{ inputs.version }}"
+          git commit -m "release: version $KUZU_VERSION"
 
           echo "Pushing branch..."
-          git push origin version-${{ inputs.version }}
+          git push origin "$UPDATE_BRANCH"
 
           echo "Creating PR..."
           gh pr create \
             --base dev \
-            --head version-${{ inputs.version }} \
-            --title "release: version ${{ inputs.version }}" \
+            --head "$UPDATE_BRANCH" \
+            --title "release: version $KUZU_VERSION" \
             --body ""
         env:
             GH_TOKEN: ${{ github.token }}
