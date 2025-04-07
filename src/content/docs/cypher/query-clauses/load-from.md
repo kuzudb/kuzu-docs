@@ -8,158 +8,19 @@ This clause is very useful to inspect a subset of a larger file to display or lo
 perform simple transformation tasks like rearranging column order.
 
 `LOAD FROM` can be followed by arbitrary clauses like `MATCH`, `CREATE`, `WHERE`, `RETURN`, and so on.
-Suppose the input source has tuples with k columns.
-`LOAD FROM` will bind each tuple t=(col0, col1, ..., col(k-1)) of the scanned input source to k variables
-with some names and data types. Names and data types of the variables can either be specified
-in the `LOAD FROM` statement using the [`WITH HEADERS` clause](#enforce-schema). Or they will be automatically inferred from the source.
-
-## Example usage
-
-Some example usage for the `LOAD FROM` clause is shown below.
-
-### Filtering/aggregating
-
-```cypher
-LOAD FROM "user.csv" (header = true)
-WHERE age > 25
-RETURN COUNT(*);
-```
-This returns:
-```
-┌──────────────┐
-│ COUNT_STAR() │
-│ INT64        │
-├──────────────┤
-│ 3            │
-└──────────────┘
-```
-
-### Skipping lines
-
-To skip the first 2 lines of the CSV file, you can use the `SKIP` parameter as follows:
-
-```cypher
-LOAD FROM "user.csv" (header = true, skip = 2)
-RETURN *;
-```
-
-### Create nodes from input file
-
-You can pass the contents of `LOAD FROM` to a 
-
-```cypher
-// Create a node table
-// Scan file and use its contents to create nodes
-LOAD FROM "user.csv" (header = true)
-CREATE (:User {name: name, age: CAST(age AS INT64)});
-
-// Return the nodes we just created
-MATCH (u:User) RETURN u.name, u.age;
-```
-```
-┌─────────┬───────┐
-│ u.name  │ u.age │
-│ STRING  │ INT64 │
-├─────────┼───────┤
-│ Adam    │ 30    │
-│ Karissa │ 40    │
-│ Zhang   │ 50    │
-│ Noura   │ 25    │
-└─────────┴───────┘
-```
-
-### Reorder and subset columns
-
-You can also use the scan functionality to reorder and subset columns from a given dataset. For
-example, the following query will return just the `age` and `name` in that order, even if the
-input file has more columns specified in a different order.
-
-```cypher
-// Return age column before the name column
-LOAD FROM "user.csv" (header = true)
-RETURN age, name LIMIT 3;
-```
-```
-┌───────┬─────────┐
-│ age   │ name    │
-│ INT64 │ STRING  │
-├───────┼─────────┤
-│ 30    │ Adam    │
-│ 40    │ Karissa │
-│ 50    │ Zhang   │
-└───────┴─────────┘
-```
-
-### Bound variable names and data types
-
-By default, Kuzu will infer the column names and data types from the scan source automatically.
-- For Parquet, Pandas, Polars and PyArrow, column names and data types are always available in the data source
-- For CSV: The behavior is determined by the [CSV scanning configuration](/import/csv#csv-configurations), which are specified at the end of `LOAD FROM`,  inside `()`, similar
-to `COPY FROM` statements. We review the details of this behavior [below](#csv).
-- For JSON, we use keys as column names, and infer a common data type from each key's values. To use `LOAD FROM` with JSON, you need
-to have the [JSON extension](/extensions/json) installed. More details on using `LOAD FROM` with JSON files is provided
-on the documentation page for the [JSON extension](/extensions/json).
-
-You can enforce specific column names and data types when reading, by using the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
-
-The following query will first bind the column `name` to the `STRING` type and second column `age` to the `INT64` type.
-You can combine this with a `WHERE` clause to filter the data as needed.
-
-```cypher
-LOAD WITH HEADERS (name STRING, age INT64) FROM "user.csv" (header = true)
-WHERE name =~ 'Adam*'
-RETURN name, age;
-```
-```
-┌────────┬───────┐
-│ name   │ age   │
-│ STRING │ INT64 │
-├────────┼───────┤
-│ Adam   │ 30    │
-└────────┴───────┘
-```
-
-:::caution[Note]
-If `WITH HEADERS` is specified manually:
-- Kuzu will throw an exception if the given number of columns in `WITH HEADERS` does not the match number of columns in the file.
-- Kuzu will always try to cast to the type specified header. An exception will be thrown if the
-casting operation fails.
-:::
-
-## Ignore erroneous rows
-Errors can happen when scanning different lines or elements of an input file with `LOAD FROM`. 
-Error can happen for several reasons, such as a line in the scanned file is malformed (e.g., in CSV files)
-or a field in the scanned line cannot be cast into its expected data type (e.g., due to an integer overflow).
-You can  skip erroneous lines when scanning large files by setting [`IGNORE_ERRORS`](/import#ignore-erroneous-rows)
-configuration to `true`. This configuration is also supported when using `COPY FROM` and the details of this feature
-is documented in the [ignoring erroneous rows section of `COPY FROM`](import#ignore-erroneous-rows).
-
-Here is an example. Suppose the CSV file `user.csv` contain the following rows:
-```csv
-Alice,4
-Bob,2147483650
-```
-
-Suppose we write a `LOAD FROM` statement that tries to read the second column as an INT32.
-The second row `(Bob,2147483650)` would be malformed because 2147483650 does not fit into an INT32 and will cause an error.
-By setting `IGNORE_ERRORS` to true, instead of erroring, we can make `LOAD FROM` simply skip over this line: 
-```cypher
-LOAD WITH HEADERS (name STRING, age INT32) FROM "user.csv" (ignore_errors = true)
-RETURN name, age;
-```
-```
-┌────────┬───────┐
-│ name   │ age   │
-│ STRING │ INT32 │
-├────────┼───────┤
-│ Alice  │ 4     │
-└────────┴───────┘
-```
-You can also see the details of any warnings generated by the skipped lines using the [SHOW_WARNINGS](/cypher/query-clauses/call#show_warnings) function. 
-See the [ignoring erroneous rows section of `COPY FROM`](import#ignore-erroneous-rows) for more details.
+For an input source with `k` columns, `LOAD FROM` will bind each tuple `t=(col0, col1, ..., col(k-1))` of the scanned input source to `k` variables
+with the same property names and data types. The names and data types of the properties can either be specified
+in the `LOAD FROM` statement using the [`WITH HEADERS`](#bound-variable-names-and-data-types) clause, or they will be automatically inferred from the source.
 
 ## Scan Data Formats
-`LOAD FROM` can scan several raw or in-memory file formats, such as CSV, Parquet, Pandas, Polars, Arrow tables, and JSON.
+`LOAD FROM` can scan several in-memory or file-based formats:
+- CSV
+- Parquet
+- Pandas
+- Polars
+- Arrow tables
+- JSON
+
 
 ### File format detection
 `LOAD FROM` determines the file format based on the file extension if the `file_format` option is not given. For instance, files with a `.csv` extension are automatically recognized as CSV format.
@@ -365,3 +226,149 @@ age: [[30,40,50]]
 ### JSON
 Kuzu can scan JSON files using `LOAD FROM`, but only upon installation of the JSON extension.
 See the documentation on the [JSON extension](/extensions/json#load-from) for details.
+
+
+## Basic usage
+
+Basic usage examples for the `LOAD FROM` clause are shown below.
+
+### Filtering/aggregating
+
+```cypher
+LOAD FROM "user.csv" (header = true)
+WHERE age > 25
+RETURN COUNT(*);
+```
+This returns:
+```
+┌──────────────┐
+│ COUNT_STAR() │
+│ INT64        │
+├──────────────┤
+│ 3            │
+└──────────────┘
+```
+
+### Skipping lines
+
+To skip the first 2 lines of the CSV file, you can use the `SKIP` parameter as follows:
+
+```cypher
+LOAD FROM "user.csv" (header = true, skip = 2)
+RETURN *;
+```
+
+### Create nodes from input file
+
+You can pass the contents of `LOAD FROM` to a 
+
+```cypher
+// Create a node table
+// Scan file and use its contents to create nodes
+LOAD FROM "user.csv" (header = true)
+CREATE (:User {name: name, age: CAST(age AS INT64)});
+
+// Return the nodes we just created
+MATCH (u:User) RETURN u.name, u.age;
+```
+```
+┌─────────┬───────┐
+│ u.name  │ u.age │
+│ STRING  │ INT64 │
+├─────────┼───────┤
+│ Adam    │ 30    │
+│ Karissa │ 40    │
+│ Zhang   │ 50    │
+│ Noura   │ 25    │
+└─────────┴───────┘
+```
+
+### Reorder and subset columns
+
+You can also use the scan functionality to reorder and subset columns from a given dataset. For
+example, the following query will return just the `age` and `name` in that order, even if the
+input file has more columns specified in a different order.
+
+```cypher
+// Return age column before the name column
+LOAD FROM "user.csv" (header = true)
+RETURN age, name LIMIT 3;
+```
+```
+┌───────┬─────────┐
+│ age   │ name    │
+│ INT64 │ STRING  │
+├───────┼─────────┤
+│ 30    │ Adam    │
+│ 40    │ Karissa │
+│ 50    │ Zhang   │
+└───────┴─────────┘
+```
+
+### Bound variable names and data types
+
+By default, Kuzu will infer the column names and data types from the scan source automatically.
+- For Parquet, Pandas, Polars and PyArrow, column names and data types are always available in the data source
+- For CSV: The behavior is determined by the [CSV scanning configuration](/import/csv#csv-configurations), which are specified at the end of `LOAD FROM`,  inside `()`, similar
+to `COPY FROM` statements. We review the details of this behavior [below](#csv).
+- For JSON, we use keys as column names, and infer a common data type from each key's values. To use `LOAD FROM` with JSON, you need
+to have the [JSON extension](/extensions/json) installed. More details on using `LOAD FROM` with JSON files is provided
+on the documentation page for the [JSON extension](/extensions/json).
+
+You can enforce specific column names and data types when reading, by using the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
+
+The following query will first bind the column `name` to the `STRING` type and second column `age` to the `INT64` type.
+You can combine this with a `WHERE` clause to filter the data as needed.
+
+```cypher
+LOAD WITH HEADERS (name STRING, age INT64) FROM "user.csv" (header = true)
+WHERE name =~ 'Adam*'
+RETURN name, age;
+```
+```
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT64 │
+├────────┼───────┤
+│ Adam   │ 30    │
+└────────┴───────┘
+```
+
+:::caution[Note]
+If `WITH HEADERS` is specified manually:
+- Kuzu will throw an exception if the given number of columns in `WITH HEADERS` does not the match number of columns in the file.
+- Kuzu will always try to cast to the type specified header. An exception will be thrown if the
+casting operation fails.
+:::
+
+## Ignore erroneous rows
+Errors can happen when scanning different lines or elements of an input file with `LOAD FROM`. 
+Error can happen for several reasons, such as a line in the scanned file is malformed (e.g., in CSV files)
+or a field in the scanned line cannot be cast into its expected data type (e.g., due to an integer overflow).
+You can  skip erroneous lines when scanning large files by setting [`IGNORE_ERRORS`](/import#ignore-erroneous-rows)
+configuration to `true`. This configuration is also supported when using `COPY FROM` and the details of this feature
+is documented in the [ignoring erroneous rows section of `COPY FROM`](import#ignore-erroneous-rows).
+
+Here is an example. Suppose the CSV file `user.csv` contain the following rows:
+```csv
+Alice,4
+Bob,2147483650
+```
+
+Suppose we write a `LOAD FROM` statement that tries to read the second column as an INT32.
+The second row `(Bob,2147483650)` would be malformed because 2147483650 does not fit into an INT32 and will cause an error.
+By setting `IGNORE_ERRORS` to true, instead of erroring, we can make `LOAD FROM` simply skip over this line: 
+```cypher
+LOAD WITH HEADERS (name STRING, age INT32) FROM "user.csv" (ignore_errors = true)
+RETURN name, age;
+```
+```
+┌────────┬───────┐
+│ name   │ age   │
+│ STRING │ INT32 │
+├────────┼───────┤
+│ Alice  │ 4     │
+└────────┴───────┘
+```
+You can also see the details of any warnings generated by the skipped lines using the [SHOW_WARNINGS](/cypher/query-clauses/call#show_warnings) function. 
+See the "Ignore erroneous rows" [`section`](import#ignore-erroneous-rows) of `COPY FROM` for more details.
