@@ -115,9 +115,7 @@ conn.execute("COPY Person FROM pa_table")
 
 ### Polars: Basic example
 
-This example shows a basic use case where you have no nesting of data and no null values. See below
-for a more advanced example that shows how to handle nested JSON-like data and null values during
-scan/copy in Polars.
+This example shows a basic use case where you have no nesting of data and no null values.
 
 ```python
 import kuzu
@@ -136,10 +134,12 @@ df = pl.DataFrame({
 conn.execute("COPY Person FROM df")
 ```
 
+The above code ingests the contents of the Polars DataFrame directly into the `Person` node table.
+
 ### Polars: Advanced example
 
-In this section, we show how to use `COPY FROM` on nested JSON-like data with Polars, which comes with
-first-class support for nested JSON via structs.
+In this section, we show how to use `COPY FROM` on nested JSON-like data with Polars, including handling
+null and missing values.
 
 #### Dataset
 
@@ -147,7 +147,7 @@ We will use the same nested JSON data as in the [COPY FROM JSON](/import/copy-fr
 
 Consider the JSON file `people.json` shown below. Our goal is to create a `Patient` node table
 and an `InsuranceProvider` relationship table, with the `HAS_INSURANCE` relationship going from
-`Patient` to `InsuranceProvider`. Note that all the information we need for our graph of patients
+`Patient` to `InsuranceProvider`. All the information we need for our graph of patients
 and their insurance providers is contained in this single JSON object.
 
 ```json
@@ -191,6 +191,8 @@ and their insurance providers is contained in this single JSON object.
     }
 ]
 ```
+Some property keys are missing in some of the objects, as can be seen in the third object for the
+person named "Rebecca".
 
 #### Scan data to inspect its contents 
 
@@ -217,13 +219,15 @@ shape: (3, 3)
 │ p3   ┆ Rebecca ┆ null                            │
 └──────┴─────────┴─────────────────────────────────┘
 ```
-As can be seen, the `info` column is a struct with 4 fields: `height`, `weight`, `age`, and `insurance_provider`.
+The `info` column is a struct with 4 fields: `height`, `weight`, `age`, and `insurance_provider`.
 The `insurance_provider` field is a list of structs, each containing 3 fields: `type`, `name`, and `policy_number`.
+The missing `info` field in the third object for the person named "Rebecca" is represented as `null`.
+Polars is able to handle this nested JSON data gracefully due its type-safety and first-class support for structs.
 
-#### Test the outputs of the `LOAD FROM` query
+#### Inspect the output of `LOAD FROM`
 
-We can now use the `LOAD FROM` scan clause in Kuzu in combination with `UNWIND` to obtain each of the insurance
-provider records in a row-wise manner.
+We can now scan the DataFrame using the `LOAD FROM` clause in Kuzu in combination with `UNWIND` to
+obtain each of the insurance provider records in a row-wise manner.
 
 ```python
 import kuzu
@@ -251,8 +255,8 @@ result = conn.execute(
 └────────────────────────┴────────────────────────┴─────────────────────────────────┘
 ```
 We were able to successfully extract each of the insurance provider records in a row-wise manner!
-Becuase Polars is strictly typed, it has great support for nulls and missing values in addition
-to strong type inference that aligns with Kuzu's type system.
+The Polars type system can appropriately handle complex data types, nulls and missing values, which
+aligns well with Kuzu's type system.
 
 #### Define Kuzu schema
 
@@ -297,7 +301,7 @@ The above code creates the following tables in Kuzu:
 
 #### Copy data into node tables
 
-We can now copy the relevant data into these tables.
+Let's proceed to copy the data from Polars into the Kuzu tables.
 
 ```python
 conn.execute("""
@@ -308,14 +312,14 @@ conn.execute("""
 """)
 ```
 
-We scan the entire DataFrame's contents using `LOAD FROM`, and return only the relevant fields
-that are associated with each patient. The columns returned in the node table are aligned with
-the column names and data types defined in the `CREATE NODE TABLE` statement above.
+The `LOAD FROM` subquery scans the entire DataFrame's contents, and returns only the relevant fields
+that are associated with each patient. We take care to ensure that the columns returned are aligned
+with the column names and data types defined in the `CREATE NODE TABLE` statement above.
 
 :::caution[Note]
-We cast the `age` field to an unsigned integer using the `CAST` function. This is because the original
-data type of `age` might be inferred automatically as `i8`, which is a signed integer type in Polars,
-but we want to be explicit about the type so that it aligns with the Kuzu schema per the node table definition.
+The `age` field is cast to an unsigned integer via `CAST(info.age AS UINT8)`. This is because the original
+data type of `age` was inferred in Polars as `i8` (signed 8-bit integer), but our Kuzu schema requires
+the unsigned integer type `UINT8`. In cases like this, it makes sense to explicitly cast the data types.
 :::
 
 Next, we copy the insurance provider records into the `InsuranceProvider` node table.
@@ -329,13 +333,13 @@ conn.execute("""
     )
 """)
 ```
-In this case, we make sure to return distinct records for the names of the insurance providers,
-because the name is the primary key of the `InsuranceProvider` node table, and we can only `COPY`
-if the primary key is unique.
+The `DISTINCT` keyword is used after the `RETURN` clause here to ensure unique values for the names
+of the insurance providers, because the `name` field is the primary key of the `InsuranceProvider` node table
+(and we can only `COPY` unique primary key values into a node table).
 
 #### Copy data into relationship table
 
-We can now copy the `HAS_INSURANCE` relationship table using the following query:
+The final step is to copy the `HAS_INSURANCE` relationship table using the following query:
 
 ```python
 res = conn.execute("""
@@ -383,6 +387,6 @@ The `WHERE` predicate requests only the health insurance providers, and we can s
 patient and insurance provider information in the results.
 
 This example shows that it's possible to construct arbitrarily complex graph schemas and transform
-the data accordingly using Polars DataFrames in combination with Kuzu. Happy querying!
+the data using Polars DataFrames and Kuzu. Happy querying!
 
 ---
