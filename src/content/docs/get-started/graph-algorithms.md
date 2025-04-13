@@ -36,7 +36,7 @@ The data is copied to a Kuzu database via the Python API as follows:
 
 ```py
 import shutil
-
+import kuzu
 db_path = './ml-small_db'
 shutil.rmtree(db_path, ignore_errors=True)
 
@@ -87,12 +87,16 @@ We output an undirected graph as the direction doesn't matter for the PageRank a
 We can compute the PageRank of the subgraph `G` using NetworkX's `pagerank` function.
 
 ```py
+import networkx as nx
+
 pageranks = nx.pagerank(G)
 ```
 
 The movie nodes' PageRanks along with their IDs can then be put into a Pandas DataFrame as follows:
 
 ```py
+import pandas as pd
+
 pagerank_df = pd.DataFrame.from_dict(pageranks, orient="index", columns=["pagerank"])
 movie_df = pagerank_df[pagerank_df.index.str.contains("Movie")]
 movie_df.index = movie_df.index.str.replace("Movie_", "").astype(int)
