@@ -596,7 +596,7 @@ Output:
 ```
 
 ### Extracting nodes and relationships from a path
-A named path has the logical data type [`RECURSIVE_REL`](/cypher/data-types/#recursive-rel). You can access nodes and relationships within a named path through `nodes(p)` and `rels(p)` function calls.
+A named path has the logical data type [`RECURSIVE_REL`](/cypher/data-types/#recursive_rel). You can access nodes and relationships within a named path through `nodes(p)` and `rels(p)` function calls.
 
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2]->(:User) 
