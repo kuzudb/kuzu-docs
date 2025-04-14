@@ -18,7 +18,7 @@ configuration **cannot** be used with other query clauses, such as `RETURN`.
 | `FILE_SEARCH_PATH`| file search path                                                                                                                | N/A                    |
 | `PROGRESS_BAR` | enable progress bar in CLI                                                                                                      | false                  |
 | `CHECKPOINT_THRESHOLD` | the WAL size threshold in bytes at which to automatically trigger a checkpoint                                                  | 16777216 (16MB)        |
-| `WARNING_LIMIT` | maximum number of [warnings](/import#warnings-table-inspect-skipped-rows) that can be stored in a single connection.            | 8192        |
+| `WARNING_LIMIT` | maximum number of [warnings](/import#warnings-table-inspecting-skipped-rows) that can be stored in a single connection.            | 8192        |
 | `SPILL_TO_DISK` | spill data disk if there is not enough memory when running `COPY FROM (cannot be set to TRUE under in-memory or read-only mode) | true |
 
 ### Database configuration
