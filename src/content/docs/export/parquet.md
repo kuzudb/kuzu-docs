@@ -37,6 +37,6 @@ Available options are:
 
 :::caution[Notes]
 - Exporting [fixed list](/cypher/data-types#list-and-array) or [variant](/cypher/data-types/variant) data types to Parquet are not yet supported.
-- [UNION](/cypher/data-types/union) is exported as a [STRUCT](/cypher/data-types/struct), which is the internal representation of the `Union` data type.
+- [UNION](/cypher/data-types#union) is exported as a [STRUCT](/cypher/data-types#struct), which is the internal representation of the `Union` data type.
 - Currently, only Snappy compression is supported for exports.
 :::
