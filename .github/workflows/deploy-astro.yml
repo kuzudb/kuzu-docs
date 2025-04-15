@@ -3,6 +3,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
+    branches: ["main", "dev"]
   workflow_dispatch:
 
 permissions:
@@ -27,7 +28,13 @@ jobs:
       - name: Install dependencies
         run: npm i
       - name: Build with Astro
+        if: github.event_name != 'pull_request'
         run: npm run build
+      - name: Check links
+        if: github.event_name == 'pull_request'
+        run: npm run check-links
+        env:
+          CHECK_LINKS: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

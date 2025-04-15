@@ -7,7 +7,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check-links": "CHECK_LINKS=true astro build"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^6.3.1",
