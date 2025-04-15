@@ -104,3 +104,31 @@ for (const row of rows) {
 
 See the [Node.js API documentation](https://api-docs.kuzudb.com/nodejs/) for more details
 on the methods available in the sync and async APIs.
+
+## Run multiple queries in one execution
+
+Similarly, in the Node.js API, you can execute multiple Cypher queries separated by semicolons in a single execution.
+The API will return a list of `QueryResult` objects.
+
+```js
+// Async API
+const results = await conn.query("RETURN 1; RETURN 2; RETURN 3");
+for (const result of results) {
+  const rows = await result.getAll();
+  console.log(rows);
+}
+
+// Sync API
+const resultsSync = conn.querySync("RETURN 1; RETURN 2; RETURN 3");
+for (const result of resultsSync) {
+  const rows = result.getAllSync();
+  console.log(rows);
+}
+```
+
+Both versions will return:
+```
+[[1]]
+[[2]]
+[[3]]
+```
