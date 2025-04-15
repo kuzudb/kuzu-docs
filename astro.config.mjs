@@ -256,7 +256,7 @@ export default defineConfig({
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
                                 {
-                                    label: 'External relational databases ',
+                                    label: 'External relational databases',
                                     collapsed: true,
                                     items: [
                                         { label: 'PostgreSQL', link: '/extensions/attach/postgres' },
@@ -264,8 +264,8 @@ export default defineConfig({
                                         { label: 'SQLite', link: '/extensions/attach/sqlite' },
                                     ]
                                 },
-                                { label: 'Iceberg', link: '/extensions/iceberg' },
-                                { label: 'Delta Lake', link: '/extensions/delta' },
+                                { label: 'Iceberg', link: '/extensions/attach/iceberg' },
+                                { label: 'Delta Lake', link: '/extensions/attach/delta' },
                                 { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
                             ]
                         },
