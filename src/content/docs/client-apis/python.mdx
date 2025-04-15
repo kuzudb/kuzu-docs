@@ -121,6 +121,26 @@ appropriately and addressed in a future release.
 
 </Tabs>
 
+## Run multiple queries in one execution
+
+By default, executing a single query in the Python API will return a `QueryResult` object. However,
+if you submit multiple Cypher queries separated by semicolons in a single execution, the API will
+return a list of `QueryResult` objects.
+
+You can loop through each result of a `QueryResult` object and get its contents.
+```python
+response = conn.execute("RETURN 1; RETURN 2; RETURN 3")
+for row in response:
+    while row.has_next():
+        print(row.get_next())
+```
+This returns:
+```
+[1]
+[2]
+[3]
+```
+
 ## DataFrames and Arrow Tables
 
 In Python, Kuzu supports the use of Pandas and Polars DataFrames, as well as PyArrow Tables. This
