@@ -23,7 +23,7 @@ jobs:
         env:
           CHECK_LINKS: true
 
-   docker:
+  docker:
     name: Build and push Docker image
     runs-on: ubuntu-latest
     permissions:
