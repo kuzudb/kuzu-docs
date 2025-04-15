@@ -2,7 +2,9 @@
 title: "Copy from JSON"
 ---
 
-You can copy from JSON directly into Kuzu using the `COPY FROM` command. To use this feature,
+## JSON files
+
+You can copy from JSON files directly into Kuzu using the `COPY FROM` command. To use this feature,
 you have to install the `JSON` extension using the instructions shown [here](/extensions/json).
 
 Consider the following JSON file:
@@ -49,7 +51,7 @@ Consider the following JSON file:
 ]
 ```
 
-## Copy to node table
+### Copy to node table
 
 The following example creates a node table `Person` and copies data from a JSON file `people.json` into it:
 
@@ -70,7 +72,7 @@ COPY Person FROM 'people.json';
 
 See the [`JSON`](/extensions/json) extension documentation for more related features on working with JSON files.
 
-## Copy to relationship table
+### Copy to relationship table
 
 To copy from a JSON file to a relationship table, the relationship JSON file must contain
 the `"from"` and `"to"` keys. We'll need two more JSON files to complete this example.
@@ -146,10 +148,14 @@ If a relationship table has multiple `FROM-TO` pairs, you need to specify which 
 COPY Knows FROM 'knows_user_user.json' (from='User', to='User');
 ```
 
-More information can be found [here](/cypher/data-definition/create-table).
+More information can be found [here](/cypher/data-definition/create-table#bulk-insert-to-relationship-table-with-multiple-from-to-pairs).
 
-## Ignoring erroneous rows
+### Ignoring erroneous rows
 
 Like for CSV files, Kuzu can skip rows when some types of errors are encountered when importing from JSON.
 However, now every error type that is skippable by the CSV reader can be skipped by the JSON reader.
 See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.
+
+
+
+
