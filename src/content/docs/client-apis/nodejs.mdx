@@ -110,23 +110,31 @@ on the methods available in the sync and async APIs.
 Similarly, in the Node.js API, you can execute multiple Cypher queries separated by semicolons in a single execution.
 The API will return a list of `QueryResult` objects.
 
+<Tabs>
+
+<TabItem label="Async API">
 ```js
-// Async API
 const results = await conn.query("RETURN 1; RETURN 2; RETURN 3");
 for (const result of results) {
   const rows = await result.getAll();
   console.log(rows);
 }
+```
+</TabItem>
 
-// Sync API
+<TabItem label="Sync API">
+```js
 const resultsSync = conn.querySync("RETURN 1; RETURN 2; RETURN 3");
 for (const result of resultsSync) {
   const rows = result.getAllSync();
   console.log(rows);
 }
 ```
+</TabItem>
 
-Both versions will return:
+</Tabs>
+
+This will return:
 ```
 [[1]]
 [[2]]
