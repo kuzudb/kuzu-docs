@@ -13,17 +13,15 @@ The `LOAD FROM` clause can used to scan the Parquet file and to verify that the 
 
 ```cypher
 > LOAD FROM 'user.parquet' RETURN *;
--------------------
-| u.name  | u.age |
--------------------
-| Adam    | 30    |
--------------------
-| Karissa | 40    |
--------------------
-| Zhang   | 50    |
--------------------
-| Noura   | 25    |
--------------------
+┌─────────┬───────┐
+│ u.name  │ u.AGE │
+│ STRING  │ INT64 │
+├─────────┼───────┤
+│ Adam    │ 30    │
+│ Karissa │ 40    │
+│ Zhang   │ 50    │
+│ Noura   │ 25    │
+└─────────┴───────┘
 ```
 
 Available options are:
@@ -36,7 +34,7 @@ Available options are:
 </div>
 
 :::caution[Notes]
-- Exporting [fixed list](/cypher/data-types#list-and-array) or [variant](/cypher/data-types/variant) data types to Parquet are not yet supported.
+- Exporting [fixed list](/cypher/data-types#list-and-array) data types to Parquet is not yet supported.
 - [UNION](/cypher/data-types#union) is exported as a [STRUCT](/cypher/data-types#struct), which is the internal representation of the `Union` data type.
 - Currently, only Snappy compression is supported for exports.
 :::
