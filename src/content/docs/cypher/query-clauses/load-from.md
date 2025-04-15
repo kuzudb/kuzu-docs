@@ -223,10 +223,99 @@ name: [["Adam","Karissa","Zhang"]]
 age: [[30,40,50]]
 ```
 
-### JSON
-Kuzu can scan JSON files using `LOAD FROM`, but only upon installation of the JSON extension.
-See the documentation on the [JSON extension](/extensions/json#scan-the-json-file) for details.
+### JSON files
 
+Kuzu can scan directly scan JSON files `LOAD FROM`, but it requires installing the JSON extension.
+Say you have a JSON file with the following contents:
+
+```json
+[
+    {
+        "name": "Rebecca",
+        "age": 25
+    },
+    {
+        "name": "Gregory",
+        "age": 30
+    },
+    {
+        "name": "Alicia",
+        "age": 28
+    }
+]
+```
+
+You can scan this file using the following query:
+
+```cypher
+// Install the JSON extension
+INSTALL json;
+LOAD json;
+
+// Scan the JSON file
+LOAD FROM "user.json" RETURN *;
+```
+```
+┌─────────┬─────┐
+│ name    ┆ age │
+│ ---     ┆ --- │
+│ str     ┆ u8  │
+╞═════════╪═════╡
+│ Rebecca ┆ 25  │
+│ Gregory ┆ 30  │
+│ Alicia  ┆ 28  │
+└─────────┴─────┘
+```
+
+See the documentation on the JSON extension [here](/extensions/json) for details.
+
+### In-memory JSON objects
+
+Sometimes, you may have JSON objects you obtain from an external source, such as a REST API, or a
+document database like MongoDB (or even a search engine like Elasticsearch). In such cases, you
+may want to scan these objects without persisting them to JSON files.
+
+The JSON extension provides the `json_structure` function for this use case (see its documentation
+[here](/extensions/json#json_structure)).
+
+As an example, let's say we have the same JSON object as shown above in the JSON file example,
+but this time, we obtain the JSON object on the fly from a REST API. We can use the client language
+to return a _string_ representation of the JSON object, and then use the `json_structure` function
+in Kuzu's JSON extension to read the JSON string and convert its contents into the types needed
+for the Kuzu table.
+
+```js
+// This is the JSON string we get from the REST API
+'[{"name": "Rebecca", "age": 25}, {"name": "Gregory", "age": 30}, {"name": "Alicia", "age": 28}]'
+```
+```
+┌───────────────────────────────────────┐
+│ structure                             │
+│ STRING                                │
+├───────────────────────────────────────┤
+│ STRUCT(name STRING, age UINT8)[]      │
+└───────────────────────────────────────┘
+```
+
+Alternatively. you can handle the JSON string in your client language and pass it to Kuzu.
+Here's how you would do it in Python:
+
+```python
+import json
+
+json_str = '[{"name": "Rebecca", "age": 25}, {"name": "Gregory", "age": 30}, {"name": "Alicia", "age": 28}]'
+
+result = conn.execute("RETURN json_structure($obj) AS json_obj", {"obj": json_str})
+
+while result.has_next():
+    print(result.get_next())
+```
+
+```
+['STRUCT(name STRING, age UINT8)[]']
+```
+
+Once you have the JSON structure, you can handle query the properties as structs using the dot notation in Kuzu.
 
 ## Basic usage
 
