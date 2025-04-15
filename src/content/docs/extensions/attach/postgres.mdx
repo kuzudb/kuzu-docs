@@ -237,7 +237,7 @@ COPY Person FROM (LOAD FROM uw.person RETURN name);
 
 Note that you can use the `SQL_QUERY` function as a subquery as well.
 ```sql
-COPY Person FROM (CALL SQL_QUERY('uw', 'SELECT name FROM person'));
+COPY Person FROM SQL_QUERY('uw', 'SELECT name FROM person');
 ```
 
 ##  8. Query the data in Kuzu
