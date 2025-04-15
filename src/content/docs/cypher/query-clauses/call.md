@@ -214,7 +214,7 @@ CALL clear_warnings();
 ```
 
 ### SHOW_OFFICIAL_EXTENSIONS
-If you would like to know all official [extensions](../../extensions) available in Kuzu, you can run the `SHOW_OFFICIAL_EXTENSIONS` function.
+If you would like to know all official [extensions](/extensions) available in Kuzu, you can run the `SHOW_OFFICIAL_EXTENSIONS` function.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |

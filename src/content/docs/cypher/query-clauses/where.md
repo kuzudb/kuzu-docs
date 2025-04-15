@@ -34,7 +34,7 @@ The boolean predicate specified above can be understood as it reads: Users "a" w
 greater than 45 OR whose names start with "Kar". It combines several means to construct expressions in high-level database query languages, such as as boolean operator (OR), a numeric comparison operator (>), and a string function (starts_with). You can learn more about the operators, functions and expressions [here](/cypher/expressions).
 
 ## Filter with NULL
-If an expression is evaluated as NULL, it will be treated as FALSE in `WHERE` clause. To check if an expression is NULL, please refer to [comparison operators on NULLs](/cypher/data-types/null).
+If an expression is evaluated as NULL, it will be treated as FALSE in `WHERE` clause. To check if an expression is NULL, please refer to [comparison operators on NULLs](/cypher/data-types#null).
 
 The following predicate in the WHERE clause filters User nodes whose name start with "Kar" and whose age properties are not NULL.
 ```cypher

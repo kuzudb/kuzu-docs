@@ -101,7 +101,7 @@ You can head over to the Schema tab to see the graph schema that was created fro
 <img src="/img/visualization/import-panel-schema.png" />
 
 That's it! You can now begin querying the data by heading over to the query editor in the
-[shell panel](/visualization/shell-panel/).
+[shell panel](/visualization/kuzu-explorer/shell-panel/).
 
 ## Troubleshooting
 

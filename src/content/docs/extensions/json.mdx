@@ -9,7 +9,7 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 The `json` extension adds support for `JSON` objects, including a set of functions for JSON
 access and manipulation, scanning from, and copying to JSON files. Using this extension, you can
 interact with JSON files using [`LOAD FROM`](/cypher/query-clauses/load-from),
-[`COPY FROM`](/import/copy-from-query-results), and [`COPY TO`](/export), similar to how you would
+[`COPY FROM`](/import/copy-from-json), and [`COPY TO`](/export/json), similar to how you would
 with CSV files.
 
 The JSON functionality is not available by default, so you would first need to install the JSON
@@ -272,7 +272,7 @@ CREATE NODE TABLE IF NOT EXISTS Patient(
 ```
 The syntax `STRUCT( ... )[]` with the square braces at the end represents an arrya of STRUCTs.
 
-You can then use a `COPY FROM` statement to directly copy the contents of the JSON file into the 
+You can then use a `COPY FROM` statement to directly copy the contents of the JSON file into the
 node table.
 
 ```cypher
@@ -324,7 +324,7 @@ CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
     since UINT16
 )
 ```
-The `has_condition.json` file can then directly be copied into the relationship table that was just created. 
+The `has_condition.json` file can then directly be copied into the relationship table that was just created.
 ```cypher
 COPY HAS_CONDITION FROM 'has_condition.json'
 ```
@@ -751,7 +751,7 @@ Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`, `JSON, LIST -> LIST
 
 `json_extract(json, path)`
 
-Extracts `JSON` from `json` at the given `path`. 
+Extracts `JSON` from `json` at the given `path`.
 `path` is a `STRING` delimited by `'/'`.
 Integers may also be used to represent the path, which represents the index if the input is a JSON array.
 If `path` is a `LIST` of paths, the result will also be a `LIST`.

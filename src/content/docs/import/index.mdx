@@ -47,13 +47,13 @@ The following sections show how to bulk import data using `COPY FROM` on various
 
     <LinkCard
     title="Copy from JSON"
-    href="/extensions/json#copy-from"
+    href="/extensions/json#copy-json-files-to-a-table"
     />
 
 </CardGrid>
 
 :::caution[Note]
-Similar to the [LOAD FROM](/cypher/query-clauses/load-from.md) clause, the `COPY FROM` clause determines the file format based on the file extension if the `file_format` option is not provided. Alternatively, the `file_format` option can be used in the `COPY FROM` clause to explicitly specify the file format.
+Similar to the [LOAD FROM](/cypher/query-clauses/load-from) clause, the `COPY FROM` clause determines the file format based on the file extension if the `file_format` option is not provided. Alternatively, the `file_format` option can be used in the `COPY FROM` clause to explicitly specify the file format.
 
 Example: To copy from a file ending with an arbitrary extension like `.dsv`, use the `file_format = 'csv'` option to explicitly tell Kuzu to treat the file as a `CSV` file.
 ```

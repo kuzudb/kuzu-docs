@@ -54,7 +54,7 @@ export default defineConfig({
                     tag: 'meta',
                     attrs: { property: 'og:image', content: site + '/img/og.png' },
                 },
-                
+
                 // Twitter specific tags
                 {
                     tag: 'meta',
@@ -241,7 +241,7 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        { 
+                        {
                             label: 'HTTP File System (httpfs)',
                             collapsed: true,
                             items: [
@@ -280,6 +280,7 @@ export default defineConfig({
                         starlightLinksValidator({
                             errorOnFallbackPages: true,
                             errorOnInconsistentLocale: true,
+                            exclude: ['http://localhost:8000'],
                         }),
                   ]
                 : [],
