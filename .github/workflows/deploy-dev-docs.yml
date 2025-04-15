@@ -2,8 +2,27 @@ name: Deploy Dev Docs to Dockerhub
 on:
   push:
     branches: ["dev"]
+  pull_request:
+    branches: ["dev"]
 
 jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm i
+      - name: Check links
+        run: npm run check-links
+        env:
+          CHECK_LINKS: true
+
    docker:
     name: Build and push Docker image
     runs-on: ubuntu-latest

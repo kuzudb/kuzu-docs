@@ -3,6 +3,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
+    branches: ["main", "dev"]
   workflow_dispatch:
 
 permissions:
@@ -15,6 +16,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm i
+      - name: Check links
+        run: npm run check-links
+        env:
+          CHECK_LINKS: true
+
   build:
     runs-on: ubuntu-latest
     steps:
