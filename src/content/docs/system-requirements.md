@@ -16,7 +16,7 @@ Kuzu's Node.js API is based on **Node-API version 5**. For a list of compatible 
 
 ## Java
 
-Kuzu's Java API is compatible with **Java 8+**. The OS compatibility is the same as C/C++ APIs. The Java API is distributed as a JAR file with pre-compiled native libraries for all supported platforms bundled inside. It does not require any additional dependencies.
+Kuzu's Java API is compatible with **Java 11+**. The OS compatibility is the same as C/C++ APIs. The Java API is distributed as a JAR file with pre-compiled native libraries for all supported platforms bundled inside. It does not require any additional dependencies.
 
 ## Rust
 
@@ -24,4 +24,4 @@ Kuzu's Rust API is closely linked with Kuzu's C++ API. By default it compiles th
 
 ## Go
 
-Kuzu's Go API is a wrapper around the C API, and is currently for MacOS and Linux only. It's recommended to use a minimum Go version of 1.20. Windows support is planned for a future release.
+Kuzu's Go API is a wrapper around the C API. The minimum version of Go is 1.20.
