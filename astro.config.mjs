@@ -171,10 +171,10 @@ export default defineConfig({
                         },
                         {
                             label: 'Third-party integrations',
-                            badge: { text: 'New' },
                             collapsed: true,
                             items: [
-                                { label: 'G.V()', link: '/visualization/third-party-integrations/gdotv'},
+                                { label: 'G.V()', link: '/visualization/third-party-integrations/gdotv', badge: { text: 'New' }},
+                                { label: 'yFiles Jupyter Graphs', link: '/visualization/third-party-integrations/yfiles', badge: { text: 'New' }},
                             ],
                         },
                     ],
