@@ -114,13 +114,23 @@ spanning multiple lines
 MATCH (a:Person) RETURN a.* 
 ```
 
-## Naming rules and recommendations
+## Case insensitivity
 
-As a general rule of thumb, ensure the following:
-- Names should begin with an valid alphabetic character of type unicode string -- `Person`, `CarOwner` 
-- Names should not begin with a number -- `1Person` is invalid, but `Person1` is valid
-- Names should not contain whitespaces or special characters other than underscores -- `CarOwner` is valid, but `Car Owner` is invalid
-- Names are generally case-insensitive -- `Person` is the same as `person`, during table creation and querying
+By and large, you can assume that Cypher queries are case-insensitive.
+
+- **Table names** are case-insensitive. For example, `Person` and `person` are considered the same table.
+- **Table column names** are case-insensitive. For example, `LOAD FROM 'myfile.csv' RETURN MyCoLuMn` will work even if
+the column name in the source is `mycolumn`.
+- **Query keywords** are case-insensitive. For example, `MATCH (a:Person)` and `match (a:person)` are the same.
+- **Variable names** are case-insensitive. For example, `MATCH (a) RETURN A` and `MATCH (a) return a` are the same.
+
+### Naming rules and guidelines
+
+The following naming rules and guidelines apply to node and relationship table names:
+
+- Should begin with an valid alphabetic character of type unicode string -- `Person`, `CarOwner` 
+- Should **not** begin with a number -- `1Person` is invalid, but `Person1` is valid
+- Should **not** contain whitespaces or special characters other than underscores -- `CarOwner` is valid, but `Car Owner` is invalid
 
 The following naming conventions are recommended for node and relationship tables:
 

@@ -69,6 +69,18 @@ In the above example, the `age` property is set to a default value of `0` rather
 `name` and `reg_date` properties do not have default values, so they will be `NULL` if not provided
 during data insertion.
 
+:::note[Note]
+The default value doesn't _have_ to be a constant expression -- it can also be a function call.
+For example, if you want to set the default value of a timestamp property to the current timestamp,
+you can use the `current_timestamp()` function.
+```cypher
+CREATE NODE TABLE User (
+    id INT64 PRIMARY KEY,
+    happens_at TIMESTAMP DEFAULT current_timestamp()
+)
+```
+:::
+
 ## Create a relationship table
 
 Once you create node tables, you can define relationships between them using the `CREATE REL TABLE` statement.
