@@ -241,11 +241,11 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        {
-                            label: 'HTTP File System (httpfs)',
+                        { 
+                            label: 'Http file system',
                             collapsed: true,
                             items: [
-                                { label: 'HTTPS', link: '/extensions/httpfs#https-file-system'},
+                                { label: 'Https', link: '/extensions/httpfs#https-file-system'},
                                 { label: 'Amazon S3', link: '/extensions/httpfs#aws-s3-file-system'},
                                 { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system', badge: { text: 'New' }},
                             ]
@@ -267,6 +267,22 @@ export default defineConfig({
                                 { label: 'Iceberg', link: '/extensions/attach/iceberg' },
                                 { label: 'Delta Lake', link: '/extensions/attach/delta' },
                                 { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
+                            ]
+                        },
+                        {
+                            label: 'Graph algorithms',
+                            collapsed: true,
+                            items: [
+                                { label: 'Overview', link: '/extensions/gds'},
+                                { label: 'Graph projection', link: '/extensions/gds/graph-projection'},
+                                { 
+                                    label: 'Algorithms',
+                                    collapsed: true,
+                                    items: [
+                                        { label: 'Weakly connected components', link: '/extensions/gds/algorithms/wcc'},
+                                        { label: 'Strongly connected components', link: '/extensions/gds/algorithms/scc'}
+                                    ]
+                                }
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },

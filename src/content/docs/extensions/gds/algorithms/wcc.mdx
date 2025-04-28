@@ -1,0 +1,84 @@
+---
+title: Weakly Connected Components
+---
+
+## Introduction
+
+A weakly connected component (WCC) in a directed graph is a maximal subgraph where any two vertices are connected to each other by some path, regardless of edge direction.
+Kuzu implements parallel wcc algorithm based on [Ligra](https://jshun.csail.mit.edu/ligra.shtml).
+
+## Syntax
+
+```
+CALL weakly_connected_component(
+    graph_name
+)
+RETURN node, group_id
+```
+
+#### Parameters
+
+| Parameter | Type | Optional | Default | Description |
+|-----------|------|----------|---------|-------------|
+| graph_name | STRING | No | - | Name of the projected graph to run the algorithm on |
+
+
+#### Return
+
+| Column | Type | Description |
+|--------|------|-------------|
+| node | NODE | Node object |
+| group_id | INT64 | The group ID that the node belongs to |
+
+
+## Example
+
+Define schema
+```cypher
+CREATE NODE TABLE Node(id STRING PRIMARY KEY);
+CREATE REL TABLE Edge(FROM Node to Node);
+```
+Insert nodes and edges
+```cypher
+CREATE (u0:Node {id: 'A'}),
+        (u1:Node {id: 'B'}),
+        (u2:Node {id: 'C'}),
+        (u3:Node {id: 'D'}),
+        (u4:Node {id: 'E'}),
+        (u5:Node {id: 'F'}),
+        (u6:Node {id: 'G'}),
+        (u7:Node {id: 'H'}),
+        (u8:Node {id: 'I'}),
+        (u0)-[:Edge]->(u1),
+        (u1)-[:Edge]->(u2),
+        (u5)-[:Edge]->(u4),
+        (u6)-[:Edge]->(u4),
+        (u6)-[:Edge]->(u5),
+        (u6)-[:Edge]->(u7),
+        (u7)-[:Edge]->(u4),
+        (u6)-[:Edge]->(u5);
+```
+Project graph
+```cypher
+CALL create_projected_graph('Graph', ['Node'], ['Edge']);
+```
+Run wcc
+```cypher
+CALL weakly_connected_component('Graph') RETURN group_id, collect(node.id);
+┌──────────┬──────────────────┐
+│ group_id │ COLLECT(node.id) │
+│ INT64    │ STRING[]         │
+├──────────┼──────────────────┤
+│ 5        │ [G,F,H,E]        │
+│ 0        │ [D]              │
+│ 2        │ [B,C,A]          │
+│ 1        │ [I]              │
+└──────────┴──────────────────┘
+```
+
+## Frquently asked questions
+
+**How is `group_id` assigned?**
+
+`group_id` is assigned based on internal node offsets. Currently there is no way to assign `group_id` based on node properties.
+
