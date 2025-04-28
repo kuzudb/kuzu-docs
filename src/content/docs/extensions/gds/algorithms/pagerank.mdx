@@ -1,0 +1,82 @@
+---
+title: PageRank
+---
+
+## Introduction
+
+PageRank is a link analysis algorithm used by Google Search to rank web pages in their search engine results. 
+It works by counting the number and quality of links to a page to determine a rough estimate of how important the website is. 
+The underlying assumption is that more important websites are likely to receive more links from other websites. 
+
+In graph theory terms, PageRank assigns numerical weights to each node in a directed graph, where nodes represent web pages and edges represent hyperlinks. 
+The algorithm iteratively computes a score for each node based on the scores of its incoming links, with the final scores representing the relative importance of each page. 
+This concept has been widely applied beyond web search to analyze the importance or influence of nodes in various types of networks, such as social networks, citation networks, and biological networks.
+
+Kuzu implements parallel PageRank based on [Ligra](https://jshun.csail.mit.edu/ligra.shtml).
+
+## Syntax
+
+```
+CALL page_rank(
+    graph_name,
+    dampingFactor := 0.85, 
+    maxIterations := 20, 
+    tolerance := 0.0000001
+)
+RETURN node, rank
+```
+
+**Parameters**
+
+| Parameter | Type | Optional | Default | Description |
+|-----------|------|----------|---------|-------------|
+| graph_name | STRING | No | - | Name of the projected graph to run the algorithm on |
+| dampingFactor | FLOAT64 | Yes | 0.85 | Probability of following an outgoing edge, must between 0 and 1 |
+| maxIterations | INT64 | Yes | 20 | Maximum number of iterations to run |
+| tolerance | FLOAT64 | Yes | 0.00001 | Minimum change in scores between iterations to continue |
+
+**Return**
+
+| Column | Type | Description |
+|--------|------|-------------|
+| node | NODE | Node object |
+| rank | FLOAT64 | PageRank score of the node |
+
+## Example
+
+Define schema
+```cypher
+CREATE NODE TABLE Node(id STRING PRIMARY KEY);
+CREATE REL TABLE Edge(FROM Node to Node);
+```
+Insert nodes and edges
+```cypher
+CREATE (u0:Node {id: 'A'}),
+        (u1:Node {id: 'B'}),
+        (u2:Node {id: 'C'}),
+        (u3:Node {id: 'D'}),
+        (u4:Node {id: 'E'}),
+        (u0)-[:Edge]->(u1),
+        (u0)-[:Edge]->(u4),
+        (u1)-[:Edge]->(u4),
+        (u2)-[:Edge]->(u4),
+        (u3)-[:Edge]->(u4);
+```
+Project graph
+```cypher
+CALL create_projected_graph('Graph', ['Node'], ['Edge']);
+```
+Run PageRank
+```
+CALL page_rank('Graph') RETURN node.id, rank ORDER BY rank DESC;
+┌─────────┬──────────┐
+│ node.id │ rank     │
+│ STRING  │ DOUBLE   │
+├─────────┼──────────┤
+│ E       │ 0.130088 │
+│ B       │ 0.042750 │
+│ D       │ 0.030000 │
+│ C       │ 0.030000 │
+│ A       │ 0.030000 │
+└─────────┴──────────┘
+```

@@ -280,7 +280,9 @@ export default defineConfig({
                                     collapsed: true,
                                     items: [
                                         { label: 'Weakly connected components', link: '/extensions/gds/algorithms/wcc'},
-                                        { label: 'Strongly connected components', link: '/extensions/gds/algorithms/scc'}
+                                        { label: 'Strongly connected components', link: '/extensions/gds/algorithms/scc'},
+                                        { label: 'PageRank', link: '/extensions/gds/algorithms/pagerank'},
+                                        { label: 'K-Core decomposition', link: '/extensions/gds/algorithms/kcore'}
                                     ]
                                 }
                             ]
