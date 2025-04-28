@@ -16,10 +16,7 @@ executable with no dependencies that can be used to interact with a Kuzu databas
 <Tabs>
 <TabItem label="Linux">
 
-Use a tool like cURL to download the latest version of the Kuzu CLI to your local machine. Alternatively,
-simply copy-paste [this URL](https://github.com/kuzudb/kuzu/releases/download/v0.9.0/kuzu_cli-linux-x86_64.tar.gz)
-for x86-64 or [this one](https://github.com/kuzudb/kuzu/releases/download/v0.9.0/kuzu_cli-linux-aarch64.tar.gz)
-for aarch64 into your browser.
+Use a tool like cURL to download the latest version of the Kuzu CLI to your local machine.
 
 **x86-64**
 
@@ -53,7 +50,7 @@ brew install kuzu
 <TabItem label="Windows">
 
 Use a tool like cURL to download the latest version of the Kuzu CLI to your local machine. Alternatively,
-simply copy-paste [this HTTPS URL](https://github.com/kuzudb/kuzu/releases/download/v0.9.0/kuzu_cli-windows-x86_64.zip)
+simply copy-paste [this URL](https://github.com/kuzudb/kuzu/releases/download/v0.9.0/kuzu_cli-windows-x86_64.zip)
 into your browser.
 
 ```bash
@@ -66,12 +63,33 @@ From within the terminal, you can then run `./kuzu.exe`.
 
 </TabItem>
 
+<TabItem label="nix">
+
+On Linux, macOS, and WSL2, you can also use [`nix`](https://nix.dev) to run the Kuzu CLI.
+
+Run Kuzu in a temporary shell:
+
+```bash
+nix-shell -p kuzu
+kuzu
+``````
+
+Alternatively, you can install Kuzu declaratively using Home Manager or NixOS configuration:
+
+```nix
+{
+  environment.systemPackages = [ pkgs.nix ]; // NixOS
+  home.packages = [ pkgs.nix ];              // Home Manager
+}
+```
+</TabItem>
+
 </Tabs>
 
 ## Python
 
-You can use `uv` (recommended)  or `pip` to install the Kuzu Python client library.
-The instructions are the same for macOS, Linux, and Windows.
+You can use `uv` (recommended), `pip`, or `nix` to install the Kuzu Python client library.
+The instructions are the same for Linux, macOS, and Windows.
 
 <Tabs>
 
@@ -88,6 +106,14 @@ uv add kuzu
 
 ```bash
 pip install kuzu
+```
+
+</TabItem>
+
+<TabItem label="nix">
+
+```bash
+nix-shell -p "python3.withPackages (ps: [ ps.kuzu ])"
 ```
 
 </TabItem>
