@@ -28,17 +28,15 @@ RETURN a;
 ```
 Output:
 ```
-----------------------------------------------------
-| a                                                |
-----------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30}    |
-----------------------------------------------------
-| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} |
-----------------------------------------------------
-| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}   |
-----------------------------------------------------
-| {_ID: 0:3, _LABEL: User, name: Noura, age: 25}   |
-----------------------------------------------------
+┌──────────────────────────────────────────────────┐
+│ a                                                │
+│ NODE                                             │
+├──────────────────────────────────────────────────┤
+│ {_ID: 0:0, _LABEL: User, name: Adam, age: 30}    │
+│ {_ID: 0:1, _LABEL: User, name: Karissa, age: 40} │
+│ {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}   │
+│ {_ID: 0:3, _LABEL: User, name: Noura, age: 25}   │
+└──────────────────────────────────────────────────┘
 ```
 
 ### Match nodes with multiple labels
@@ -49,23 +47,18 @@ RETURN a;
 ```
 Output:
 ```
------------------------------------------------------------------
-| a                                                             |
------------------------------------------------------------------
-| {_ID: 1:0, _LABEL: City, name: Waterloo, population: 150000}  |
------------------------------------------------------------------
-| {_ID: 1:1, _LABEL: City, name: Kitchener, population: 200000} |
------------------------------------------------------------------
-| {_ID: 1:2, _LABEL: City, name: Guelph, population: 75000}     |
------------------------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30, }               |
------------------------------------------------------------------
-| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40, }            |
------------------------------------------------------------------
-| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50, }              |
------------------------------------------------------------------
-| {_ID: 0:3, _LABEL: User, name: Noura, age: 25, }              |
------------------------------------------------------------------
+┌───────────────────────────────────────────────────────────────┐
+│ a                                                             │
+│ NODE                                                          │
+├───────────────────────────────────────────────────────────────┤
+│ {_ID: 1:0, _LABEL: City, name: Waterloo, population: 150000}  │
+│ {_ID: 1:1, _LABEL: City, name: Kitchener, population: 200000} │
+│ {_ID: 1:2, _LABEL: City, name: Guelph, population: 75000}     │
+│ {_ID: 0:0, _LABEL: User, name: Adam, age: 30}                 │
+│ {_ID: 0:1, _LABEL: User, name: Karissa, age: 40}              │
+│ {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}                │
+│ {_ID: 0:3, _LABEL: User, name: Noura, age: 25}                │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ### Match nodes with any label
@@ -76,23 +69,18 @@ RETURN a;
 ```
 Output:
 ```
------------------------------------------------------------------
-| a                                                             |
------------------------------------------------------------------
-| {_ID: 1:0, _LABEL: City, name: Waterloo, population: 150000}  |
------------------------------------------------------------------
-| {_ID: 1:1, _LABEL: City, name: Kitchener, population: 200000} |
------------------------------------------------------------------
-| {_ID: 1:2, _LABEL: City, name: Guelph, population: 75000}     |
------------------------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30, }               |
------------------------------------------------------------------
-| {_ID: 0:1, _LABEL: User, name: Karissa, age: 40, }            |
------------------------------------------------------------------
-| {_ID: 0:2, _LABEL: User, name: Zhang, age: 50, }              |
------------------------------------------------------------------
-| {_ID: 0:3, _LABEL: User, name: Noura, age: 25, }              |
------------------------------------------------------------------
+┌───────────────────────────────────────────────────────────────┐
+│ a                                                             │
+│ NODE                                                          │
+├───────────────────────────────────────────────────────────────┤
+│ {_ID: 0:0, _LABEL: User, name: Adam, age: 30}                 │
+│ {_ID: 0:1, _LABEL: User, name: Karissa, age: 40}              │
+│ {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}                │
+│ {_ID: 0:3, _LABEL: User, name: Noura, age: 25}                │
+│ {_ID: 1:0, _LABEL: City, name: Waterloo, population: 150000}  │
+│ {_ID: 1:1, _LABEL: City, name: Kitchener, population: 200000} │
+│ {_ID: 1:2, _LABEL: City, name: Guelph, population: 75000}     │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ## Match relationships
@@ -105,17 +93,15 @@ RETURN a.name, e, b.name;
 ```
 Output:
 ```
------------------------------------------------------------------------------
-| a.name  | e                                                     | b.name  |
------------------------------------------------------------------------------
-| Adam    | (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) | Karissa |
------------------------------------------------------------------------------
-| Adam    | (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) | Zhang   |
------------------------------------------------------------------------------
-| Karissa | (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) | Zhang   |
------------------------------------------------------------------------------
-| Zhang   | (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) | Noura   |
------------------------------------------------------------------------------
+┌─────────┬───────────────────────────────────────────────────────┬─────────┐
+│ a.name  │ e                                                     │ b.name  │
+│ STRING  │ REL                                                   │ STRING  │
+├─────────┼───────────────────────────────────────────────────────┼─────────┤
+│ Adam    │ (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) │ Karissa │
+│ Adam    │ (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) │ Zhang   │
+│ Karissa │ (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) │ Zhang   │
+│ Zhang   │ (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) │ Noura   │
+└─────────┴───────────────────────────────────────────────────────┴─────────┘
 ```
 
 The following query matches all the relationships through an incoming relationship from "a" (so "a" and "b" are swapped in output):
@@ -125,17 +111,15 @@ RETURN a.name, e, b.name;
 ```
 Output:
 ```
------------------------------------------------------------------------------
-| a.name  | e                                                     | b.name  |
------------------------------------------------------------------------------
-| Karissa | (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) | Adam    |
------------------------------------------------------------------------------
-| Zhang   | (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) | Adam    |
------------------------------------------------------------------------------
-| Zhang   | (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) | Karissa |
------------------------------------------------------------------------------
-| Noura   | (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) | Zhang   |
------------------------------------------------------------------------------
+┌─────────┬───────────────────────────────────────────────────────┬─────────┐
+│ a.name  │ e                                                     │ b.name  │
+│ STRING  │ REL                                                   │ STRING  │
+├─────────┼───────────────────────────────────────────────────────┼─────────┤
+│ Karissa │ (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) │ Adam    │
+│ Zhang   │ (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) │ Adam    │
+│ Zhang   │ (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) │ Karissa │
+│ Noura   │ (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) │ Zhang   │
+└─────────┴───────────────────────────────────────────────────────┴─────────┘
 ```
 
 ### Match relationships with multi labels
@@ -146,25 +130,19 @@ RETURN a.name, e, b.name;
 ```
 Output:
 ```
--------------------------------------------------------------------------------
-| a.name  | e                                                     | b.name    |
--------------------------------------------------------------------------------
-| Adam    | (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) | Karissa   |
--------------------------------------------------------------------------------
-| Adam    | (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) | Zhang     |
--------------------------------------------------------------------------------
-| Adam    | (0:0)-{_LABEL: LivesIn, _ID: 3:0, }->(1:0)            | Waterloo  |
--------------------------------------------------------------------------------
-| Karissa | (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) | Zhang     |
--------------------------------------------------------------------------------
-| Karissa | (0:1)-{_LABEL: LivesIn, _ID: 3:1, }->(1:0)            | Waterloo  |
--------------------------------------------------------------------------------
-| Zhang   | (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) | Noura     |
--------------------------------------------------------------------------------
-| Zhang   | (0:2)-{_LABEL: LivesIn, _ID: 3:2, }->(1:1)            | Kitchener |
--------------------------------------------------------------------------------
-| Noura   | (0:3)-{_LABEL: LivesIn, _ID: 3:3, }->(1:2)            | Guelph    |
--------------------------------------------------------------------------------
+┌─────────┬───────────────────────────────────────────────────────┬───────────┐
+│ a.name  │ e                                                     │ b.name    │
+│ STRING  │ REL                                                   │ STRING    │
+├─────────┼───────────────────────────────────────────────────────┼───────────┤
+│ Adam    │ (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) │ Karissa   │
+│ Adam    │ (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) │ Zhang     │
+│ Karissa │ (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) │ Zhang     │
+│ Zhang   │ (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) │ Noura     │
+│ Adam    │ (0:0)-{_LABEL: LivesIn, _ID: 3:0}->(1:0)              │ Waterloo  │
+│ Karissa │ (0:1)-{_LABEL: LivesIn, _ID: 3:1}->(1:0)              │ Waterloo  │
+│ Zhang   │ (0:2)-{_LABEL: LivesIn, _ID: 3:2}->(1:1)              │ Kitchener │
+│ Noura   │ (0:3)-{_LABEL: LivesIn, _ID: 3:3}->(1:2)              │ Guelph    │
+└─────────┴───────────────────────────────────────────────────────┴───────────┘
 ```
 
 ### Match relationships with any label
@@ -175,25 +153,19 @@ RETURN e;
 ```
 Output:
 ```
----------------------------------------------------------
-| e                                                     |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) |
----------------------------------------------------------
-| (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) |
----------------------------------------------------------
-| (0:0)-{_LABEL: LivesIn, _ID: 3:0, }->(1:0)            |
----------------------------------------------------------
-| (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) |
----------------------------------------------------------
-| (0:1)-{_LABEL: LivesIn, _ID: 3:1, }->(1:0)            |
----------------------------------------------------------
-| (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) |
----------------------------------------------------------
-| (0:2)-{_LABEL: LivesIn, _ID: 3:2, }->(1:1)            |
----------------------------------------------------------
-| (0:3)-{_LABEL: LivesIn, _ID: 3:3, }->(1:2)            |
----------------------------------------------------------
+┌───────────────────────────────────────────────────────┐
+│ e                                                     │
+│ REL                                                   │
+├───────────────────────────────────────────────────────┤
+│ (0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1) │
+│ (0:0)-{_LABEL: Follows, _ID: 2:1, since: 2020}->(0:2) │
+│ (0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2) │
+│ (0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3) │
+│ (0:0)-{_LABEL: LivesIn, _ID: 3:0}->(1:0)              │
+│ (0:1)-{_LABEL: LivesIn, _ID: 3:1}->(1:0)              │
+│ (0:2)-{_LABEL: LivesIn, _ID: 3:2}->(1:1)              │
+│ (0:3)-{_LABEL: LivesIn, _ID: 3:3}->(1:2)              │
+└───────────────────────────────────────────────────────┘
 ```
 
 ### Match undirected relationships
@@ -204,13 +176,13 @@ MATCH (a:User)-[e:Follows]-(b:User) Where a.name = 'Karissa' RETURN b.name;
 ```
 Output:
 ```
-----------
-| b.name |
-----------
-| Adam   |
-----------
-| Zhang  |
-----------
+┌────────┐
+│ b.name │
+│ STRING │
+├────────┤
+│ Adam   │
+│ Zhang  │
+└────────┘
 ```
 
 ### Omit binding variables to nodes or relationships
@@ -226,13 +198,13 @@ RETURN a, c.name, c.population;
 ```
 Output:
 ```
-----------------------------------------------------------------------------
-| a                                             | c.name    | c.population |
-----------------------------------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | Waterloo  | 150000       |
-----------------------------------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | Kitchener | 200000       |
-----------------------------------------------------------------------------
+┌───────────────────────────────────────────────┬───────────┬──────────────┐
+│ a                                             │ c.name    │ c.population │
+│ NODE                                          │ STRING    │ INT64        │
+├───────────────────────────────────────────────┼───────────┼──────────────┤
+│ {_ID: 0:0, _LABEL: User, name: Adam, age: 30} │ Waterloo  │ 150000       │
+│ {_ID: 0:0, _LABEL: User, name: Adam, age: 30} │ Kitchener │ 200000       │
+└───────────────────────────────────────────────┴───────────┴──────────────┘
 ```
 
 ### Match multiple patterns
@@ -247,11 +219,12 @@ RETURN a.name, b.name, c.name;
 ```
 Output:
 ```
------------------------------
-| a.name | b.name  | c.name |
------------------------------
-| Adam   | Karissa | Zhang  |
------------------------------
+┌────────┬─────────┬────────┐
+│ a.name │ b.name  │ c.name │
+│ STRING │ STRING  │ STRING │
+├────────┼─────────┼────────┤
+│ Adam   │ Karissa │ Zhang  │
+└────────┴─────────┴────────┘
 ```
 
 Note that in the query node variables a and c appear twice, once on each of the 2 paths
@@ -276,11 +249,12 @@ RETURN a, e.since, b.name;
 ```
 and both queries output:
 ```
---------------------------------------------------------------------
-| a                                             | e.since | b.name |
---------------------------------------------------------------------
-| {_ID: 0:0, _LABEL: User, name: Adam, age: 30} | 2020    | Zhang  |
---------------------------------------------------------------------
+┌───────────────────────────────────────────────┬─────────┬────────┐
+│ a                                             │ e.since │ b.name │
+│ NODE                                          │ INT64   │ STRING │
+├───────────────────────────────────────────────┼─────────┼────────┤
+│ {_ID: 0:0, _LABEL: User, name: Adam, age: 30} │ 2020    │ Zhang  │
+└───────────────────────────────────────────────┴─────────┴────────┘
 ```
 
 ## Match recursive relationships
@@ -296,17 +270,15 @@ RETURN b.name, length(e) AS length;
 ```
 Output:
 ```
---------------------
-| b.name  | length |
---------------------
-| Karissa | 1      |
---------------------
-| Zhang   | 2      |
---------------------
-| Zhang   | 1      |
---------------------
-| Noura   | 2      |
---------------------
+┌─────────┬────────┐
+│ b.name  │ length │
+│ STRING  │ INT64  │
+├─────────┼────────┤
+│ Noura   │ 2      │
+│ Zhang   │ 2      │
+│ Zhang   │ 1      │
+│ Karissa │ 1      │
+└─────────┴────────┘
 ```
 - Karissa is found through `Adam -> Karissa`
 - Zhang is found through `Adam -> Zhang` and `Adam -> Karissa -> Zhang`
@@ -321,15 +293,14 @@ RETURN b.name, length(e) AS length;
 ```
 Output:
 ```
-----------------------
-| b.name    | length |
-----------------------
-| Adam      | 2      |
-----------------------
-| Karissa   | 2      |
-----------------------
-| Kitchener | 2      |
-----------------------
+┌───────────┬────────┐
+│ b.name    │ length │
+│ STRING    │ INT64  │
+├───────────┼────────┤
+│ Kitchener │ 2      │
+│ Adam      │ 2      │
+│ Karissa   │ 2      │
+└───────────┴────────┘
 ```
 - Adam is found through `Noura <- Zhang -> Adam`
 - Karissa is found through `Noura <- Zhang -> Karissa`
@@ -454,13 +425,13 @@ RETURN b.name, COUNT(*);
 ```
 Output:
 ```
---------------------------
-| b.name  | COUNT_STAR() |
---------------------------
-| Karissa | 1            |
---------------------------
-| Zhang   | 1            |
---------------------------
+┌─────────┬──────────────┐
+│ b.name  │ COUNT_STAR() │
+│ STRING  │ INT64        │
+├─────────┼──────────────┤
+│ Zhang   │ 1            │
+│ Karissa │ 1            │
+└─────────┴──────────────┘
 ```
 
 Our filter grammar is similar to that used by [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms). For example, in Cypher list comprehensions. The first variable represents intermediate relationships and the second one represents intermediate nodes. Currently Kuzu only supports predicates that can be evaluated just on node (`n.age > 45`) or just on relationship (`r.since < 2022`) or conjuctive of such predicates (`n.age > 45 AND r.since < 2022`). Complex predicates that involves both node and relationship (`n.age > 45 OR r.since < 2022`) is not supported.
@@ -482,21 +453,29 @@ RETURN nodes(e), rels(e);
 ```
 Returns:
 ```
-------------------------------------------------------------------------------------------------------------------------------
-| NODES(e)                                | RELS(e)                                                                          |
-------------------------------------------------------------------------------------------------------------------------------
-| []                                      | [(0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2)]                          |
-------------------------------------------------------------------------------------------------------------------------------
-| [{_ID: 0:2, _LABEL: User, name: Zhang}] | [(0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2),(0:2)-{_LABEL: Follows... |
-------------------------------------------------------------------------------------------------------------------------------
-| []                                      | [(0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3)]                          |
-------------------------------------------------------------------------------------------------------------------------------
+┌─────────────────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ NODES(e)                                │ RELS(e)                                                                                                       │
+│ NODE[]                                  │ REL[]                                                                                                         │
+├─────────────────────────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ [{_ID: 0:2, _LABEL: User, name: Zhang}] │ [(0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2),(0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3)] │
+│ []                                      │ [(0:1)-{_LABEL: Follows, _ID: 2:2, since: 2021}->(0:2)]                                                       │
+│ []                                      │ [(0:2)-{_LABEL: Follows, _ID: 2:3, since: 2022}->(0:3)]                                                       │
+└─────────────────────────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 As can be seen in the output, the nodes that bind to `e` contain only the `name` property and the relationships that
 bind to `e` contain only the `since` property.
 
-### Single shortest path
-On top of variable length relationships, users can search for single shortest path by specifying `SHORTEST` key word in relationship, e.g. `-[:Label* SHORTEST 1..max]`.
+
+### Shortest path
+
+On top of variable length relationships, kuzu also support different shortest path algorithms.
+
+#### Single shortest path
+
+**Syntax**
+
+`-[:Label* SHORTEST 1..max]-`
+
 The following query finds a shortest path between `Adam` and any city and returns city name as well as length of the path.
 ```cypher
 MATCH (a:User)-[e* SHORTEST 1..4]->(b:City) 
@@ -505,19 +484,21 @@ RETURN b.name, length(e) AS length;
 ```
 Output:
 ```
-----------------------
-| b.name    | length |
-----------------------
-| Waterloo  | 1      |
-----------------------
-| Kitchener | 2      |
-----------------------
-| Guelph    | 3      |
-----------------------
+┌───────────┬────────┐
+│ b.name    │ length │
+│ STRING    │ INT64  │
+├───────────┼────────┤
+│ Guelph    │ 3      │
+│ Kitchener │ 2      │
+│ Waterloo  │ 1      │
+└───────────┴────────┘
 ```
 
-### All shortest paths
-You can also search for all shortest paths with `ALL SHORTEST` key word, e.g. `-[:Label* ALL SHORTEST 1..max]`
+#### All shortest path
+
+**Syntax**
+
+`-[:Label* ALL SHORTEST 1..max]-`
 
 The following query finds all shortest paths between `Zhang` and `Waterloo`.
 ```cypher
@@ -527,11 +508,87 @@ RETURN COUNT(*) AS num_shortest_path;
 ```
 Output:
 ```
----------------------
-| num_shortest_path |
----------------------
-| 2                 |
----------------------
+┌───────────────────┐
+│ num_shortest_path │
+│ INT64             │
+├───────────────────┤
+│ 2                 │
+└───────────────────┘
+```
+
+#### Weighted shortest path
+
+**Syntax**
+
+`-[:Label* WSHORTEST(rel property) 1..max]-`
+
+
+**Example**
+
+We add a `score` property to `Follows` and manually assign a score to each `Follows` edge. The modified database is shown as
+```
+MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
+┌─────────┬─────────┬───────────┬─────────┐
+│ a.name  │ e.since │ e.score   │ b.name  │
+│ STRING  │ INT64   │ DOUBLE    │ STRING  │
+├─────────┼─────────┼───────────┼─────────┤
+│ Adam    │ 2020    │ 5.000000  │ Karissa │
+│ Adam    │ 2020    │ 20.000000 │ Zhang   │
+│ Karissa │ 2021    │ 6.000000  │ Zhang   │
+│ Zhang   │ 2022    │ 22.000000 │ Noura   │
+└─────────┴─────────┴───────────┴─────────┘
+```
+And then we query the weighted shortest path from `Adam` to other users through `score` property.
+```
+MATCH p=(a:User)-[e:Follows* WSHORTEST(score)]->(b:User) 
+WHERE a.name='Adam' 
+RETURN properties(nodes(p), 'name'), cost(e);
+┌────────────────────────────┬───────────┐
+│ PROPERTIES(NODES(p),name)  │ e_cost    │
+│ STRING[]                   │ DOUBLE    │
+├────────────────────────────┼───────────┤
+│ [Adam,Karissa,Zhang,Noura] │ 33.000000 │
+│ [Adam,Karissa,Zhang]       │ 11.000000 │
+│ [Adam,Karissa]             │ 5.000000  │
+└────────────────────────────┴───────────┘
+```
+
+#### All weighted shortest path
+
+**Syntax**
+
+`-[:Label* ALL WSHORTEST(rel property) 1..max]-`
+
+**Example**
+
+We insert one more `Follows` edge between `Adam` and `Zhang` with score=11. The modified database is shown as
+```
+MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
+┌─────────┬─────────┬───────────┬─────────┐
+│ a.name  │ e.since │ e.score   │ b.name  │
+│ STRING  │ INT64   │ DOUBLE    │ STRING  │
+├─────────┼─────────┼───────────┼─────────┤
+│ Adam    │ 2020    │ 5.000000  │ Karissa │
+│ Adam    │ 2020    │ 20.000000 │ Zhang   │
+│ Karissa │ 2021    │ 6.000000  │ Zhang   │
+│ Zhang   │ 2022    │ 22.000000 │ Noura   │
+│ Adam    │ 2024    │ 11.000000 │ Zhang   │
+└─────────┴─────────┴───────────┴─────────┘
+```
+```
+MATCH p=(a:User)-[e:Follows* ALL WSHORTEST(score)]->(b:User) 
+WHERE a.name='Adam' 
+RETURN properties(nodes(p), 'name'), cost(e);
+┌────────────────────────────┬───────────┐
+│ PROPERTIES(NODES(p),name)  │ e_cost    │
+│ STRING[]                   │ DOUBLE    │
+├────────────────────────────┼───────────┤
+│ [Adam,Karissa,Zhang,Noura] │ 33.000000 │
+│ [Adam,Zhang,Noura]         │ 33.000000 │
+│ [Adam,Karissa,Zhang]       │ 11.000000 │
+│ [Adam,Zhang]               │ 11.000000 │
+│ [Adam,Karissa]             │ 5.000000  │
+└────────────────────────────┴───────────┘
 ```
 
 :::note[Note]
