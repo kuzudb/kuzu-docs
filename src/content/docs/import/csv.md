@@ -198,6 +198,28 @@ The possible configurations for different configurations are:
 For the unspecified configurations, Kuzu considers parsing the samples lines it scans (see the `sample_size` parameter)
 for each possible configuration combination and then picks the configuration combination that successfully parses the most lines and with the most consistent number of columns in each row.
 
+**Compressed CSV** To reduce file size, CSV files are often distributed in compressed formats. Kuzu supports directly scanning GZIP-compressed CSV files (typically with a .gz extension) without requiring manual decompression. To load data from a compressed CSV, simply specify the file path in the LOAD FROM or COPY FROM clause.
+For example, consider the user.csv file provided above:
+We firstly compress it using `gzip` command:
+```shell
+gzip -k user.csv
+```
+Then we can use the `load from` clause to scan the csv file, kuzu will decompress the csv file on the fly.
+```cypher
+LOAD FROM 'user.csv.gz' RETURN *;
+```
+
+Result:
+```
+┌─────────┬───────┬────────────┐
+│ name    │ age   │ reg_date   │
+│ STRING  │ INT64 │ DATE       │
+├─────────┼───────┼────────────┤
+│ Adam    │ 30    │ 2020-06-22 │
+│ Karissa │ 40    │ 2019-05-12 │
+└─────────┴───────┴────────────┘
+```
+
 ## Ignore erroneous rows
 
 See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.
