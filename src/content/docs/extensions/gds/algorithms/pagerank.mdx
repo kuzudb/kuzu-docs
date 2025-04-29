@@ -2,8 +2,6 @@
 title: PageRank
 ---
 
-## Introduction
-
 PageRank is a link analysis algorithm used by Google Search to rank web pages in their search engine results. 
 It works by counting the number and quality of links to a page to determine a rough estimate of how important the website is. 
 The underlying assumption is that more important websites are likely to receive more links from other websites. 
@@ -67,7 +65,7 @@ Project graph
 CALL create_projected_graph('Graph', ['Node'], ['Edge']);
 ```
 Run PageRank
-```
+```cypher
 CALL page_rank('Graph') RETURN node.id, rank ORDER BY rank DESC;
 ┌─────────┬──────────┐
 │ node.id │ rank     │

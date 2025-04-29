@@ -1,3 +1,163 @@
 ---
 title: Graph projection
 ---
+
+A projected graph is a subgraph (i.e., a subset of the original graph) that contains only the nodes and relationships that
+match the given table names and predicates.
+
+**Life cycle**
+
+A projected graph is kept alive until:
+- it is dropped explicitly; or
+- the connection is closed.
+
+**Evaluation**
+
+A projected graph is evaluated when an algorithm is executed so that it can always scan the up-to-date data.
+
+## Simple projection
+
+### Syntax
+To create a projected graph with selected node and relationship tables
+```
+CALL CREATE_PROJECTED_GRAPH(
+    graph_name,
+    [
+        node_table_0, node_table_1, ...
+    ],
+    [
+        rel_table_0, rel_table_1, ...
+    ]
+)
+```
+
+**Parameters**
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `graph_name` | String | Yes | - | Name of the projected graph |
+| `node_table_x` | STRING | Yes | - | Name of node table to project |
+| `rel_table_x` | STRING | Yes | - | Name of relationship table to project |
+
+
+### Example
+
+```
+CREATE NODE TABLE Node(id STRING PRIMARY KEY);
+CREATE REL TABLE Edge(FROM Node to Node, id INT64);
+CREATE (u0:Node {id: 'A'}),
+        (u1:Node {id: 'B'}),
+        (u2:Node {id: 'C'}),
+        (u3:Node {id: 'D'}),
+        (u4:Node {id: 'E'}),
+        (u5:Node {id: 'F'}),
+        (u6:Node {id: 'G'}),
+        (u7:Node {id: 'H'}),
+        (u8:Node {id: 'I'}),
+        (u0)-[:Edge {id:0}]->(u1),
+        (u1)-[:Edge {id:1}]->(u2),
+        (u5)-[:Edge {id:2}]->(u4),
+        (u6)-[:Edge {id:3}]->(u4),
+        (u6)-[:Edge {id:4}]->(u5),
+        (u6)-[:Edge {id:5}]->(u7),
+        (u7)-[:Edge {id:6}]->(u4),
+        (u6)-[:Edge {id:7}]->(u5);
+```
+Project graph and run algorithm
+```
+CALL create_projected_graph('Graph', ['Node'], ['Edge']);
+CALL weakly_connected_component('Graph') RETURN group_id, collect(node.id);
+┌──────────┬──────────────────┐
+│ group_id │ COLLECT(node.id) │
+│ INT64    │ STRING[]         │
+├──────────┼──────────────────┤
+│ 5        │ [G,F,H,E]        │
+│ 0        │ [D]              │
+│ 2        │ [B,C,A]          │
+│ 1        │ [I]              │
+└──────────┴──────────────────┘
+```
+
+
+## Projection with predicates
+
+### Syntax
+
+```
+CALL create_projected_graph(
+    graph_name,
+    {
+        node_table_0 : {
+            'filter': node_predicate_0
+        },
+        node_table_1 : {
+            'filter': node_predicate_1
+        },
+        ...
+    },
+    {
+        rel_table_0 : {
+            'filter': rel_predicate_0
+        },
+        rel_table_1 : {
+            'filter': rel_predicate_1
+        },
+        ...
+    }
+)
+```
+
+**Parameters**
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `graph_name` | String | Yes | - | Name of the projected graph |
+| `node_table_x` | STRING | Yes | - | Name of node table to project |
+| `rel_table_x` | STRING | Yes | - | Name of relationship table to project |
+| `node_predicate_0` | STRING | Yes | - | Predicate to execute on node table |
+| `rel_predicate_0` | STRING | Yes | - | Predicate to execute on relationship table |
+
+**Notes**
+- The predicate must depends only on its node/relationship table, i.e. predicates involving multiple tables is not supported.
+- Since we don't assign a variable to the node/relationship table, we use `n` to reference the node and `r` to reference the relationship table. So properties need to be in the form of `n.property_name` or `r.property_name`.
+
+### Example
+With the same database used in simple projection,
+
+```
+CALL create_projected_graph(
+    'Filtered_Graph',
+    {
+        'Node': {'filter': 'n.id <> "I"'}
+    },
+    {
+        'Edge': {'filter': 'r.id < 3'}
+    }
+);
+CALL weakly_connected_component('Filtered_Graph') RETURN group_id, collect(node.id);
+┌──────────┬──────────────────┐
+│ group_id │ COLLECT(node.id) │
+│ INT64    │ STRING[]         │
+├──────────┼──────────────────┤
+│ 2        │ [B,C,A]          │
+│ 0        │ [D]              │
+│ 5        │ [G]              │
+│ 6        │ [F,E]            │
+│ 7        │ [H]              │
+└──────────┴──────────────────┘
+```
+
+## Drop projected graph
+
+### Syntax
+
+```
+CALL drop_projected_graph(
+    graph_name
+)
+```
+**Parameters**
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `graph_name` | STRING | Yes | - | Name of the projected graph to drop |
