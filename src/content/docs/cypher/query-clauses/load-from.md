@@ -47,7 +47,7 @@ See the
 The configurations documented in those pages can also be specified after the `LOAD FROM` statement inside `()` when scanning
 CSV files. For example, you can indicate that the first line should
 be interpreted as a header line by setting `(headers = true)` or that the CSV delimiter is '|' by setting `(DELIM="|")`.
-Some of these configurations are also by default [automatically detected](/import/csv#auto-detecting-configurations) by Kuzu when scanning CSV files.
+Some of these configurations are also by default [automatically detected](/import/csv#csv-configurations) by Kuzu when scanning CSV files.
 These configurations determine the names and data types of the 
 variables that bind to the fields scanned from CSV files.
 This page does not document those options in detail. We refer you to [CSV Configurations](/import/csv#csv-configurations) and 

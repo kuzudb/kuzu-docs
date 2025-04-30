@@ -117,17 +117,16 @@ Alternatively, you can just specify a list of files to be loaded.
 COPY User FROM ["User0.csv", "User0.csv", "User2.csv"]
 ```
 
-## CSV Configurations
+## CSV configurations
 There are a set of configurations that can be set when importing CSV files, such as
 whether the CSV file has a header that should be skipped during loading or what the delimiter character
 between the columns of the CSV is. See below for the list of all supported configurations. These
 configurations can be manually set by specifying parameters inside `( )` at the
 end of the `COPY FROM` clause. Several of the supported configurations, such as the header and delimiter characters,
 are automatically detected if they are not manually specified at the end of  `COPY FROM` clause.
-See the [Auto Detecting Configurations](#auto-detecting-configurations) section for more details
-how Kuzu automatically detects these configurations.
+See the subsections below for more details onhow Kuzu automatically detects these configurations.
 
-The following table shows the configuration parameters supported:
+The following configuration parameters are supported:
 
 | Parameter              | Description                                                                                                                                                                                                                                                                                                                                                 | Default Value |
 |:-----------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
