@@ -147,13 +147,12 @@ For example, the query below specifies that the CSV delimiter is `|` and also th
 COPY User FROM "user.csv" (HEADER=true, DELIM="|");
 ```
 
-**Note on Boolean options:** Any option that is a `Boolean` can be enabled or disabled in multiple ways. You can write `true`, or `1` to enable the option (e.g., `(HEADER=true)` or `(HEADER=1)`) , and `false` or `0` to disable it (e.g., `(HEADER=false)` or `(HEADER=0)`).
+:::note[Note on Boolean options]
+Any option that is a `Boolean` can be enabled or disabled in multiple ways. You can write `true`, or `1` to enable the option (e.g., `(HEADER=true)` or `(HEADER=1)`) , and `false` or `0` to disable it (e.g., `(HEADER=false)` or `(HEADER=0)`).
 The `Boolean` value can also be omitted (e.g., by only passing `(HEADER)`), in which case `true` is assumed.
 Finally, the assignment operator `=` can also be omitted and replaced with space (e.g., `(HEADER true)` is equivalent to `(HEADER=true)`).
+:::
 
-
-
-### Auto Detecting Configurations
 If any of the following configuration options are not manually specified at the end of the `COPY FROM` statement,
 by default Kuzu will try to automatically detect them:
 - HEADER
@@ -178,17 +177,18 @@ COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
 Then, Kuzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `"` respectively (and use
 the manually specified configurations for `HEADER` and `DELIM`).
 
-**sample_size**: By default, Kuzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
+### Sample size parameter
+By default, Kuzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
 If you want to use a different number of lines, you can specify the `sample_size` parameter.
 
 For interested users, below are more details of how Kuzu automatically tries to detect these configurations.
 
-**HEADER auto detection** parses the first line of the CSV into columns and
-checks if each column can be cast to the data type of the target column in the node or rel table that is being copied into.
+### Header auto detection
+Kuzu parses the first line of the CSV into columns and checks if each column can be cast to the data type of the target column in the node or rel table that is being copied into.
 If so, the line is assumed to be a valid "data" line and inserted as a record into the target table. Otherwise, it is assumed to be
 a header line and skipped.
 
-**DELIM, QUOTE, ESCAPE auto detection**
+### Delimiter, quote and escape character auto detection
 Kuzu uses the first `sample_size` lines to auto detect any configuration that has not been manually specified.
 The possible configurations for different configurations are:
 - DELIM: `,`, `|`, `;`, `\t`.
@@ -198,13 +198,16 @@ The possible configurations for different configurations are:
 For the unspecified configurations, Kuzu considers parsing the samples lines it scans (see the `sample_size` parameter)
 for each possible configuration combination and then picks the configuration combination that successfully parses the most lines and with the most consistent number of columns in each row.
 
-**Compressed CSV** To reduce file size, CSV files are often distributed in compressed formats. Kuzu supports directly scanning GZIP-compressed CSV files (typically with a .gz extension) without requiring manual decompression. To load data from a compressed CSV, simply specify the file path in the LOAD FROM or COPY FROM clause.
-For example, consider the user.csv file provided above:
-We firstly compress it using `gzip` command:
+## Compressed CSV files
+To reduce file size, CSV files are often distributed in compressed formats. Kuzu supports directly scanning `*.csv.gz` files (compressed with `gzip`)
+without requiring manual decompression. Simply specify the file path in the `LOAD FROM` or `COPY FROM` clause.
+
+Assume that you compress the `user.csv` from above with the `gzip` command:
 ```shell
 gzip -k user.csv
 ```
-Then we can use the `load from` clause to scan the csv file, kuzu will decompress the csv file on the fly.
+
+Then, you can use the `LOAD FROM` clause to scan the compressed file directly.
 ```cypher
 LOAD FROM 'user.csv.gz' RETURN *;
 ```
