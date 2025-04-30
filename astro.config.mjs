@@ -252,6 +252,7 @@ export default defineConfig({
                         },
                         {
                             label: 'Tabular data sources',
+                            collapsed: true,
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
@@ -266,12 +267,13 @@ export default defineConfig({
                                 },
                                 { label: 'Iceberg', link: '/extensions/attach/iceberg' },
                                 { label: 'Delta Lake', link: '/extensions/attach/delta' },
-                                { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
+                                { label: 'Unity Catalog', link: '/extensions/attach/unity'},
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
                         { label: 'Full-text search', link: '/extensions/full-text-search' },
-                        { label: 'Vector search', link: '/extensions/vector', badge: { text: 'New' }},
+                        { label: 'Vector search', link: '/extensions/vector'},
+                        { label: 'Neo4j', link: '/extensions/neo4j', badge: { text: 'New' }},
                     ],
                 },
             ],
