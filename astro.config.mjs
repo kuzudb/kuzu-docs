@@ -282,7 +282,8 @@ export default defineConfig({
                                         { label: 'Weakly connected components', link: '/extensions/gds/algorithms/wcc'},
                                         { label: 'Strongly connected components', link: '/extensions/gds/algorithms/scc'},
                                         { label: 'PageRank', link: '/extensions/gds/algorithms/pagerank'},
-                                        { label: 'K-Core decomposition', link: '/extensions/gds/algorithms/kcore'}
+                                        { label: 'K-Core decomposition', link: '/extensions/gds/algorithms/kcore'},
+                                        { label: 'Louvain', link: '/extensions/gds/algorithms/louvain'}
                                     ]
                                 }
                             ]
