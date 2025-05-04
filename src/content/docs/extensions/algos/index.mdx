@@ -1,0 +1,224 @@
+---
+title: Graph algorithms
+---
+
+The graph algorithms extension package allows you to directly run popular graph algorithms
+like PageRank, connected components and Louvain on your graph data stored in Kuzu. Using this extension,
+you do not need to export your data to specialized graph analytics tools like NetworkX (at
+least for the algorithms that are supported by the extension). The algorithms run natively
+in Kuzu, which also allows you to scale to very large graphs!
+
+Graph algorithms are useful tools for extracting meaningful insights from connected data.
+Whether you're detecting fraud patterns in financial transactions, optimizing supply chain networks,
+or analyzing social media interactions, these algorithms help you understand complex relationships and
+make data-driven decisions. The following sections describe how to use the graph algorithms extension
+in Kuzu.
+
+## Create a projected graph
+
+The first step to run a graph algorithm on a Kuzu database table is to create a projected subgraph.
+A projected graph or subgraph contains _only_ the nodes and relationships that are relevant for
+the algorithm you want to run, and is created by matching on a given table name and predicates.
+
+A projected graph is kept alive until:
+- It is dropped explicitly; or
+- The connection is closed.
+
+:::note[Evaluation of projected graphs]
+A projected subgraph is evaluated _only_ when the algorithm is executed, so it can always
+scan the most up-to-date data from the database.
+:::
+
+### Simple projection
+
+#### Syntax
+To create a projected graph with selected node and relationship tables, you can use the following syntax:
+
+```cypher
+CALL PROJECT_GRAPH(
+    graph_name,
+    [
+        node_table_0, node_table_1, ...
+    ],
+    [
+        rel_table_0, rel_table_1, ...
+    ]
+)
+```
+
+#### Parameters
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `graph_name` | String | Yes | - | Name of the projected graph |
+| `node_table_x` | STRING | Yes | - | Name of node table to project |
+| `rel_table_x` | STRING | Yes | - | Name of relationship table to project |
+
+This is better illustrated with an example.
+
+#### Example
+
+Let's create a simple graph projection on a node and a relationship table.
+
+```cypher
+CREATE NODE TABLE Node(id STRING PRIMARY KEY);
+CREATE REL TABLE Edge(FROM Node to Node, id INT64);
+CREATE (u0:Node {id: 'A'}),
+        (u1:Node {id: 'B'}),
+        (u2:Node {id: 'C'}),
+        (u3:Node {id: 'D'}),
+        (u4:Node {id: 'E'}),
+        (u5:Node {id: 'F'}),
+        (u6:Node {id: 'G'}),
+        (u7:Node {id: 'H'}),
+        (u8:Node {id: 'I'}),
+        (u0)-[:Edge {id:0}]->(u1),
+        (u1)-[:Edge {id:1}]->(u2),
+        (u5)-[:Edge {id:2}]->(u4),
+        (u6)-[:Edge {id:3}]->(u4),
+        (u6)-[:Edge {id:4}]->(u5),
+        (u6)-[:Edge {id:5}]->(u7),
+        (u7)-[:Edge {id:6}]->(u4),
+        (u6)-[:Edge {id:7}]->(u5)
+
+CALL project_graph('Graph', ['Node'], ['Edge']);
+```
+This creates a projected graph named `Graph` with the node table `Node` and the relationship table
+`Edge`.
+
+Now, we can run a graph algorithm on this projected graph.
+```cypher
+CALL weakly_connected_component('Graph')
+RETURN group_id, collect(node.id);
+```
+```
+┌──────────┬──────────────────┐
+│ group_id │ COLLECT(node.id) │
+│ INT64    │ STRING[]         │
+├──────────┼──────────────────┤
+│ 5        │ [G,F,H,E]        │
+│ 0        │ [D]              │
+│ 2        │ [B,C,A]          │
+│ 1        │ [I]              │
+└──────────┴──────────────────┘
+```
+
+### Filtered projection
+
+#### Syntax
+
+```cypher
+CALL project_graph(
+    graph_name,
+    {
+        node_table_0 : {
+            'filter': node_predicate_0
+        },
+        node_table_1 : {
+            'filter': node_predicate_1
+        },
+        ...
+    },
+    {
+        rel_table_0 : {
+            'filter': rel_predicate_0
+        },
+        rel_table_1 : {
+            'filter': rel_predicate_1
+        },
+        ...
+    }
+)
+```
+
+#### Parameters
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `graph_name` | String | Yes | - | Name of the projected graph |
+| `node_table_x` | STRING | Yes | - | Name of node table to project |
+| `rel_table_x` | STRING | Yes | - | Name of relationship table to project |
+| `node_predicate_0` | STRING | Yes | - | Predicate to execute on node table |
+| `rel_predicate_0` | STRING | Yes | - | Predicate to execute on relationship table |
+
+:::caution[Note]
+- The predicate must depend only on its node/relationship table, i.e. predicates involving multiple tables are not supported.
+- Since we don't assign a variable to the node/relationship table, we use `n` to reference the node and
+`r` to reference the relationship table. So properties need to be in the form of `n.property_name` or `r.property_name`.
+:::
+
+#### Example
+
+Let's use the same database as in the simple projection example above. This time, we want to project
+only the nodes with `id` not equal to `I` and the relationships with `id` less than `3` to obtain
+a filtered projected graph named `Filtered_Graph`.
+
+```cypher
+CALL project_graph(
+    'Filtered_Graph',
+    {
+        'Node': {'filter': 'n.id <> "I"'}
+    },
+    {
+        'Edge': {'filter': 'r.id < 3'}
+    }
+);
+```
+
+Now, we can run a graph algorithm on this filtered projected graph.
+```cypher
+CALL weakly_connected_component('Filtered_Graph')
+RETURN group_id, collect(node.id);
+```
+```
+┌──────────┬──────────────────┐
+│ group_id │ COLLECT(node.id) │
+│ INT64    │ STRING[]         │
+├──────────┼──────────────────┤
+│ 2        │ [B,C,A]          │
+│ 0        │ [D]              │
+│ 5        │ [G]              │
+│ 6        │ [F,E]            │
+│ 7        │ [H]              │
+└──────────┴──────────────────┘
+```
+
+## List available projected graphs
+
+You can list all available projected graphs using the following syntax:
+
+```cypher
+CALL SHOW_PROJECTED_GRAPH() RETURN *;
+```
+
+See the [CALL](/cypher/query-clauses/call#show_projected_graph) function docs for more details
+on what parameters are supported.
+
+## Drop projected graph
+
+As mentioned, the projected graph is kept alive until it is explicitly dropped, or the connection
+is closed. You can explicitly drop a projected graph using the following syntax:
+
+#### Syntax
+
+```cypher
+CALL drop_projected_graph(
+    'graph_name'
+)
+```
+
+#### Parameters
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `graph_name` | STRING | Yes | - | Name of the projected graph to drop |
+
+#### Example
+
+Let's drop the projected graph `Filtered_Graph` that we created in the filtered projection example above.
+
+```cypher
+CALL drop_projected_graph('Filtered_Graph');
+```
+
+The projected graph `Filtered_Graph` is now dropped.

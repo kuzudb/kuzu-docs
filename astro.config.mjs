@@ -252,6 +252,7 @@ export default defineConfig({
                         },
                         {
                             label: 'Tabular data sources',
+                            collapsed: true,
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
@@ -266,31 +267,25 @@ export default defineConfig({
                                 },
                                 { label: 'Iceberg', link: '/extensions/attach/iceberg' },
                                 { label: 'Delta Lake', link: '/extensions/attach/delta' },
-                                { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
+                                { label: 'Unity Catalog', link: '/extensions/attach/unity' },
                             ]
                         },
                         {
                             label: 'Graph algorithms',
                             collapsed: true,
+                            badge: { text: 'New' },
                             items: [
-                                { label: 'Overview', link: '/extensions/gds'},
-                                { label: 'Graph projection', link: '/extensions/gds/graph-projection'},
-                                { 
-                                    label: 'Algorithms',
-                                    collapsed: true,
-                                    items: [
-                                        { label: 'Weakly connected components', link: '/extensions/gds/algorithms/wcc'},
-                                        { label: 'Strongly connected components', link: '/extensions/gds/algorithms/scc'},
-                                        { label: 'PageRank', link: '/extensions/gds/algorithms/pagerank'},
-                                        { label: 'K-Core decomposition', link: '/extensions/gds/algorithms/kcore'},
-                                        { label: 'Louvain', link: '/extensions/gds/algorithms/louvain'}
-                                    ]
-                                }
+                                { label: 'Overview', link: '/extensions/algos'},
+                                { label: 'Weakly connected components', link: '/extensions/algos/wcc'},
+                                { label: 'Strongly connected components', link: '/extensions/algos/scc'},
+                                { label: 'PageRank', link: '/extensions/algos/pagerank'},
+                                { label: 'K-Core decomposition', link: '/extensions/algos/kcore'},
+                                { label: 'Louvain', link: '/extensions/algos/louvain'},
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
                         { label: 'Full-text search', link: '/extensions/full-text-search' },
-                        { label: 'Vector search', link: '/extensions/vector', badge: { text: 'New' }},
+                        { label: 'Vector search', link: '/extensions/vector' },
                     ],
                 },
             ],
