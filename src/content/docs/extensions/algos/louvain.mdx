@@ -2,7 +2,7 @@
 title: Louvain
 ---
 
-The Louvain method extracts communities from large networks by maximizing their
+The Louvain algorithm extracts communities from large networks by maximizing their
 [modularity score](https://en.wikipedia.org/wiki/Louvain_method#Modularity),
 where the modularity measures the relative density of edges inside communities
 as compared to edges outside communities. A higher modularity theoretically
@@ -15,7 +15,7 @@ of the graph becomes stable. Nodes within the same community are then merged
 into supernodes for the next phase. Phases run until the number of communities
 become stable.
 
-Kuzu implements parallel Louvain based on [Grappolo](https://hpc.pnl.gov/people/hala/grappolo.html).
+Kuzu implements a parallelized version of the Louvain algorithm based on [Grappolo](https://hpc.pnl.gov/people/hala/grappolo.html).
 
 ## Syntax
 
@@ -28,7 +28,7 @@ CALL louvain(
 RETURN node, louvain_id
 ```
 
-**Parameters**
+#### Parameters
 
 | Parameter | Type | Optional | Default | Description |
 |-----------|------|----------|---------|-------------|
@@ -36,7 +36,7 @@ RETURN node, louvain_id
 | maxPhases | INT64 | Yes | 20 | Maximum number of phases to run |
 | maxIterations | INT64 | Yes | 20 | Maximum number of iterations to run in each phase |
 
-**Return**
+#### Return
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -74,13 +74,15 @@ CREATE  (u0:Node {id: 'A'}),
         (u6)-[:Edge]->(u7),
         (u3)-[:Edge]->(u4);
 ```
-Project graph
+We'll first create a projected graph from the node and edge tables.
 ```cypher
 CALL create_projected_graph('Graph', ['Node'], ['Edge']);
 ```
-Run Louvain
+Run the Louvain algorithm on the projected graph as follows:
 ```cypher
 CALL louvain('Graph') RETURN louvain_id, collect(node.id);
+```
+```
 ┌────────────┬──────────────────┐
 │ louvain_id │ COLLECT(node.id) │
 │ INT64      │ STRING[]         │

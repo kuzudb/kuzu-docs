@@ -2,15 +2,14 @@
 title: PageRank
 ---
 
-PageRank is a link analysis algorithm used by Google Search to rank web pages in their search engine results. 
-It works by counting the number and quality of links to a page to determine a rough estimate of how important the website is. 
-The underlying assumption is that more important websites are likely to receive more links from other websites. 
+The PageRank algorithm ranks entities in a network based on their importance by analyzing connections
+between them. Each entity (e.g., nodes in a social network, documents, or proteins) gets a score, with
+higher scores for those linked to by other high-scoring entities. Scores are iteratively calculated,
+distributing an entity’s rank across its outgoing connections, until stable. In general domains, like
+citation networks or recommendation systems, it identifies influential nodes, such as highly cited
+papers or key influencers.
 
-In graph theory terms, PageRank assigns numerical weights to each node in a directed graph, where nodes represent web pages and edges represent hyperlinks. 
-The algorithm iteratively computes a score for each node based on the scores of its incoming links, with the final scores representing the relative importance of each page. 
-This concept has been widely applied beyond web search to analyze the importance or influence of nodes in various types of networks, such as social networks, citation networks, and biological networks.
-
-Kuzu implements parallel PageRank based on [Ligra](https://jshun.csail.mit.edu/ligra.shtml).
+Kuzu implements a parallelized version of PageRank based on [Ligra](https://jshun.csail.mit.edu/ligra.shtml).
 
 ## Syntax
 
@@ -24,7 +23,7 @@ CALL page_rank(
 RETURN node, rank
 ```
 
-**Parameters**
+#### Parameters
 
 | Parameter | Type | Optional | Default | Description |
 |-----------|------|----------|---------|-------------|
@@ -33,7 +32,7 @@ RETURN node, rank
 | maxIterations | INT64 | Yes | 20 | Maximum number of iterations to run |
 | tolerance | FLOAT64 | Yes | 0.00001 | Minimum change in scores between iterations to continue |
 
-**Return**
+#### Return
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -60,13 +59,15 @@ CREATE (u0:Node {id: 'A'}),
         (u2)-[:Edge]->(u4),
         (u3)-[:Edge]->(u4);
 ```
-Project graph
+We'll first create a projected graph from the node and edge tables.
 ```cypher
 CALL create_projected_graph('Graph', ['Node'], ['Edge']);
 ```
-Run PageRank
+Run PageRank on the projected graph as follows:
 ```cypher
 CALL page_rank('Graph') RETURN node.id, rank ORDER BY rank DESC;
+```
+```
 ┌─────────┬──────────┐
 │ node.id │ rank     │
 │ STRING  │ DOUBLE   │
