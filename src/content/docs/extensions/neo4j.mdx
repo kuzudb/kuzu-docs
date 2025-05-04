@@ -1,0 +1,127 @@
+---
+title: "Neo4j extension"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Kuzu provides a `Neo4j` extension that allows you to easily and efficiently migrate your Neo4j data into a Kuzu database.
+
+:::caution[Current status]
+- This is an experimental extension that currently largely functions as a migration tool. In the future, more use cases can be looked into.
+- Migrating multi-label nodes from Neo4j to Kuzu is currently not supported since Kuzu doesn't support multi-label nodes.
+:::
+
+## Example dataset
+
+We'll use the following graph in Neo4j to demonstrate how this extension can be used.
+First, set up a Neo4j database connection and run the following Cypher statements in a Neo4j shell to CREATE the graph.
+
+```cypher
+// Create person nodes
+CREATE (u:User {name: 'Adam', age: 30});
+CREATE (u:User {name: 'Karissa', age: 40});
+CREATE (u:User {name: 'Zhang', age: 50});
+CREATE (u:User {name: 'Noura', age: 25});
+// Create city nodes
+CREATE (c:City {name: 'Waterloo', population: 150000});
+CREATE (c:City {name: 'Kitchener', population: 200000});
+CREATE (c:City {name: 'Guelph', population: 75000});
+// Create person-city relationships
+MATCH (u:User {name: 'Adam'}), (c:City {name: 'Waterloo'}) CREATE (u)-[:LivesIn]->(c);
+MATCH (u:User {name: 'Karissa'}), (c:City {name: 'Waterloo'}) CREATE (u)-[:LivesIn]->(c);
+MATCH (u:User {name: 'Zhang'}), (c:City {name: 'Kitchener'}) CREATE (u)-[:LivesIn]->(c);
+MATCH (u:User {name: 'Noura'}), (c:City {name: 'Guelph'}) CREATE (u)-[:LivesIn]->(c);
+// Create person-person relationships
+MATCH (u:User {name: 'Adam'}), (u1:User {name: 'Karissa'}) CREATE (u)-[:Follows {since: 2020}]->(u1);
+MATCH (u:User {name: 'Adam'}), (u1:User {name: 'Zhang'}) CREATE (u)-[:Follows {since: 2020}]->(u1);
+MATCH (u:User {name: 'Karissa'}), (u1:User {name: 'Zhang'}) CREATE (u)-[:Follows {since: 2021}]->(u1);
+MATCH (u:User {name: 'Zhang'}), (u1:User {name: 'Noura'}) CREATE (u)-[:Follows {since: 2022}]->(u1);
+```
+The query shown above creates `User`, `City` nodes and `LivesIn`, `Follows` relationships in Neo4j.
+
+## Install Neo4j extension in Kuzu
+
+Install and load the `Neo4j` extension in Kuzu just like any other extension.
+
+```sql
+INSTALL neo4j;
+LOAD neo4j;
+```
+
+The Neo4j migration tool relies on the [APOC](https://neo4j.com/labs/apoc/) extension to export labels in Neo4j. 
+To ensure the Neo4j migration tool works as intended, install the `APOC` extension in Neo4j and add the
+following config lines to the `apoc.conf` file in your Neo4j client:
+```sql
+apoc.export.file.enabled=true
+apoc.import.file.use_neo4j_config=false
+```
+
+In the following sections, we show how to migrate the *labels* from Neo4j to *__tables__* in Kuzu.
+
+## Data Migration
+
+Use the `NEO4J_MIGRATE` function along with a `CALL` clause to migrate the data from Neo4j to Kuzu.
+Specify each node label and relationship label to be migrated manually as follows:
+
+```cypher
+CALL NEO4J_MIGRATE(
+    'HOST_NAME',
+    'USER_NAME',
+    'PASSWORD',
+    ['NODE_LABEL1', 'NODE_LABEL2', 'NODE_LABEL3', ...],
+    ['REL_LABEL1', 'REL_LABEL2', 'REL_LABEL3', ...]
+)
+```
+- `HOST_NAME`: The url of NEO4J server.
+- `USER_NAME`: NEO4J user name.
+- `PASSWORD`: NEO4J password.
+- `NODE_LABEL`: The node labels to migrate to kuzu. (Note: Migrating mutli-lable nodes is not supported)
+- `REL_LABEL`: The rel labels to migrate to kuzu.
+
+In our example above, we can specify the `User`, `City`, `LivesIn` and `Follows` labels:
+```cypher
+CALL NEO4J_MIGRATE(
+    "HOST",
+    "USER_NAME",
+    "PASSWORD",
+    ["User", "City"],
+    ["Follows", "LivesIn"]
+);
+```
+
+Once finished, to verify that tables that have been migrated to Kuzu, you can use the `SHOW_TABLES()` function:
+```cypher
+CALL SHOW_TABLES()
+RETURN *
+```
+
+This will return the expected node and relationship tables in Kuzu, that conform to the respective labels in Neo4j.
+```
+┌────────┬─────────┬────────┬───────────────┬─────────┐
+│ id     │ name    │ type   │ database name │ comment │
+│ UINT64 │ STRING  │ STRING │ STRING        │ STRING  │
+├────────┼─────────┼────────┼───────────────┼─────────┤
+│ 0      │ User    │ NODE   │ local(kuzu)   │         │
+│ 2      │ Follows │ REL    │ local(kuzu)   │         │
+│ 1      │ City    │ NODE   │ local(kuzu)   │         │
+│ 3      │ LivesIn │ REL    │ local(kuzu)   │         │
+└────────┴─────────┴────────┴───────────────┴─────────┘
+```
+
+That's it! The data you had in Neo4j should now be in Kuzu and you can run regular cypher queries.
+The query below asks for the user who most recently followed another user.
+
+```cypher
+MATCH (u:User)-[f:Follows]->(u1:User)
+RETURN max(f.since);
+```
+
+Result:
+```
+┌──────────────┐
+│ MAX(f.since) │
+│ INT64        │
+├──────────────┤
+│ 2022         │
+└──────────────┘
+```
