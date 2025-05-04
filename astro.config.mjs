@@ -242,10 +242,10 @@ export default defineConfig({
                     items: [
                         { label: 'Overview', link: '/extensions'},
                         { 
-                            label: 'Http file system',
+                            label: 'HTTP file system',
                             collapsed: true,
                             items: [
-                                { label: 'Https', link: '/extensions/httpfs#https-file-system'},
+                                { label: 'HTTPS', link: '/extensions/httpfs#https-file-system'},
                                 { label: 'Amazon S3', link: '/extensions/httpfs#aws-s3-file-system'},
                                 { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system', badge: { text: 'New' }},
                             ]
