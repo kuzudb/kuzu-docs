@@ -19,6 +19,7 @@ CALL page_rank(
     dampingFactor := 0.85, 
     maxIterations := 20, 
     tolerance := 0.0000001
+    normalizeInitial := true
 )
 RETURN node, rank
 ```
@@ -31,6 +32,8 @@ RETURN node, rank
 | dampingFactor | FLOAT64 | Yes | 0.85 | Probability of following an outgoing edge, must between 0 and 1 |
 | maxIterations | INT64 | Yes | 20 | Maximum number of iterations to run |
 | tolerance | FLOAT64 | Yes | 0.00001 | Minimum change in scores between iterations to continue |
+| normalizeInitial | BOOLEAN | Yes | true | Whether to normalize initial scores to sum to 1 |
+
 
 #### Return
 
@@ -61,7 +64,7 @@ CREATE (u0:Node {id: 'A'}),
 ```
 We'll first create a projected graph from the node and edge tables.
 ```cypher
-CALL create_projected_graph('Graph', ['Node'], ['Edge']);
+CALL project_graph('Graph', ['Node'], ['Edge']);
 ```
 Run PageRank on the projected graph as follows:
 ```cypher

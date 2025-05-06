@@ -76,7 +76,7 @@ CREATE  (u0:Node {id: 'A'}),
 ```
 We'll first create a projected graph from the node and edge tables.
 ```cypher
-CALL create_projected_graph('Graph', ['Node'], ['Edge']);
+CALL project_graph('Graph', ['Node'], ['Edge']);
 ```
 Run the Louvain algorithm on the projected graph as follows:
 ```cypher

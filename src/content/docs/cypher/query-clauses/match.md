@@ -575,6 +575,7 @@ MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
 │ Adam    │ 2024    │ 11.000000 │ Zhang   │
 └─────────┴─────────┴───────────┴─────────┘
 ```
+Then we can query all shortest paths from `Adam` to other users through `score` property.
 ```
 MATCH p=(a:User)-[e:Follows* ALL WSHORTEST(score)]->(b:User) 
 WHERE a.name='Adam' 

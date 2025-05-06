@@ -63,7 +63,7 @@ CREATE (alice:Node {id:'Alice'}),
 ```
 Project graph
 ```cypher
-CALL create_projected_graph('Graph', ['Node'], ['Edge']);
+CALL project_graph('Graph', ['Node'], ['Edge']);
 ```
 ```cypher
 CALL k_core_decomposition('Graph') RETURN node.id, k_degree ORDER BY k_degree DESC;

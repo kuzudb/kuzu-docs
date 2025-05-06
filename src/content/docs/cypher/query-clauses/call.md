@@ -310,7 +310,7 @@ CALL SHOW_PROJECTED_GRAPH() RETURN *;
 │ name           │ nodes                 │ rels                 │
 │ STRING         │ STRING                │ STRING               │
 ├────────────────┼───────────────────────┼──────────────────────┤
-│ social_network │ {{'table': 'person'}} │ {{'table': 'knows'}} │
+│ social_network │ [{'table': 'person'}] │ [{'table': 'knows'}] │
 └────────────────┴───────────────────────┴──────────────────────┘
 ```
 
