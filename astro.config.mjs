@@ -276,11 +276,11 @@ export default defineConfig({
                             badge: { text: 'New' },
                             items: [
                                 { label: 'Overview', link: '/extensions/algos'},
-                                { label: 'Weakly connected components', link: '/extensions/algos/wcc'},
-                                { label: 'Strongly connected components', link: '/extensions/algos/scc'},
-                                { label: 'PageRank', link: '/extensions/algos/pagerank'},
                                 { label: 'K-Core decomposition', link: '/extensions/algos/kcore'},
                                 { label: 'Louvain', link: '/extensions/algos/louvain'},
+                                { label: 'PageRank', link: '/extensions/algos/pagerank'},
+                                { label: 'Strongly connected components', link: '/extensions/algos/scc'},
+                                { label: 'Weakly connected components', link: '/extensions/algos/wcc'},
                             ]
                         },
                         { label: 'JSON', link: '/extensions/json' },
