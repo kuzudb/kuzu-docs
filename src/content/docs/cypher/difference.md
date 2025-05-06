@@ -30,10 +30,6 @@ It is recommended to always specifying node and relationship labels explicitly i
 
 Kuzu can scan files not only in the format of CSV, so the `LOAD CSV FROM` clause is renamed to `LOAD FROM`.
 
-### MATCH and OPTIONAL MATCH
-
-Relationship cannot be omitted. For example `--`, `-->` and `<--` are not supported. You need to use `-[]-`, `-[]->` and `<-[]-` instead.
-
 #### Semantics
 
 Neo4j adopts a trail semantic (no repeated edge) for pattern within a `MATCH` clause, whereas Kuzu adopts _walk_ semantic

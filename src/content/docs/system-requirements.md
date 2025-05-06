@@ -16,7 +16,11 @@ Kuzu's Node.js API is based on **Node-API version 5**. For a list of compatible 
 
 ## Java
 
-Kuzu's Java API is compatible with **Java 11+**. The OS compatibility is the same as C/C++ APIs. The Java API is distributed as a JAR file with pre-compiled native libraries for all supported platforms bundled inside. It does not require any additional dependencies.
+Kuzu's Java API is compatible with **Java 11+**. The OS compatibility is the same as C/C++ APIs. 
+
+The Java API also works on Android ARMv8-A platform. The precompiled binaries are compiled targetting [API level 21](https://developer.android.com/tools/releases/platforms). 
+
+The Java API is distributed as a JAR file with pre-compiled native libraries for all supported platforms bundled inside. It does not require any additional dependencies.
 
 ## Rust
 

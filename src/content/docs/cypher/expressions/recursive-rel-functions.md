@@ -11,6 +11,7 @@ description: Functions that are used to manipulate recursive relationships
 | `IS_TRAIL` | check if path contains repeated relationships |
 | `IS_ACYCLIC` | check if path contains repeated nodes |
 | `LENGTH` | returns the number of relationships (path length) in a recursive relationship |
+| `COST` | returns the cost of weighted path |
 
 ### NODES
 
@@ -180,3 +181,35 @@ RETURN LENGTH(p);
 
 The `LENGTH` function when applied to a recursive relationship is shorthand for `SIZE(rels(p))`,
 which also returns the same result.
+
+### Cost
+
+Return the cost weighted path. This function only works for `WSHORTEST` and `ALL WSHORTEST`.
+
+| Input type | Output type |
+| ----------- | ----------- |
+| `RECURSIVE_REL` | `DOUBLE` |
+
+**Example**
+```
+MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
+┌─────────┬─────────┬───────────┬─────────┐
+│ a.name  │ e.since │ e.score   │ b.name  │
+│ STRING  │ INT64   │ DOUBLE    │ STRING  │
+├─────────┼─────────┼───────────┼─────────┤
+│ Adam    │ 2020    │ 5.000000  │ Karissa │
+│ Adam    │ 2020    │ 20.000000 │ Zhang   │
+│ Karissa │ 2021    │ 6.000000  │ Zhang   │
+│ Zhang   │ 2022    │ 22.000000 │ Noura   │
+└─────────┴─────────┴───────────┴─────────┘
+MATCH p=(a:User)-[e:Follows* WSHORTEST(score)]->(b:User) 
+WHERE a.name='Adam' RETURN properties(nodes(p), 'name'), cost(e);
+┌────────────────────────────┬───────────┐
+│ PROPERTIES(NODES(p),name)  │ e_cost    │
+│ STRING[]                   │ DOUBLE    │
+├────────────────────────────┼───────────┤
+│ [Adam,Karissa,Zhang,Noura] │ 33.000000 │
+│ [Adam,Karissa,Zhang]       │ 11.000000 │
+│ [Adam,Karissa]             │ 5.000000  │
+└────────────────────────────┴───────────┘
+```

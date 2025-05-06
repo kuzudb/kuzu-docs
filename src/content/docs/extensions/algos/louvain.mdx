@@ -1,0 +1,93 @@
+---
+title: Louvain
+---
+
+The Louvain algorithm extracts communities from large networks by maximizing their
+[modularity score](https://en.wikipedia.org/wiki/Louvain_method#Modularity),
+where the modularity measures the relative density of edges inside communities
+as compared to edges outside communities. A higher modularity theoretically
+represents a better grouping of the nodes into communities.
+
+The Louvain algorithm is a hierarchical clustering algorithm that runs in
+phases. In each phase, the nodes start in their own community and the algorithm
+attempts to iteratively group nodes into the same community until the modularity
+of the graph becomes stable. Nodes within the same community are then merged
+into supernodes for the next phase. Phases run until the number of communities
+become stable.
+
+Kuzu implements a parallelized version of the Louvain algorithm based on [Grappolo](https://hpc.pnl.gov/people/hala/grappolo.html).
+
+## Syntax
+
+```
+CALL louvain(
+    graph_name,
+    maxPhases := 20, 
+    maxIterations := 20, 
+)
+RETURN node, louvain_id
+```
+
+#### Parameters
+
+| Parameter | Type | Optional | Default | Description |
+|-----------|------|----------|---------|-------------|
+| graph_name | STRING | No | - | Name of the projected graph to run the algorithm on |
+| maxPhases | INT64 | Yes | 20 | Maximum number of phases to run |
+| maxIterations | INT64 | Yes | 20 | Maximum number of iterations to run in each phase |
+
+#### Return
+
+| Column | Type | Description |
+|--------|------|-------------|
+| node | NODE | Node object |
+| louvain_id | INT64 | The louvain community ID that the node belongs to |
+
+## Example
+
+Define schema
+```cypher
+CREATE NODE TABLE Node(id STRING PRIMARY KEY);
+CREATE REL TABLE Edge(FROM Node to Node);
+```
+Insert nodes and edges
+```cypher
+CREATE  (u0:Node {id: 'A'}),
+        (u1:Node {id: 'B'}),
+        (u2:Node {id: 'C'}),
+        (u3:Node {id: 'D'}),
+        (u4:Node {id: 'E'}),
+        (u5:Node {id: 'F'}),
+        (u6:Node {id: 'G'}),
+        (u7:Node {id: 'H'}),
+        (u0)-[:Edge]->(u1),
+        (u0)-[:Edge]->(u2),
+        (u1)-[:Edge]->(u2),
+        (u0)-[:Edge]->(u3),
+        (u1)-[:Edge]->(u3),
+        (u2)-[:Edge]->(u3),
+        (u4)-[:Edge]->(u5),
+        (u4)-[:Edge]->(u6),
+        (u5)-[:Edge]->(u6),
+        (u4)-[:Edge]->(u7),
+        (u5)-[:Edge]->(u7),
+        (u6)-[:Edge]->(u7),
+        (u3)-[:Edge]->(u4);
+```
+We'll first create a projected graph from the node and edge tables.
+```cypher
+CALL project_graph('Graph', ['Node'], ['Edge']);
+```
+Run the Louvain algorithm on the projected graph as follows:
+```cypher
+CALL louvain('Graph') RETURN louvain_id, collect(node.id);
+```
+```
+┌────────────┬──────────────────┐
+│ louvain_id │ COLLECT(node.id) │
+│ INT64      │ STRING[]         │
+├────────────┼──────────────────┤
+│ 0          │ [D,C,B,A]        │
+│ 1          │ [E,G,H,F]        │
+└────────────┴──────────────────┘
+```
