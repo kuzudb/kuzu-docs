@@ -14,6 +14,16 @@ or analyzing social media interactions, these algorithms help you understand com
 make data-driven decisions. The following sections describe how to use the graph algorithms extension
 in Kuzu.
 
+## Usage
+
+The graph algorithms functionality is not available by default, so you would first need to install the `ALGO`
+extension by running the following commands:
+
+```sql
+INSTALL ALGO;
+LOAD ALGO;
+```
+
 ## Project graph
 
 The first step to run a graph algorithm on a Kuzu database table is to project a graph.
