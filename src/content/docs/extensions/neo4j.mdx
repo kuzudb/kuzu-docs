@@ -81,9 +81,9 @@ CALL NEO4J_MIGRATE(
 In our example above, we can specify `User` and `City` for node tables, and `LivesIn` and `Follows` fore relationship tables:
 ```cypher
 CALL NEO4J_MIGRATE(
-    "HOST",
-    "USER_NAME",
-    "PASSWORD",
+    "localhost",
+    "neo4j",
+    "neo4jpassword",
     ["User", "City"],
     ["Follows", "LivesIn"]
 );
