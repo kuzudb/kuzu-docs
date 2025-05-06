@@ -4,17 +4,21 @@ title: "Neo4j extension"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Kuzu provides a `Neo4j` extension that allows you to easily and efficiently migrate your Neo4j data into a Kuzu database.
+## Usage
+The `Neo4j` extension allows you to easily and efficiently migrate your Neo4j data into a Kuzu database.
+The functionality is not available by default, so you first need to install and load the `Neo4j` extension by running the following commands:
 
-:::caution[Current status]
-- This is an experimental extension that currently largely functions as a migration tool. In the future, more use cases can be looked into.
-- Migrating multi-label nodes from Neo4j to Kuzu is currently not supported since Kuzu doesn't support multi-label nodes.
-:::
+```sql
+INSTALL neo4j;
+LOAD neo4j;
+```
 
-## Example dataset
+Note that migrating multi-labelled nodes from Neo4j to Kuzu is currently not supported since Kuzu doesn't support multi-labelled nodes.
 
-We'll use the following graph in Neo4j to demonstrate how this extension can be used.
-First, set up a Neo4j database connection and run the following Cypher statements in a Neo4j shell to CREATE the graph.
+### Example dataset
+
+We'll use the following queries to create an [example graph](/cypher/query-clauses/example-database/) in Neo4j to demonstrate how this extension can be used.
+First, set up your Neo4j Desktop locally or a Neo4j database connection, and run the following Cypher queries:
 
 ```cypher
 // Create person nodes
@@ -37,28 +41,24 @@ MATCH (u:User {name: 'Adam'}), (u1:User {name: 'Zhang'}) CREATE (u)-[:Follows {s
 MATCH (u:User {name: 'Karissa'}), (u1:User {name: 'Zhang'}) CREATE (u)-[:Follows {since: 2021}]->(u1);
 MATCH (u:User {name: 'Zhang'}), (u1:User {name: 'Noura'}) CREATE (u)-[:Follows {since: 2022}]->(u1);
 ```
-The query shown above creates `User`, `City` nodes and `LivesIn`, `Follows` relationships in Neo4j.
 
-## Install Neo4j extension in Kuzu
+The queries above create a set of nodes of label `User` and `City`, and a set of relationships of label `LivesIn` and `Follows`.
 
-Install and load the `Neo4j` extension in Kuzu just like any other extension.
+### Set up Neo4j APOC extension
+The Neo4j migration functionality relies on the [APOC](https://neo4j.com/labs/apoc/) extension to be installed in Neo4j desktop or server. 
+You can find details on how to install `APOC` in Neo4j [here](https://neo4j.com/labs/apoc/5/installation/).
 
-```sql
-INSTALL neo4j;
-LOAD neo4j;
-```
-
-The Neo4j migration tool relies on the [APOC](https://neo4j.com/labs/apoc/) extension to export labels in Neo4j. 
-To ensure the Neo4j migration tool works as intended, install the `APOC` extension in Neo4j and add the
-following config lines to the `apoc.conf` file in your Neo4j client:
+Also add the following config lines to the `apoc.conf` file:
 ```sql
 apoc.export.file.enabled=true
 apoc.import.file.use_neo4j_config=false
 ```
+This [doc](https://neo4j.com/docs/operations-manual/current/configuration/file-locations/#neo4j-config) provides instructions on Neo4j's default conf file locations.
+The `apoc.conf` file may not exist in the `conf` directory, under which case, you'd have to create a new one under the `conf` directory.
 
 In the following sections, we show how to migrate the *labels* from Neo4j to *__tables__* in Kuzu.
 
-## Data Migration
+### Data Migration
 
 Use the `NEO4J_MIGRATE` function along with a `CALL` clause to migrate the data from Neo4j to Kuzu.
 Specify each node label and relationship label to be migrated manually as follows:
@@ -108,8 +108,8 @@ This will return the expected node and relationship tables in Kuzu, that conform
 └────────┴─────────┴────────┴───────────────┴─────────┘
 ```
 
-That's it! The data you had in Neo4j should now be in Kuzu and you can run regular cypher queries.
-The query below asks for the user who most recently followed another user.
+That's it! The data you had in Neo4j should now be moved into Kuzu and you can start querying them!
+For example, find the user whom was most recently followed by another user.
 
 ```cypher
 MATCH (u:User)-[f:Follows]->(u1:User)
