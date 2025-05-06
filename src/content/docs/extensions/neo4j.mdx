@@ -56,12 +56,12 @@ apoc.import.file.use_neo4j_config=false
 This [doc](https://neo4j.com/docs/operations-manual/current/configuration/file-locations/#neo4j-config) provides instructions on Neo4j's default conf file locations.
 The `apoc.conf` file may not exist in the `conf` directory, under which case, you'd have to create a new one under the `conf` directory.
 
-In the following sections, we show how to migrate the *labels* from Neo4j to *__tables__* in Kuzu.
+In the following section, we show how to migrate the *labels* from Neo4j to *__tables__* in Kuzu.
 
 ### Data Migration
 
-Use the `NEO4J_MIGRATE` function along with a `CALL` clause to migrate the data from Neo4j to Kuzu.
-Specify each node label and relationship label to be migrated manually as follows:
+We provide the `NEO4J_MIGRATE` function to migrate data from Neo4j to Kuzu.
+The function takes in a few parameters specified as follows:
 
 ```cypher
 CALL NEO4J_MIGRATE(
@@ -72,13 +72,13 @@ CALL NEO4J_MIGRATE(
     ['REL_LABEL1', 'REL_LABEL2', 'REL_LABEL3', ...]
 )
 ```
-- `HOST_NAME`: The url of NEO4J server.
-- `USER_NAME`: NEO4J user name.
-- `PASSWORD`: NEO4J password.
+- `HOST_NAME`: The url of Neo4j server.
+- `USER_NAME`: Neo4j username.
+- `PASSWORD`: Neo4j password.
 - `NODE_LABEL`: The node labels to migrate to kuzu. (Note: Migrating mutli-lable nodes is not supported)
 - `REL_LABEL`: The rel labels to migrate to kuzu.
 
-In our example above, we can specify the `User`, `City`, `LivesIn` and `Follows` labels:
+In our example above, we can specify `User` and `City` for node tables, and `LivesIn` and `Follows` fore relationship tables:
 ```cypher
 CALL NEO4J_MIGRATE(
     "HOST",
@@ -89,13 +89,12 @@ CALL NEO4J_MIGRATE(
 );
 ```
 
-Once finished, to verify that tables that have been migrated to Kuzu, you can use the `SHOW_TABLES()` function:
+Once finished, to verify that tables that have been migrated to Kuzu, you can use the `SHOW_TABLES()` function to verify tables are now imported into Kuzu:
 ```cypher
-CALL SHOW_TABLES()
-RETURN *
+CALL SHOW_TABLES() RETURN *
 ```
 
-This will return the expected node and relationship tables in Kuzu, that conform to the respective labels in Neo4j.
+This will return the expected node and relationship tables in Kuzu, corresponding to labels in Neo4j.
 ```
 ┌────────┬─────────┬────────┬───────────────┬─────────┐
 │ id     │ name    │ type   │ database name │ comment │
@@ -109,19 +108,19 @@ This will return the expected node and relationship tables in Kuzu, that conform
 ```
 
 That's it! The data you had in Neo4j should now be moved into Kuzu and you can start querying them!
-For example, find the user whom was most recently followed by another user.
+For example, let's find the user whom was most recently followed by another user.
 
 ```cypher
 MATCH (u:User)-[f:Follows]->(u1:User)
-RETURN max(f.since);
+RETURN u.nane ORDER BY f.since DESC LIMIT 1;
 ```
 
 Result:
 ```
-┌──────────────┐
-│ MAX(f.since) │
-│ INT64        │
-├──────────────┤
-│ 2022         │
-└──────────────┘
+┌────────┬─────────┐
+│ u.name │ f.since │
+│ STRING │ INT64   │
+├────────┼─────────┤
+│ Zhang  │ 2022    │
+└────────┴─────────┘
 ```
