@@ -1,5 +1,5 @@
 ---
-title: Node & relationship Functions
+title: Node & relationship functions
 description: Node & relationship functions are used to get information about nodes and relationships.
 ---
 
