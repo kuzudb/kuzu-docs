@@ -308,7 +308,6 @@ Example output:
 Kuzu allows you to perform vector similarity search with filter predicates by combining the vector index
 with projected graphs. Detailed information about projected graph can be found [here](/extensions/algos/#create-a-projected-graph).
 
-
 #### Example filtered search using projected graph
 Here's an example from our books dataset that demonstrates how to find books similar to the concept of
 "quantum world" only among those published after 2010:
@@ -322,7 +321,7 @@ Here's an example from our books dataset that demonstrates how to find books sim
 # Step 1: Create a projected graph that filters books by publication year
 conn.execute(
     """
-    CALL CREATE_PROJECTED_GRAPH(
+    CALL PROJECT_GRAPH(
         'filtered_book',
         {'Book': {'filter': 'n.published_year > 2010'}},
         []
@@ -353,7 +352,7 @@ print(result.get_as_pl())
 <TabItem value="cypher" label="Cypher">
 ```cypher
 // Step 1: Create a projected graph that filters books by publication year
-CALL CREATE_PROJECTED_GRAPH(
+CALL PROJECT_GRAPH(
     'filtered_book',   // Name of the projected graph
     {'Book': {'filter': 'n.published_year > 2010'}},   // Projected node table Book with a filter on published_year. `n` is a place_holder here to reference the node table.
     []   // No relationship tables can be projected.
