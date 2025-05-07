@@ -68,14 +68,14 @@ The function takes in a few parameters specified as follows:
 
 ```cypher
 CALL NEO4J_MIGRATE(
-    'HOST_NAME',
+    'URL',
     'USER_NAME',
     'PASSWORD',
     ['NODE_LABEL1', 'NODE_LABEL2', 'NODE_LABEL3', ...],
     ['REL_LABEL1', 'REL_LABEL2', 'REL_LABEL3', ...]
 )
 ```
-- `HOST_NAME`: The hostname of a Neo4j server running on port 7474.
+- `URL`: A `http://hostname:port` connection url to a Neo4j server.
 - `USER_NAME`: Neo4j username. Leave blank if not needed.
 - `PASSWORD`: Neo4j password. Leave blank if not needed.
 - `NODE_LABEL`: The node labels to migrate to kuzu. (Note: multi-label nodes are not yet supported)
@@ -84,7 +84,7 @@ CALL NEO4J_MIGRATE(
 In our example above, we can specify `User` and `City` for node tables, and `LivesIn` and `Follows` fore relationship tables:
 ```cypher
 CALL NEO4J_MIGRATE(
-    "localhost",
+    "http://localhost:7474",
     "neo4j",
     "neo4jpassword",
     ["User", "City"],
