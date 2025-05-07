@@ -24,7 +24,7 @@ The Java API is distributed as a JAR file with pre-compiled native libraries for
 
 ## Rust
 
-Kuzu's Rust API is closely linked with Kuzu's C++ API. By default it compiles the C++ library from source, and the build process has been tested on Windows using MSVC, and macOS and Linux using GCC. If linking to the release binaries (see [here](https://docs.rs/kuzu/latest/kuzu/#building)), the restrictions mentioned for the C++ API above apply.
+The mininum supported Rust version is 1.81.0. Kuzu's Rust API is also closely linked with Kuzu's C++ API. By default it compiles the C++ library from source, and the build process has been tested on Windows using MSVC, and macOS and Linux using GCC. If linking to the release binaries (see [here](https://docs.rs/kuzu/latest/kuzu/#building)), the restrictions mentioned for the C++ API above apply.
 
 ## Go
 
