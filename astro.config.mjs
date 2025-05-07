@@ -281,6 +281,7 @@ export default defineConfig({
                                 { label: 'PageRank', link: '/extensions/algo/pagerank'},
                                 { label: 'Strongly Connected Components', link: '/extensions/algo/scc'},
                                 { label: 'Weakly Connected Components', link: '/extensions/algo/wcc'},
+                                { label: 'Shortest path', link: '/extensions/algo/path'},
                             ]
                         },
                         { label: 'Full-text search', link: '/extensions/full-text-search' },
