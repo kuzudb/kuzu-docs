@@ -75,11 +75,16 @@ CALL NEO4J_MIGRATE(
     ['REL_LABEL1', 'REL_LABEL2', 'REL_LABEL3', ...]
 )
 ```
-- `HOST_NAME`: The hostname of a Neo4j server running on port 7474.
+- `HOST_NAME`: The domain name/IP address of a Neo4j server running on port 7474.
 - `USER_NAME`: Neo4j username. Leave blank if not needed.
 - `PASSWORD`: Neo4j password. Leave blank if not needed.
 - `NODE_LABEL`: The node labels to migrate to kuzu. (Note: multi-label nodes are not yet supported)
 - `REL_LABEL`: The rel labels to migrate to kuzu.
+
+:::note
+The `host_name` parameter must be a raw IP address or domain name without protocol prefixes (e.g., 192.168.1.50, www.neo4jdb.com, localhost).
+Kuzu currently uses the neo4j default port 7474 and the port number cannot be customized.
+:::
 
 In our example above, we can specify `User` and `City` for node tables, and `LivesIn` and `Follows` fore relationship tables:
 ```cypher
