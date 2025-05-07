@@ -182,7 +182,7 @@ RETURN LENGTH(p);
 The `LENGTH` function when applied to a recursive relationship is equivalent to 
 `SIZE(rels(p))`.
 
-### Cost
+### COST
 
 Return the cost of a weighted path. This function only works for `WSHORTEST` and `ALL WSHORTEST`.
 

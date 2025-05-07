@@ -27,6 +27,8 @@ CALL strongly_connected_components(
 RETURN node, group_id
 ```
 
+**Alias**: `scc`
+
 ```cypher
 // DFS-based algorithm (Kosaraju's algorithm)
 CALL strongly_connected_components_kosaraju(
@@ -34,6 +36,8 @@ CALL strongly_connected_components_kosaraju(
 )
 RETURN node, group_id
 ```
+
+**Alias**: `scc_ko`
 
 **Parameters**
 
@@ -111,10 +115,10 @@ RETURN group_id, collect(node.id);
 
 ## Frequently asked questions
 
-#### What's the difference between `scc` and `scc_kosaraju`?
+#### What's the difference between `scc` and `scc_ko`?
 
-`scc` is a parallel BFS-based algorithm. While `scc_kosaraju` is a DFS-based algorithm.
-Due to the nature of DFS, `scc_kosaraju` can only run in single-threaded mode. 
+`scc` is a parallel BFS-based algorithm. While `scc_ko` is a DFS-based algorithm.
+Due to the nature of DFS, `scc_ko` can only run in single-threaded mode. 
 Kosaraju's algorithm is recommended in the following cases:
 - If your graph is very sparse, i.e. with a large number of nodes but very small number of edges; or
 - If your graph has a very high [diameter](https://en.wikipedia.org/wiki/Diameter_(graph_theory))
