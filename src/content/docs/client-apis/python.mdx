@@ -108,13 +108,30 @@ created and managed by the async connection -- all you need to do is pass in the
 parameter to the async connection constructor.
 
 :::caution[Note]
-When using the async API, you may currently encounter the following error:
-```
-Binder exception: Variable df is not in scope.
-```
-This is likely due to the fact that async connections execute queries using a separate thread from the
-calling thread, and thus the dataframe isn't in scope for the executing thread. This will be handled
-appropriately and addressed in a future release.
+The following features are not yet supported in the async API:
+- **`COPY FROM` or `LOAD FROM` with a Pandas or Polars DataFrame, or PyArrow Table**
+
+  When using the async API, you may currently encounter the following error:
+  ```
+  Binder exception: Variable df is not in scope.
+  ```
+  
+  This is due to the fact that async connections execute queries using a separate thread from the
+  calling thread, and thus the dataframe isn't in scope for the executing thread. This will be handled
+  appropriately and addressed in a future release.
+
+- **Projected Graphs in `vector` and `algo` extensions**
+  
+  When using the `PROJECT_GRAPH` feature with the async API, you may encounter the following error:
+  
+  ```
+  Binder exception: Cannot find graph projected_graph.
+  ```
+
+  This error is due to the current design of projected graphs, which binds each projected graph to a specific Connection instance. 
+  The async API, however, executes queries using a connection pool, meaning that queries may be handled by different connections. 
+  As a result, a projected graph created in one connection may not be accessible from another. This is a known limitation 
+  and will be addressed in a future release.
 :::
 
 </TabItem>
