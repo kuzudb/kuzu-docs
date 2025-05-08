@@ -16,11 +16,15 @@ Kuzu's Node.js API is based on **Node-API version 5**. For a list of compatible 
 
 ## Java
 
-Kuzu's Java API is compatible with **Java 11+**. The OS compatibility is the same as C/C++ APIs. The Java API is distributed as a JAR file with pre-compiled native libraries for all supported platforms bundled inside. It does not require any additional dependencies.
+Kuzu's Java API is compatible with **Java 11+**. The OS compatibility is the same as C/C++ APIs. 
+
+The Java API also works on Android ARMv8-A platform. The precompiled binaries are compiled targetting [API level 21](https://developer.android.com/tools/releases/platforms). 
+
+The Java API is distributed as a JAR file with pre-compiled native libraries for all supported platforms bundled inside. It does not require any additional dependencies.
 
 ## Rust
 
-Kuzu's Rust API is closely linked with Kuzu's C++ API. By default it compiles the C++ library from source, and the build process has been tested on Windows using MSVC, and macOS and Linux using GCC. If linking to the release binaries (see [here](https://docs.rs/kuzu/latest/kuzu/#building)), the restrictions mentioned for the C++ API above apply.
+The mininum supported Rust version is 1.81.0. Kuzu's Rust API is also closely linked with Kuzu's C++ API. By default it compiles the C++ library from source, and the build process has been tested on Windows using MSVC, and macOS and Linux using GCC. If linking to the release binaries (see [here](https://docs.rs/kuzu/latest/kuzu/#building)), the restrictions mentioned for the C++ API above apply.
 
 ## Go
 

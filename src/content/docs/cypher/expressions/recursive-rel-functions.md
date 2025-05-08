@@ -1,20 +1,21 @@
 ---
 title: Recursive relationship functions
-description: Functions that are used to manipulate recursive relationships
+description: Functions that are used to manipulate paths
 ---
 
 | Function | Description |
 | ----------- | ----------- |
-| `NODES`| returns all nodes from a recursive relationship |
-| `RELS` | returns all rels from a recursive relationship |
-| `PROPERTIES` | return given property from nodes/relationships |
-| `IS_TRAIL` | check if path contains repeated relationships |
-| `IS_ACYCLIC` | check if path contains repeated nodes |
-| `LENGTH` | returns the number of relationships (path length) in a recursive relationship |
+| `NODES`| returns all nodes from a path |
+| `RELS` | returns all rels from a path |
+| `PROPERTIES` | return a given property from nodes or relationships |
+| `IS_TRAIL` | check if a path contains repeated relationships |
+| `IS_ACYCLIC` | check if a path contains repeated nodes |
+| `LENGTH` | returns the number of relationships (path length) in a path |
+| `COST` | returns the cost of a weighted path |
 
 ### NODES
 
-Returns all nodes from path.
+Returns all nodes from a path.
 
 | Input type | Output type |
 | ----------- | ----------- |
@@ -42,7 +43,7 @@ Output:
 ```
 ### RELS
 
-Returns all relationships from a recursive relationship.
+Returns all relationships from a path.
 
 | Input type | Output type |
 | ----------- | ----------- |
@@ -70,7 +71,7 @@ Output:
 
 ### PROPERTIES
 
-Return given property from nodes/relationships.
+Return a given property from nodes or relationships.
 
 | Input type | Output type |
 | ----------- | ----------- |
@@ -98,7 +99,7 @@ Output:
 
 ### IS_TRAIL
 
-Check if a recursive relationship contains repeated relationships.
+Check if a path contains repeated relationships.
 
 | Input type | Output type |
 | ----------- | ----------- |
@@ -128,7 +129,7 @@ Output
 
 ### IS_ACYCLIC
 
-Check if a recursive relationship contains repeated nodes.
+Check if a path contains repeated nodes.
 
 | Input type | Output type |
 | ----------- | ----------- |
@@ -158,7 +159,7 @@ Output:
 
 ### LENGTH
 
-Return the number of relationships (path length) in a recursive relationship.
+Return the number of relationships (path length) in a path.
 
 ```cypher
 MATCH p = (a:User)-[f:Follows*1..2]->(b:User) 
@@ -178,5 +179,37 @@ RETURN LENGTH(p);
 ----------------
 ```
 
-The `LENGTH` function when applied to a recursive relationship is shorthand for `SIZE(rels(p))`,
-which also returns the same result.
+The `LENGTH` function when applied to a recursive relationship is equivalent to 
+`SIZE(rels(p))`.
+
+### COST
+
+Return the cost of a weighted path. This function only works for `WSHORTEST` and `ALL WSHORTEST`.
+
+| Input type | Output type |
+| ----------- | ----------- |
+| `RECURSIVE_REL` | `DOUBLE` |
+
+**Example**
+```
+MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
+┌─────────┬─────────┬───────────┬─────────┐
+│ a.name  │ e.since │ e.score   │ b.name  │
+│ STRING  │ INT64   │ DOUBLE    │ STRING  │
+├─────────┼─────────┼───────────┼─────────┤
+│ Adam    │ 2020    │ 5.000000  │ Karissa │
+│ Adam    │ 2020    │ 20.000000 │ Zhang   │
+│ Karissa │ 2021    │ 6.000000  │ Zhang   │
+│ Zhang   │ 2022    │ 22.000000 │ Noura   │
+└─────────┴─────────┴───────────┴─────────┘
+MATCH p=(a:User)-[e:Follows* WSHORTEST(score)]->(b:User) 
+WHERE a.name='Adam' RETURN properties(nodes(p), 'name'), cost(e);
+┌────────────────────────────┬───────────┐
+│ PROPERTIES(NODES(p),name)  │ e_cost    │
+│ STRING[]                   │ DOUBLE    │
+├────────────────────────────┼───────────┤
+│ [Adam,Karissa,Zhang,Noura] │ 33.000000 │
+│ [Adam,Karissa,Zhang]       │ 11.000000 │
+│ [Adam,Karissa]             │ 5.000000  │
+└────────────────────────────┴───────────┘
+```

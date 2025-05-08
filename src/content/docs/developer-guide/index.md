@@ -7,7 +7,7 @@ This page is intended for developers who want to build Kuzu from source. If you 
 please refer to the [installation guide](https://docs.kuzudb.com/installation) for downloading pre-built binaries for your platform.
 :::
 
-To build from source code, Kuzu requires CMake(`>=3.15`), Python(`>=3.9`), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 11, Clang 14, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
+To build from source code, Kuzu requires CMake (`>=3.15`), Python (`>=3.9`), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 12, Clang 18, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
 
 Below are the instructions for building Kuzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. These instructions should also work for other similar platforms:
 
@@ -210,7 +210,7 @@ make javatest NUM_THREADS=X
 
 #### Prerequisites
 
-Rust 1.67.0 or later is required. Installing Rust with [rustup](https://rustup.rs/) is recommended. For detailed instructions, please refer to [the download page](https://www.rust-lang.org/tools/install).
+Rust 1.81.0 or later is required. Installing Rust with [rustup](https://rustup.rs/) is recommended. For detailed instructions, please refer to [the download page](https://www.rust-lang.org/tools/install).
 
 #### Build Rust bindings
 

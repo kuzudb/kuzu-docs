@@ -1,0 +1,90 @@
+---
+title: Weakly Connected Components
+---
+
+A weakly connected component (WCC) in a directed graph is a maximal subgraph where any two vertices
+are connected to each other by some path, regardless of edge direction.
+
+Kuzu implements a parallelized version of the WCC algorithm based on [Ligra](https://jshun.csail.mit.edu/ligra.shtml).
+
+## Syntax
+
+```cypher
+CALL weakly_connected_components(
+    graph_name,
+    maxIterations := 100
+)
+RETURN node, group_id
+```
+
+**Alias**: `wcc`
+
+#### Parameters
+
+| Parameter | Type | Optional | Default | Description |
+|-----------|------|----------|---------|-------------|
+| graph_name | STRING | No | - | Name of the projected graph to run the algorithm on |
+| maxIterations | INT64 | Yes | 100 | Maximum number of iterations to run |
+
+
+#### Return
+
+| Column | Type | Description |
+|--------|------|-------------|
+| node | NODE | Node object |
+| group_id | INT64 | The ID of the WCC that the node belongs to |
+
+
+## Example
+
+Define schema
+```cypher
+CREATE NODE TABLE Node(id STRING PRIMARY KEY);
+CREATE REL TABLE Edge(FROM Node to Node);
+```
+Insert nodes and edges
+```cypher
+CREATE (u0:Node {id: 'A'}),
+        (u1:Node {id: 'B'}),
+        (u2:Node {id: 'C'}),
+        (u3:Node {id: 'D'}),
+        (u4:Node {id: 'E'}),
+        (u5:Node {id: 'F'}),
+        (u6:Node {id: 'G'}),
+        (u7:Node {id: 'H'}),
+        (u8:Node {id: 'I'}),
+        (u0)-[:Edge]->(u1),
+        (u1)-[:Edge]->(u2),
+        (u5)-[:Edge]->(u4),
+        (u6)-[:Edge]->(u4),
+        (u6)-[:Edge]->(u5),
+        (u6)-[:Edge]->(u7),
+        (u7)-[:Edge]->(u4),
+        (u6)-[:Edge]->(u5);
+```
+We first create a projected graph from the node and edge tables.
+```cypher
+CALL project_graph('Graph', ['Node'], ['Edge']);
+```
+Then, you can run WCC as follows:
+```cypher
+CALL weakly_connected_components('Graph') RETURN group_id, collect(node.id);
+```
+```
+┌──────────┬──────────────────┐
+│ group_id │ COLLECT(node.id) │
+│ INT64    │ STRING[]         │
+├──────────┼──────────────────┤
+│ 5        │ [G,F,H,E]        │
+│ 0        │ [D]              │
+│ 2        │ [B,C,A]          │
+│ 1        │ [I]              │
+└──────────┴──────────────────┘
+```
+
+## Frequently asked questions
+
+#### How is `group_id` assigned?
+
+`group_id` is assigned based on Kuzu's internal node offsets. Currently there is no way to assign `group_id` based on node properties.
+

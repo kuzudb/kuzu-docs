@@ -187,13 +187,13 @@ export default defineConfig({
                         { label: 'Syntax', link: '/cypher/syntax'},
                         { label: 'Data types', link: '/cypher/data-types'},
                         { label: 'Query clauses', link: '/cypher/query-clauses' },
-                        { label: 'Functions, expressions & operators', link: '/cypher/expressions' },
+                        { label: 'Functions, expressions, & operators', link: '/cypher/expressions' },
                         { label: 'Data definition language (DDL)', link: '/cypher/data-definition' },
                         { label: 'Data manipulation clauses', link: '/cypher/data-manipulation-clauses' },
                         { label: 'Subqueries', link: '/cypher/subquery' },
                         { label: 'Macros', link: '/cypher/macro' },
                         { label: 'Transactions', link: '/cypher/transaction' },
-                        { label: 'Attach/Detach To External Databases', link: '/cypher/attach' },
+                        { label: 'Attach/Detach to external databases', link: '/cypher/attach' },
                         { label: 'Configuration', link: '/cypher/configuration' },
                         { label: 'Differences with Neo4j', link: '/cypher/difference' },
                     ],
@@ -241,8 +241,8 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        {
-                            label: 'HTTP File System (httpfs)',
+                        { 
+                            label: 'HTTP file system',
                             collapsed: true,
                             items: [
                                 { label: 'HTTPS', link: '/extensions/httpfs#https-file-system'},
@@ -252,6 +252,7 @@ export default defineConfig({
                         },
                         {
                             label: 'Tabular data sources',
+                            collapsed: true,
                             items: [
                                 { label: 'Overview', link: '/extensions/attach' },
                                 { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
@@ -266,12 +267,27 @@ export default defineConfig({
                                 },
                                 { label: 'Iceberg', link: '/extensions/attach/iceberg' },
                                 { label: 'Delta Lake', link: '/extensions/attach/delta' },
-                                { label: 'Unity Catalog', link: '/extensions/attach/unity', badge: { text: 'New' }},
+                                { label: 'Unity Catalog', link: '/extensions/attach/unity' },
                             ]
                         },
-                        { label: 'JSON', link: '/extensions/json' },
+                        {
+                            label: 'Graph algorithms',
+                            collapsed: true,
+                            badge: { text: 'New' },
+                            items: [
+                                { label: 'Overview', link: '/extensions/algo'},
+                                { label: 'K-Core decomposition', link: '/extensions/algo/kcore'},
+                                { label: 'Louvain', link: '/extensions/algo/louvain'},
+                                { label: 'PageRank', link: '/extensions/algo/pagerank'},
+                                { label: 'Strongly Connected Components', link: '/extensions/algo/scc'},
+                                { label: 'Weakly Connected Components', link: '/extensions/algo/wcc'},
+                                { label: 'Shortest path', link: '/extensions/algo/path'},
+                            ]
+                        },
                         { label: 'Full-text search', link: '/extensions/full-text-search' },
-                        { label: 'Vector search', link: '/extensions/vector', badge: { text: 'New' }},
+                        { label: 'JSON', link: '/extensions/json' },
+                        { label: 'Neo4j', link: '/extensions/neo4j', badge: { text: 'New' }},
+                        { label: 'Vector search', link: '/extensions/vector'},
                     ],
                 },
             ],

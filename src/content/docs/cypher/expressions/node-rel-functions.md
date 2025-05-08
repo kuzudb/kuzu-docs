@@ -1,15 +1,15 @@
 ---
-title: Node/Rel Functions
-description: Node/Rel functions are used to get information about nodes and relationships.
+title: Node & relationship functions
+description: Node & relationship functions are used to get information about nodes and relationships.
 ---
 
-Node/Rel functions are used to get information about nodes and relationships.
+The following functions are used to get information about nodes and relationships.
 
-| Function | Description |
-| ----------- | ----------- |
-| `ID` | returns the internal ID of node/rel |
-| `LABEL` | returns the label name of node/rel |
-| `OFFSET` | returns the offset of the internal ID |
+| Function | Description | Alias |
+| ----------- | ----------- | ----------- |
+| `ID` | returns the internal ID of node/rel | |
+| `LABEL` | returns the label name of node/relationship | `LABELS` |
+| `OFFSET` | returns the offset of the internal ID | |
 
 See below for more details on each of these functions.
 
@@ -26,11 +26,12 @@ MATCH (a:User) RETURN ID(a) AS ID LIMIT 1;
 ```
 Output:
 ```
--------
-| ID  |
--------
-| 0:0 |
--------
+┌─────────────┐
+│ ID          │
+│ INTERNAL_ID │
+├─────────────┤
+│ 0:0         │
+└─────────────┘
 ```
 
 ## LABEL
@@ -47,12 +48,22 @@ MATCH (a) RETURN LABEL(a) AS LABEL LIMIT 1;
 ```
 Output:
 ```
----------
-| LABEL |
----------
-| User  |
----------
+┌────────┐
+│ LABEL  │
+│ STRING │
+├────────┤
+│ User   │
+└────────┘
 ```
+
+:::note[Alias `LABELS` is available]
+As of version 0.9.0, the `LABELS` function can also be used as an alias for the `LABEL` function.
+For example:
+
+```cypher
+MATCH (a) RETURN LABELS(a) AS LABELS LIMIT 1;
+```
+:::
 
 ## OFFSET
 
@@ -68,9 +79,10 @@ MATCH (a) RETURN OFFSET(ID(a)) AS OFFSET LIMIT 1;
 ```
 Output:
 ```
-----------
-| OFFSET |
-----------
-| 0      |
-----------
+┌────────┐
+│ OFFSET │
+│ INT64  │
+├────────┤
+│ 0      │
+└────────┘
 ```
