@@ -6,6 +6,7 @@ COPY . .
 RUN npx astro build
 
 FROM httpd:2.4-alpine AS deploy
+EXPOSE 80
 WORKDIR /usr/local/apache2/htdocs/
 COPY --from=build /home/node/app/dist .
 # Disallow all robots for dev documentation
