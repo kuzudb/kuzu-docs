@@ -1,0 +1,10 @@
+dist
+node_modules
+.astro
+.github
+.vscode
+scripts
+CNAME
+compose.yml
+Dockerfile
+README.md
