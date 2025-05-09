@@ -25,6 +25,7 @@ jobs:
 
   docker:
     name: Build and push Docker image
+    # Restricting the docker job to push events to ensure Docker images are only built and pushed for finalized changes.
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
