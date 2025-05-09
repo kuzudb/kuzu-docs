@@ -1,4 +1,4 @@
-name: Build and deploy Astro docs to GitHub Pages
+name: Build and deploy docs to GitHub Pages
 on:
   push:
     branches: ["main"]
@@ -17,7 +17,6 @@ jobs:
   build:
     uses: ./.github/workflows/build-and-check-links.yml
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

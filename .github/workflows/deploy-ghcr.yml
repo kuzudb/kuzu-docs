@@ -1,8 +1,9 @@
-name: Build and deploy dev docs to GHCR
+name: Build and deploy docs to GHCR
 on:
   push:
     branches: ["dev"]
-
+  workflow_dispatch:
+    
 jobs:
   docker:
     name: Build and push Docker image
