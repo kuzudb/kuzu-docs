@@ -2,8 +2,6 @@ name: Build Astro
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main", "dev"]
   workflow_dispatch:
 
 permissions:
@@ -17,30 +15,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Install dependencies
-        run: npm i
-      - name: Build with Astro
-        if: github.event_name != 'pull_request'
-        run: npm run build
-      - name: Check links
-        if: github.event_name == 'pull_request'
-        run: npm run check-links
-        env:
-          CHECK_LINKS: true
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          name: github-pages
-          path: dist
-
+    uses: ./.github/workflows/build-and-check-links.yml
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     environment:
