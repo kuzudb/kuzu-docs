@@ -1,4 +1,4 @@
-name: Deploy Dev Docs to Dockerhub
+name: Build and deploy dev docs to GHCR
 on:
   push:
     branches: ["dev"]

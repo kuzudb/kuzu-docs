@@ -1,4 +1,4 @@
-name: Build Astro
+name: Build and deploy Astro docs to GitHub Pages
 on:
   push:
     branches: ["main"]

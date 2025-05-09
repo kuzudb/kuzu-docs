@@ -1,4 +1,4 @@
-name: Build and Check Links
+name: Build Astro docs and check links
 on:
   workflow_call:
   workflow_dispatch:
