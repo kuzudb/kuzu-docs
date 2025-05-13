@@ -115,7 +115,7 @@ For example, let's find the user who was most recently followed by another user.
 
 ```cypher
 MATCH (u:User)-[f:Follows]->(u1:User)
-RETURN u.nane ORDER BY f.since DESC LIMIT 1;
+RETURN u.name ORDER BY f.since DESC LIMIT 1;
 ```
 
 Result:
