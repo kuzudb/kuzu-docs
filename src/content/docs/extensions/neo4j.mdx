@@ -17,8 +17,8 @@ Note that migrating multi-labelled nodes from Neo4j to Kuzu is currently not sup
 
 ### Example dataset
 
-We'll use the following queries to create an [example graph](/cypher/query-clauses/example-database/) in Neo4j to demonstrate how this extension can be used.
-First, set up your Neo4j Desktop locally or a Neo4j database connection, and run the following Cypher queries:
+The following queries create an [example graph](/cypher/query-clauses/example-database/) in Neo4j to demonstrate how this extension can be used.
+Ensure Neo4j is running, either as Neo4j Desktop or in Docker, and run the following Cypher queries:
 
 ```cypher
 // Create person nodes
@@ -59,11 +59,11 @@ The `apoc.conf` file may not exist in the `conf` directory, under which case, yo
 If you're running Neo4j in Docker, you can use `-e NEO4J_apoc_export_file_enabled=true -e NEO4J_apoc_import_file_use__neo4j__config=false` to configure APOC.
 Additionally, you'll need to mount `/tmp` as `-v /tmp:/tmp` to allow access to the exported data from Neo4j.
 
-In the following section, we show how to migrate the *labels* from Neo4j to *__tables__* in Kuzu.
+The following section shows how to migrate the *labels* from Neo4j to *__tables__* in Kuzu.
 
 ### Data Migration
 
-We provide the `NEO4J_MIGRATE` function to migrate data from Neo4j to Kuzu.
+You can use the `NEO4J_MIGRATE` function to migrate data from Neo4j to Kuzu.
 The function takes in a few parameters specified as follows:
 
 ```cypher
@@ -78,10 +78,10 @@ CALL NEO4J_MIGRATE(
 - `URL`: A `http://hostname:port` connection url to a Neo4j server.
 - `USER_NAME`: Neo4j username. Leave blank if not needed.
 - `PASSWORD`: Neo4j password. Leave blank if not needed.
-- `NODE_LABEL`: The node labels to migrate to kuzu. (Note: multi-label nodes are not yet supported)
-- `REL_LABEL`: The rel labels to migrate to kuzu.
+- `NODE_LABEL`: A list of node labels to migrate to kuzu. Use `["*"]` to import all nodes with labels.
+- `REL_LABEL`: A list of rel labels to migrate to kuzu. Use `["*"]` to import all rels with labels.
 
-In our example above, we can specify `User` and `City` for node tables, and `LivesIn` and `Follows` fore relationship tables:
+For the example above, you can specify `User` and `City` for node tables, and `LivesIn` and `Follows` for relationship tables:
 ```cypher
 CALL NEO4J_MIGRATE(
     "http://localhost:7474",
@@ -89,6 +89,16 @@ CALL NEO4J_MIGRATE(
     "neo4jpassword",
     ["User", "City"],
     ["Follows", "LivesIn"]
+);
+```
+Alternatively, you can import all nodes and relationships:
+```cypher
+CALL NEO4J_MIGRATE(
+    "http://localhost:7474",
+    "neo4j",
+    "neo4jpassword",
+    ["*"],
+    ["*"]
 );
 ```
 
