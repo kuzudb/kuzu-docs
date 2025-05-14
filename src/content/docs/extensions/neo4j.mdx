@@ -13,9 +13,10 @@ INSTALL neo4j;
 LOAD neo4j;
 ```
 
-* Multi-labelled nodes in Neo4j cannot be migrated as Kuzu doesn't support multi-labelled nodes.
+Note that:
+* Multi-labelled nodes in Neo4j cannot be migrated as Kuzu doesn't support them yet.
 * Nodes and relationships without any labels in Neo4j will be skipped during migration.
-* Properties with Neo4j's data types that are not natively supported in Kuzu will be imported as a `STRING`.
+* Any property with a data type that is not natively supported in Kuzu will be imported into Kuzu as a `STRING`.
 
 ### Example dataset
 
