@@ -13,7 +13,8 @@ INSTALL neo4j;
 LOAD neo4j;
 ```
 
-Note that migrating multi-labelled nodes from Neo4j to Kuzu is currently not supported since Kuzu doesn't support multi-labelled nodes.
+Note that multi-labelled nodes cannot be migrated from Neo4j to Kuzu as Kuzu doesn't support multi-labelled nodes. Also,
+nodes and relationships without any labels in Neo4j will be skipped during migration.
 
 ### Example dataset
 
@@ -78,8 +79,8 @@ CALL NEO4J_MIGRATE(
 - `URL`: A `http://hostname:port` connection url to a Neo4j server.
 - `USER_NAME`: Neo4j username. Leave blank if not needed.
 - `PASSWORD`: Neo4j password. Leave blank if not needed.
-- `NODE_LABEL`: A list of node labels to migrate to kuzu. Use `["*"]` to import all nodes with labels.
-- `REL_LABEL`: A list of rel labels to migrate to kuzu. Use `["*"]` to import all rels with labels.
+- `NODE_LABEL`: A list of node labels to migrate to Kuzu. Use `["*"]` to import all nodes with labels.
+- `REL_LABEL`: A list of rel labels to migrate to Kuzu. Use `["*"]` to import all rels with labels.
 
 For the example above, you can specify `User` and `City` for node tables, and `LivesIn` and `Follows` for relationship tables:
 ```cypher
