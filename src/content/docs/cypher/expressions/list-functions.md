@@ -43,8 +43,8 @@ Scroll to the right to see the example usage in the below table.
 | `list_reverse_sort(list)` | alias of `list_sort(list, 'DESC')` | `list_reverse_sort([3,10,4])` | `[10,4,3]` |
 | `list_sum(list)` | sums the elements of the list. | `list_sum(1,2,3)` | `6` |
 | `list_product(list)` | multiply elements of the list. | `list_product([1, 2, 3])` | `6` |
-| `list_distinct(list)` | removes NULLs and duplicate values from the list. | `list_distinct(3,3,3,NULL)` | `[3]` |
-| `list_unique(list)` | counts number of unique elements of the list. NULLs are ignored. | `list_unique(3,3,3,NULL)` | `1` |
+| `list_distinct(list)` | removes NULLs and duplicate values from the list. | `list_distinct([3,3,3,NULL])` | `[3]` |
+| `list_unique(list)` | counts number of unique elements of the list. NULLs are ignored. | `list_unique([3,3,3,NULL])` | `1` |
 | `list_any_value(list)` | returns the first non-NULL value of the list | `list_any_value(NULL, 'a', NULL)` | `'a'` |
 | `list_to_string(list, separator)` | converts a list to a string separated by the given separator | `list_to_string([1,2,3], '..' )` | `'1..2..3'` |
 | `range(start, stop)` | returns a list of values from `start` to `stop`. Specify the step as shown [here](#range) | `range(1,3)` | `[1,2,3]` |
