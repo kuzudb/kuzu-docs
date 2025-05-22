@@ -4,15 +4,8 @@ title: "Vector search"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-The `VECTOR` extension provides an on-disk [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world)-based vector index for accelerating similarity search over 32-bit and 64-bit float array columns in tables.
-
-:::caution[Current status]
-It's worth knowing the following details about the vector index in Kuzu before you begin. The feature will continually improve over time and some of these limitations will
-be addressed in future releases.
-
-- **Single Node Table Column Indexing**: Limited to indexing a single column in node tables.
-- **Immutable Index**: Once created, the index cannot be modified. You must drop and re-create the index to reflect changes in the underlying tables.
-:::
+The `VECTOR` extension provides a **native**, **disk-based** [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world) vector index
+for accelerating similarity search over your vector embeddings (32-bit and 64-bit float arrays) that are stored as node properties in Kuzu.
 
 The vector extension provides the following functions:
 | Function | Description |
@@ -23,7 +16,8 @@ The vector extension provides the following functions:
 
 
 ## Usage
-To get started with the vector index extension, you need to first install and load the extension following the [Using Extensions in Kuzu](/extensions#using-extensions-in-kuzu) instructions.
+
+Install and load the vector extension as follows:
 
 ```sql
 INSTALL VECTOR;
@@ -115,14 +109,15 @@ CALL CREATE_VECTOR_INDEX(
     [option_name := option_value]  // Optional parameters for index configuration
 );
 ```
-
-:::note
 For optional parameters, we use `:=` instead of `=` to specify values.
+:::note[Immutable index]
+Once created, the vector index cannot be modified. If the data in the underlying table changes,
+you must drop and re-create the index.
 :::
 
-We support following options during index creation.
-Our index is structured with two hierarchical layers.
-The lower layer includes all vectors, while the upper layer contains a sampled subset.
+We support the following options during index creation.
+The HNSW index in Kuzu is structured with two hierarchical layers.
+The lower layer includes all vectors, while the upper layer contains a sampled subset of the lower layer.
 | option name | description | default |
 | :---------: | ------------ | ---------- |
 | `mu`                | Max degree of nodes in the upper graph. It should be smaller than ml. A higher value leads to a more accurate index, but increase the index size and construction time. | 30 |
@@ -391,4 +386,3 @@ shape: (2, 3)
 │ Learning Machines          ┆ 2019 ┆ Pearson               │
 └────────────────────────────┴──────┴───────────────────────┘
 ```
-
