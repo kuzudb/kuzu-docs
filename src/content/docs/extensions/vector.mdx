@@ -4,15 +4,8 @@ title: "Vector search"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-The `VECTOR` extension provides an on-disk [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world)-based vector index for accelerating similarity search over 32-bit and 64-bit float array columns in tables.
-
-:::caution[Current status]
-It's worth knowing the following details about the vector index in Kuzu before you begin. The feature will continually improve over time and some of these limitations will
-be addressed in future releases.
-
-- **Single Node Table Column Indexing**: Limited to indexing a single column in node tables.
-- **Immutable Index**: Once created, the index cannot be modified. You must drop and re-create the index to reflect changes in the underlying tables.
-:::
+The `VECTOR` extension provides a **native**, **disk-based** [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world) vector index
+for accelerating similarity search over your vector embeddings (32-bit and 64-bit float arrays) that are stored as node properties in Kuzu.
 
 The vector extension provides the following functions:
 | Function | Description |
@@ -23,7 +16,8 @@ The vector extension provides the following functions:
 
 
 ## Usage
-To get started with the vector index extension, you need to first install and load the extension following the [Using Extensions in Kuzu](/extensions#using-extensions-in-kuzu) instructions.
+
+Install and load the vector extension as follows:
 
 ```sql
 INSTALL VECTOR;
@@ -392,3 +386,7 @@ shape: (2, 3)
 └────────────────────────────┴──────┴───────────────────────┘
 ```
 
+## Limitations
+
+1. **Single Node Table Column Indexing**: Currently, you can only index a single column in a given node table.
+2. **Immutable Index**: Once created, the index cannot be modified. You must drop and re-create the index to reflect changes in the underlying tables.
