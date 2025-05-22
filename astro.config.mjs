@@ -241,35 +241,6 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        { 
-                            label: 'HTTP file system',
-                            collapsed: true,
-                            items: [
-                                { label: 'HTTPS', link: '/extensions/httpfs#https-file-system'},
-                                { label: 'Amazon S3', link: '/extensions/httpfs#aws-s3-file-system'},
-                                { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system', badge: { text: 'New' }},
-                            ]
-                        },
-                        {
-                            label: 'Tabular data sources',
-                            collapsed: true,
-                            items: [
-                                { label: 'Overview', link: '/extensions/attach' },
-                                { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
-                                {
-                                    label: 'External relational databases',
-                                    collapsed: true,
-                                    items: [
-                                        { label: 'PostgreSQL', link: '/extensions/attach/postgres' },
-                                        { label: 'DuckDB', link: '/extensions/attach/duckdb' },
-                                        { label: 'SQLite', link: '/extensions/attach/sqlite' },
-                                    ]
-                                },
-                                { label: 'Iceberg', link: '/extensions/attach/iceberg' },
-                                { label: 'Delta Lake', link: '/extensions/attach/delta' },
-                                { label: 'Unity Catalog', link: '/extensions/attach/unity' },
-                            ]
-                        },
                         {
                             label: 'Graph algorithms',
                             collapsed: true,
@@ -282,6 +253,34 @@ export default defineConfig({
                                 { label: 'Strongly Connected Components', link: '/extensions/algo/scc'},
                                 { label: 'Weakly Connected Components', link: '/extensions/algo/wcc'},
                                 { label: 'Shortest path', link: '/extensions/algo/path'},
+                            ]
+                        },
+                        { label: 'HTTPS file system', link: '/extensions/httpfs#https-file-system' },
+                        { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
+                        { 
+                            label: 'Cloud storage systems',
+                            collapsed: true,
+                            items: [
+                                { label: 'Amazon S3', link: '/extensions/httpfs#aws-s3-file-system'},
+                                { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system', badge: { text: 'New' }},
+                            ]
+                        },
+                        { 
+                            label: 'Relational databases',
+                            collapsed: true,
+                            items: [
+                                { label: 'PostgreSQL', link: '/extensions/attach/postgres' },
+                                { label: 'DuckDB', link: '/extensions/attach/duckdb' },
+                                { label: 'SQLite', link: '/extensions/attach/sqlite' },
+                            ]
+                        },
+                        {
+                            label: 'Lakehouse formats',
+                            collapsed: true,
+                            items: [
+                                { label: 'Iceberg', link: '/extensions/attach/iceberg' },
+                                { label: 'Delta Lake', link: '/extensions/attach/delta' },
+                                { label: 'Unity Catalog', link: '/extensions/attach/unity' },
                             ]
                         },
                         { label: 'Full-text search', link: '/extensions/full-text-search' },
