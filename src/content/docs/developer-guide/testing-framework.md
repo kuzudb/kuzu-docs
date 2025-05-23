@@ -68,7 +68,10 @@ There are two ways to run a specific e2e test or group of tests:
 Example:
 
 ```
-# First cd to build/relwithdebinfo/test (after running make test)
+# Build tests
+$ make test-build
+
+# First cd to build/relwithdebinfo/test
 $ cd build/relwithdebinfo/test
 
 # Run the all tests from `test/test_files/common/types/interval.test`
@@ -84,12 +87,15 @@ $ ctest -V -R common~types~interval.DifferentTypesCheck
 $ ctest -j 10
 ```
 
-To switch between main tests and extension tests, pass 'E2E_TEST_FILES_DIRECTORY=extension' as an environment variable when calling ctest.
+To switch between main tests and extension tests, pass `E2E_TEST_FILES_DIRECTORY=extension` as an environment variable when calling `ctest`.
 
 Example:
 
 ```
-# First cd to build/relwithdebinfo/test (after running make extension-test)
+# Build extension tests
+$ make extension-test-build
+
+# First cd to build/relwithdebinfo/test
 $ cd build/relwithdebinfo/test
 
 # Run all the extension tests (-R e2e_test is used to filter the extension tests, as all extension tests are e2e tests)
@@ -105,7 +111,7 @@ $ set "E2E_TEST_FILES_DIRECTORY=extension" && ctest -R e2e_test
 
 #### 2. Running directly from `e2e_test` binary
 
-The test binaries are available in `build/relwithdebinfo[or debug or release]/test/runner`
+The test binaries are available in `build/{relwithdebinfo,release,debug}/test/runner`
 folder. To run any of the main tests, you can run `e2e_test` specifying the relative path file inside
 `test_files`:
 
@@ -120,17 +126,29 @@ $ ./e2e_test long_string_pk/long_string_pk.test
 $ ./e2e_test .
 ```
 
-To run any of the extension tests, you can run `e2e_test` with environment variable `E2E_TEST_FILES_DIRECTORY=extension` and specify the relative path file inside
-`extension`:
+Use `E2E_TEST_FILES_DIRECTORY` to set a different root directory for the test files, for example when running the tests
+from the root directory of the Kuzu repo:
+```
+# Run all tests inside test/test_files/copy
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test test/test_files/copy
+
+# Run all tests from test/test_files/long_string_pk.test file
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test test/test_files/long_string_pk/long_string_pk.test
+
+# Run all tests
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test test/test_files
+```
+
+You can similarly run any of the extension tests:
 ```
 # Run all tests inside extension/duckdb
-$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test duckdb
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test extension/duckdb
 
 # Run all tests from extension/json/test/copy_to_json.test file
-$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test json/test/copy_to_json.test
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test extension/json/test/copy_to_json.test
 
 # Run all extension tests
-$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test .
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test extension
 ```
 
 :::caution[Note]
@@ -138,6 +156,14 @@ Some test files contain multiple test cases, and sometimes it is not easy
 to find the output from a failed test. In this situation, the flag
 `--gtest_break_on_failure` might be helpful to break the test on failure.
 :::
+
+### Running `SKIP`ed tests
+
+Some tests in test files are marked as `SKIP` which are ignored by default when running the tests.
+To run those tests without editing the files, you can use `--gtest_also_run_disabled_tests`:
+```
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test --gtest_also_run_disabled_tests extension/neo4j/test/test_files/basic.test
+```
 
 ## Test file header
 
@@ -179,9 +205,9 @@ without storing the same dataset in the codebase twice.
 
 ### Other properties
 
-Other optional parameters include `-BUFFER_POOL_SIZE`, `-CHECKPOINT_WAIT_TIMEOUT` and `-SKIP`. By including
-`-SKIP` in the header, the entire suite will be deactivated, but the tests
-will still be displayed as disabled when running through `ctest`.
+Other optional parameters include `-BUFFER_POOL_SIZE`, `-CHECKPOINT_WAIT_TIMEOUT` and `-SKIP`. A
+`-SKIP` in the header disables the entire suite, with the tests displayed as disabled when running `ctest`.
+Skipped tests can be [forced to run](#running-skiped-tests) with a flag.
 
 ## Test case
 
@@ -292,9 +318,9 @@ It is also possible to use the additional properties inside each test case:
 
 | Property              | Parameter      | Description                                                                                                         |
 | --------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `-LOG`                | any string     | Define a name for each block for informational purposes                                                             |
-| `-SKIP`               | none           | Register the test but skip the whole test case. When a test is skipped, it will display as disabled in the test run |
-| `-PARALLELISM`        | integer        | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()`                         |
+| `-LOG`                | any string     | Define a name for each block for informational purposes.                                                            |
+| `-SKIP`               | none           | Register the test but skip running it by default. It will display as disabled in the test run.                      |
+| `-PARALLELISM`        | integer        | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()`.                        |
 | `-CHECK_ORDER`        | none           | By default, the query results and expected results are ordered before asserting comparison.                         |
 | `-CHECK_COLUMN_NAMES` | none           | Includes the column names as the first row of query result. Requires +1 to number of expected tuples.               |
 | `-RELOADDB`           | none           | Reload database from file system.                                                                                   |
