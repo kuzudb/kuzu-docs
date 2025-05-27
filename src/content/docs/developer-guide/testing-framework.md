@@ -55,13 +55,13 @@ throw an exception if a test file name contains `-`.
 We primarily use `ctest` to run tests. Use the command
 `make test` to build and run all tests. By default, the tests will run
 concurrently with 10 threads, but it is also possible to change the number of parallel jobs by
-running `make test TEST_JOBS=X` where `X` is the desired number of jobs to be run in parallel.
+running `make test TEST_JOBS=X`, where `X` is the desired number of jobs to be run in parallel.
 
 ### Running a specific group or test case
 
 There are two ways to run a specific e2e test or group of tests:
 
-#### 1. Using ctest and specifying the name of the test
+#### 1. Using ctest
 
 Example:
 
@@ -101,13 +101,13 @@ $ E2E_TEST_FILES_DIRECTORY=extension ctest -R e2e_test
 ```
 
 :::caution[Note]
-Windows has different syntax for setting environment variable, to run all extension tests in windows, run
+Windows has different syntax for setting environment variables:
 ```
 $ set "E2E_TEST_FILES_DIRECTORY=extension" && ctest -R e2e_test
 ```
 :::
 
-#### 2. Running directly from `e2e_test` binary
+#### 2. Using the `e2e_test` binary
 
 The test binaries are available in `build/{relwithdebinfo,release,debug}/test/runner`
 folder. To run any of the main tests, you can run `e2e_test` specifying the relative path file inside
@@ -169,11 +169,11 @@ The `.test` file header contains one required parameter:
 `-DATASET`, to specify the test group name and the dataset to be used. If no
 dataset is required, use the keyword 'empty'.
 
-### Specifying the Dataset
+### Specifying the dataset
 
 | Property                         | Description                                                                                                                  |
 | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY, KUZU or empty<br/> **Dataset name:** the name of the directory inside `dataset/`. i.e. tinysnb. |
+| `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY, KUZU or empty<br/> **Dataset name:** the name of a directory inside `dataset/`. E.g.,. `tinysnb`. |
 
 The `KUZU` dataset type is a Kuzu database directory.
 
@@ -242,17 +242,17 @@ There are three ways to specify the expected result:
 | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `---- error`                                                                                                                    | The following lines must be the expected error message.                                                                    |
 | `---- error(regex)`                                                                                                             | The following lines must be a regex pattern matching the expected error message.                                           |
-| `---- ok`                                                                                                                       | does not require any additional information below the line.                                                                |
+| `---- ok`                                                                                                                       | Does not require any additional information below the line.                                                                |
 | `---- hash`                                                                                                                     | A single line must follow containing the number of values in the query results and the md5 hash value of the query result. |
 | <span style="text-wrap: nowrap;">`---- [number of expected tuples]` <br> `[expected tuple 1]` <br> `[expected tuple 2]` </span> | The first line after `----` contains the number of tuples and the following lines must exactly match the query results.    |
+| <span style="text-wrap: nowrap;">`---- [number of expected tuples]` <br> `<FILE>:file_name.txt` </span> | A file stored under `test/answers/` containing the specified number of tuples.  |
 
 :::note[Note]
-By default, the expected result tuples can be written in any order. The framework will sort the
-actual and expected results before comparing. If you need the results not to be sorted, you can
-set it by adding `-CHECK_ORDER` before the statement. However, the hash of the query result is the
-hash of a string of the result. As a consequence, the order of the tuples in the output must match
-the order of the tuples in the expected result when using hash. More detail on hashing is included
-in its own section.
+By default, the expected result tuples can be written in any order. The runner will sort the
+actual and expected results before comparing. If you want to test that the results are returned in
+a specific order, for example to test an `ORDER BY` clause, you can
+use `-CHECK_ORDER`. Note that when using the `hash` result type, the actual output must match the
+original order of the tuples used to compute the specified hash.
 :::
 
 ```
@@ -281,34 +281,22 @@ Dan
 
 # Using hash with a query equivalent to the above
 -STATEMENT MATCH (a:person) RETURN a.fName LIMIT 4
--CHECK_ORDER # order matters with hashes
+-CHECK_ORDER # order of output tuples matters with hashes
 ---- hash
 4 c921eb680e6d000e4b65556ae02361d2
-```
 
-:::caution[Info]
-Any number of tokens may be in between the number of expected
-values and the md5 hash. As such,
-`4 values hashing to c921eb680e6d000e4b65556ae02361d2`
-is an equivalent line
-:::
+# Arbitrary content can be inserted between the expected count and the md5 hash
+# The following result is equivalent: 
+-STATEMENT MATCH (a:person) RETURN a.fName LIMIT 4
+-CHECK_ORDER
+---- hash
+4 values hashed to c921eb680e6d000e4b65556ae02361d2
 
-Query results can also be stored in a file. By using `<FILE>:`, the testing
-framework reads the results from the file and compare to the actual query
-result. The file must be created inside `test/answers/<name-of-the-file.txt>`.
-
-```
+# Using a file
 -STATEMENT MATCH (p0:person)-[r:knows]->(p1:person) RETURN ID(r)
 ---- 5001
 <FILE>:file_with_answers.txt
 ```
-
-### Hash details
-
-When hashing an expected output, it's best to add the `-CHECK_ORDER` flag.
-If you don't want to check the order of the expected output, then you have to
-sort the expected output by line (with string comparison) before creating
-the hash
 
 ### Additional properties
 
@@ -328,7 +316,7 @@ It is also possible to use the additional properties inside each test case:
 
 ### Defining variables
 
-A variable can be defined and re-used inside a statement, results or error
+A variable can be defined and re-used inside a statement, results, or error
 message:
 
 ```
@@ -354,7 +342,7 @@ currently support the following functions:
 
 #### Pre-defined variables
 
-The following variables are available to use inside the statements:
+The following variables are available for use inside statements:
 
 | Variable                 | Description                                                                                                                                                      |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -530,11 +518,10 @@ If unordered results in a test file match the actual output from Kuzu, the
 existing results will be left unmodified to avoid unnecessary changes. However,
 on a mismatch, the correct results will be written in a sorted order.
 
-Currently, this mode does not support the following features in test files:
+Currently, this mode does not support rewriting tests using the following features and are left unmodified:
 * Results stored in a file using `<FILE>:`.
 * Statement in statement blocks or batch statements.
-* Results containing variables such as `${KUZU_ROOT_DIRECTORY}`. Such results
-in a test file are left unmodified.
+* Results containing variables such as `${KUZU_ROOT_DIRECTORY}`.
 :::
 
 
