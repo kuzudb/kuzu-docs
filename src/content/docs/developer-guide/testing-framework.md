@@ -470,6 +470,76 @@ Optionally, a seed can be specified after the table name to stably split the sou
 -MULTI_COPY_RANDOM <int> <string> [ SEED <int> <int> ] <string>
 ```
 
+## Automatically creating test results
+
+To avoid having to manually write test results, the test runner supports a `E2E_REWRITE_TESTS=1` mode,
+similar to `sqllogictest`'s [completion mode](https://www.sqlite.org/sqllogictest/doc/trunk/about.wiki).
+When turned on, the test runner switches from checking the specified output in a test file against
+the actual output from Kuzu to overwriting the result section for each statement in the test file.
+The mode is intended to make it easy to write new tests and also modify the existing tests if the
+output from Kuzu changes during development.
+
+The following example run shows how the tests are rewritten automatically:
+
+```bash
+$ cat test/test_files/demo.test
+-DATASET CSV empty
+
+--
+
+-CASE demo
+-STATEMENT CREATE NODE TABLE A(ID SERIAL PRIMARY KEY, name STRING);
+---- ok
+-STATEMENT CREATE (:A), (:A {name: 'Alice'};
+---- ok
+-STATEMENT CREATE (:A), (:A {name: 'Alice'}), (:A {name: 'Bob'});
+---- ok
+-STATEMENT MATCH (n) RETURN n.name;
+---- 0
+
+$ E2E_REWRITE_TESTS=1 E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test test/test_files/demo.test
+
+$ cat test/test_files/demo.test                                                                                         
+-DATASET CSV empty
+
+--
+
+-CASE demo
+-STATEMENT CREATE NODE TABLE A(ID SERIAL PRIMARY KEY, name STRING);
+---- ok
+-STATEMENT CREATE (:A), (:A {name: 'Alice'};
+---- error
+Parser exception: Invalid input <CREATE (:A), (:A {name: 'Alice'};>: expected rule oC_SingleQuery (line: 1, offset: 32)
+"CREATE (:A), (:A {name: 'Alice'};"
+                                 ^
+-STATEMENT CREATE (:A), (:A {name: 'Alice'}), (:A {name: 'Bob'});
+---- ok
+-STATEMENT MATCH (n) RETURN n.name;
+---- 3
+
+Alice
+Bob
+
+```
+
+To rewrite the full test suite, the rewrite mode can be turned on using a single thread only:
+```
+$ E2E_REWRITE_TESTS=1 make test NUM_THREADS=7 TEST_JOBS=1
+```
+
+:::caution[Info]
+If unordered results in a test file match the actual output from Kuzu, the
+existing results will be left unmodified to avoid unnecessary changes. However,
+on a mismatch, the correct results will be written in a sorted order.
+
+Currently, this mode does not support the following features in test files:
+* Results stored in a file using `<FILE>:`.
+* Statement in statement blocks or batch statements.
+* Results containing variables such as `${KUZU_ROOT_DIRECTORY}`. Such results
+in a test file are left unmodified.
+:::
+
+
 ## Examples
 
 ### Full example with comments
