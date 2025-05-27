@@ -4,25 +4,21 @@ title: Testing framework
 
 ## Introduction
 
-Testing is a crucial part of Kuzu to ensure the correct functioning of the
-system. Our general principle for testing is to avoid testing components individually --
-instead we route all tests, when possible, end-to-end (e2e) via Cypher statements.
+Testing is a crucial part of Kuzu to ensure that existing features continue to work correctly 
+while developing new features. In general, we avoid testing individually components of the code.
+Instead, we test most of the functionality with end-to-end (e2e) tests using Cypher statements.
 
-In order to use the e2e testing framework, developers are required to generate
-a `.test` file, which should be placed in the `test/test_files` directory. Each
-test file comprises two key sections: the test header and test body. In the header section,
-you must specify the dataset to be used and other optional
-parameters such as `BUFFER_POOL_SIZE`.
+The e2e testing framework uses `.test` files stored in the `test/test_files` directory. These files
+are similar to [sqllogictest](https://www.sqlite.org/sqllogictest/doc/trunk/about.wiki) files commonly
+used to test SQL-based systems.
 
-:::caution[Note]
-Avoid using the character `-` in test file names and case names. In the Google Test Framework, `-` has a special meaning that can inadvertently exclude a test case, leading to the test file being silently skipped. To prevent this issue, our `e2e_test` framework will throw an exception if a test file name contains `-`.
-:::
-
-Here is a basic example of a test:
+The test files are split into two sections: the test header and body, explained in the following sections.
+Cypher statements are specified in the body, grouped under a `CASE` block, together with the expected result.
+Here is a basic test file:
 
 ```
 # test/test_files/basic.test
-# comments can also be addressed
+# Comments are allowed
 -DATASET CSV tinysnb
 -BUFFER_POOL_SIZE 64000000
 --
@@ -33,42 +29,47 @@ Here is a basic example of a test:
 6000
 ```
 
-The first three lines represents the header, separated by `--`. The testing
-framework will parse the file and register a [GTest
-programatically](http://google.github.io/googletest/advanced.html#registering-tests-programmatically).
-All e2e tests will have a prefix `e2e_test_` when being registered, which is used to distinguish them from other internal tests. e.g. a e2e_test named `BasicTest` will be registered as a GTest named `e2e_test_BasicTest`.
-When it comes to the test case name, the provided example above would be equivalent to:
+The first three lines represents the header, ending with a `--`. The rest of the file is the body.
+The testing framework parses these files and registers corresponding [GTest](https://google.github.io/googletest/advanced.html#registering-tests-programmatically) tests.
+All e2e tests have a `e2e_test_` prefix in GTest, which helps distinguish the e2e tests from other internal tests.
+For example, `BasicTest` is registered as `e2e_test_BasicTest`, which programatically corresponds to:
 
 ```
-TEST_F(basic, e2e_test_BasicTest) {
-...
-}
+TEST_F(basic, e2e_test_BasicTest) { ... }
 ```
 
-For the main source code tests, the test group name will be the relative path of the file under the `test/test_files` directory, delimited by `~`, followed by a dot and the test case name.
+For tests files stored in subdirectories of `test/test_files` or `extension/name_of_extension/test/test_files`, the test
+name in GTest will be prepended with the relative path delimited by `~`, followed by a dot and the test case name.
 
-For the extension code tests, the test group name will be the relative path of the file under the `extension/name_of_extension/test/test_files` directory, delimited by `~`, followed by a dot and the test case name.
+The testing framework run the cypher statements specified in the test files and assert that the actual output from Kuzu
+match the specified results.
 
-The testing framework will test each logical plan created from the prepared
-statements and assert the result.
+:::caution[Note]
+The `-` character is not allowed in test file names and case names. In the GTest framework, `-` has a special meaning
+that can inadvertently exclude a test case, leading to the test file being silently skipped. The `e2e_test` runner will
+throw an exception if a test file name contains `-`.
+:::
 
 ## Running the tests
 
-Our primary tool for generating the test list and executing it is `ctest`. Use the command
+We primarily use `ctest` to run tests. Use the command
 `make test` to build and run all tests. By default, the tests will run
-concurrently on 10 jobs, but it is also possible to change the number of parallel jobs by
-running `make test TEST_JOBS=X` where `X` is the desired number of jobs to be run in parallel.
+concurrently with 10 threads, but it is also possible to change the number of parallel jobs by
+running `make test TEST_JOBS=X`, where `X` is the desired number of jobs to be run in parallel.
 
 ### Running a specific group or test case
 
 There are two ways to run a specific e2e test or group of tests:
 
-#### 1. Using ctest and specifying the name of the test
+#### 1. Using ctest
 
 Example:
 
 ```
-# First cd to build/relwithdebinfo/test (after running make test)
+# Build tests
+$ make test-build
+
+# First cd to build/relwithdebinfo/test
 $ cd build/relwithdebinfo/test
 
 # Run the all tests from `test/test_files/common/types/interval.test`
@@ -84,12 +85,15 @@ $ ctest -V -R common~types~interval.DifferentTypesCheck
 $ ctest -j 10
 ```
 
-To switch between main tests and extension tests, pass 'E2E_TEST_FILES_DIRECTORY=extension' as an environment variable when calling ctest.
+To switch between main tests and extension tests, pass `E2E_TEST_FILES_DIRECTORY=extension` as an environment variable when calling `ctest`.
 
 Example:
 
 ```
-# First cd to build/relwithdebinfo/test (after running make extension-test)
+# Build extension tests
+$ make extension-test-build
+
+# First cd to build/relwithdebinfo/test
 $ cd build/relwithdebinfo/test
 
 # Run all the extension tests (-R e2e_test is used to filter the extension tests, as all extension tests are e2e tests)
@@ -97,15 +101,15 @@ $ E2E_TEST_FILES_DIRECTORY=extension ctest -R e2e_test
 ```
 
 :::caution[Note]
-Windows has different syntax for setting environment variable, to run all extension tests in windows, run
+Windows has different syntax for setting environment variables:
 ```
 $ set "E2E_TEST_FILES_DIRECTORY=extension" && ctest -R e2e_test
 ```
 :::
 
-#### 2. Running directly from `e2e_test` binary
+#### 2. Using the `e2e_test` binary
 
-The test binaries are available in `build/relwithdebinfo[or debug or release]/test/runner`
+The test binaries are available in `build/{relwithdebinfo,release,debug}/test/runner`
 folder. To run any of the main tests, you can run `e2e_test` specifying the relative path file inside
 `test_files`:
 
@@ -120,17 +124,29 @@ $ ./e2e_test long_string_pk/long_string_pk.test
 $ ./e2e_test .
 ```
 
-To run any of the extension tests, you can run `e2e_test` with environment variable `E2E_TEST_FILES_DIRECTORY=extension` and specify the relative path file inside
-`extension`:
+Use `E2E_TEST_FILES_DIRECTORY` to set a different root directory for the test files, for example when running the tests
+from the root directory of the Kuzu repo:
+```
+# Run all tests inside test/test_files/copy
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test test/test_files/copy
+
+# Run all tests from test/test_files/long_string_pk.test file
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test test/test_files/long_string_pk/long_string_pk.test
+
+# Run all tests
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test test/test_files
+```
+
+You can similarly run any of the extension tests:
 ```
 # Run all tests inside extension/duckdb
-$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test duckdb
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test extension/duckdb
 
 # Run all tests from extension/json/test/copy_to_json.test file
-$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test json/test/copy_to_json.test
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test extension/json/test/copy_to_json.test
 
 # Run all extension tests
-$ E2E_TEST_FILES_DIRECTORY=extension ./e2e_test .
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test extension
 ```
 
 :::caution[Note]
@@ -139,17 +155,25 @@ to find the output from a failed test. In this situation, the flag
 `--gtest_break_on_failure` might be helpful to break the test on failure.
 :::
 
+### Running `SKIP`ed tests
+
+Some tests in test files are marked as `SKIP` which are ignored by default when running the tests.
+To run those tests without editing the files, you can use `--gtest_also_run_disabled_tests`:
+```
+$ E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test --gtest_also_run_disabled_tests extension/neo4j/test/test_files/basic.test
+```
+
 ## Test file header
 
 The `.test` file header contains one required parameter:
 `-DATASET`, to specify the test group name and the dataset to be used. If no
 dataset is required, use the keyword 'empty'.
 
-### Specifying the Dataset
+### Specifying the dataset
 
 | Property                         | Description                                                                                                                  |
 | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY, KUZU or empty<br/> **Dataset name:** the name of the directory inside `dataset/`. i.e. tinysnb. |
+| `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY, KUZU or empty<br/> **Dataset name:** the name of a directory inside `dataset/`. E.g.,. `tinysnb`. |
 
 The `KUZU` dataset type is a Kuzu database directory.
 
@@ -179,9 +203,9 @@ without storing the same dataset in the codebase twice.
 
 ### Other properties
 
-Other optional parameters include `-BUFFER_POOL_SIZE`, `-CHECKPOINT_WAIT_TIMEOUT` and `-SKIP`. By including
-`-SKIP` in the header, the entire suite will be deactivated, but the tests
-will still be displayed as disabled when running through `ctest`.
+Other optional parameters include `-BUFFER_POOL_SIZE`, `-CHECKPOINT_WAIT_TIMEOUT` and `-SKIP`. A
+`-SKIP` in the header disables the entire suite, with the tests displayed as disabled when running `ctest`.
+Skipped tests can be [forced to run](#running-skiped-tests) with a flag.
 
 ## Test case
 
@@ -218,17 +242,17 @@ There are three ways to specify the expected result:
 | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `---- error`                                                                                                                    | The following lines must be the expected error message.                                                                    |
 | `---- error(regex)`                                                                                                             | The following lines must be a regex pattern matching the expected error message.                                           |
-| `---- ok`                                                                                                                       | does not require any additional information below the line.                                                                |
+| `---- ok`                                                                                                                       | Does not require any additional information below the line.                                                                |
 | `---- hash`                                                                                                                     | A single line must follow containing the number of values in the query results and the md5 hash value of the query result. |
 | <span style="text-wrap: nowrap;">`---- [number of expected tuples]` <br> `[expected tuple 1]` <br> `[expected tuple 2]` </span> | The first line after `----` contains the number of tuples and the following lines must exactly match the query results.    |
+| <span style="text-wrap: nowrap;">`---- [number of expected tuples]` <br> `<FILE>:file_name.txt` </span> | A file stored under `test/answers/` containing the specified number of tuples.  |
 
 :::note[Note]
-By default, the expected result tuples can be written in any order. The framework will sort the
-actual and expected results before comparing. If you need the results not to be sorted, you can
-set it by adding `-CHECK_ORDER` before the statement. However, the hash of the query result is the
-hash of a string of the result. As a consequence, the order of the tuples in the output must match
-the order of the tuples in the expected result when using hash. More detail on hashing is included
-in its own section.
+By default, the expected result tuples can be written in any order. The runner will sort the
+actual and expected results before comparing. If you want to test that the results are returned in
+a specific order, for example to test an `ORDER BY` clause, you can
+use `-CHECK_ORDER`. Note that when using the `hash` result type, the actual output must match the
+original order of the tuples used to compute the specified hash.
 :::
 
 ```
@@ -257,34 +281,22 @@ Dan
 
 # Using hash with a query equivalent to the above
 -STATEMENT MATCH (a:person) RETURN a.fName LIMIT 4
--CHECK_ORDER # order matters with hashes
+-CHECK_ORDER # order of output tuples matters with hashes
 ---- hash
 4 c921eb680e6d000e4b65556ae02361d2
-```
 
-:::caution[Info]
-Any number of tokens may be in between the number of expected
-values and the md5 hash. As such,
-`4 values hashing to c921eb680e6d000e4b65556ae02361d2`
-is an equivalent line
-:::
+# Arbitrary content can be inserted between the expected count and the md5 hash
+# The following result is equivalent: 
+-STATEMENT MATCH (a:person) RETURN a.fName LIMIT 4
+-CHECK_ORDER
+---- hash
+4 values hashed to c921eb680e6d000e4b65556ae02361d2
 
-Query results can also be stored in a file. By using `<FILE>:`, the testing
-framework reads the results from the file and compare to the actual query
-result. The file must be created inside `test/answers/<name-of-the-file.txt>`.
-
-```
+# Using a file
 -STATEMENT MATCH (p0:person)-[r:knows]->(p1:person) RETURN ID(r)
 ---- 5001
 <FILE>:file_with_answers.txt
 ```
-
-### Hash details
-
-When hashing an expected output, it's best to add the `-CHECK_ORDER` flag.
-If you don't want to check the order of the expected output, then you have to
-sort the expected output by line (with string comparison) before creating
-the hash
 
 ### Additional properties
 
@@ -292,9 +304,9 @@ It is also possible to use the additional properties inside each test case:
 
 | Property              | Parameter      | Description                                                                                                         |
 | --------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `-LOG`                | any string     | Define a name for each block for informational purposes                                                             |
-| `-SKIP`               | none           | Register the test but skip the whole test case. When a test is skipped, it will display as disabled in the test run |
-| `-PARALLELISM`        | integer        | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()`                         |
+| `-LOG`                | any string     | Define a name for each block for informational purposes.                                                            |
+| `-SKIP`               | none           | Register the test but skip running it by default. It will display as disabled in the test run.                      |
+| `-PARALLELISM`        | integer        | Default: 4. The number of threads that will be set by `connection.setMaxNumThreadForExec()`.                        |
 | `-CHECK_ORDER`        | none           | By default, the query results and expected results are ordered before asserting comparison.                         |
 | `-CHECK_COLUMN_NAMES` | none           | Includes the column names as the first row of query result. Requires +1 to number of expected tuples.               |
 | `-RELOADDB`           | none           | Reload database from file system.                                                                                   |
@@ -304,7 +316,7 @@ It is also possible to use the additional properties inside each test case:
 
 ### Defining variables
 
-A variable can be defined and re-used inside a statement, results or error
+A variable can be defined and re-used inside a statement, results, or error
 message:
 
 ```
@@ -330,7 +342,7 @@ currently support the following functions:
 
 #### Pre-defined variables
 
-The following variables are available to use inside the statements:
+The following variables are available for use inside statements:
 
 | Variable                 | Description                                                                                                                                                      |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -443,6 +455,75 @@ Optionally, a seed can be specified after the table name to stably split the sou
 ```
 -MULTI_COPY_RANDOM <int> <string> [ SEED <int> <int> ] <string>
 ```
+
+## Automatically creating test results
+
+To avoid having to manually write test results, the test runner supports a `E2E_REWRITE_TESTS=1` mode,
+similar to `sqllogictest`'s [completion mode](https://www.sqlite.org/sqllogictest/doc/trunk/about.wiki).
+When turned on, the test runner switches from checking the specified output in a test file against
+the actual output from Kuzu to overwriting the result section for each statement in the test file.
+The mode is intended to make it easy to write new tests and also modify the existing tests if the
+output from Kuzu changes during development.
+
+The following example run shows how the tests are rewritten automatically:
+
+```bash
+$ cat test/test_files/demo.test
+-DATASET CSV empty
+
+--
+
+-CASE demo
+-STATEMENT CREATE NODE TABLE A(ID SERIAL PRIMARY KEY, name STRING);
+---- ok
+-STATEMENT CREATE (:A), (:A {name: 'Alice'};
+---- ok
+-STATEMENT CREATE (:A), (:A {name: 'Alice'}), (:A {name: 'Bob'});
+---- ok
+-STATEMENT MATCH (n) RETURN n.name;
+---- 0
+
+$ E2E_REWRITE_TESTS=1 E2E_TEST_FILES_DIRECTORY='.' ./build/relwithdebinfo/test/runner/e2e_test test/test_files/demo.test
+
+$ cat test/test_files/demo.test                                                                                         
+-DATASET CSV empty
+
+--
+
+-CASE demo
+-STATEMENT CREATE NODE TABLE A(ID SERIAL PRIMARY KEY, name STRING);
+---- ok
+-STATEMENT CREATE (:A), (:A {name: 'Alice'};
+---- error
+Parser exception: Invalid input <CREATE (:A), (:A {name: 'Alice'};>: expected rule oC_SingleQuery (line: 1, offset: 32)
+"CREATE (:A), (:A {name: 'Alice'};"
+                                 ^
+-STATEMENT CREATE (:A), (:A {name: 'Alice'}), (:A {name: 'Bob'});
+---- ok
+-STATEMENT MATCH (n) RETURN n.name;
+---- 3
+
+Alice
+Bob
+
+```
+
+To rewrite the full test suite, the rewrite mode can be turned on using a single thread only:
+```
+$ E2E_REWRITE_TESTS=1 make test NUM_THREADS=7 TEST_JOBS=1
+```
+
+:::caution[Info]
+If unordered results in a test file match the actual output from Kuzu, the
+existing results will be left unmodified to avoid unnecessary changes. However,
+on a mismatch, the correct results will be written in a sorted order.
+
+Currently, this mode does not support rewriting tests using the following features and are left unmodified:
+* Results stored in a file using `<FILE>:`.
+* Statement in statement blocks or batch statements.
+* Results containing variables such as `${KUZU_ROOT_DIRECTORY}`.
+:::
+
 
 ## Examples
 
