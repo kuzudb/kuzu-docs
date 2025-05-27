@@ -4,25 +4,21 @@ title: Testing framework
 
 ## Introduction
 
-Testing is a crucial part of Kuzu to ensure the correct functioning of the
-system. Our general principle for testing is to avoid testing components individually --
-instead we route all tests, when possible, end-to-end (e2e) via Cypher statements.
+Testing is a crucial part of Kuzu to ensure that existing features continue to work correctly 
+while developing new features. In general, we avoid testing individually components of the code.
+Instead, we test most of the functionality with end-to-end (e2e) tests using Cypher statements.
 
-In order to use the e2e testing framework, developers are required to generate
-a `.test` file, which should be placed in the `test/test_files` directory. Each
-test file comprises two key sections: the test header and test body. In the header section,
-you must specify the dataset to be used and other optional
-parameters such as `BUFFER_POOL_SIZE`.
+The e2e testing framework uses `.test` files stored in the `test/test_files` directory. These files
+are similar to [sqllogictest](https://www.sqlite.org/sqllogictest/doc/trunk/about.wiki) files commonly
+used to test SQL-based systems.
 
-:::caution[Note]
-Avoid using the character `-` in test file names and case names. In the Google Test Framework, `-` has a special meaning that can inadvertently exclude a test case, leading to the test file being silently skipped. To prevent this issue, our `e2e_test` framework will throw an exception if a test file name contains `-`.
-:::
-
-Here is a basic example of a test:
+The test files are split into two sections: the test header and body, explained in the following sections.
+Cypher statements are specified in the body, grouped under a `CASE` block, together with the expected result.
+Here is a basic test file:
 
 ```
 # test/test_files/basic.test
-# comments can also be addressed
+# Comments are allowed
 -DATASET CSV tinysnb
 -BUFFER_POOL_SIZE 64000000
 --
@@ -33,30 +29,32 @@ Here is a basic example of a test:
 6000
 ```
 
-The first three lines represents the header, separated by `--`. The testing
-framework will parse the file and register a [GTest
-programatically](http://google.github.io/googletest/advanced.html#registering-tests-programmatically).
-All e2e tests will have a prefix `e2e_test_` when being registered, which is used to distinguish them from other internal tests. e.g. a e2e_test named `BasicTest` will be registered as a GTest named `e2e_test_BasicTest`.
-When it comes to the test case name, the provided example above would be equivalent to:
+The first three lines represents the header, ending with a `--`. The rest of the file is the body.
+The testing framework parses these files and registers corresponding [GTest](https://google.github.io/googletest/advanced.html#registering-tests-programmatically) tests.
+All e2e tests have a `e2e_test_` prefix in GTest, which helps distinguish the e2e tests from other internal tests.
+For example, `BasicTest` is registered as `e2e_test_BasicTest`, which programatically corresponds to:
 
 ```
-TEST_F(basic, e2e_test_BasicTest) {
-...
-}
+TEST_F(basic, e2e_test_BasicTest) { ... }
 ```
 
-For the main source code tests, the test group name will be the relative path of the file under the `test/test_files` directory, delimited by `~`, followed by a dot and the test case name.
+For tests files stored in subdirectories of `test/test_files` or `extension/name_of_extension/test/test_files`, the test
+name in GTest will be prepended with the relative path delimited by `~`, followed by a dot and the test case name.
 
-For the extension code tests, the test group name will be the relative path of the file under the `extension/name_of_extension/test/test_files` directory, delimited by `~`, followed by a dot and the test case name.
+The testing framework run the cypher statements specified in the test files and assert that the actual output from Kuzu
+match the specified results.
 
-The testing framework will test each logical plan created from the prepared
-statements and assert the result.
+:::caution[Note]
+The `-` character is not allowed in test file names and case names. In the GTest framework, `-` has a special meaning
+that can inadvertently exclude a test case, leading to the test file being silently skipped. The `e2e_test` runner will
+throw an exception if a test file name contains `-`.
+:::
 
 ## Running the tests
 
-Our primary tool for generating the test list and executing it is `ctest`. Use the command
+We primarily use `ctest` to run tests. Use the command
 `make test` to build and run all tests. By default, the tests will run
-concurrently on 10 jobs, but it is also possible to change the number of parallel jobs by
+concurrently with 10 threads, but it is also possible to change the number of parallel jobs by
 running `make test TEST_JOBS=X` where `X` is the desired number of jobs to be run in parallel.
 
 ### Running a specific group or test case
