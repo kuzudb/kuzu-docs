@@ -307,8 +307,8 @@ json_str = '[{"name": "Rebecca", "age": 25}, {"name": "Gregory", "age": 30}, {"n
 
 result = conn.execute("RETURN json_structure($obj) AS json_obj", {"obj": json_str})
 
-while result.has_next():
-    print(result.get_next())
+for row in response:
+    print(row)
 ```
 
 ```
