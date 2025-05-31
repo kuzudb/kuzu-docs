@@ -51,8 +51,8 @@ def main() -> None:
         RETURN a.name, b.name, f.since;
         """
     )
-    while response.has_next():
-        print(response.get_next())
+    for row in response:
+        print(row)
 ```
 
 </TabItem>
@@ -90,8 +90,8 @@ async def copy_data(conn: kuzu.AsyncConnection) -> None:
 
 async def query_1(conn: kuzu.AsyncConnection) -> None:
     result = await conn.execute("MATCH (u:User)-[:LivesIn]->(c:City) RETURN u.*")
-    while result.has_next():
-        print(result.get_next())
+    for row in response:
+        print(row)
 
 async def main():
     await create_tables(conn)
@@ -146,10 +146,10 @@ return a list of `QueryResult` objects.
 
 You can loop through each result of a `QueryResult` object and get its contents.
 ```python
-response = conn.execute("RETURN 1; RETURN 2; RETURN 3")
-for row in response:
-    while row.has_next():
-        print(row.get_next())
+responses = conn.execute("RETURN 1; RETURN 2; RETURN 3")
+for response in responses:
+    for row in response:
+        print(row)
 ```
 This returns:
 ```

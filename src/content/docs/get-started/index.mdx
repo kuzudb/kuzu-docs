@@ -86,8 +86,8 @@ def main() -> None:
         RETURN a.name, b.name, f.since;
         """
     )
-    while response.has_next():
-        print(response.get_next())
+    for row in response:
+        print(row)
 ```
 
 Result:
