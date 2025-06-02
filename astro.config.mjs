@@ -248,7 +248,8 @@ export default defineConfig({
                             collapsed: true,
                             items: [
                                 { label: 'Amazon S3', link: '/extensions/httpfs#aws-s3-file-system'},
-                                { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system'},
+                                { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system' },
+                                { label: 'Microsoft Azure', link: '/extensions/azure', badge: { text: 'New' }},
                             ]
                         },
                         { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },

@@ -1,0 +1,43 @@
+---
+title: "Azure extension"
+---
+The Azure extension adds support for scanning from Azure Blob Storage and Azure Data Lake Storage (ADLS).
+To install and load the Azure extension, run the following commands:
+```sql
+INSTALL azure;
+LOAD azure;
+```
+## Usage
+### Configuration
+The Azure extension adds a few configurable options, primarily for authentication:
+- `AZURE_CONNECTION_STRING`
+- `AZURE_ACCOUNT_NAME`
+- `AZURE_HTTP_PROXY`
+- `AZURE_PROXY_USER_NAME`
+- `AZURE_PROXY_PASSWORD`
+
+Upon loading the extension, for all options, if there exists an environment variable with
+the same name, then it is initialized with that value. Otherwise it is left as an empty string
+by default. You can configure an option yourself like usual:
+```sql
+CALL azure_connection_string = '...';
+```
+For more information,
+refer to the documentation on [`CALL`](/cypher/query-clauses/call/).
+
+### Scanning
+The supported URI schemes are `az` and `abfss`. While they could both work for both Azure blob storage and ADLS,
+it is recommended to use `abfss` when scanning from ADLS as it has potential for significantly better performance.
+```sql
+LOAD FROM 'az://container/path/test.csv'
+RETURN *;
+```
+```sql
+LOAD FROM 'abfss://container/path/to/file.csv'
+RETURN *;
+```
+One can also use a fully qualified path:
+```sql
+LOAD FROM 'az://account_name.blob.core.windows.net/container/path/to/file.csv'
+RETURN *;
+```
