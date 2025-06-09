@@ -6,6 +6,15 @@ The dataset used in the tutorials is a social network dataset of users and posts
 
 ![](./social_graph_schema.png)
 
+## Download the data
+
+You can download the zipped data by clicking on [this link](https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip),
+or use curl as shown below. Once downloaded, unzip the files to your current working directory.
+```bash
+curl -o tutorial_data.zip https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip
+unzip tutorial_data.zip
+```
+
 ## Nodes
 
 ### `User`
@@ -72,71 +81,35 @@ userID,postID
 11,1
 ```
 
-## Define the schema in Kuzu
+## Create Kuzu tables
 
 In the Kuzu CLI, let's create a node table for the `User`s in our dataset.
 
 ```cypher
+// Create a node table for the `User`s in our dataset.
 CREATE NODE TABLE User(
     userID INT64 PRIMARY KEY,
     username STRING,
     account_creation_date DATE
 );
-```
-```
-┌──────────────────────────────┐
-│ result                       │
-│ STRING                       │
-├──────────────────────────────┤
-│ Table User has been created. │
-└──────────────────────────────┘
-```
-We can do a similar thing for the `Post`s in our dataset.
 
-```cypher
+// Create a node table for the `Post`s in our dataset.
 CREATE NODE TABLE Post(
     postID INT64 PRIMARY KEY,
     creation_date DATE,
     like_count INT64,
     retweet_count INT64
 );
-```
-```
-┌──────────────────────────────┐
-│ result                       │
-│ STRING                       │
-├──────────────────────────────┤
-│ Table Post has been created. │
-└──────────────────────────────┘
-```
 
-Now that we have our node tables, we can create a relationship table for the `FOLLOWS` and `POSTS`
-relationships in our dataset.
-
-```cypher
-CREATE REL TABLE LIKES(From User To Post);
+// Create a relationship table for the `FOLLOWS` relationship in our dataset.
 CREATE REL TABLE FOLLOWS(From User To User);
+
+// Create a relationship table for the `POSTS` relationship in our dataset.
 CREATE REL TABLE POSTED(From User To Post);
-```
-```
-┌───────────────────────────────┐
-│ result                        │
-│ STRING                        │
-├───────────────────────────────┤
-│ Table LIKES has been created. │
-└───────────────────────────────┘
 
-┌─────────────────────────────────┐
-│ result                          │
-│ STRING                          │
-├─────────────────────────────────┤
-│ Table FOLLOWS has been created. │
-└─────────────────────────────────┘
+// Create a relationship table for the `LIKES` relationship in our dataset.
+CREATE REL TABLE LIKES(From User To Post);
 
-┌────────────────────────────────┐
-│ result                         │
-│ STRING                         │
-├────────────────────────────────┤
-│ Table POSTED has been created. │
-└────────────────────────────────┘
 ```
+
+This will create the required node and relationship tables in Kuzu.
