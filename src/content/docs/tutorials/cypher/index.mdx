@@ -40,14 +40,14 @@ to create the node and relationship tables.
 ## Ingest the data
 
 The `COPY FROM` command is used to ingest data from various file formats into Kuzu. In this case,
-the data is stored in CSV format.
+the data is stored in CSV format, in the local directory `tutorial_data`.
 
 ```bash
-COPY User FROM '/Users/prrao/code/kuzu-debug/tutorial_data/node/user.csv';
-COPY Post FROM '/Users/prrao/code/kuzu-debug/tutorial_data/node/post.csv';
-COPY LIKES FROM '/Users/prrao/code/kuzu-debug/tutorial_data/relation/LIKES.csv';
-COPY FOLLOWS FROM '/Users/prrao/code/kuzu-debug/tutorial_data/relation/FOLLOWS.csv';
-COPY POSTED FROM '/Users/prrao/code/kuzu-debug/tutorial_data/relation/POSTS.csv';
+COPY User FROM 'tutorial_data/node/user.csv';
+COPY Post FROM 'tutorial_data/node/post.csv';
+COPY LIKES FROM 'tutorial_data/relation/LIKES.csv';
+COPY FOLLOWS FROM 'tutorial_data/relation/FOLLOWS.csv';
+COPY POSTED FROM 'tutorial_data/relation/POSTS.csv';
 ```
 You should see messages in your terminal indicating how many tuples were copied into each table. An
 example is shown below.
