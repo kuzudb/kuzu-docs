@@ -422,7 +422,7 @@ WITH u, COUNT(p) AS num_posts
 ORDER BY num_posts DESC
 LIMIT 3
 WITH u
-MATCH (u)<-[:Follows]-(u2:User)
+MATCH (u2:User)-[:Follows]->(u)
 RETURN u.username AS most_prolific_user, u2.username AS follower
 LIMIT 8;
 ```
