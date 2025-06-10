@@ -41,8 +41,8 @@ script to contain the querying logic.
 Make a new `src` directory and create the `create_db.py` and `main.py` files in it.
 ```bash
 mkdir src
-echo "print('Hello, world!')" > src/create_db.py
-cp src/create_db.py src/main.py
+touch src/create_db.py
+touch src/main.py
 ```
 
 Your directory should now look something like this:
@@ -64,11 +64,8 @@ kuzu_social_network
 
 Test the setup by running the two Python scripts.
 ```bash
-$ python src/create_db.py
-Hello, world!
-
-$ python src/main.py
-Hello, world!
+python src/create_db.py
+python src/main.py
 ```
 We are now ready to start the tutorial.
 
