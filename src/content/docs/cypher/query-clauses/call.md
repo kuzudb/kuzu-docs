@@ -292,8 +292,8 @@ CALL SHOW_INDEXES() RETURN *;
 └────────────┴────────────┴────────────┴─────────────────────────┴──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### SHOW_PROJECTED_GRAPH
-To list all existing projected graphs in a Kuzu database, you can use the `SHOW_PROJECTED_GRAPH` function.
+### SHOW_PROJECTED_GRAPHS
+To list all existing projected graphs in a Kuzu database, you can use the `SHOW_PROJECTED_GRAPHS` function.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
@@ -302,7 +302,7 @@ To list all existing projected graphs in a Kuzu database, you can use the `SHOW_
 | rels | the rels with predicates in the projected graph | STRING |
 
 ```cypher
-CALL SHOW_PROJECTED_GRAPH() RETURN *;
+CALL SHOW_PROJECTED_GRAPHS() RETURN *;
 ```
 
 ```
