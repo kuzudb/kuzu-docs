@@ -74,46 +74,46 @@ This is better illustrated with an example.
 Let's create a simple graph projection on a node and a relationship table.
 
 ```cypher
-CREATE NODE TABLE Node(id STRING PRIMARY KEY);
-CREATE REL TABLE Edge(FROM Node to Node, id INT64);
-CREATE (u0:Node {id: 'A'}),
-        (u1:Node {id: 'B'}),
-        (u2:Node {id: 'C'}),
-        (u3:Node {id: 'D'}),
-        (u4:Node {id: 'E'}),
-        (u5:Node {id: 'F'}),
-        (u6:Node {id: 'G'}),
-        (u7:Node {id: 'H'}),
-        (u8:Node {id: 'I'}),
-        (u0)-[:Edge {id:0}]->(u1),
-        (u1)-[:Edge {id:1}]->(u2),
-        (u5)-[:Edge {id:2}]->(u4),
-        (u6)-[:Edge {id:3}]->(u4),
-        (u6)-[:Edge {id:4}]->(u5),
-        (u6)-[:Edge {id:5}]->(u7),
-        (u7)-[:Edge {id:6}]->(u4),
-        (u6)-[:Edge {id:7}]->(u5)
+CREATE NODE TABLE Person(name STRING PRIMARY KEY);
+CREATE REL TABLE KNOWS(FROM Person to Person, id INT64);
+CREATE (u0:Person {name: 'Alice'}),
+        (u1:Person {name: 'Bob'}),
+        (u2:Person {name: 'Charlie'}),
+        (u3:Person {name: 'Derek'}),
+        (u4:Person {name: 'Eve'}),
+        (u5:Person {name: 'Frank'}),
+        (u6:Person {name: 'George'}),
+        (u7:Person {name: 'Hina'}),
+        (u8:Person {name: 'Ira'}),
+        (u0)-[:KNOWS {id: 0}]->(u1),
+        (u1)-[:KNOWS {id: 1}]->(u2),
+        (u5)-[:KNOWS {id: 2}]->(u4),
+        (u6)-[:KNOWS {id: 3}]->(u4),
+        (u6)-[:KNOWS {id: 4}]->(u5),
+        (u6)-[:KNOWS {id: 5}]->(u7),
+        (u7)-[:KNOWS {id: 6}]->(u4),
+        (u6)-[:KNOWS {id: 7}]->(u5);
 
-CALL project_graph('Graph', ['Node'], ['Edge']);
+CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
-This creates a projected graph named `Graph` with the node table `Node` and the relationship table
-`Edge`.
+This creates a projected graph named `Graph` with the node table `Person` and the relationship table `KNOWS`.
 
 Now, we can run a graph algorithm on this projected graph.
 ```cypher
 CALL weakly_connected_components('Graph')
-RETURN group_id, collect(node.id);
+RETURN group_id, collect(node.name)
+ORDER BY group_id;
 ```
 ```
-┌──────────┬──────────────────┐
-│ group_id │ COLLECT(node.id) │
-│ INT64    │ STRING[]         │
-├──────────┼──────────────────┤
-│ 5        │ [G,F,H,E]        │
-│ 0        │ [D]              │
-│ 2        │ [B,C,A]          │
-│ 1        │ [I]              │
-└──────────┴──────────────────┘
+┌──────────┬─────────────────────────┐
+│ group_id │ COLLECT(node.name)      │
+│ INT64    │ STRING[]                │
+├──────────┼─────────────────────────┤
+│ 0        │ [Derek]                 │
+│ 1        │ [Ira]                   │
+│ 2        │ [Bob,Charlie,Alice]     │
+│ 5        │ [George,Frank,Hina,Eve] │
+└──────────┴─────────────────────────┘
 ```
 
 ### Filtered projection
@@ -155,37 +155,38 @@ CALL project_graph(
 #### Example
 
 Let's use the same database as in the simple projection example above. This time, we want to project
-only the nodes with `id` not equal to `I` and the relationships with `id` less than `3` to obtain
-a filtered projected graph named `Filtered_Graph`.
+only the nodes with `name` not equal to `Ira` and the relationships with `id` less than `3` to obtain
+a filtered projected graph named `filtered_graph`.
 
 ```cypher
 CALL project_graph(
-    'Filtered_Graph',
+    'filtered_graph',
     {
-        'Node': 'n.id <> "I"'
+        'Person': 'n.name <> "Ira"'
     },
     {
-        'Edge': 'r.id < 3'
+        'KNOWS': 'r.id < 3'
     }
 );
 ```
 
 Now, we can run a graph algorithm on this filtered projected graph.
 ```cypher
-CALL weakly_connected_components('Filtered_Graph')
-RETURN group_id, collect(node.id);
+CALL weakly_connected_components('filtered_graph')
+RETURN group_id, collect(node.name)
+ORDER BY group_id;
 ```
 ```
-┌──────────┬──────────────────┐
-│ group_id │ COLLECT(node.id) │
-│ INT64    │ STRING[]         │
-├──────────┼──────────────────┤
-│ 2        │ [B,C,A]          │
-│ 0        │ [D]              │
-│ 5        │ [G]              │
-│ 6        │ [F,E]            │
-│ 7        │ [H]              │
-└──────────┴──────────────────┘
+┌──────────┬─────────────────────┐
+│ group_id │ COLLECT(node.name)  │
+│ INT64    │ STRING[]            │
+├──────────┼─────────────────────┤
+│ 0        │ [Derek]             │
+│ 2        │ [Bob,Charlie,Alice] │
+│ 5        │ [George]            │
+│ 6        │ [Frank,Eve]         │
+│ 7        │ [Hina]              │
+└──────────┴─────────────────────┘
 ```
 
 ## List available projected graphs
@@ -193,10 +194,10 @@ RETURN group_id, collect(node.id);
 You can list all available projected graphs using the following syntax:
 
 ```cypher
-CALL SHOW_PROJECTED_GRAPH() RETURN *;
+CALL SHOW_PROJECTED_GRAPHS() RETURN *;
 ```
 
-See the [CALL](/cypher/query-clauses/call#show_projected_graph) function docs for more details
+See the [CALL](/cypher/query-clauses/call#show_projected_graphs) function docs for more details
 on what parameters are supported.
 
 ## Drop projected graph
@@ -220,10 +221,10 @@ CALL drop_projected_graph(
 
 #### Example
 
-Let's drop the projected graph `Filtered_Graph` that we created in the filtered projection example above.
+Let's drop the projected graph `filtered_graph` that we created in the filtered projection example above.
 
 ```cypher
-CALL drop_projected_graph('Filtered_Graph');
+CALL drop_projected_graph('filtered_graph');
 ```
 
-The projected graph `Filtered_Graph` is now dropped.
+The projected graph `filtered_graph` is now dropped.

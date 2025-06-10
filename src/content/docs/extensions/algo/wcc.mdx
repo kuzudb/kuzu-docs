@@ -39,47 +39,49 @@ RETURN node, group_id
 
 Define schema
 ```cypher
-CREATE NODE TABLE Node(id STRING PRIMARY KEY);
-CREATE REL TABLE Edge(FROM Node to Node);
+CREATE NODE TABLE Person(name STRING PRIMARY KEY);
+CREATE REL TABLE KNOWS(FROM Person to Person);
 ```
 Insert nodes and edges
 ```cypher
-CREATE (u0:Node {id: 'A'}),
-        (u1:Node {id: 'B'}),
-        (u2:Node {id: 'C'}),
-        (u3:Node {id: 'D'}),
-        (u4:Node {id: 'E'}),
-        (u5:Node {id: 'F'}),
-        (u6:Node {id: 'G'}),
-        (u7:Node {id: 'H'}),
-        (u8:Node {id: 'I'}),
-        (u0)-[:Edge]->(u1),
-        (u1)-[:Edge]->(u2),
-        (u5)-[:Edge]->(u4),
-        (u6)-[:Edge]->(u4),
-        (u6)-[:Edge]->(u5),
-        (u6)-[:Edge]->(u7),
-        (u7)-[:Edge]->(u4),
-        (u6)-[:Edge]->(u5);
+CREATE (u0:Person {name: 'Alice'}),
+        (u1:Person {name: 'Bob'}),
+        (u2:Person {name: 'Charlie'}),
+        (u3:Person {name: 'Derek'}),
+        (u4:Person {name: 'Eve'}),
+        (u5:Person {name: 'Frank'}),
+        (u6:Person {name: 'George'}),
+        (u7:Person {name: 'Hina'}),
+        (u8:Person {name: 'Ira'}),
+        (u0)-[:KNOWS]->(u1),
+        (u1)-[:KNOWS]->(u2),
+        (u5)-[:KNOWS]->(u4),
+        (u6)-[:KNOWS]->(u4),
+        (u6)-[:KNOWS]->(u5),
+        (u6)-[:KNOWS]->(u7),
+        (u7)-[:KNOWS]->(u4),
+        (u6)-[:KNOWS]->(u5);
 ```
 We first create a projected graph from the node and edge tables.
 ```cypher
-CALL project_graph('Graph', ['Node'], ['Edge']);
+CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
 Then, you can run WCC as follows:
 ```cypher
-CALL weakly_connected_components('Graph') RETURN group_id, collect(node.id);
+CALL weakly_connected_components('Graph')
+RETURN group_id, collect(node.name)
+ORDER BY group_id;
 ```
 ```
-┌──────────┬──────────────────┐
-│ group_id │ COLLECT(node.id) │
-│ INT64    │ STRING[]         │
-├──────────┼──────────────────┤
-│ 5        │ [G,F,H,E]        │
-│ 0        │ [D]              │
-│ 2        │ [B,C,A]          │
-│ 1        │ [I]              │
-└──────────┴──────────────────┘
+┌──────────┬─────────────────────────┐
+│ group_id │ COLLECT(node.name)      │
+│ INT64    │ STRING[]                │
+├──────────┼─────────────────────────┤
+│ 0        │ [Derek]                 │
+│ 1        │ [Ira]                   │
+│ 2        │ [Bob,Charlie,Alice]     │
+│ 5        │ [George,Frank,Hina,Eve] │
+└──────────┴─────────────────────────┘
 ```
 
 ## Frequently asked questions
@@ -87,4 +89,3 @@ CALL weakly_connected_components('Graph') RETURN group_id, collect(node.id);
 #### How is `group_id` assigned?
 
 `group_id` is assigned based on Kuzu's internal node offsets. Currently there is no way to assign `group_id` based on node properties.
-

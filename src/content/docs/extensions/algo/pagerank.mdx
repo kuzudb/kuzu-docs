@@ -48,39 +48,41 @@ RETURN node, rank
 
 Define schema
 ```cypher
-CREATE NODE TABLE Node(id STRING PRIMARY KEY);
-CREATE REL TABLE Edge(FROM Node to Node);
+CREATE NODE TABLE Person(name STRING PRIMARY KEY);
+CREATE REL TABLE KNOWS(FROM Person to Person);
 ```
 Insert nodes and edges
 ```cypher
-CREATE (u0:Node {id: 'A'}),
-        (u1:Node {id: 'B'}),
-        (u2:Node {id: 'C'}),
-        (u3:Node {id: 'D'}),
-        (u4:Node {id: 'E'}),
-        (u0)-[:Edge]->(u1),
-        (u0)-[:Edge]->(u4),
-        (u1)-[:Edge]->(u4),
-        (u2)-[:Edge]->(u4),
-        (u3)-[:Edge]->(u4);
+CREATE (u0:Person {name: 'Alice'}),
+        (u1:Person {name: 'Bob'}),
+        (u2:Person {name: 'Charlie'}),
+        (u3:Person {name: 'Derek'}),
+        (u4:Person {name: 'Eve'}),
+        (u0)-[:KNOWS]->(u1),
+        (u0)-[:KNOWS]->(u4),
+        (u1)-[:KNOWS]->(u4),
+        (u2)-[:KNOWS]->(u4),
+        (u3)-[:KNOWS]->(u4);
 ```
 We'll first create a projected graph from the node and edge tables.
 ```cypher
-CALL project_graph('Graph', ['Node'], ['Edge']);
+CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
 Run PageRank on the projected graph as follows:
 ```cypher
-CALL page_rank('Graph') RETURN node.id, rank ORDER BY rank DESC;
+CALL page_rank('Graph')
+RETURN node.name, rank
+ORDER BY rank DESC;
 ```
 ```
-┌─────────┬──────────┐
-│ node.id │ rank     │
-│ STRING  │ DOUBLE   │
-├─────────┼──────────┤
-│ E       │ 0.130088 │
-│ B       │ 0.042750 │
-│ D       │ 0.030000 │
-│ C       │ 0.030000 │
-│ A       │ 0.030000 │
-└─────────┴──────────┘
+┌───────────┬──────────┐
+│ node.name │ rank     │
+│ STRING    │ DOUBLE   │
+├───────────┼──────────┤
+│ Eve       │ 0.130088 │
+│ Bob       │ 0.042750 │
+│ Derek     │ 0.030000 │
+│ Charlie   │ 0.030000 │
+│ Alice     │ 0.030000 │
+└───────────┴──────────┘
 ```

@@ -41,46 +41,48 @@ RETURN node, k_degree
 
 Define schema
 ```cypher
-CREATE NODE TABLE Node(id STRING PRIMARY KEY);
-CREATE REL TABLE Edge(FROM Node to Node);
+CREATE NODE TABLE Person(name STRING PRIMARY KEY);
+CREATE REL TABLE KNOWS(FROM Person to Person);
 ```
 Insert nodes and edges
 ```cypher
-CREATE (alice:Node {id:'Alice'}),
-        (bridget:Node {id:'Bridget'}),
-        (charles:Node {id:'Charles'}),
-        (doug:Node {id:'Doug'}),
-        (eli:Node {id:'Eli'}),
-        (filip:Node {id:'Filip'}),
-        (greg:Node {id:'Greg'}),
-        (alice)-[:Edge]->(bridget),
-        (bridget)-[:Edge]->(charles),
-        (charles)-[:Edge]->(doug),
-        (doug)-[:Edge]->(eli),
-        (doug)-[:Edge]->(filip),
-        (doug)-[:Edge]->(greg),
-        (eli)-[:Edge]->(filip),
-        (eli)-[:Edge]->(greg),
-        (filip)-[:Edge]->(greg);
+CREATE (u0:Person {name: 'Alice'}),
+        (u1:Person {name: 'Bob'}),
+        (u2:Person {name: 'Charlie'}),
+        (u3:Person {name: 'Derek'}),
+        (u4:Person {name: 'Eve'}),
+        (u5:Person {name: 'Frank'}),
+        (u6:Person {name: 'George'}),
+        (u0)-[:KNOWS]->(u1),
+        (u1)-[:KNOWS]->(u2),
+        (u2)-[:KNOWS]->(u3),
+        (u3)-[:KNOWS]->(u4),
+        (u3)-[:KNOWS]->(u5),
+        (u3)-[:KNOWS]->(u6),
+        (u4)-[:KNOWS]->(u5),
+        (u4)-[:KNOWS]->(u6),
+        (u5)-[:KNOWS]->(u6);
 ```
 Project graph
 ```cypher
-CALL project_graph('Graph', ['Node'], ['Edge']);
+CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
 ```cypher
-CALL k_core_decomposition('Graph') RETURN node.id, k_degree ORDER BY k_degree DESC;
+CALL k_core_decomposition('Graph')
+RETURN node.name, k_degree
+ORDER BY k_degree DESC;
 ```
 ```
-┌─────────┬──────────┐
-│ node.id │ k_degree │
-│ STRING  │ INT64    │
-├─────────┼──────────┤
-│ Filip   │ 3        │
-│ Greg    │ 3        │
-│ Eli     │ 3        │
-│ Doug    │ 3        │
-│ Charles │ 1        │
-│ Bridget │ 1        │
-│ Alice   │ 1        │
-└─────────┴──────────┘
+┌───────────┬──────────┐
+│ node.name │ k_degree │
+│ STRING    │ INT64    │
+├───────────┼──────────┤
+│ Frank     │ 3        │
+│ George    │ 3        │
+│ Eve       │ 3        │
+│ Derek     │ 3        │
+│ Charlie   │ 1        │
+│ Bob       │ 1        │
+│ Alice     │ 1        │
+└───────────┴──────────┘
 ```
