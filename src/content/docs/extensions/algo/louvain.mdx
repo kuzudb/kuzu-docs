@@ -47,47 +47,49 @@ RETURN node, louvain_id
 
 Define schema
 ```cypher
-CREATE NODE TABLE Node(id STRING PRIMARY KEY);
-CREATE REL TABLE Edge(FROM Node to Node);
+CREATE NODE TABLE Person(name STRING PRIMARY KEY);
+CREATE REL TABLE KNOWS(FROM Person to Person);
 ```
 Insert nodes and edges
 ```cypher
-CREATE  (u0:Node {id: 'A'}),
-        (u1:Node {id: 'B'}),
-        (u2:Node {id: 'C'}),
-        (u3:Node {id: 'D'}),
-        (u4:Node {id: 'E'}),
-        (u5:Node {id: 'F'}),
-        (u6:Node {id: 'G'}),
-        (u7:Node {id: 'H'}),
-        (u0)-[:Edge]->(u1),
-        (u0)-[:Edge]->(u2),
-        (u1)-[:Edge]->(u2),
-        (u0)-[:Edge]->(u3),
-        (u1)-[:Edge]->(u3),
-        (u2)-[:Edge]->(u3),
-        (u4)-[:Edge]->(u5),
-        (u4)-[:Edge]->(u6),
-        (u5)-[:Edge]->(u6),
-        (u4)-[:Edge]->(u7),
-        (u5)-[:Edge]->(u7),
-        (u6)-[:Edge]->(u7),
-        (u3)-[:Edge]->(u4);
+CREATE (u0:Person {name: 'Alice'}),
+        (u1:Person {name: 'Bob'}),
+        (u2:Person {name: 'Charlie'}),
+        (u3:Person {name: 'Derek'}),
+        (u4:Person {name: 'Eve'}),
+        (u5:Person {name: 'Frank'}),
+        (u6:Person {name: 'George'}),
+        (u7:Person {name: 'Hina'}),
+        (u0)-[:KNOWS]->(u1),
+        (u0)-[:KNOWS]->(u2),
+        (u1)-[:KNOWS]->(u2),
+        (u0)-[:KNOWS]->(u3),
+        (u1)-[:KNOWS]->(u3),
+        (u2)-[:KNOWS]->(u3),
+        (u4)-[:KNOWS]->(u5),
+        (u4)-[:KNOWS]->(u6),
+        (u5)-[:KNOWS]->(u6),
+        (u4)-[:KNOWS]->(u7),
+        (u5)-[:KNOWS]->(u7),
+        (u6)-[:KNOWS]->(u7),
+        (u3)-[:KNOWS]->(u4);
 ```
 We'll first create a projected graph from the node and edge tables.
 ```cypher
-CALL project_graph('Graph', ['Node'], ['Edge']);
+CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
 Run the Louvain algorithm on the projected graph as follows:
 ```cypher
-CALL louvain('Graph') RETURN louvain_id, collect(node.id);
+CALL louvain('Graph')
+RETURN louvain_id, collect(node.name)
+ORDER BY louvain_id;
 ```
 ```
-┌────────────┬──────────────────┐
-│ louvain_id │ COLLECT(node.id) │
-│ INT64      │ STRING[]         │
-├────────────┼──────────────────┤
-│ 0          │ [D,C,B,A]        │
-│ 1          │ [E,G,H,F]        │
-└────────────┴──────────────────┘
+┌────────────┬───────────────────────────┐
+│ louvain_id │ COLLECT(node.name)        │
+│ INT64      │ STRING[]                  │
+├────────────┼───────────────────────────┤
+│ 0          │ [Derek,Charlie,Bob,Alice] │
+│ 1          │ [Eve,George,Hina,Frank]   │
+└────────────┴───────────────────────────┘
 ```
