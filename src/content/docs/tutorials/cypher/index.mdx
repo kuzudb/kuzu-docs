@@ -126,13 +126,6 @@ in the pattern.
 // Ask for all nodes and relationships in the database
 MATCH (a)-[b]->(c) RETURN * LIMIT 3;
 ```
-An alternate way to do this would be to leave the node and relationship fields blank, but store the path in a variable `p` as shown below.
-
-```cypher
-// Ask for all paths in the database
-MATCH p=()-[]->() RETURN p LIMIT 3;
-```
-Both the above queries return the same result.
 ```
 ┌──────────────────────────────────┬──────────────────────────────────┬──────────────────────────────────┐
 │ a                                │ c                                │ b                                │
@@ -143,6 +136,14 @@ Both the above queries return the same result.
 │ {_ID: 0:17, _LABEL: User, use... │ {_ID: 0:0, _LABEL: User, user... │ (0:17)-{_LABEL: FOLLOWS, _ID:... │
 └──────────────────────────────────┴──────────────────────────────────┴──────────────────────────────────┘
 ```
+
+An alternate way to do this would be to leave the node and relationship fields blank, but store the path in a variable `p` as shown below.
+
+```cypher
+// Ask for all paths in the database
+MATCH p=()-[]->() RETURN p LIMIT 3;
+```
+Both the above queries return similar results.
 
 :::caution[Note]
 It's recommended to use a `LIMIT` clause after the `RETURN` clause to control the number of tuples
@@ -167,7 +168,7 @@ The above query is the same as having written the following two match clauses on
 ```cypher
 MATCH (a:User)-[:Follows]->(b:User)-[:Follows]->(c:User)
 MATCH (a)-[:Follows]->(c)
-RETURN *;
+RETURN a.username, b.username, c.username LIMIT 3;
 ```
 Instead of repeating the match clause, you can comma-separate the clauses as shown above.
 The following result is returned.
@@ -187,24 +188,51 @@ The following result is returned.
 
 One of the most powerful features of Cypher is the ability to match variable-length relationships.
 This is done using the Kleene star operator `*`. The following query aims to find all users that
-are two hops (i.e., paths of length 2) away from a particular user.
+are one or two hops (i.e., paths with 1 or 2 edges) away from a particular user.
 
 ```cypher
 MATCH (a:User)-[:Follows*1..2]->(b:User)
 RETURN a.username, b.username
-LIMIT 3;
+LIMIT 5;
 ```
 ```
 ┌─────────────┬─────────────┐
 │ a.username  │ b.username  │
 │ STRING      │ STRING      │
 ├─────────────┼─────────────┤
+│ epicwolf202 │ epicking81  │
 │ epicwolf202 │ darkdog878  │
 │ epicwolf202 │ coolking201 │
-│ epicwolf202 │ epicking81  │
+│ epicwolf202 │ stormfox762 │
+│ epicwolf202 │ coolwolf752 │
 └─────────────┴─────────────┘
 ```
-The above result is telling us that the user in the column `b` is followed by the user in the column `a`.
+
+The full Kleene star syntax has the form `*<low>..<high>`. In the above example, the lower bound was `1` and the upper bound was `2`,
+and so we match any paths with one or two edges. Alternatively, we can do `*..<high>` in which case the lower bound defaults to `1`.
+And, if we just want to match paths with an exact number of edges, we can simply do `*<len>` instead of specifying the same bound twice.
+
+For example, if we want to find all users that are exactly two hops away, we can use the following query.
+
+```cypher
+MATCH (a:User)-[:Follows*2]->(b:User)
+RETURN a.username, b.username
+LIMIT 5;
+```
+```
+┌────────────────┬───────────────┐
+│ a.username     │ b.username    │
+│ STRING         │ STRING        │
+├────────────────┼───────────────┤
+│ epicwolf202    │ epicking81    │
+│ epicwolf202    │ darkdog878    │
+│ epicwolf202    │ coolking201   │
+│ silentninja637 │ coolking201   │
+│ silentninja637 │ smartdragon25 │
+└────────────────┴───────────────┘
+```
+
+The above result is telling us that the user in column `b` is followed by a user that the user in column `a` follows.
 We can verify if this is true by manually writing the following query without the `*` operator.
 
 ```cypher
@@ -212,15 +240,14 @@ MATCH (a:User)-[:Follows]->(x:User)-[:Follows]->(b:User)
 WHERE a.username = 'epicwolf202'
 RETURN a.username, b.username;
 ```
-
 ```
 ┌─────────────┬─────────────┐
 │ a.username  │ b.username  │
 │ STRING      │ STRING      │
 ├─────────────┼─────────────┤
-│ epicwolf202 │ epicking81  │
 │ epicwolf202 │ coolking201 │
 │ epicwolf202 │ darkdog878  │
+│ epicwolf202 │ epicking81  │
 └─────────────┴─────────────┘
 ```
 Indeed, the same result is returned.
@@ -248,7 +275,7 @@ LIMIT 3;
 
 ## OPTIONAL MATCH
 
-`OPTIONAL MATCH` is clause used to define a pattern to find in the database. The difference from a regular
+The `OPTIONAL MATCH` clause is used to define a pattern to find in the database. The difference from a regular
 `MATCH` is that if the system cannot match a pattern defined by `OPTIONAL MATCH`, it will set the values in
 the variables defined only in the `OPTIONAL MATCH`, to NULL.
 Depending on what the end goal is, returning nulls may or may not be acceptable, so use a conventional
@@ -395,25 +422,25 @@ WITH u, COUNT(p) AS num_posts
 ORDER BY num_posts DESC
 LIMIT 3
 WITH u
-MATCH (u)-[:Follows]->(u2:User)
+MATCH (u2:User)-[:Follows]->(u)
 RETURN u.username AS most_prolific_user, u2.username AS follower
 LIMIT 8;
 ```
 Note the use of the `AS` keyword to rename the columns in the result.
 ```
-┌────────────────────┬────────────────┐
-│ most_prolific_user │ follower       │
-│ STRING             │ STRING         │
-├────────────────────┼────────────────┤
-│ stormqueen831      │ darkdog878     │
-│ stormqueen831      │ smartdragon25  │
-│ stormqueen831      │ silentninja637 │
-│ cooldragon866      │ coolwolf752    │
-│ cooldragon866      │ stormninja678  │
-│ cooldragon866      │ brightninja683 │
-│ cooldragon866      │ mysticcat651   │
-│ cooldragon866      │ mysticwolf198  │
-└────────────────────┴────────────────┘
+┌────────────────────┬───────────────┐
+│ most_prolific_user │ follower      │
+│ STRING             │ STRING        │
+├────────────────────┼───────────────┤
+│ stormqueen831      │ brightking765 │
+│ stormqueen831      │ coolking201   │
+│ stormqueen831      │ mysticwolf198 │
+│ stormqueen831      │ fastqueen400  │
+│ cooldragon866      │ silentguy245  │
+│ mysticcat651       │ coolking201   │
+│ mysticcat651       │ darkdog878    │
+│ mysticcat651       │ cooldragon866 │
+└────────────────────┴───────────────┘
 ```
 
 ## UNWIND
@@ -445,21 +472,19 @@ the number of posts for each user, but only if the post was created after a cert
 
 ```cypher
 MATCH (u:User)-[:POSTED]->(p:Post)
-RETURN u.username, 
-       COUNT(CASE WHEN p.creation_date > DATE('2023-04-01') THEN p ELSE NULL END) AS num_posts,
-       p.creation_date
-ORDER BY num_posts DESC
-LIMIT 3;
+RETURN u.username,
+       COUNT(CASE WHEN p.creation_date > DATE('2023-04-01') THEN p ELSE NULL END) AS num_posts
+ORDER BY num_posts DESC LIMIT 3;
 ```
 ```
-┌────────────────┬───────────┬─────────────────┐
-│ u.username     │ num_posts │ p.creation_date │
-│ STRING         │ INT64     │ DATE            │
-├────────────────┼───────────┼─────────────────┤
-│ coolwolf752    │ 1         │ 2023-07-15      │
-│ cooldragon866  │ 1         │ 2024-01-21      │
-│ brightninja683 │ 1         │ 2023-07-04      │
-└────────────────┴───────────┴─────────────────┘
+┌────────────────┬───────────┐
+│ u.username     │ num_posts │
+│ STRING         │ INT64     │
+├────────────────┼───────────┤
+│ cooldragon866  │ 2         │
+│ silentninja637 │ 2         │
+│ epiccat105     │ 1         │
+└────────────────┴───────────┘
 ```
 
 ---
