@@ -188,23 +188,50 @@ The following result is returned.
 
 One of the most powerful features of Cypher is the ability to match variable-length relationships.
 This is done using the Kleene star operator `*`. The following query aims to find all users that
-are two hops (i.e., paths of length 2) away from a particular user.
+are one or two hops (i.e., paths with 1 or 2 edges) away from a particular user.
 
 ```cypher
-MATCH (a:User)-[:Follows*2]->(b:User)
+MATCH (a:User)-[:Follows*1..2]->(b:User)
 RETURN a.username, b.username
-LIMIT 3;
+LIMIT 5;
 ```
 ```
 ┌─────────────┬─────────────┐
 │ a.username  │ b.username  │
 │ STRING      │ STRING      │
 ├─────────────┼─────────────┤
+│ epicwolf202 │ epicking81  │
 │ epicwolf202 │ darkdog878  │
 │ epicwolf202 │ coolking201 │
-│ epicwolf202 │ epicking81  │
+│ epicwolf202 │ stormfox762 │
+│ epicwolf202 │ coolwolf752 │
 └─────────────┴─────────────┘
 ```
+
+The full Kleene star syntax has the form `*<low>..<high>`. In the above example, the lower bound was `1` and the upper bound was `2`,
+and so we match any paths with one or two edges. Alternatively, we can do `*..<high>` in which case the lower bound defaults to `1`.
+And, if we just want to match paths with an exact number of edges, we can simply do `*<len>` instead of specifying the same bound twice.
+
+For example, if we want to find all users that are exactly two hops away, we can use the following query.
+
+```cypher
+MATCH (a:User)-[:Follows*2]->(b:User)
+RETURN a.username, b.username
+LIMIT 5;
+```
+```
+┌────────────────┬───────────────┐
+│ a.username     │ b.username    │
+│ STRING         │ STRING        │
+├────────────────┼───────────────┤
+│ epicwolf202    │ epicking81    │
+│ epicwolf202    │ darkdog878    │
+│ epicwolf202    │ coolking201   │
+│ silentninja637 │ coolking201   │
+│ silentninja637 │ smartdragon25 │
+└────────────────┴───────────────┘
+```
+
 The above result is telling us that the user in column `b` is followed by a user that the user in column `a` follows.
 We can verify if this is true by manually writing the following query without the `*` operator.
 
@@ -213,15 +240,14 @@ MATCH (a:User)-[:Follows]->(x:User)-[:Follows]->(b:User)
 WHERE a.username = 'epicwolf202'
 RETURN a.username, b.username;
 ```
-
 ```
 ┌─────────────┬─────────────┐
 │ a.username  │ b.username  │
 │ STRING      │ STRING      │
 ├─────────────┼─────────────┤
-│ epicwolf202 │ epicking81  │
 │ epicwolf202 │ coolking201 │
 │ epicwolf202 │ darkdog878  │
+│ epicwolf202 │ epicking81  │
 └─────────────┴─────────────┘
 ```
 Indeed, the same result is returned.
@@ -446,9 +472,8 @@ the number of posts for each user, but only if the post was created after a cert
 
 ```cypher
 MATCH (u:User)-[:POSTED]->(p:Post)
-WITH u,
-     COUNT(CASE WHEN p.creation_date > DATE('2023-04-01') THEN p ELSE NULL END) AS num_posts
-RETURN u.username, num_posts
+RETURN u.username,
+       COUNT(CASE WHEN p.creation_date > DATE('2023-04-01') THEN p ELSE NULL END) AS num_posts
 ORDER BY num_posts DESC LIMIT 3;
 ```
 ```
@@ -458,7 +483,7 @@ ORDER BY num_posts DESC LIMIT 3;
 ├────────────────┼───────────┤
 │ cooldragon866  │ 2         │
 │ silentninja637 │ 2         │
-│ brightninja683 │ 1         │
+│ epiccat105     │ 1         │
 └────────────────┴───────────┘
 ```
 
