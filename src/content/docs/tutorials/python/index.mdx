@@ -21,9 +21,8 @@ Ensure that you have [Python](https://www.python.org/) installed on your system.
 a virtual environment and install Kuzu via `pip`. Refer to this [page](/installation/#python)
 for alternative installation methods.
 ```bash
-python -m venv kuzu_social_network
-cd kuzu_social_network
-source bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install kuzu
 ```
 
@@ -38,12 +37,15 @@ Before we can start querying the data, we need to create a new Kuzu database and
 Since this is a one-time operation, we will use a separate Python script. We will also create another
 script to contain the querying logic.
 
-Make a new `src` directory and create the `create_db.py` and `main.py` files in it.
+Make a new `src` directory and create two files named `create_db.py` and `main.py` in it.
 ```bash
 mkdir src
 touch src/create_db.py
 touch src/main.py
 ```
+
+- The `create_db.py` script will be used to create the Kuzu database and import the CSV files.
+- The `main.py` script will be used to query the graph.
 
 Your directory should now look something like this:
 ```
@@ -62,11 +64,6 @@ kuzu_social_network
         └── POSTS.csv
 ```
 
-Test the setup by running the two Python scripts.
-```bash
-python src/create_db.py
-python src/main.py
-```
 We are now ready to start the tutorial.
 
 ## Create the database
@@ -87,8 +84,13 @@ if __name__ == "__main__":
 ```
 This will create a database directory `./social_network_db` where the imported CSV data will be stored.
 
-Kuzu also supports an `in-memory` mode where the database is active only during the execution of the Python program.
+:::note[Note]
+Kuzu also supports an "in-memory" mode where the database is active only during the execution of the Python program.
+This mode is useful when you want to create on-the-fly graphs for ephemeral query workloads (the graph is not persisted to disk).
 For more information, refer to the example in the [create your first graph](/get-started) section.
+:::
+
+For this tutorial, we are using the "on-disk" mode, and the database will be persisted to the `./social_network_db` directory.
 
 ### Define schema
 The first step in building a Kuzu graph is to define a schema.
@@ -154,10 +156,11 @@ $ python src/create_db.py
 [4, 'LIKES', 'REL', 'local(kuzu)', '']
 ```
 
-:::note[Note]
+:::caution[Note]
 If you run the program again, you'll get an error about duplicated primary keys.
-This is because the data has already been imported into the Kuzu database. You
-will have to delete the database directory (i.e. `rm -rf ./social_network_db`)
+This is because the data has already been imported into the Kuzu database, and because
+Kuzu is strictly typed, you cannot overwrite data when there are primary key conflicts.
+To ingest the data again, you will have to delete the database directory (i.e. `rm -rf ./social_network_db`)
 in between runs.
 :::
 
