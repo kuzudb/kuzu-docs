@@ -35,9 +35,32 @@ left hand side of a canvas.
 
 <img src="/img/visualization/query-result-json-view.png" />
 
+## Inspect node and relationship properties
+
+If the displayed property on a node is too large to fit inside it, the text is truncated on the node
+displayed in the graph view. There are two ways to gain more information about a node or relationship's
+property values.
+
+### Hover display
+
+If you hover your cursor over a given node or relationship, you will see the node's properties displayed
+in a box that appears over that node or relationship. The box disappears if the cursor moves away outside
+the bounds of the entity. This mode is useful for a quick, cursory glance of a node's properties as
+you're inspecting the graph at a high level.
+
+<img src="/img/visualization/expand-hover-view.png" />
+
+### Expand right sidebar
+
+For a full view of a node or relationship's property values, you can click on it. A sidebar will pop up on
+the right side, which displays the property values in full, which is useful to gain a deeper understanding
+of the data, including which field is the primary key (if it is a node).
+
+<img src="/img/visualization/expand-sidebar.png" />
+
 ## Query progress
 
-For queries that might take a significant amount of time to execute, a progress bar can be enabled that displays
+For expensive queries that might take a significant amount of time to execute, a progress bar can be enabled that displays
 the number of pipelines that have been executed (each query is broken down into one or more pipelines), 
 as well as the percentage of the data processed in a pipeline. This gives an estimate for how much of a pipeline
 has executed.
