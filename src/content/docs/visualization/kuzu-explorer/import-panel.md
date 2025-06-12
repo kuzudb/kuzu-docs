@@ -98,7 +98,7 @@ Upon success, this will look as follows:
 
 You can head over to the Schema tab to see the graph schema that was created from the imported data.
 
-<img src="/img/visualization/import-panel-schema.png" />
+<img src="/img/visualization/schema-panel.png" />
 
 That's it! You can now begin querying the data by heading over to the query editor in the
 [shell panel](/visualization/kuzu-explorer/shell-panel/).
