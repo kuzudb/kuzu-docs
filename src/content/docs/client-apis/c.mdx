@@ -89,16 +89,16 @@ Thus, we recommend processing each tuple immediately before making the next call
 
 ```c
 kuzu_query_result result;
-kuzu_connection_query(conn, "MATCH (p:person) RETURN p.*", result);
-while (kuzu_query_result_has_next(result)) {
+kuzu_connection_query(&conn, "MATCH (p:person) RETURN p.*", &result);
+while (kuzu_query_result_has_next(&result)) {
   kuzu_flat_tuple tuple;
-  kuzu_query_result_get_next(result, tuple);
+  kuzu_query_result_get_next(&result, &tuple);
   do_something(tuple);
 }
 ```
 
 If you wish to process the tuples later, you must explicitly make a copy of each tuple:
-```cpp
+```c
 static kuzu_value* copy_flat_tuple(kuzu_flat_tuple* tuple, uint32_t tupleLen) {
   kuzu_value* ret = malloc(sizeof(kuzu_value) * tupleLen);
   for (uint32_t i = 0; i < tupleLen; i++) {
@@ -109,7 +109,7 @@ static kuzu_value* copy_flat_tuple(kuzu_flat_tuple* tuple, uint32_t tupleLen) {
 
 void mainFunction() {
   kuzu_query_result result;
-  kuzu_connection_query(conn, "MATCH (p:person) RETURN p.*", &result);
+  kuzu_connection_query(&conn, "MATCH (p:person) RETURN p.*", &result);
 
   uint64_t num_tuples = kuzu_query_result_get_num_tuples(&result);
   kuzu_value** tuples = (kuzu_value**)malloc(sizeof(kuzu_value*) * num_tuples);
