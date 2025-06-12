@@ -663,8 +663,6 @@ int main()
         kuzu_value_get_string(&value, &name2);
         kuzu_value_destroy(&value);
 
-        assert(name != NULL);
-        assert(name2 != NULL);
 
         printf("%s follows %s since %lld \n", name, name2, since);
         free(name);
