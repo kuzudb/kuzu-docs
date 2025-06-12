@@ -657,6 +657,7 @@ int main()
         kuzu_flat_tuple_get_value(&tuple, 1, &value);
         int64_t since = 0;
         kuzu_value_get_int64(&value, &since);
+        kuzu_value_destroy(&value);
 
         kuzu_flat_tuple_get_value(&tuple, 2, &value);
         char *name2 = NULL;
