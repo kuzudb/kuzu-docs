@@ -72,3 +72,42 @@ CALL progress_bar=true;
 ```
 
 To further configure the progress bar, see the [configuration](/cypher/configuration) section.
+
+## LLM integration
+
+The shell panel has an additional tab called "AI Query" that allows you to use LLMs from OpenAI or other OpenAI-compatible
+APIs to generate Cypher queries from natural language.
+
+### OpenAI models
+
+To use OpenAI LLMs, navigate to the "Query Generation Options" section in the [settings](/cypher/visualization/kuzu-explorer/settings-panel) page,
+and select the desired OpenAI model. Copy-paste your OpenAI API key into API key field as follows:
+
+<img src="/img/visualization/ai-query-2.png" />
+
+### Open-AI compatible endpoints
+
+The shell panel supports Open-AI compatible endpoints that are not OpenAI models, for example, [Ollama](https://ollama.com/).
+To use endpoints like these, select the "Open-AI compatible endpoint" option in the "Query Generation Options" section.
+For open source models, no API key is needed. The screenshot below shows the settings for using Ollama with the `gemma3:27b` model
+for query generation.
+
+<img src="/img/visualization/ai-query-1.png" />
+
+:::note[Note]
+If you're using Docker Desktop, you may need to enable host networking to be able to access your locally running Ollama server
+from within the Docker container that's running Kuzu Explorer. In Docker Desktop, go to "Settings", and then navigate to "Resources" > "Network" > "Enable host networking".
+Once this is enabled, you should be able to run the following command and then open `http://localhost:8000` as normal.
+```bash
+# Run the following command to start Kuzu Explorer with host networking enabled
+docker run --net=host --rm kuzudb/explorer:latest
+```
+:::
+
+### AI query generation
+
+You can now use the AI Query tab to generate Cypher queries from natural language. Simply type in the natural language query and
+run the cell. This will generate a Cypher query using the selected LLM, which you can inspect by clicking back on the "Cypher Query" tab.
+Try out this feature if you're learning Cypher and want to work with an LLM to help you out!
+
+<img src="/img/visualization/ai-query-3.gif" />
