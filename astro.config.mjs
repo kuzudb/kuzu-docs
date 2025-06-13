@@ -166,7 +166,7 @@ export default defineConfig({
                                 { label: 'Query panel', link: '/visualization/kuzu-explorer/query-panel'},
                                 { label: 'Schema panel', link: '/visualization/kuzu-explorer/schema-panel' },
                                 { label: 'Import panel', link: '/visualization/kuzu-explorer/import-panel' },
-                                { label: 'Settings panel', link: '/visualization/kuzu-explorer/settings' },
+                                { label: 'Settings panel', link: '/visualization/kuzu-explorer/settings-panel' },
                             ],
                         },
                         {
