@@ -1,10 +1,10 @@
 ---
-title: Shell Panel
+title: Query Panel
 ---
 
 ## Query editor
 
-Using the Shell Panel, you can interactively issue queries to your loaded database
+Using the query panel, you can interactively issue queries to your loaded database
 and visualize the results in several different views. You issue queries by using
 the canvases on your screen, which have a red X and green play icon on the left side.
 You write your query on the top of a canvas and when you click the play button or press Shift+Enter,
@@ -21,7 +21,7 @@ There is a side panel in the graph view, which you can open and close to see the
 individual nodes and relationships you click on or hover over. The graph view is enabled
 and is the default view if the query's `RETURN` statement contains node (and relationship) variables.
 For example if the query about returned only the name property of `a` nodes, i.e.,
-if the return statement was `RETURN a.name`, then you could not see the results in a graph view,
+if the return statement was `RETURN a.name`, then you would not see the results in a graph view,
 as the return values are only a column of strings. As long as one of the variables projected
 in the `RETURN` statement is a node you will get by default a graph view.
 
@@ -73,21 +73,21 @@ CALL progress_bar=true;
 
 To further configure the progress bar, see the [configuration](/cypher/configuration) section.
 
-## LLM integration
+## AI query generation
 
-The shell panel has an additional tab called "AI Query" that allows you to use LLMs from OpenAI or other OpenAI-compatible
+The Query panel has an additional tab called "AI Query" that allows you to use LLMs from OpenAI or other OpenAI-compatible
 APIs to generate Cypher queries from natural language.
 
 ### OpenAI models
 
-To use OpenAI LLMs, navigate to the "Query Generation Options" section in the [settings](/cypher/visualization/kuzu-explorer/settings-panel) page,
+To use OpenAI LLMs, navigate to the "Query Generation Options" section in the [settings](/visualization/kuzu-explorer/settings-panel) page,
 and select the desired OpenAI model. Copy-paste your OpenAI API key into API key field as follows:
 
 <img src="/img/visualization/ai-query-2.png" />
 
 ### Open-AI compatible endpoints
 
-The shell panel supports Open-AI compatible endpoints that are not OpenAI models, for example, [Ollama](https://ollama.com/).
+The Query panel supports Open-AI compatible endpoints that are not OpenAI models, for example, [Ollama](https://ollama.com/).
 To use endpoints like these, select the "Open-AI compatible endpoint" option in the "Query Generation Options" section.
 For open source models, no API key is needed. The screenshot below shows the settings for using Ollama with the `gemma3:27b` model
 for query generation.
@@ -104,7 +104,7 @@ docker run --net=host --rm kuzudb/explorer:latest
 ```
 :::
 
-### AI query generation
+### Use LLMs to generate Cypher queries
 
 You can now use the AI Query tab to generate Cypher queries from natural language. Simply type in the natural language query and
 run the cell. This will generate a Cypher query using the selected LLM, which you can inspect by clicking back on the "Cypher Query" tab.
