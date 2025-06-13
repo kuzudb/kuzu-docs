@@ -123,7 +123,7 @@ docker run -p 8000:8000 \
            --rm kuzudb/explorer:latest
 ```
 
-With this configuration, the data directory you specify on your host machine will be accessible as `/data` in the container. For example, in the shell panel, you can copy a CSV file into your database by running the following command:
+With this configuration, the data directory you specify on your host machine will be accessible as `/data` in the container. For example, in the query panel, you can copy a CSV file into your database by running the following command:
 
 ```cypher
 COPY Test FROM "test.csv" (HEADER=true);
@@ -138,8 +138,8 @@ You can refer to the corresponding cards below for more details.
 
 <CardGrid>
   <LinkCard
-    title="Shell panel"
-    href="/visualization/kuzu-explorer/shell-panel"
+    title="Query panel"
+    href="/visualization/kuzu-explorer/query-panel"
   />
   <LinkCard
     title="Schema panel"
