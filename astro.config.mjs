@@ -287,6 +287,7 @@ export default defineConfig({
                         { label: 'JSON', link: '/extensions/json' },
                         { label: 'Neo4j', link: '/extensions/neo4j', badge: { text: 'New' }},
                         { label: 'Vector search', link: '/extensions/vector'},
+                        { label: 'LLM', link: '/extensions/llm', badge: { text: 'New' }},
                     ],
                 },
             ],
