@@ -1,0 +1,81 @@
+---
+title: "LLM Extension"
+---
+
+The **LLM extension** provides an interface to fetch text embeddings from supported providers and their models.
+
+To install and load the LLM extension, run the following commands:
+
+```sql
+INSTALL llm;
+LOAD llm;
+```
+
+## Usage
+
+### Configuration
+
+The LLM extension supports configurable options (credentials, dimensions and region) where applicable
+
+- All credentials are provided through environmental variables
+- Dimensions and Region are passed to the create_embedding function call when applicable
+
+The following environmental variables must be set for use of a specific provider
+WIP
+| Provider | Required Environmental Variables |
+| --- | --- |
+| `open-ai` | Create the index |
+| `amazon-bedrock` | Query the index |
+| `google-vertex` | Drop the index |
+| `google-gemini` | Drop the index |
+| `voyage-ai` | Drop the index |
+
+
+---
+
+## Embedding Function
+
+The core feature of the LLM extension is a scalar function that generates text embeddings.
+
+### Syntax
+
+```sql
+create_embedding(prompt: STRING, provider: STRING, model: STRING) -> ARRAY<FLOAT>
+```
+
+### Overloads
+
+```sql
+create_embedding(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64) -> ARRAY<FLOAT>
+```
+
+```sql
+create_embedding(prompt: STRING, provider: STRING, model: STRING, region: STRING) -> ARRAY<FLOAT>
+```
+
+```sql
+create_embedding(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64, region: STRING) -> ARRAY<FLOAT>
+```
+
+### Parameters
+
+- **prompt**: The input text to embed.
+- **provider**: The embedding provider, e.g., `'open-ai'`, `'ollama'`, `'voyage-ai'`, etc.
+- **model**: The identifier for the embedding model.
+- **dimensions** *(optional)*: Number of dimensions for the embedding, if supported by the provider.
+- **region** *(optional)*: Region or endpoint hint, if required by the provider.
+
+### Example
+
+```sql
+create_embedding("Hello world", "openai", "text-embedding-3-small")
+```
+
+With optional parameters:
+
+```sql
+create_embedding("Hello world", "openai", "text-embedding-3-small", 512)
+```
+
+
+
