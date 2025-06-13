@@ -80,7 +80,7 @@ APIs to generate Cypher queries from natural language.
 
 ### OpenAI models
 
-To use OpenAI LLMs, navigate to the "Query Generation Options" section in the [settings](/cypher/visualization/kuzu-explorer/settings-panel) page,
+To use OpenAI LLMs, navigate to the "Query Generation Options" section in the [settings](/visualization/kuzu-explorer/settings-panel) page,
 and select the desired OpenAI model. Copy-paste your OpenAI API key into API key field as follows:
 
 <img src="/img/visualization/ai-query-2.png" />
