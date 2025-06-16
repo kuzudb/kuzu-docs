@@ -11,7 +11,7 @@ INSTALL llm;
 LOAD llm;
 ```
 
-The list of supported providers and their models is as follows:
+The list of supported providers and tested models are as follows.
 
 | Provider | Models |
 | --- | --- |
@@ -22,6 +22,8 @@ The list of supported providers and their models is as follows:
 | `open-ai` | text-embedding-3-large, text-embedding-3-small, text-embedding-ada-002 |
 | `voyage-ai` | voyage-3-large, voyage-3.5, voyage-3.5-lite, voyage-code-3, voyage-finance-2, voyage-law-2, voyage-code-2 |
 
+Note: Model names are dynamically validated at runtime. If an unsupported model is specified, the provider's API will return an appropriate error.
+
 ---
 
 ## Usage
@@ -31,7 +33,7 @@ The list of supported providers and their models is as follows:
 The LLM extension supports configurable options such as credentials, dimensions, and region where applicable.
 
 - All credentials are provided through environment variables.
-- Dimensions and region are passed to the `create_embedding` function call, when supported.
+- Dimensions and region are passed to the `CREATE_EMBEDDING` function call, when supported.
 
 The following environment variables must be set for the corresponding providers:
 
@@ -54,49 +56,49 @@ The core feature of the LLM extension is a scalar function that generates text e
 ### Syntax
 
 ```sql
-create_embedding(prompt: STRING, provider: STRING, model: STRING) -> ARRAY<FLOAT>
+CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING) -> LIST<FLOAT>
 ```
 
 ### Overloads
 
 ```sql
-create_embedding(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64) -> ARRAY<FLOAT>
+CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64) -> LIST<FLOAT>
 ```
 
 ```sql
-create_embedding(prompt: STRING, provider: STRING, model: STRING, region: STRING) -> ARRAY<FLOAT>
+CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, region: STRING) -> LIST<FLOAT>
 ```
 
 ```sql
-create_embedding(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64, region: STRING) -> ARRAY<FLOAT>
+CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64, region: STRING) -> LIST<FLOAT>
 ```
 
 ### Parameters
 
 - **prompt**: The input text to embed.
 - **provider**: The embedding provider, e.g., `'open-ai'`, `'ollama'`, `'voyage-ai'`, etc.
-- **model**: The identifier of the embedding model.
-- **dimensions** *(optional)*: The size of the embedding vector, if supported by the provider. Must be a positive integer.
-- **region** *(optional)*: A region or endpoint hint, if required by the provider.
+- **model**: The identifier of the embedding model. This may change overtime; reference the provider's API reference before use.
+- **dimensions** *(optional)*: The size of the embedding vector to be returned, if supported by the provider. Must be a positive integer.
+- **region** *(optional)*: A region or endpoint hint, if supported by the provider.
 
 ### Examples
 
 ```sql
-create_embedding("Hello world", "openai", "text-embedding-3-small")
+CREATE_EMBEDDING("Hello world", "openai", "text-embedding-3-small")
 ```
 
 With optional parameters:
 
 ```sql
-create_embedding("Hello world", "openai", "text-embedding-3-small", 512)
+CREATE_EMBEDDING("Hello world", "openai", "text-embedding-3-small", 512)
 ```
 
 ```sql
-return create_embedding("Hello world", "amazon-bedrock", "amazon.titan-embed-text-v1", "us-east-1");
+CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-text-v1", "us-east-1");
 ```
 
 ```sql
-return create_embedding("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
+CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
 ```
 
 ---
@@ -105,17 +107,26 @@ return create_embedding("Hello world", "google-vertex", "gemini-embedding-001", 
 
 ### Region Support
 
+The following providers support region configuration. The list of regions may not be exhaustive. Please reference the provider's API reference for more information about what regions are supported.
+
 | Provider | Regions |
 | --- | --- |
-| `amazon-bedrock` | us-east-1, us-west-2, ap-southeast-1, ap-northeast-1, eu-central-1 |
-| `google-vertex` | us-west1, us-west2, us-west3, us-west4, us-central1, us-east1, us-east4, us-south1, northamerica-northeast1, northamerica-northeast2, southamerica-east1, southamerica-west1, europe-west2, europe-west1, europe-west4, europe-west6, europe-west3, europe-north1, europe-central2, europe-west8, europe-west9, europe-southwest1, asia-south1, asia-southeast1, asia-southeast2, asia-east2, asia-east1, asia-northeast1, asia-northeast2, australia-southeast1, australia-southeast2, asia-northeast3, me-west1 |
+| `amazon-bedrock` | (default)us-east-1, us-west-2, ap-southeast-1, ap-northeast-1, eu-central-1 |
+| `google-vertex` | (default)us-central1, us-west1, us-west2, us-west3, us-west4, us-east1, us-east4, us-south1, northamerica-northeast1, northamerica-northeast2, southamerica-east1, southamerica-west1, europe-west2, europe-west1, europe-west4, europe-west6, europe-west3, europe-north1, europe-central2, europe-west8, europe-west9, europe-southwest1, asia-south1, asia-southeast1, asia-southeast2, asia-east2, asia-east1, asia-northeast1, asia-northeast2, australia-southeast1, australia-southeast2, asia-northeast3, me-west1 |
+
+Note: Regions are dynamically validated at runtime. If an unsupported region is specified, the provider's API will return an error.
 
 ### Dimensions Support
 
-The following providers support dimension configuration. Note that the set of valid dimensions is determined by the provider and may change over time. It is highly recommended to check the provider's API reference before use.
+The following providers support dimension configuration. 
 
 | Provider | Models |
 | --- | --- |
 | `google-vertex` | gemini-embedding-001, text-embedding-005, text-multilingual-embedding-002 |
 | `open-ai` | text-embedding-3-large, text-embedding-3-small |
 | `voyage-ai` | voyage-3-large, voyage-3.5, voyage-3.5-lite, voyage-code-3 |
+
+Note: The list of models that support dimension configuration may change
+overtime. The set of valid dimensions is determined by the provider and may also
+change over time. It is highly recommended to check the provider's API reference
+before use. If an unsupported dimension is specified, the provider's API will return an error.
