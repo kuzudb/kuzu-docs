@@ -108,11 +108,12 @@ CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "u
 ### Region Support
 
 The following providers support region configuration. The list of regions may not be exhaustive. Please reference the provider's API reference for more information about what regions are supported.
+There is no default region; a region argument must be passed to the function call to use these providers.
 
 | Provider | Regions |
 | --- | --- |
-| `amazon-bedrock` | (default)us-east-1, us-west-2, ap-southeast-1, ap-northeast-1, eu-central-1 |
-| `google-vertex` | (default)us-central1, us-west1, us-west2, us-west3, us-west4, us-east1, us-east4, us-south1, northamerica-northeast1, northamerica-northeast2, southamerica-east1, southamerica-west1, europe-west2, europe-west1, europe-west4, europe-west6, europe-west3, europe-north1, europe-central2, europe-west8, europe-west9, europe-southwest1, asia-south1, asia-southeast1, asia-southeast2, asia-east2, asia-east1, asia-northeast1, asia-northeast2, australia-southeast1, australia-southeast2, asia-northeast3, me-west1 |
+| `amazon-bedrock` | us-east-1, us-west-2, ap-southeast-1, ap-northeast-1, eu-central-1 |
+| `google-vertex` | us-central1, us-west1, us-west2, us-west3, us-west4, us-east1, us-east4, us-south1, northamerica-northeast1, northamerica-northeast2, southamerica-east1, southamerica-west1, europe-west2, europe-west1, europe-west4, europe-west6, europe-west3, europe-north1, europe-central2, europe-west8, europe-west9, europe-southwest1, asia-south1, asia-southeast1, asia-southeast2, asia-east2, asia-east1, asia-northeast1, asia-northeast2, australia-southeast1, australia-southeast2, asia-northeast3, me-west1 |
 
 Note: Regions are dynamically validated at runtime. If an unsupported region is specified, the provider's API will return an error.
 
