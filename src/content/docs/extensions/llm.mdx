@@ -11,19 +11,18 @@ INSTALL llm;
 LOAD llm;
 ```
 
-The list of supported providers and tested models is as follows.
+See the list of providers and their embedding documentation.
 
-| Provider | Models |
-| --- | --- |
-| `amazon-bedrock` | amazon.titan-embed-text-v1 |
-| `google-vertex` | gemini-embedding-001, text-embedding-005, text-multilingual-embedding-002 |
-| `google-gemini` | gemini-embedding-exp-03-07, text-embedding-004, embedding-001 |
-| `ollama` | nomic-embed-text, all-minilm:l6-v2 |
-| `open-ai` | text-embedding-3-large, text-embedding-3-small, text-embedding-ada-002 |
-| `voyage-ai` | voyage-3-large, voyage-3.5, voyage-3.5-lite, voyage-code-3, voyage-finance-2, voyage-law-2, voyage-code-2 |
+* [Open-AI](https://platform.openai.com/docs/guides/embeddings)
+* [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
+* [Google Vertex](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
+* [Google Gemini](https://ai.google.dev/gemini-api/docs/embeddings)
+* [Voyage AI](https://docs.voyageai.com/docs/embeddings)
+* [Ollama](https://ollama.com/blog/embedding-models)
 
-Note: Model names are dynamically validated at runtime. If an unsupported model is specified, the provider's API will return an appropriate error.
-
+:::note[Note]
+Model parameters are dynamically validated at runtime. If an unsupported model is specified, the provider's API will return an appropriate error.
+:::
 ---
 
 ## Usage
@@ -45,8 +44,9 @@ The following environment variables must be set for the corresponding providers:
 | `open-ai` | `OPENAI_API_KEY` |
 | `voyage-ai` | `VOYAGE_API_KEY` |
 
-Note that the `ollama` provider requires no environment variables but does require the embedding model to be available at `http://localhost:11434`.
-
+:::note[Note]
+The `ollama` provider requires no environment variables but does require the embedding model to be available at `http://localhost:11434`.
+:::
 ---
 
 ## Embedding Function
@@ -87,10 +87,18 @@ CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, dimensions: IN
 CREATE_EMBEDDING("Hello world", "openai", "text-embedding-3-small")
 ```
 
+```sql
+CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text")
+```
+
+```sql
+CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07")
+```
+
 With optional parameters:
 
 ```sql
-CREATE_EMBEDDING("Hello world", "openai", "text-embedding-3-small", 512)
+CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512)
 ```
 
 ```sql
@@ -103,35 +111,20 @@ CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "u
 
 ---
 
-## Providers and Configuration
-
-### Region Support
-
-The following providers support region configuration. The list of regions may not be exhaustive. Please reference the provider's API reference for more information about what regions are supported.
-There is no default region; a region argument must be passed to the function call to use these providers.
-
-| Provider | Regions |
-| --- | --- |
-| `amazon-bedrock` | us-east-1, us-west-2, ap-southeast-1, ap-northeast-1, eu-central-1 |
-| `google-vertex` | us-central1, us-west1, us-west2, us-west3, us-west4, us-east1, us-east4, us-south1, northamerica-northeast1, northamerica-northeast2, southamerica-east1, southamerica-west1, europe-west2, europe-west1, europe-west4, europe-west6, europe-west3, europe-north1, europe-central2, europe-west8, europe-west9, europe-southwest1, asia-south1, asia-southeast1, asia-southeast2, asia-east2, asia-east1, asia-northeast1, asia-northeast2, australia-southeast1, australia-southeast2, asia-northeast3, me-west1 |
-
-Note: Regions are dynamically validated at runtime. If an unsupported region is specified, the provider's API will return an error.
-
 ### Dimensions Support
 
-The following providers support dimension configuration. 
+Dimension configuration is supported for the following providers.
 
-| Provider | Models |
-| --- | --- |
-| `google-vertex` | gemini-embedding-001, text-embedding-005, text-multilingual-embedding-002 |
-| `open-ai` | text-embedding-3-large, text-embedding-3-small |
-| `voyage-ai` | voyage-3-large, voyage-3.5, voyage-3.5-lite, voyage-code-3 |
+* open-ai
+* google-vertex
+* voyage-ai
 
-Note: The list of models that support dimension configuration may change
+:::note[Note]
+The list of models that support dimension configuration may change
 overtime. The set of valid dimensions is determined by the provider and may also
 change over time. It is highly recommended to check the provider's API reference
 before use. If an unsupported dimension is specified, the provider's API will return an error.
-
+:::
 ---
 
 ## Synergy with Vector Extension
