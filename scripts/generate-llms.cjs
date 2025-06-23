@@ -6,6 +6,8 @@ const docsDir = path.join(__dirname, '../src/content/docs');
 const outputFile = path.join(__dirname, '../public/llms.txt');
 const baseUrl = 'https://docs.kuzudb.com';
 
+const header = "# Kuzu Documentation\n\n> Comprehensive documentation for Kuzu, an embedded (in-process), scalable, blazing fast graph database.\n";
+
 // Node structure for the directory tree
 function TreeNode(name, isDir, filePath = null, title = null) {
   return {
@@ -67,11 +69,13 @@ function generateMarkdown(node, depth = 0) {
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-    content += `## ${sectionName}\n\n`;
-  } else if (depth === 0 && node.name === 'root') {
-    // Add Root section for top-level files
-    content += `## Root\n\n`;
+    content += `\n## ${sectionName}\n\n`;
   }
+
+//   else if (depth === 0 && node.name === 'root') {
+//     // Add Root section for top-level files
+//     content += `\n## Root\n\n`;
+//   }
 
   // Process children
   node.children.forEach(child => {
@@ -99,7 +103,7 @@ function getMarkdownFiles(dir) {
     const stat = fs.statSync(filePath);
     if (stat && stat.isDirectory()) {
       results = results.concat(getMarkdownFiles(filePath));
-    } else if (file.endsWith('.md') || fileEndsWith('.mdx')) {
+    } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
       results.push(filePath);
     }
   });
@@ -119,6 +123,28 @@ if (mdFiles.length === 0) {
   process.exit(0);
 }
 
-const tree = buildTree(mdFiles);
-const content = generateMarkdown(tree);
-fs.writeFileSync(outputFile, content);
+// Main execution
+try {
+  if (!fs.existsSync(docsDir)) {
+    console.error("Documentation directory does not exist:", docsDir);
+    process.exit(1);
+  }
+
+  const mdFiles = getMarkdownFiles(docsDir);
+  if (mdFiles.length === 0) {
+    console.warn("No Markdown files found in:", docsDir);
+    fs.writeFileSync(outputFile, "");
+    console.log("Created empty llms.txt at:", outputFile);
+    return;
+  }
+
+  const tree = buildTree(mdFiles);
+  const content = generateMarkdown(tree);
+  const finalContent = header + content;
+  fs.writeFileSync(outputFile, finalContent);
+  console.log("Successfully generated llms.txt at:", outputFile);
+} catch (error) {
+  console.error("Error generating llms.txt:", error.message);
+  process.exit(1);
+}
+
