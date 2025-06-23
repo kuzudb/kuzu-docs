@@ -19,10 +19,6 @@ See the list of providers and their embedding documentation.
 * [Google Gemini](https://ai.google.dev/gemini-api/docs/embeddings)
 * [Voyage AI](https://docs.voyageai.com/docs/embeddings)
 * [Ollama](https://ollama.com/blog/embedding-models)
-
-:::note[Note]
-If an unsupported region or model is specified, the API call to the provider will result in an error.
-:::
 ---
 
 ## Usage
@@ -57,74 +53,47 @@ The core feature of the LLM extension is a scalar function that generates text e
 
 ```sql
 CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING) -> LIST<FLOAT>
-```
 
-### Overloads
-
-```sql
 CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64) -> LIST<FLOAT>
-```
 
-```sql
 CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, region: STRING) -> LIST<FLOAT>
-```
 
-```sql
 CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64, region: STRING) -> LIST<FLOAT>
 ```
 
 ### Parameters
 
-- **prompt**: The input text to embed.
-- **provider**: The embedding provider, e.g., `'open-ai'`, `'ollama'`, `'voyage-ai'`, etc.
-- **model**: The identifier of the embedding model. This may change overtime; reference the provider's API reference before use.
-- **dimensions** *(optional)*: The size of the embedding vector to be returned, if supported by the provider. Must be a positive integer.
-- **region** *(optional)*: A region or endpoint hint, if supported by the provider.
+| Option | Description | 
+|--------|-------------| 
+| prompt    |The input text to embed.|
+| provider    |The embedding provider, e.g., `'open-ai'`, `'ollama'`, `'voyage-ai'`, etc.|
+| model    |The identifier of the embedding model. This may change overtime; reference the provider's API reference before use.|
+| dimensions    |*(optional)*: The size of the embedding vector to be returned, if supported by the provider. Must be a positive integer. Currently only `'open-ai'`, `'google-vertex'`, `'voyage-ai'` are supported.|
+| region    |*(optional)*: A region or endpoint hint, if supported by the provider.|
+
+:::note[Note]
+If an unsupported region, model or dimension is specified, the API call to the provider will result in an error. It is highly recommended to check the provider's API reference before use.
+:::
 
 ### Examples
 
 ```sql
-CREATE_EMBEDDING("Hello world", "openai", "text-embedding-3-small")
-```
+CALL CREATE_EMBEDDING("Hello world", "openai", "text-embedding-3-small");
 
-```sql
-CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text")
-```
+CALL CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
 
-```sql
-CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07")
+CALL CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07");
 ```
 
 With optional parameters:
 
 ```sql
-CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512)
+CALL CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
+
+CALL CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-text-v1", "us-east-1");
+
+CALL CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
 ```
-
-```sql
-CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-text-v1", "us-east-1");
-```
-
-```sql
-CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
-```
-
----
-
-### Dimensions Support
-
-The following providers support configuring the number of dimensions of the embedding.
-
-* open-ai
-* google-vertex
-* voyage-ai
-
-:::note[Note]
-The list of models that support dimension configuration may change
-overtime. The set of valid dimensions is determined by the provider and may also
-change over time. It is highly recommended to check the provider's API reference
-before use. If an unsupported dimension is specified, the provider's API will return an error.
-:::
 ---
 
 ## Using embeddings with the vector extension
@@ -138,21 +107,20 @@ import kuzu
 
 DB_NAME = ""
 
-# Initialize the database
+# Initialize the database.
 db = kuzu.Database(DB_NAME)
 conn = kuzu.Connection(db)
 
-# Install and load vector extension
+# Install and load vector extension.
 conn.execute("INSTALL vector; LOAD vector;")
 conn.execute("INSTALL llm; LOAD llm;")
 
-
-# Create tables
+# Create tables.
 conn.execute("CREATE NODE TABLE Book(id SERIAL PRIMARY KEY, title STRING, title_embedding FLOAT[1536], published_year INT64);")
 conn.execute("CREATE NODE TABLE Publisher(name STRING PRIMARY KEY);")
 conn.execute("CREATE REL TABLE PublishedBy(FROM Book TO Publisher);")
 
-# Sample data
+# Sample data.
 titles = [
     "The Quantum World",
     "Chronicles of the Universe",
@@ -163,7 +131,8 @@ titles = [
 publishers = ["Harvard University Press", "Independent Publisher", "Pearson", "McGraw-Hill Ryerson", "O'Reilly"]
 published_years = [2004, 2022, 2019, 2010, 2015]
 
-# Insert sample data - Books with embeddings
+# Insert sample data - Books with embeddings.
+# Note how the embeddings are created using the create_embedding function instead of a third party Python library.
 for title, published_year in zip(titles, published_years):
     conn.execute(
         """CREATE (b:Book {title: $title, title_embedding: create_embedding($title, 'open-ai', 'text-embedding-3-small'), published_year: $year});""",
@@ -190,8 +159,6 @@ for title, publisher in zip(titles, publishers):
     )
     print(f"Created relationship between {title} and {publisher}")
 
-
-
 conn.execute(
             """
             CALL CREATE_VECTOR_INDEX(
@@ -213,11 +180,10 @@ result = conn.execute(
     RETURN node.title ORDER BY distance;
     """
 )
+
 print(result.get_as_pl())
 ```
-
 The result shows the 2 book titles most similar to the query "quantum machine learning".
-
 ```
 ┌───────────────────┐
 │ node.title        │
