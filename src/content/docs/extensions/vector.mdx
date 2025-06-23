@@ -29,6 +29,8 @@ Below is an example demonstrating how to create and use a vector index on a `Boo
 Because we'll be working with natural language texts that need to be translated into vector embeddings,
 we'll use the Python client to run our queries. In principle, you can use any client code that returns
 an array of floats (vector embeddings) to run the queries below.
+In the snippets below you will also see commented code that make use of the `CREATE_EMBEDDING` function from the `llm` extension.
+This extension can remove the need to import third party libraries for embeddings. Check out the `llm` extension [here](/extensions/llm).
 
 ```python
 # create_embeddings.py
@@ -74,6 +76,9 @@ for title, published_year in zip(titles, published_years):
         {"title": title, "embeddings": embeddings, "year": published_year}
     )
     print(f"Inserted book: {title}")
+
+# The query can be written as follows:
+# """CREATE (b:Book {title: $title, title_embedding: create_embedding($title, 'open-ai', 'text-embedding-3-small', 384), published_year: $year});"""
 
 # Insert sample data - Publishers
 for publisher in publishers:
@@ -222,6 +227,20 @@ result = conn.execute(
     RETURN node.title ORDER BY distance;
     """,
     {"query_vector": query_vector})
+
+# The query can also be formed as follows:
+# result = conn.execute(
+#     """
+#     CALL QUERY_VECTOR_INDEX(
+#         'Book',
+#         'title_vec_index',
+#         create_embedding('quantum machine learning', 'open-ai', 'text-embedding-3-small', 384),
+#         2
+#     )
+#     RETURN node.title ORDER BY distance;
+#     """
+# )
+
 print(result.get_as_pl())
 ```
 In the above query, we asked for the 2 nearest neighbors of the query vector "quantum machine learning".
