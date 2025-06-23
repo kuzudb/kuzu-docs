@@ -1,5 +1,5 @@
 ---
-title: "Full Text Search"
+title: "Full-text Search (FTS)"
 ---
 
 ## Usage
