@@ -50,14 +50,14 @@ The `ollama` provider does not need any configured environment variables but exp
 The core feature of the LLM extension is a scalar function that generates text embeddings.
 
 ```sql
-// Syntax for calling CREATE_EMBEDDING
+// Syntax for calling CREATE_EMBEDDING.
 CALL CREATE_EMBEDDING(
     'prompt',
     'provider',
     'model',
      dimensions,
     'region',
-); // This function returns a LIST[FLOAT].
+); // Returns LIST[FLOAT].
 ```
 
 ### Parameters
@@ -139,7 +139,7 @@ for title, published_year in zip(titles, published_years):
     )
     print(f"Inserted book: {title}")
 
-# Insert sample data - Publishers
+# Insert sample data - Publishers.
 for publisher in publishers:
     conn.execute(
         """CREATE (p:Publisher {name: $publisher});""",
@@ -147,7 +147,7 @@ for publisher in publishers:
     )
     print(f"Inserted publisher: {publisher}")
 
-# Create relationships between Books and Publishers
+# Create relationships between Books and Publishers.
 for title, publisher in zip(titles, publishers):
     conn.execute("""
         MATCH (b:Book {title: $title})
