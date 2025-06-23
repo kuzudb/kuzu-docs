@@ -49,16 +49,15 @@ The `ollama` provider does not need any configured environment variables but exp
 
 The core feature of the LLM extension is a scalar function that generates text embeddings.
 
-### Syntax
-
 ```sql
-CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING) -> LIST<FLOAT>
-
-CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64) -> LIST<FLOAT>
-
-CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, region: STRING) -> LIST<FLOAT>
-
-CREATE_EMBEDDING(prompt: STRING, provider: STRING, model: STRING, dimensions: INT64, region: STRING) -> LIST<FLOAT>
+// Syntax for calling CREATE_EMBEDDING
+CALL CREATE_EMBEDDING(
+    'prompt',
+    'provider',
+    'model',
+     dimensions,
+    'region',
+); // This function returns a LIST[FLOAT].
 ```
 
 ### Parameters
