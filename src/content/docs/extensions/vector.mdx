@@ -339,19 +339,22 @@ conn.execute(
     """
     CALL PROJECT_GRAPH(
         'filtered_book',
-        {'Book': {'filter': 'n.published_year > 2010'}},
+        {'Book': 'n.published_year > 2010'},
         []
     );
     """
 )
 
 # Step 2: Perform vector similarity search on the filtered subset
-query_vector = model.encode("quantum world").tolist()
-result = conn.execute("""
+
+if use_llm_extension:
+    os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
+
+    result = conn.execute("""
     CALL QUERY_VECTOR_INDEX(
         'filtered_book',
         'title_vec_index',
-        $query_vector,
+        create_embedding("quantum_world", "open-ai", "text-embedding-3-small", 384),
         2
     )
     WITH node AS n, distance as dist
@@ -360,8 +363,24 @@ result = conn.execute("""
            n.published_year AS year,
            p.name AS publisher
     ORDER BY dist;
-    """,
-    {"query_vector": query_vector})
+    """)
+else:
+    query_vector = model.encode("quantum world").tolist()
+    result = conn.execute("""
+        CALL QUERY_VECTOR_INDEX(
+            'filtered_book',
+            'title_vec_index',
+            $query_vector,
+            2
+        )
+        WITH node AS n, distance as dist
+        MATCH (n)-[:PublishedBy]->(p:Publisher)
+        RETURN n.title AS book,
+               n.published_year AS year,
+               p.name AS publisher
+        ORDER BY dist;
+        """,
+        {"query_vector": query_vector})
 print(result.get_as_pl())
 ```
 </TabItem>
@@ -379,7 +398,7 @@ LOAD llm;
 // Step 1: Create a projected graph that filters books by publication year
 CALL PROJECT_GRAPH(
     'filtered_book',   // Name of the projected graph
-    {'Book': {'filter': 'n.published_year > 2010'}},   // Projected node table Book with a filter on published_year. `n` is a place_holder here to reference the node table.
+    {'Book': 'n.published_year > 2010'},   // Projected node table Book with a filter on published_year. `n` is a place_holder here to reference the node table.
     []   // No relationship tables can be projected.
 );
 
