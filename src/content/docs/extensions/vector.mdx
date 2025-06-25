@@ -38,19 +38,19 @@ import kuzu
 
 use_llm_extension = True # Set to `False` to use sentence_transformers
 
-if use_llm_extension:
-    conn.execute("INSTALL llm; LOAD llm;")
-else:
-    from sentence_transformers import SentenceTransformer
-    # Load a pre-trained embedding generation model
-    # https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-
 DB_NAME = "ex_kuzu_db"
 
 # Initialize the database
 db = kuzu.Database(DB_NAME)
 conn = kuzu.Connection(db)
+
+if use_llm_extension:
+    conn.execute("INSTALL llm; LOAD llm;")
+else:
+    # Load a pre-trained embedding generation model
+    # https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+    from sentence_transformers import SentenceTransformer
+    model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # Install and load vector extension
 conn.execute("INSTALL vector; LOAD vector;")
