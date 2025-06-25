@@ -2,16 +2,9 @@
 title: "LLM Extension"
 ---
 
-The **LLM extension** provides an interface to fetch text embeddings from supported providers and their models.
+The **LLM extension** provides a `CREATE_EMBEDDING` function for creating text embeddings using API calls to supported providers.
 
-It can be installed and loaded using the following commands:
-
-```sql
-INSTALL llm;
-LOAD llm;
-```
-
-See the list of providers and their embedding documentation.
+We currently support the following providers:
 
 * [OpenAI](https://platform.openai.com/docs/guides/embeddings)
 * [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
@@ -23,14 +16,16 @@ See the list of providers and their embedding documentation.
 
 ## Usage
 
+Install and load the extension using the following commands:
+
+```sql
+INSTALL llm;
+LOAD llm;
+```
+
 ### Configuration
 
-The LLM extension supports configurable options such as credentials, dimensions, and region where applicable.
-
-- All credentials are provided through environment variables.
-- Dimensions and region are passed to the `CREATE_EMBEDDING` function call, when supported.
-
-The following environment variables must be set for the corresponding providers:
+To allow API calls to the providers, you must set the appropriate environment variables:
 
 | Provider | Required Environment Variables |
 | --- | --- |
@@ -39,39 +34,30 @@ The following environment variables must be set for the corresponding providers:
 | `google-gemini` | `GOOGLE_GEMINI_API_KEY` |
 | `open-ai` | `OPENAI_API_KEY` |
 | `voyage-ai` | `VOYAGE_API_KEY` |
+| `ollama` | None, but expects access to `http://localhost:11434` |
 
-:::note[Note]
-The `ollama` provider does not need any configured environment variables but expects the embedding model to be available at `http://localhost:11434`.
-:::
----
+## Creating embeddings
 
-## Embedding Function
-
-The core feature of the LLM extension is a scalar function that generates text embeddings.
+You can generate text embeddings using the `CREATE_EMBEDDING` function. The function returns a `LIST[FLOAT]` type.
 
 ```sql
-// Syntax for calling CREATE_EMBEDDING.
 CALL CREATE_EMBEDDING(
-    'prompt',
-    'provider',
-    'model',
-     dimensions,
-    'region',
-); // Returns LIST[FLOAT].
+    'prompt',   // The input text to embed.
+    'provider', // The embedding provider. E.g., `'open-ai'`.
+    'model',    // The identifier of the embedding model. E.g., `'text-embedding-3-small'`.
+    [option_name := option_value] // Optional parameters, if supported by the provider.
+);
 ```
 
-### Parameters
+### Optional parameters
 
 | Option | Description | 
 |--------|-------------| 
-| prompt    |The input text to embed.|
-| provider    |The embedding provider, e.g., `'open-ai'`, `'ollama'`, `'voyage-ai'`, etc.|
-| model    |The identifier of the embedding model. This may change overtime; reference the provider's API reference before use.|
-| dimensions    |*(optional)*: The size of the embedding vector to be returned, if supported by the provider. Must be a positive integer. Currently only `'open-ai'`, `'google-vertex'`, `'voyage-ai'` are supported.|
-| region    |*(optional)*: A region or endpoint hint, if supported by the provider.|
+| dimensions    | The size of the embedding vector, if supported by the provider. Currently only `'open-ai'`, `'google-vertex'`, and `'voyage-ai'` support this option. |
+| region    | A region or endpoint, if supported by the provider. E.g., `'us-east-1'` for `'amazon-bedrock'`. |
 
 :::note[Note]
-If an unsupported region, model or dimension is specified, the API call to the provider will result in an error. It is highly recommended to check the provider's API reference before use.
+If an unsupported model, dimension, or region is specified, the API call to the provider will fail. Check the provider's API documentation for the currently supported options.
 :::
 
 ### Examples
@@ -95,5 +81,6 @@ CALL CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 25
 ```
 ---
 
-## Using embeddings with the vector extension
-The embedding function can be used with the vector extension. The example in the [vector docs](/extensions/vector) describes how the `CREATE_EMBEDDING` function can be leveraged to make the vector extension easier to use.
+## Storing embeddings in a vector index
+
+The embedding function can be used with the `vector` extension. The example in the [vector docs](/extensions/vector) shows how the `CREATE_EMBEDDING` function can be used to create the embeddings needed for the vector index directly in Kuzu.
