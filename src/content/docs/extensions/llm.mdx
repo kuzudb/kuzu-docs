@@ -1,0 +1,109 @@
+---
+title: "LLM Extension"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+The **LLM extension** provides a `CREATE_EMBEDDING` function for creating text embeddings using API calls to supported providers.
+
+We currently support the following providers:
+
+* [OpenAI](https://platform.openai.com/docs/guides/embeddings)
+* [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
+* [Google Vertex](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
+* [Google Gemini](https://ai.google.dev/gemini-api/docs/embeddings)
+* [Voyage AI](https://docs.voyageai.com/docs/embeddings)
+* [Ollama](https://ollama.com/blog/embedding-models)
+---
+
+## Usage
+
+Install and load the extension using the following commands:
+
+```sql
+INSTALL llm;
+LOAD llm;
+```
+
+### Configuration
+
+To allow API calls to the providers, you must set the appropriate environment variables:
+
+| Provider | Required Environment Variables |
+| --- | --- |
+| `amazon-bedrock` | `AWS_ACCESS_KEY`, `AWS_SECRET_ACCESS_KEY` |
+| `google-vertex` | `GOOGLE_CLOUD_PROJECT_ID`, `GOOGLE_VERTEX_ACCESS_KEY` |
+| `google-gemini` | `GOOGLE_GEMINI_API_KEY` |
+| `open-ai` | `OPENAI_API_KEY` |
+| `voyage-ai` | `VOYAGE_API_KEY` |
+| `ollama` | None, but expects access to `http://localhost:11434` |
+
+See how to set environment variables below:
+
+<Tabs>
+<TabItem value="cypher" label="Cypher">
+
+```bash
+# Set the OpenAI API key
+export OPENAI_API_KEY=sk-proj-key
+```
+
+</TabItem>
+
+<TabItem value="python" label="Python">
+```python
+os.environ["OPENAI_API_KEY"] = "sk-proj-key"
+#...
+```
+
+</TabItem>
+</Tabs>
+
+## Creating embeddings
+
+You can generate text embeddings using the `CREATE_EMBEDDING` function. The function returns a `LIST[FLOAT]` type.
+
+```sql
+CALL CREATE_EMBEDDING(
+    'prompt',   // The input text to embed.
+    'provider', // The embedding provider. E.g., `'open-ai'`.
+    'model',    // The identifier of the embedding model. E.g., `'text-embedding-3-small'`.
+    // Optional parameters, if supported by the provider.
+);
+```
+
+### Optional parameters
+
+| Option |Type| Description | 
+|--------|------|-------| 
+| dimensions |`INT64`| The size of the embedding vector, if supported by the provider. Currently only `'open-ai'`, `'google-vertex'`, and `'voyage-ai'` support this option. |
+| region    |`STRING`| A region or endpoint, if supported by the provider. E.g., `'us-east-1'` for `'amazon-bedrock'`. |
+
+:::note[Note]
+If an unsupported model, dimension, or region is specified, the API call to the provider will fail. Check the provider's API documentation for the currently supported options.
+:::
+
+### Examples
+
+```sql
+CALL CREATE_EMBEDDING("Hello world", "open-ai", "text-embedding-3-small");
+
+CALL CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
+
+CALL CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07");
+```
+
+With optional parameters:
+
+```sql
+CALL CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
+
+CALL CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-text-v1", "us-east-1");
+
+CALL CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
+```
+---
+
+## Storing embeddings in a vector index
+
+The embedding function can be used with the `vector` extension. The example in the [vector docs](/extensions/vector) shows how the `CREATE_EMBEDDING` function can be used to create the embeddings needed for the vector index directly in Kuzu.
