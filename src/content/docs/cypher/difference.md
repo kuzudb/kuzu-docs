@@ -39,7 +39,7 @@ In Kuzu, you can use `is_trail` or `is_acyclic` function to check if a path is a
 
 #### Variable length relationships
 
-Since Kuzu adopts trail semantic by default, so a variable length relationship needs to have a upper bound to guarantee the query will terminate. If upper bound is not specified, Kuzu will assign a default value of 30.
+Since Kuzu adopts a walk semantic by default, so a variable length relationship needs to have a upper bound to guarantee the query will terminate. If upper bound is not specified, Kuzu will assign a default value of 30.
 
 Kuzu also extends Neo4j's variable length to support filter inside the variable length relationship. 
 
