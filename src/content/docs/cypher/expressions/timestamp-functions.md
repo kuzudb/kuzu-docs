@@ -15,8 +15,8 @@ Timestamp functions are used to create and extract fields from timestamps.
 | `date_trunc(part, timestamp)` | returns the given timestamp with specified precision | `date_trunc('month', TIMESTAMP('2002-10-21 13:51:21'))` | `2002-10-01 00:00:00` `(TIMESTAMP)` |
 | `datetrunc(part, timestamp)` | alias of `date_trunc` | `datetrunc('year', TIMESTAMP('2005-12-11 11:21:31'))` | `2005-01-01 00:00:00` `(TIMESTAMP)` |
 | `dayname(timestamp)` | returns the calendar day of the timestamp | `dayname(TIMESTAMP('2022-11-08 11:12:20'))` | `Tuesday` `(STRING)` |
-| `epoch_ms(ms)` | converts the ms to timestamp | `epoch_ms(INT64(701222402100))` | `1992-03-22 00:00:02.1` `(TIMESTAMP)` |
-| `to_epoch_ms(timestamp)` | alias of `epoch_ms` | `to_epoch_ms(TIMESTAMP('1992-03-22 00:00:02.1'))` | `701222402100` `(INT64)` |
+| `epoch_ms(ms)` | converts the epoch value in milliseconds to timestamp | `epoch_ms(701222402100)` | `1992-03-22 00:00:02.1` `(TIMESTAMP)` |
+| `to_epoch_ms(timestamp)` | converts the timestamp to epoch value in milliseconds (inverse of `epoch_ms`) | `to_epoch_ms(TIMESTAMP('1992-03-22 00:00:02.1'))` | `701222402100` `(INT64)` |
 | `greatest(timestamp, timestamp)` | returns the later of the two timestamps | `greatest(TIMESTAMP('2013-12-11 10:22:11'), TIMESTAMP('2011-05-13 13:22:11'))` | `2013-12-11 10:22:11` `(TIMESTAMP)` |
 | `least(timestamp, timestamp)` | returns the earlier of the two timestamps | `least(TIMESTAMP('1966-12-21 15:22:11'), TIMESTAMP('2005-11-12'))` | `1966-12-21 15:22:11` `(TIMESTAMP)` |
 | `last_day(timestamp)` | returns the last day of the month of the timestamp | `last_day(TIMESTAMP('2022-11-08 05:11:31'))` | `2022-11-30` `(DATE)` |
