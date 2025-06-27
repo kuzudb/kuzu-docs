@@ -265,6 +265,7 @@ export default defineConfig({
                             items: [
                                 { label: 'Amazon S3', link: '/extensions/httpfs#aws-s3-file-system'},
                                 { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system', badge: { text: 'New' }},
+                                { label: 'Microsoft Azure', link: '/extensions/azure', badge: { text: 'New' }},
                             ]
                         },
                         { 
