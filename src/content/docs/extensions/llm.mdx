@@ -78,7 +78,7 @@ CALL CREATE_EMBEDDING(
 |--------|------|-------| 
 | dimensions |`INT64`| The size of the embedding vector, if supported by the provider. Currently only `'open-ai'`, `'google-vertex'`, and `'voyage-ai'` support this option. |
 | region    |`STRING`| The region to send requests to, if supported by the provider. E.g., `'us-east-1'` for `'amazon-bedrock'`. |
-| endpoint (Ollama)    |`STRING`| The endpoint to send requests to. (Default is `http://localhost:11434`) |
+| endpoint   |`STRING`| The endpoint to send requests to. Only applies to Ollama. Default is `http://localhost:11434` |
 
 :::note[Note]
 If an unsupported model, dimension, region, or endpoint is specified, the API call to the provider will fail. Check the provider's API documentation for the currently supported options.
