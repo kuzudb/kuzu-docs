@@ -28,7 +28,7 @@ LOAD VECTOR;
 
 To create a vector index, you need a node table with a property of type `LIST[FLOAT]` storing text embeddings.
 Below is an example demonstrating two ways in which such a dataset can be created. The first is to use some external
-library, such as `sentence_transformers` in Python to create the embeddings. Alternatively, you can use Kuzu's [`llm`](/extensions/llm)
+library, such as `sentence_transformers` in Python to create the embeddings. Alternatively, you can use Kuzu's [`embedding`](/extensions/embedding)
 extension to directly create the embeddings using Cypher.
 
 ```python
@@ -36,7 +36,7 @@ extension to directly create the embeddings using Cypher.
 # pip install sentence-transformers
 import kuzu
 
-use_llm_extension = True # Set to `False` to use sentence_transformers
+use_embedding_extension = True # Set to `False` to use sentence_transformers
 
 DB_NAME = "ex_kuzu_db"
 
@@ -44,8 +44,8 @@ DB_NAME = "ex_kuzu_db"
 db = kuzu.Database(DB_NAME)
 conn = kuzu.Connection(db)
 
-if use_llm_extension:
-    conn.execute("INSTALL llm; LOAD llm;")
+if use_embedding_extension:
+    conn.execute("INSTALL embedding; LOAD embedding;")
 else:
     # Load a pre-trained embedding generation model
     # https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
@@ -73,7 +73,7 @@ published_years = [2004, 2022, 2019, 2010, 2015]
 
 # Insert sample data - Books with embeddings
 for title, published_year in zip(titles, published_years):
-    if use_llm_extension:
+    if use_embedding_extension:
         os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
         conn.execute(
             """CREATE (b:Book {title: $title, title_embedding: create_embedding($title, 'open-ai', 'text-embedding-3-small', 384), published_year: $year});""",
@@ -197,13 +197,13 @@ The following options can be used to tune the search behavior:
 
 #### Example search queries
 
-Let's run some example search queries on our newly created vector index. We can again either use the `llm` extension to create the embeddings
+Let's run some example search queries on our newly created vector index. We can again either use the `embedding` extension to create the embeddings
 or use a third party library.
 
 ```python
 import kuzu
 
-use_llm_extension = True # Set to `False` to use sentence_transformers
+use_embedding_extension = True # Set to `False` to use sentence_transformers
 
 DB_NAME = "ex_kuzu_db"
 
@@ -215,15 +215,15 @@ conn = kuzu.Connection(db)
 conn.execute("INSTALL VECTOR;")
 conn.execute("LOAD VECTOR;")
 
-if use_llm_extension:
-    conn.execute("INSTALL llm; LOAD llm;")
+if use_embedding_extension:
+    conn.execute("INSTALL embedding; LOAD embedding;")
 else:
     from sentence_transformers import SentenceTransformer
     # Load a pre-trained embedding generation model
     # https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
-if use_llm_extension:
+if use_embedding_extension:
     os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
     result = conn.execute(
         """
@@ -347,7 +347,7 @@ conn.execute(
 
 # Step 2: Perform vector similarity search on the filtered subset
 
-if use_llm_extension:
+if use_embedding_extension:
     os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
 
     result = conn.execute("""
@@ -392,8 +392,8 @@ export OPENAI_API_KEY=sk-proj-key
 ```
 
 ```cypher
-INSTALL llm;
-LOAD llm;
+INSTALL embedding;
+LOAD embedding;
 
 // Step 1: Create a projected graph that filters books by publication year
 CALL PROJECT_GRAPH(
