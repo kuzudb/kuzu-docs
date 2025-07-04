@@ -14,7 +14,7 @@ INSTALL httpfs;
 LOAD httpfs;
 ```
 
-### Attaching a remote Kuzu database
+### Attach a remote Kuzu database
 
 Use the `ATTACH` statement to attach to a remote Kuzu database:
 
@@ -40,7 +40,7 @@ After the `ATTACH` statement above, you can only query the external Kuzu databas
 
 If you wish to attach to a database hosted on GCS instead, just replace the prefix `s3://` with `gs://` (in this case it would become `'gs://kuzu-example/university`). For more information on how to set up Kuzu with GCS, see [here](/extensions/httpfs#gcs-file-system).
 
-#### Execute queries on external Kuzu database.
+#### Execute queries on external Kuzu database
 We only allow **read-only** queries to execute on external Kuzu database (even if the external database is stored on local disk).
 ```sql
 MATCH (p:Person) RETURN p.name AS name, p.age AS age;
@@ -58,14 +58,14 @@ MATCH (p:Person) RETURN p.name AS name, p.age AS age;
 └────────┴───────┘
 ```
 
-### Listing attached databases
+### List attached databases
 
 You can list all the databases you have attached to by running the following command:
 ```sql
 CALL SHOW_ATTACHED_DATABASES() RETURN *;
 ```
 
-### Detaching from a remote Kuzu database
+### Detach from a remote Kuzu database
 
 To detach from an external Kuzu database, use `DETACH [ALIAS]`:
 
@@ -76,7 +76,7 @@ DETACH uw;
 After the `DETACH` statement, you can continue querying your local Kuzu database `./demo_db`. Therefore, detaching
 from an external Kuzu database switches your Kuzu database to become the local database you had started your session with.
 
-### Using local cache for remote files
+### Use a local cache for remote files
 
 When connecting to a remote external Kuzu database, say the `'s3://kuzu-example/university`  database in our example above,
 you would use the `httpfs` extension. When querying this remote database in Cypher, Kuzu will make HTTPS calls to the

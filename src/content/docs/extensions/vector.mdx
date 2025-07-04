@@ -180,7 +180,7 @@ CALL CREATE_VECTOR_INDEX(
 );
 ```
 
-### Querying the vector index
+### Query the vector index
 To perform similarity search using the vector index, use the `QUERY_VECTOR_INDEX` function:
 
 ```cypher
@@ -319,16 +319,16 @@ Then, it uses the `node` and `distance` variables to further query the graph and
 Using vector search in combination with graph traversal in this manner can be a powerful technique to
 find semantically related entities in a graph.
 
-### Index Management
+### Index management
 
-#### Drop an Index
+#### Drop an index
 To remove a vector index, use the `DROP_VECTOR_INDEX` function:
 
 ```cypher
 CALL DROP_VECTOR_INDEX('Book', 'book_title_index');
 ```
 
-#### List All Indexes
+#### List all indexes
 View all created indexes in the database using `SHOW_INDEXES`:
 
 ```cypher

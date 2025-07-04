@@ -45,7 +45,7 @@ See the [Local cache](#local-cache) section for more details.
 
 The extension also allows users to read/write/glob files hosted on object storage servers using the S3 API.
 
-### Configuring the S3 connection
+### Configure the S3 connection
 
 Before reading and writing from S3, you have to configure the connection using [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statements.
 ```sql
@@ -119,7 +119,7 @@ TO 's3://kuzu-datasets/saved/location.parquet';
 
 ### Additional configurations
 
-#### Requirements on the S3 server API
+#### Requirements on the S3 server APIs
 
 S3 offers a standard set of APIs for read and write operations. The `httpfs` extension uses these APIs to communicate with remote storage services and thus should also work
 with other services that are compatible with the S3 API (such as [Cloudflare R2](https://www.cloudflare.com/en-gb/developer-platform/r2/)).
@@ -144,7 +144,7 @@ See the [Local cache](#local-cache) section for more details.
 
 This section shows how to scan from/write to files hosted on Google Cloud Storage.
 
-### Configuring the GCS connection
+### Configure the GCS connection
 
 Before reading and writing from private GCS buckets, you have to configure the connection using [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statements.
 ```sql
@@ -164,8 +164,6 @@ Alternatively, you can set the following environment variables:
 |----------|----------|
 | `GCS_ACCESS_KEY_ID` | GCS access key ID |
 | `GCS_SECRET_ACCESS_KEY` | GCS secret access key |
-
-#### Additional configurations
 
 Since Kuzu communicates with GCS using its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#aws-s3-file-system).
 

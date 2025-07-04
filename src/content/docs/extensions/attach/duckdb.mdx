@@ -26,7 +26,7 @@ conn.execute("INSERT INTO person values ('Carol', 19);")
 conn.execute("INSERT INTO person values ('Dan', 25);")
 ```
 
-### Attaching a DuckDB database
+### Attach a DuckDB database
 
 To attach a DuckDB database, use the `ATTACH` statement:
 
@@ -49,7 +49,7 @@ For example, the `university.db` DuckDB database can be attached to Kuzu using t
 ATTACH 'university.db' AS uw (dbtype duckdb);
 ```
 
-### Attaching a DuckDB database on S3
+### Attach a DuckDB database on S3
 
 You can also attach a remote DuckDB database hosted on S3.
 
@@ -71,7 +71,7 @@ LOAD FROM station.stations RETURN count(*);
 └──────────────┘
 ```
 
-### DuckDB to Kuzu types mapping
+### DuckDB to Kuzu type mapping
 
 The following table shows the mapping from DuckDB's data types to Kuzu's data types:
 
@@ -107,7 +107,7 @@ The following table shows the mapping from DuckDB's data types to Kuzu's data ty
 | `STRUCT`                       | `STRUCT`                                 |
 | `UNION`                       | `UNION`                                 |
 
-### Scanning a DuckDB table
+### Scan a DuckDB table
 
 You can use the `LOAD FROM` statement to scan the `person` table from the attached `uw` database.
 
@@ -129,7 +129,7 @@ RETURN *
 ---------------
 ```
 
-### Using a default database name
+### Use a default database name
 
 You can set a default database name to avoid having to specify the full database name as a prefix in every query.
 
@@ -142,7 +142,7 @@ LOAD FROM person
 RETURN *
 ```
 
-### Copying data from DuckDB tables
+### Copy data from DuckDB tables
 
 You can use the `COPY FROM` statement to import data from a DuckDB table into Kuzu.
 
@@ -183,7 +183,7 @@ MATCH (p:Person) RETURN p.*;
 ------------------
 ```
 
-### Clearing the schema cache
+### Clear the schema cache
 
 To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
@@ -200,7 +200,7 @@ If you have attached multiple databases from different systems, say Postgres, Du
 this call will clear the cache for _all_ of them.
 :::
 
-### Detaching a database
+### Detach a database
 
 To detach a database, use `DETACH [ALIAS]`:
 

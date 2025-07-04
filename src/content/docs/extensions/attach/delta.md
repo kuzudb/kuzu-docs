@@ -33,7 +33,7 @@ student = {
 write_deltalake(f"/tmp/student", pd.DataFrame.from_dict(student))
 ```
 
-### Scanning Delta tables
+### Scan Delta tables
 
 `LOAD FROM` is a Cypher clause that scans a file or object element by element, but doesn’t actually
 copy the data into a Kuzu table.
@@ -57,7 +57,7 @@ Note: The `file_format` parameter is required here to explicitly specify the fil
 Kuzu is currently not capable of autodetecting Delta tables.
 :::
 
-### Copying Delta tables into Kuzu
+### Copy Delta tables into Kuzu
 You can use a `COPY FROM` statement to copy the contents of a Delta table into Kuzu.
 
 ```cypher
@@ -73,10 +73,10 @@ COPY student FROM '/tmp/student' (file_format='delta')
 └─────────────────────────────────────────────────┘
 ```
 
-### Accessing Delta tables hosted on S3
+### Access Delta tables hosted on S3
 Kuzu also supports scanning and copying Delta tables hosted on S3.
 
-#### Configuring the S3 connection
+#### Configure the S3 connection
 
 Before reading and writing from S3, you have to configure the connection using a [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
 ```sql
@@ -99,13 +99,13 @@ The following options are supported:
 | Public file reads | HTTP Range request |
 | Private file reads | Secret key authentication|
 
-#### Scanning Delta tables from S3
+#### Scan Delta tables from S3
 ```sql
 LOAD FROM 's3://kuzu-sample/sample-delta' (file_format='delta')
 RETURN *
 ```
 
-#### Copying Delta tables from S3 into Kuzu
+#### Copy Delta tables from S3 into Kuzu
 
 ```cypher
 CREATE NODE TABLE student (ID INT64 PRIMARY KEY, name STRING);

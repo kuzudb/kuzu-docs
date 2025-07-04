@@ -27,7 +27,7 @@ conn.commit()
 conn.close()
 ```
 
-### Attaching a SQLite database
+### Attach a SQLite database
 
 To attach a SQLite database, use the `ATTACH` statement.
 
@@ -49,7 +49,7 @@ For example, the `university.db` SQLite database can be attached to Kuzu using t
 ATTACH 'university.db' AS uw (dbtype sqlite);
 ```
 
-### SQLite to Kuzu types mapping
+### SQLite to Kuzu type mapping
 
 The following table shows the mapping from SQLite's data types to Kuzu's data types:
 
@@ -64,7 +64,7 @@ The following table shows the mapping from SQLite's data types to Kuzu's data ty
 | `DATE`                                       | `DATE`                           |
 | `TIME`                                       | `TIMESTAMP`                      |
 
-### Scanning a SQLite table
+### Scan a SQLite table
 
 Use the `LOAD FROM` statement to scan the `person` table.
 
@@ -96,7 +96,7 @@ CALL sqlite_all_varchar_option=<OPTION>
 If set to `True`, all SQLite columns will be treated and scanned as `STRING` columns.
 If set to `False`, trying to scan a column with values incompatible with the specified data type will result in a runtime exception.
 
-### Using a default database name
+### Use a default database name
 
 You can set a default database name to avoid having to specify the full database name as a prefix in every query.
 
@@ -109,7 +109,7 @@ LOAD FROM person
 RETURN *
 ```
 
-### Copying data from SQLite tables
+### Copy data from SQLite tables
 
 You can use the `COPY FROM` statement to import data from a SQLite table into Kuzu.
 
@@ -151,7 +151,7 @@ MATCH (p:Person) RETURN p.*;
 ------------------
 ```
 
-### Clearing the schema cache
+### Clear the schema cache
 
 To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
@@ -168,7 +168,7 @@ If you have attached to databases from different RDBMSs, say Postgres, DuckDB, a
 this call will clear the cache for _all_ of them.
 :::
 
-### Detaching a database
+### Detach a database
 
 To detach a database, use `DETACH [ALIAS]` as follows:
 

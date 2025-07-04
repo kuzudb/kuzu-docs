@@ -26,7 +26,7 @@ git clone https://github.com/unitycatalog/unitycatalog.git
 bin/start-uc-server
 ```
 
-### Attaching to a Unity Catalog
+### Attach to a Unity Catalog
 
 ```sql
 ATTACH [CATALOG_NAME] AS [alias] (dbtype UC_CATALOG)
@@ -40,7 +40,7 @@ ATTACH [CATALOG_NAME] AS [alias] (dbtype UC_CATALOG)
 Kuzu attaches to the `default` schema under the given catalog name. Specifying the schema to attach is not supported right now.
 :::
 
-### Unity Catalog and Kuzu type mapping
+### Unity Catalog to Kuzu type mapping
 
 The table below shows the mapping from Unity Catalog's type to Kuzu's type:
 
@@ -60,7 +60,7 @@ The table below shows the mapping from Unity Catalog's type to Kuzu's type:
 | `BINARY`                       | Unsupported                      |
 | `DECIMAL`   | `DECIMAL`                                 |
 
-### Scanning data from a Unity Catalog table
+### Scan data from a Unity Catalog table
 
 Finally, we can utilize the `LOAD FROM` statement to scan the `numbers` table. Note that you need to prefix the 
 external `numbers` table with the database alias (in our example `unity`). See the `USE` statement which allows you to
@@ -98,7 +98,7 @@ RETURN *
 Currently, Kuzu only supports scanning from Delta Lake tables registered in the Unity Catalog.
 :::
 
-### Using a default Unity Catalog name
+### Use a default Unity Catalog name
 
 You can attach a Unity Catalog with a default name using the `USE` statement, to avoid having to specify the full catalog name in every query.
 
@@ -111,7 +111,7 @@ LOAD FROM numbers
 RETURN *
 ```
 
-### Copying a Unity Catalog table into Kuzu
+### Copy a Unity Catalog table into Kuzu
 
 One important use case of the Unity Catalog extension is to facilitate seamless data transfer from tables in Unity Catalog to Kuzu.
 
@@ -161,7 +161,7 @@ MATCH (n:numbers) RETURN n.*;
 └───────┴────────────┘
 ```
 
-### Detaching a Unity Catalog
+### Detach a Unity Catalog
 
 ```sql
 DETACH unity;

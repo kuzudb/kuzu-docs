@@ -23,7 +23,7 @@ wget https://kuzudb.com/data/iceberg-extension/iceberg_tables.zip
 unzip iceberg_tables.zip
 ```
 
-### Scanning Iceberg tables
+### Scan Iceberg tables
 
 `LOAD FROM` is a Cypher query that scans a file or object element by element, but doesn’t actually
 copy the data into a Kuzu table.
@@ -54,7 +54,7 @@ Kuzu is currently not capable of autodetecting Iceberg tables.
 Iceberg tables that are moved from their original location.
 :::
 
-### Copying Iceberg tables into Kuzu
+### Copy Iceberg tables into Kuzu
 You can use a `COPY FROM` statement to copy the contents of a Iceberg table into Kuzu.
 
 ```cypher
@@ -72,7 +72,7 @@ COPY student FROM
 └─────────────────────────────────────────────────────┘
 ```
 
-### Accessing Iceberg metadata
+### Access Iceberg metadata
 At the heart of Iceberg’s table structure is the metadata, which tracks everything from the schema, to partition information
 and snapshots of the table's state.
 
@@ -96,7 +96,7 @@ RETURN *;
 └──────────────────────────┴──────────────────────────┴──────────────────┴─────────┴──────────┴──────────────────────────┴─────────────┴──────────────┘
 ```
 
-### Listing Iceberg snapshots
+### List Iceberg snapshots
 Iceberg tables maintain a series of snapshots, which are consistent views of the table at a specific point in time.
 Snapshots are the core of Iceberg’s versioning system, allowing you to track, query, and manage changes to your table over time.
 
@@ -116,11 +116,11 @@ CALL ICEBERG_SNAPSHOTS('/tmp/iceberg_tables/lineitem_iceberg') RETURN *;
 └─────────────────┴─────────────────────┴─────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Accessing Iceberg tables hosted on S3
+### Access Iceberg tables hosted on S3
 
 Kuzu also supports scanning and copying Iceberg tables hosted on S3.
 
-#### Configuring the S3 connection
+#### Configure the S3 connection
 
 Before reading and writing from S3, you have to configure the connection using a [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
 ```sql
@@ -135,14 +135,14 @@ CALL <option_name>='<option_value>'
 | `s3_region` | S3 region |
 | `s3_url_style` | Uses [S3 url style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) (should either be `vhost` or `path`) |
 
-#### Requirements on the S3 server API
+#### Requirements on the S3 server APIs
 
 | Feature | Required S3 API features |
 |----------|----------|
 | Public file reads | HTTP Range request |
 | Private file reads | Secret key authentication|
 
-#### Scanning Iceberg tables from S3
+#### Scan Iceberg tables from S3
 
 ```cypher
 LOAD FROM
@@ -151,7 +151,7 @@ LOAD FROM
 RETURN *
 ```
 
-#### Copying Iceberg tables from S3 into Kuzu
+#### Copy Iceberg tables from S3 into Kuzu
 
 ```cypher
 CREATE NODE TABLE student (ID INT64 PRIMARY KEY, name STRING);
