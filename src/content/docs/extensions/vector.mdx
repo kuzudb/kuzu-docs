@@ -162,6 +162,10 @@ Optional arguments to tune the index:
   - The number of candidate vertices to consider during the construction of the index.
   - A higher value will result in a more accurate index, but will also increase the time it takes to build the index.
   - Default: `200`
+- `cache_embeddings`
+  - Determines whether the embeddings columns is fully cached in memory before index construction.
+  - This will decrease the amount of time needed to construct the index but will increase the memory usage. We recommend keeping this value set to true unless you are in a memory-constrained environment.
+  - Default: `true`
 
 :::note[Immutable index]
 Once created, the vector index is immutable and cannot be modified. If the data in the underlying table changes,
@@ -254,7 +258,7 @@ if use_llm_extension:
             'book_title_index',
             create_embedding(
                 'quantum machine learning',
-                'open-ai', 'text-embedding-3-small', 
+                'open-ai', 'text-embedding-3-small',
                 384
             ),
             2
