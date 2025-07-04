@@ -1,85 +1,74 @@
 ---
-title: Attaching to Unity Catalog
+title: Unity Catalog extension
 ---
+
+This extension adds the ability to directly scan from delta tables registered in a Unity Catalog using the `LOAD FROM` statement.
 
 :::caution[Note]
 This is an experimental extension that is a starting point towards a larger integration
-of Kuzu with the lakehouse ecosystem. It may have unresolved issues from upstream. To address these
-issues or to discuss your use case further, please reach out to us on [Discord](https://kuzudb.com/chat).
+of Kuzu with the lakehouse ecosystem. It may have unresolved issues. To help us address these
+issues or to discuss your use case, please reach out to us on GitHub or Discord.
 :::
 
-Kuzu supports directly scanning from delta tables registed in Unity Catalog using the `LOAD FROM` statement.
-
 ## Usage
-
-The Unity Catalog extension can be installed and loaded by running the following commands using the Kuzu CLI
-or your preferred language client API:
 
 ```sql
 INSTALL unity_catalog;
 LOAD unity_catalog;
 ```
 
-#### 1. Setup Unity Catalog server
+#### Set up a Unity Catalog server
 
-To illustrate the usage of this extension, we set up the open source version of Unity Catalog.
-##### Download the Unity Catalog server
+First, set up the open source version of Unity Catalog:
+
 ```bash
 git clone https://github.com/unitycatalog/unitycatalog.git
-```
-
-##### Start Unity Catalog server
-```
 bin/start-uc-server
 ```
 
-In the following example, we will attach to the `default` schema under the `unity` catalog and scan the `numbers` delta table.
-The table, schema and catalog are pre-defined in the Unity Catalog, so you don't have to create them.
-#### 2. Attach to Unity Catalog
+### Attach to a Unity Catalog
 
 ```sql
 ATTACH [CATALOG_NAME] AS [alias] (dbtype UC_CATALOG)
 ```
 
 - `CATALOG_NAME`: The catalog name to attach to in the Unity Catalog
-- `alias`: Database alias to use in Kuzu - If not provided, the catalog name will be used.
-  When attaching multiple databases, it's recommended to use aliasing.
+- `alias`: Database alias to use in Kuzu. If not provided, the catalog name will be used.
+  When attaching multiple databases, it's recommended to use aliases.
 
 :::note[Note]
-Kuzu attaches to the `default` schema under the given catalog name. Specifying the schema to attach is not supported right now.
+Kuzu attaches to the `default` schema under the given catalog name. Specifying the schema to attach is not supported currently.
 :::
 
-#### 3. Data type mapping from Unity Catalog to Kuzu
+### Unity Catalog to Kuzu type mapping
 
-The table below shows the mapping from Unity Catalog's type to Kuzu's type:
+The table below shows the mapping from Unity Catalog types to Kuzu types:
+
 | Data type in Unity Catalog         | Corresponding data type in Kuzu |
 |-----------------------------|----------------------------------|
-| BOOLEAN                     | BOOLEAN                           |
-| BYTE                        | UNSUPPORTED                          |
-| SHORT                       | INT16                                 |
-| INT                    | INT32                                 |
-| LONG                       | INT64                                 |
-| DOUBLE                     | DOUBLE                                 |
-| FLOAT                      | FLOAT                                 |
-| DATE                    | DATE                                 |
-| TIMESTAMP                    | TIMESTAMP                                 |
-| TIMESTAMP_NTZ                   | UNSUPPORTED                                 |
-| STRING                   | STRING                                 |
-| BINARY                       | UNSUPPORTED                      |
-| DECIMAL   | DECIMAL                                 |
+| `BOOLEAN`                     | `BOOLEAN`                           |
+| `BYTE`                        | Unsupported                          |
+| `SHORT`                       | `INT16`                                 |
+| `INT`                    | `INT32`                                 |
+| `LONG`                       | `INT64`                                 |
+| `DOUBLE`                     | `DOUBLE`                                 |
+| `FLOAT`                      | `FLOAT`                                 |
+| `DATE`                    | `DATE`                                 |
+| `TIMESTAMP`                    | `TIMESTAMP`                                 |
+| `TIMESTAMP_NTZ`                   | Unsupported                                 |
+| `STRING`                   | `STRING`                                 |
+| `BINARY`                       | Unsupported                      |
+| `DECIMAL`   | `DECIMAL`                                 |
 
-#### 4. Scan data from table
+### Scan data from a Unity Catalog table
 
-Finally, we can utilize the `LOAD FROM` statement to scan the `numbers` table. Note that you need to prefix the 
-external `numbers` table with the database alias (in our example `unity`). See the `USE` statement which allows you to
-skip this prefixing for a specific default database.
+You can use the `LOAD FROM` statement to scan the `numbers` table. Note that you need to prefix the 
+external `numbers` table with the database alias (in our example `unity`).
 
 ```sql
 LOAD FROM unity.numbers
 RETURN *
 ```
-
-Result:
 
 ```
 ┌────────┬────────────┐
@@ -108,59 +97,46 @@ Result:
 Currently, Kuzu only supports scanning from Delta Lake tables registered in the Unity Catalog.
 :::
 
-#### 5. `USE` statement
+### Use a default Unity Catalog name
 
-You can use the `USE` statement for attached Unity Catalog to use a default Unity Catalog name (without an alias)
-for future operations.
-This can be used when reading from an attached Unity Catalog to avoid specifying the full catalog name
-as a prefix to the table name.
+You can attach a Unity Catalog with a default name using the `USE` statement, to avoid having to specify the full catalog name in every query.
 
-Consider the same attached Unity Catalog as above:
+For example, for the Unity Catalog above:
 
 ```sql
 ATTACH 'unity' AS unity (dbtype UC_CATALOG);
-```
-
-Instead of defining the catalog name via `unity.numbers` for each subsequent clause, you can do:
-
-```sql
 USE unity;
 LOAD FROM numbers
 RETURN *
 ```
 
-#### 6. Copy data from table
+### Copy a Unity Catalog table into Kuzu
 
-One important use case of the Unity Catalog extension is to facilitate seamless data transfer from tables in Unity Catalog to Kuzu.
-In this example, we continue using the `unity` database, but this time,
-we copy the data and persist it to Kuzu. This is done with the `COPY FROM` statement. Here is an example:
+You can use the `COPY FROM` statement to import data from a Unity Catalog table into Kuzu.
 
-We first create a `numbers` table in Kuzu. In this example we will make `numbers` have the same schema as the one defined in the Unity Catalog.
+First, create a `numbers` table in Kuzu with the same schema as the one defined in the Unity Catalog.
 
 ```cypher
-CREATE NODE TABLE numbers (id INT32, score DOUBLE , PRIMARY KEY(id));
+CREATE NODE TABLE numbers (id INT32 PRIMARY KEY, score DOUBLE);
 ```
 
-When the schemas are the same, we can copy the data from the external Unity Catalog table to the Kuzu table simply as follows.
+Then, copy the data from the external Unity Catalog table to the Kuzu table.
 
 ```sql
- copy numbers from unity.numbers;
+copy numbers from unity.numbers;
 ```
-If the schemas are not the same, e.g., `numbers` contains only `score` property while the external `unity.numbers` contains
-`id` and `score`, we can still use `COPY FROM` but with a subquery as follows:
+
+You can also use a subquery to copy only a subset of the columns:
 ```sql
 COPY numbers FROM (LOAD FROM unity.numbers RETURN score);
 ```
 
-#### 7. Query the data in Kuzu
-
-Finally, we can verify the data in the `numbers` table in Kuzu.
+You can verify that the data has been copied successfully:
 
 ```cypher
 MATCH (n:numbers) RETURN n.*;
 ```
 
-Result:
 ```
 ┌───────┬────────────┐
 │ n.id  │ n.score    │
@@ -184,10 +160,8 @@ Result:
 └───────┴────────────┘
 ```
 
-#### 8. Detach Unity Catalog
+### Detach a Unity Catalog
 
-To detach a Unity Catalog, use `DETACH [ALIAS]` as follows:
-
-```
-DETACH unity
+```sql
+DETACH unity;
 ```

@@ -276,7 +276,7 @@ document database like MongoDB (or even a search engine like Elasticsearch). In 
 may want to scan these objects without persisting them to JSON files.
 
 The JSON extension provides the `json_structure` function for this use case (see its documentation
-[here](/extensions/json#json_structure)).
+[here](/extensions/json#json-functions)).
 
 As an example, let's say we have the same JSON object as shown above in the JSON file example,
 but this time, we obtain the JSON object on the fly from a REST API. We can use the client language

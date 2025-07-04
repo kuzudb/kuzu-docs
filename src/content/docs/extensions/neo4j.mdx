@@ -4,19 +4,20 @@ title: "Neo4j extension"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-## Usage
 The `Neo4j` extension allows you to migrate your Neo4j data into a Kuzu database.
-The functionality is not available by default, so you first need to install and load the `Neo4j` extension by running the following commands:
+
+:::note[Note]
+* Multi-labelled nodes in Neo4j cannot be migrated as Kuzu doesn't support them yet.
+* Nodes and relationships without any labels in Neo4j will be skipped during migration.
+* Any property with a data type that is not natively supported in Kuzu will be imported into Kuzu as a `STRING`.
+:::
+
+## Usage
 
 ```sql
 INSTALL neo4j;
 LOAD neo4j;
 ```
-
-Note that:
-* Multi-labelled nodes in Neo4j cannot be migrated as Kuzu doesn't support them yet.
-* Nodes and relationships without any labels in Neo4j will be skipped during migration.
-* Any property with a data type that is not natively supported in Kuzu will be imported into Kuzu as a `STRING`.
 
 ### Example dataset
 
@@ -57,34 +58,40 @@ apoc.export.file.enabled=true
 apoc.import.file.use_neo4j_config=false
 ```
 This [doc](https://neo4j.com/docs/operations-manual/current/configuration/file-locations/#neo4j-config) provides instructions on Neo4j's default conf file locations.
-The `apoc.conf` file may not exist in the `conf` directory, under which case, you'd have to create a new one under the `conf` directory.
+The `apoc.conf` file may not exist in the `conf` directory, in which case, you would have to create a new one under the `conf` directory.
 
 If you're running Neo4j in Docker, you can use `-e NEO4J_apoc_export_file_enabled=true -e NEO4J_apoc_import_file_use__neo4j__config=false` to configure APOC.
 Additionally, you'll need to mount `/tmp` as `-v /tmp:/tmp` to allow access to the exported data from Neo4j.
 
-The following section shows how to migrate the *labels* from Neo4j to *__tables__* in Kuzu.
+The following section shows how to migrate _labels_ from Neo4j to _tables_ in Kuzu.
 
-### Data Migration
+### Importing data from Neo4j
 
-You can use the `NEO4J_MIGRATE` function to migrate data from Neo4j to Kuzu.
-The function takes in a few parameters specified as follows:
+You can use the `NEO4J_MIGRATE` function to import data from Neo4j into Kuzu:
 
 ```cypher
 CALL NEO4J_MIGRATE(
-    'URL',
-    'USER_NAME',
-    'PASSWORD',
-    ['NODE_LABEL1', 'NODE_LABEL2', 'NODE_LABEL3', ...],
-    ['REL_LABEL1', 'REL_LABEL2', 'REL_LABEL3', ...]
-)
+    <URL>,
+    <USER_NAME>,
+    <PASSWORD>,
+    [<NODE_LABEL1>, <NODE_LABEL2>, <NODE_LABEL3>, ...], // NODE_LABELS
+    [<REL_LABEL1>, <REL_LABEL2>, <REL_LABEL3>, ...]    // REL_LABELS
+);
 ```
-- `URL`: A `http://hostname:port` connection url to a Neo4j server.
+- `URL`: A `http://hostname:port` connection URL to a Neo4j server.
+  - Type: `STRING`
 - `USER_NAME`: Neo4j username. Leave blank if not needed.
+  - Type: `STRING`
 - `PASSWORD`: Neo4j password. Leave blank if not needed.
-- `NODE_LABEL`: A list of node labels to migrate to Kuzu. Use `["*"]` to import all nodes with labels.
-- `REL_LABEL`: A list of rel labels to migrate to Kuzu. Use `["*"]` to import all rels with labels.
+  - Type: `STRING`
+- `NODE_LABELS`: A list of node labels to migrate to Kuzu. Use `["*"]` to import all nodes with labels.
+  - Type: `STRING[]`
+- `REL_LABELS`: A list of relationship labels to migrate to Kuzu. Use `["*"]` to import all relationships with labels.
+  - Type: `STRING[]`
 
-For the example above, you can specify `User` and `City` for node tables, and `LivesIn` and `Follows` for relationship tables:
+#### Example
+
+For the example dataset, you can import the `User` and `City` node tables, and the `LivesIn` and `Follows` relationship tables:
 ```cypher
 CALL NEO4J_MIGRATE(
     "http://localhost:7474",
@@ -105,12 +112,10 @@ CALL NEO4J_MIGRATE(
 );
 ```
 
-Once finished, you can use `SHOW_TABLES()` to verify that the tables have been imported into Kuzu:
+You can use `SHOW_TABLES()` to verify that the tables have been imported into Kuzu:
 ```cypher
-CALL SHOW_TABLES() RETURN *
+CALL SHOW_TABLES() RETURN *;
 ```
-
-This should return the node and relationship tables created in Kuzu corresponding to the migrated labels from Neo4j.
 ```
 ┌────────┬─────────┬────────┬───────────────┬─────────┐
 │ id     │ name    │ type   │ database name │ comment │
@@ -123,15 +128,15 @@ This should return the node and relationship tables created in Kuzu correspondin
 └────────┴─────────┴────────┴───────────────┴─────────┘
 ```
 
-That's it! The data from Neo4j should now be available in Kuzu and you can start querying them.
-For example, let's find the user who was most recently followed by another user.
+The data from Neo4j is now available in Kuzu and you can start querying them.
+For example, let's find the user who was most recently followed by another user:
 
 ```cypher
 MATCH (u:User)-[f:Follows]->(u1:User)
-RETURN u.name ORDER BY f.since DESC LIMIT 1;
+RETURN u.name
+ORDER BY f.since
+DESC LIMIT 1;
 ```
-
-Result:
 ```
 ┌────────┬─────────┐
 │ u.name │ f.since │

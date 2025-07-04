@@ -2,32 +2,25 @@
 title: Extensions
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { CardGrid, LinkCard } from '@astrojs/starlight/components';
-
-Kuzu has an extension framework designed to extend its capabilities. Our goal is to implement
-more and more extensions over time, such as supporting new data types, functions and
-indices, or to better integrate with external systems.
-
-Extensions expose several internal interfaces of Kuzu, for example, the FileSystem, and can have
-multiple implementations. Extensions are implementations of these interfaces that can be
-dynamically loaded at runtime.
-
+Kuzu has an extension API that is designed to dynamically extend its capabilities. Extensions allow
+users to dynamically load the functionality they need at runtime, while helping limit the size of
+the core Kuzu library.
 
 # Official Extensions
 
 The available extensions for each OS are listed [here](https://extension.kuzudb.com/).
 
 :::caution[Note]
-Third-party developers are also welcome to develop their own extensions for custom functionality.
-However, it's important to note that the extension API is still in development and may change in the future.
-When it becomes more stable, we will document in more detail how users can implement their own extensions
+Third-party developers are welcome to develop their own extensions.
+However, note that the extension API is still in development and may change in the future.
+
+We plan to stabilize the extension API and document how users can implement their own extensions.
 For now, please reach out to us on Discord or GitHub if you need a custom extension for your use case.
 :::
 
 ## Available extensions
 
-The following extensions are implemented, with more to come:
+The following extensions are currently implemented:
 
 | Extension | Description |
 |----------|----------|
@@ -35,7 +28,7 @@ The following extensions are implemented, with more to come:
 | [delta](/extensions/attach/delta) | Scan data from Delta Lake tables |
 | [duckdb](/extensions/attach/duckdb) | Scan data from an attached DuckDB database |
 | [fts](/extensions/full-text-search) | Perform full-text search using BM25 |
-| [httpfs](/extensions/httpfs) | Read and write files over HTTP(s) protocol. Also used for [attaching to a remote Kuzu database](/extensions/attach/kuzu). |
+| [httpfs](/extensions/httpfs) | Read and write files over HTTP(S) protocol. Also used for [attaching a remote Kuzu database](/extensions/attach/kuzu). |
 | [iceberg](/extensions/attach/iceberg) | Scan data from Iceberg tables |
 | [json](/extensions/json) | Scan and manipulate JSON data |
 | [neo4j](/extensions/neo4j) | Migrate data from Neo4j into Kuzu |
@@ -44,31 +37,28 @@ The following extensions are implemented, with more to come:
 | [unity](/extensions/attach/unity) | Scan data from Unity Catalog tables |
 | [vector](/extensions/vector) | Perform vector similarity search |
 
-## Using Extensions in Kuzu
+## Using extensions in Kuzu
 
 This section describes how to use officially supported extensions in Kuzu.
 
-### Installing an official extension
+### Install an official extension
 
 Kuzu requires the user to install the extension before loading and using it.
-Official extensions can be simply installed by running the install command:
+Official extensions can be installed by running the `INSTALL` command:
 
 ```sql
-INSTALL <extension_name>
+INSTALL <EXTENSION_NAME>;
 ```
+You only need to install an extension once.
 
-Where `extension_name` is the name of the extension to be installed.
-
-### Loading an official extension
-After installation, a load command is required to ask Kuzu to dynamically load the shared library.
-Extensions installed using the `INSTALL` command can be loaded directly as follows:
+### Load an official extension
+Extensions must be loaded before they can be used:
 
 ```sql
-LOAD <extension_name>
+LOAD <EXTENSION_NAME>;
 ```
 
 :::note[Note]
-A new Database object at the C++ level is instantiated every time a new CLI session is started, or
-when a client script that embeds Kuzu is run. For this reason, the `LOAD` command must be
+Extensions are scoped to the session within which they are loaded. Thus, the `LOAD` command must be
 run every time a new CLI session is started or a client script is run.
 :::

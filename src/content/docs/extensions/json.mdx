@@ -4,21 +4,11 @@ title: "JSON extension"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-## Usage
-
 The `json` extension adds support for `JSON` objects, including a set of functions for JSON
 access and manipulation, scanning from, and copying to JSON files. Using this extension, you can
 interact with JSON files using [`LOAD FROM`](/cypher/query-clauses/load-from),
 [`COPY FROM`](/import/copy-from-json), and [`COPY TO`](/export/json), similar to how you would
 with CSV files.
-
-The JSON functionality is not available by default, so you would first need to install the JSON
-extension by running the following commands:
-
-```sql
-INSTALL json;
-LOAD json;
-```
 
 See our YouTube video for a walkthrough on how to use the JSON extension:
 
@@ -31,6 +21,13 @@ See our YouTube video for a walkthrough on how to use the JSON extension:
     >
   </iframe>
 </div>
+
+## Usage
+
+```sql
+INSTALL json;
+LOAD json;
+```
 
 ### Example dataset
 
@@ -147,7 +144,7 @@ file (`has_condition.json`).
 </TabItem>
 </Tabs>
 
-In the following sections, we will first scan the JSON files to query its contents in Cypher, and
+In the following sections, we will first scan the JSON files to query their contents in Cypher, and
 then proceed to copy the JSON data and construct a graph.
 
 ### Scan the JSON file
@@ -174,7 +171,7 @@ LOAD FROM 'patient.json' RETURN *;
 └────────┴─────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Because `info` is a nested object, its type in Kuzu is inferred as a `STRUCT`, that itself contains
+Because `info` is a nested object, its type in Kuzu is inferred as a `STRUCT` that itself contains
 other types, like `DOUBLE`, `UINT8`, `STRING`, and `STRUCT`.
 
 #### Missing keys
@@ -184,7 +181,8 @@ default/empty value for the type. To test this, let's run another query to get t
 weight and insurance provider of all patients:
 
 ```cypher
-LOAD FROM 'patient.json' RETURN name, info.age, info.height, info.weight, info.insurance_provider;
+LOAD FROM 'patient.json'
+RETURN name, info.age, info.height, info.weight, info.insurance_provider;
 ```
 ```
 ┌─────────┬──────────────────────────┬─────────────────────────────┬─────────────────────────────┬─────────────────────────────────────────────────────────────────┐
@@ -204,7 +202,7 @@ As can be seen, the patient Rebecca is new in the system and is missing her info
 
 #### Enforcing types
 
-To enforce the data type during scanning, use the `LOAD WITH HEADERS` feature.
+You can enforce explicit data types during scanning by using the `LOAD WITH HEADERS` feature.
 
 Example:
 ```cypher
@@ -215,13 +213,17 @@ LOAD WITH HEADERS (
         height FLOAT,
         weight FLOAT,
         age UINT8,
-        insurance_provider STRUCT(type STRING, name STRING, policy_number STRING)[]
+        insurance_provider STRUCT(
+            type STRING,
+            name STRING,
+            policy_number STRING
+        )[]
     )
 )
 FROM 'patient.json'
 RETURN name, info.height, info.weight;
 ```
-We can see that the types inside the `info` STRUCT are now enforced to `FLOAT`, rather than `DOUBLE`.
+We can see that the types inside the `info` STRUCT are now `FLOAT` rather than `DOUBLE`.
 ```
 ┌─────────┬─────────────────────────────┬─────────────────────────────┐
 │ name    │ STRUCT_EXTRACT(info,height) │ STRUCT_EXTRACT(info,weight) │
@@ -239,13 +241,13 @@ The following optional parameters are supported:
 
 |Name|Description|
 |---|---|
-| <span style="text-wrap: nowrap;"> `maximum_depth` </span>|Default value is `10`. Used by the type inference system to determine how "deep" into the json document to go to infer types.
-|`sample_size`|Default value `2048`. Used by the type inference system to determine the number of elements used to infer the json type.
+| <span style="text-wrap: nowrap;"> `maximum_depth` </span>|Default value is `10`. Used by the type inference system to determine how "deep" into the JSON document to go to infer types.
+|`sample_size`|Default value `2048`. Used by the type inference system to determine the number of elements used to infer the JSON type.
 
 ### Copy JSON files to a table
 
 The `COPY FROM` statement allows you to copy data from a JSON file into a node or relationship table in Kuzu.
-In this section we will walk through the example dataset shown above and build a graph from the JSON data.
+In this section, we will walk through the example dataset shown above and build a graph from the JSON data.
 
 #### Copy to node tables
 
@@ -268,15 +270,15 @@ CREATE NODE TABLE IF NOT EXISTS Patient(
         )[]
     ),
     PRIMARY KEY (p_id)
-)
+);
 ```
-The syntax `STRUCT( ... )[]` with the square braces at the end represents an arrya of STRUCTs.
+The syntax `STRUCT( ... )[]` with the square braces at the end represents an array of STRUCTs.
 
 You can then use a `COPY FROM` statement to directly copy the contents of the JSON file into the
 node table.
 
 ```cypher
-COPY Patient FROM 'patient.json'
+COPY Patient FROM 'patient.json';
 ```
 
 Similarly, we can define the node table for the patients' medical conditions.
@@ -287,11 +289,11 @@ CREATE NODE TABLE IF NOT EXISTS Condition(
     name STRING,
     description STRING,
     PRIMARY KEY (c_id)
-)
+);
 ```
 And copy the contents of `condition.json` to the node table as follows:
 ```sql
-conn.execute("COPY Condition FROM 'condition.json'")
+COPY Condition FROM 'condition.json';
 ```
 
 #### Copy to relationship tables
@@ -326,7 +328,7 @@ CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
 ```
 The `has_condition.json` file can then directly be copied into the relationship table that was just created.
 ```cypher
-COPY HAS_CONDITION FROM 'has_condition.json'
+COPY HAS_CONDITION FROM 'has_condition.json';
 ```
 
 We obtain the following graph:
@@ -339,11 +341,15 @@ below:
 ```cypher
 MATCH (p:Patient)-[:HAS_CONDITION]->(c:Condition)
 WHERE c.name = "Diabetes (Type 1)"
-WITH p.name AS name, p.info.age AS age, c.name AS condition, p.info.insurance_provider AS ip
+WITH
+    p.name AS name,
+    p.info.age AS age,
+    c.name AS condition,
+    p.info.insurance_provider AS ip
 UNWIND ip AS provider
 WITH name, age, provider, condition
 WHERE provider.type = "health"
-RETURN name, age, condition, provider.name AS health_insurance_provider
+RETURN name, age, condition, provider.name AS health_insurance_provider;
 ```
 ```
 ┌─────────┬───────┬───────────────────┬───────────────────────────┐
@@ -389,13 +395,13 @@ COPY InsuranceProvider FROM (
     RETURN DISTINCT
         provider.name AS name,
         provider.type AS type
-)
+);
 ```
 Let's break down the above query step by step:
 - The outer `COPY FROM` expects the result from the inner `LOAD FROM`
 - The info `STRUCT` from `patient.json` is passed to `UNWIND` so that we can obtain individual providers
 for each patient
-- A `DISTINCT` clause is used when returning the results of the subquery, because the `name` of a
+- A `DISTINCT` clause is used when returning the results of the subquery because the `name` of a
 provider is the primary key of the `InsuranceProvider` node table per the schema created above (we
 cannot have duplicate values for primary keys).
 
@@ -410,10 +416,10 @@ COPY HAS_PROVIDER FROM (
         p_id,
         provider.name AS name,
         provider.policy_number AS policy_number
-)
+);
 ```
 
-In this case, we didn't alias the first two entries to `from` and `to`, like we did when copying
+In this case, we didn't alias the first two entries to `from` and `to` like we did when copying
 from the `has_condition.json` file above. This is because the `COPY FROM` query is looking for the
 first two columns in the result as the `FROM` and the `TO` columns in the relationship, similar to
 how it's done in CSV.
@@ -440,7 +446,11 @@ condition "Migraine" to a JSON file named `patient_providers.json`.
 COPY (
     MATCH (p:Patient)-[:HAS_CONDITION]->(c:Condition)
     WHERE c.name = "Migraine"
-    WITH p.name AS name, p.info.age AS age, c.name AS condition, p.info.insurance_provider AS ip
+    WITH
+        p.name AS name,
+        p.info.age AS age,
+        c.name AS condition,
+        p.info.insurance_provider AS ip
     UNWIND ip AS provider
     WITH name, age, provider, condition
     WHERE provider.type = "health"
@@ -502,13 +512,13 @@ The output JSON would look like this:
 
 ### Takeaways
 
-When using the JSON extension, keep in mind the following considerations when copying data to Kuzu tables:
+When using the `json` extension, keep in mind the following considerations when copying data to Kuzu tables:
 
-1. The order of the keys in the JSON file doesn't need to match with the order of the columns defined
-in the schema (just the names need to match)
+1. The order of the keys in the JSON file doesn't need to match the order of the columns defined
+in the schema. Only the names need to match.
 
-2. If directly copying from a JSON file to a relationship table, there need to be keys named `"from"`
-and `"to"` in the file, whose values point to the primary key values of the underlying node tables.
+2. If directly copying from a JSON file to a relationship table, there need to be keys named `from`
+and `to` in the file whose values point to the primary key values of the underlying node tables.
 
 3. You can combine `LOAD FROM` subqueries with `COPY FROM` to have more control over the subset of
 JSON data being copied, as well as dynamically transform your data via `UNWIND` or `DISTINCT` clauses,
@@ -516,24 +526,22 @@ so it's not necessary to write your relationships to an intermediate file prior 
 
 ## JSON data type
 
-Using the Kuzu JSON extension, you can model and store properties as JSON natively via the `JSON` logical type,
-which is interpreted as parsed as JSON, rather than as a string.
+Using the `json` extension, you can model and store properties as JSON natively via the `JSON` logical type,
+which is interpreted and parsed as JSON, rather than as a string.
 
 The following example creates a node table `Person` with a `JSON` column `description`,
-it then creates two `json` objects in this column using `to_json` function, and outputs them.
+it then creates two JSON objects in this column using the `to_json` function, and outputs them.
 
 Example:
 ```cypher
 INSTALL json;
 LOAD json;
 
-CREATE NODE TABLE Person (id INT64, description JSON, primary key(id));
+CREATE NODE TABLE Person (id INT64 PRIMARY KEY, description JSON);
 CREATE (p:Person {id: 20, description: to_json({height: 52, age: 32, scores: [1,2,5]})});
 CREATE (p:Person {id: 40, description: to_json({age: 55, scores: [1,32,5,null], name: 'dan'})});
 MATCH (p:Person) RETURN p.*;
 ```
-
-Result:
 ```
 ┌───────┬────────────────────────────────────────────────┐
 │ p.id  │ p.description                                  │
@@ -551,7 +559,6 @@ MATCH (p:Person)
 WHERE json_extract(p.description, 'age') < 50
 RETURN p.id AS id, json_extract(p.description, 'age') AS age;
 ```
-Result:
 ```
 ┌───────┬──────┐
 │ id    │ age  │
@@ -566,13 +573,9 @@ Result:
 
 This section lists the built-in functions that operate on the JSON data type within Kuzu.
 
-### `to_json`
+##### `to_json(value:ANY) -> JSON`
 
-Signature: `ANY -> JSON`
-
-`to_json(any)`
-
-Converts `any` Kuzu value to `JSON`.
+Converts `value` of any Kuzu type to JSON.
 
 Example 1:
 
@@ -616,25 +619,18 @@ RETURN to_json('Alicia') AS simple_string;
 └───────────────┘
 ```
 
-### `array_to_json`
-
-Signature: `ARRAY -> JSON`
+##### `array_to_json(value:ARRAY) -> JSON`
 
 Alias for `to_json` that only accepts `ARRAY`.
 
-### `row_to_json`
-
-Signature: `LIST -> JSON`
+##### `row_to_json(value:LIST) -> JSON`
 
 Alias for `to_json` that only accepts `LIST`.
 
-### `cast(ANY AS JSON)`
+##### `cast(value:ANY AS JSON) -> JSON`
+##### `cast(value:ANY, "JSON") -> ANY`
 
-Signature: `ANY -> JSON`
-
-Syntax sugar for `to_json(any) -> JSON`,
-`cast` can cast `ANY` type to be some type other than `JSON` as well,
-Read the instruction of `Casting` for more details.
+Syntax sugar for `to_json`.
 
 Example:
 
@@ -650,11 +646,12 @@ RETURN cast('{"name": "Alicia", "age": 28}' AS JSON);
 └───────────────────────────────────────────┘
 ```
 
-### `json_object`
+:::note
+`cast` is a general purpose function that can be used to cast to types other than `JSON`.
+See [Casting](/cypher/expressions/casting) for more details.
+:::
 
-Signature: `STRING, ANY -> JSON object`
-
-`json_object([key, value, ...])`
+##### `json_object(key:STRING, value:ANY, ...) -> JSON`
 
 Create a JSON object from any number of `key`, `value` pairs.
 
@@ -684,13 +681,9 @@ RETURN json_object("name", "Alicia", "age", 28);
 └─────────────────────────────────┘
 ```
 
-### `json_array`
+##### `json_array(value:ANY, ...) -> JSON`
 
-Signature: `ARRAY -> JSON ARRAY`
-
-`json_array([any, ...])`
-
-Create an array of JSON objects from **any** number of values. Each value is converted into a JSON object.
+Create an array of JSON objects. Each argument is converted into a JSON object.
 
 Example:
 
@@ -707,13 +700,9 @@ RETURN json_array("Alicia", "25", NULL);
 ```
 
 
-### `json_merge_patch`
+##### `json_merge_patch(json1:JSON, json2:JSON) -> JSON`
 
-Signature: `JSON, JSON -> JSON`
-
-`json_merge_patch(json, json)`
-
-Merges TWO `JSON` documents. Applies [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386)
+Merges two JSON objects, following the [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386) specification.
 
 Example 1:
 
@@ -730,7 +719,7 @@ RETURN json_merge_patch('{"name": "Alicia"}', '{"age": 28}');
 ```
 Example 2:
 
-Merging with a NULL path would result in NULL path.
+Merging with a `NULL` argument results in a `NULL` output.
 
 ```cypher
 RETURN json_merge_patch("3", NULL);
@@ -744,26 +733,24 @@ RETURN json_merge_patch("3", NULL);
 └──────────────────────┘
 ```
 
+##### `json_extract(json:JSON, path:STRING) -> JSON`
+##### `json_extract(json:JSON, path:INTEGER) -> JSON`
+##### `json_extract(json:JSON, path:LIST) -> LIST[JSON]`
 
-### `json_extract`
+Extracts JSON from `json` at the given `path`, where `path` is an index into the JSON object. 
+Refer to the examples to see how `path` is interpreted.
+Invalid paths return an empty JSON.
 
-Signatures: `JSON, STRING -> JSON`, `JSON, INTEGER -> JSON`, `JSON, LIST -> LIST of JSON`
+Example 1:
 
-`json_extract(json, path)`
-
-Extracts `JSON` from `json` at the given `path`.
-`path` is a `STRING` delimited by `'/'`.
-Integers may also be used to represent the path, which represents the index if the input is a JSON array.
-If `path` is a `LIST` of paths, the result will also be a `LIST`.
-
-If the path does not exist, this function returns an empty `JSON` document.
-
-Examples:
-
-In this case, we provide a single item as the `path`.
+A single string path.
 
 ```cypher
-RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', 'Software/Database/1') AS extracted;
+RETURN
+    json_extract(
+        '{"Software": {"Database": ["duck", "kuzu"]}}',
+        'Software/Database/1'
+    ) AS extracted;
 ```
 ```
 ┌───────────┐
@@ -774,10 +761,16 @@ RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', 'Software/Da
 └───────────┘
 ```
 
-Here, we provide a `LIST` of paths:
+Example 2:
+
+A list of string paths.
 
 ```cypher
-RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', ['Software/Database/1', 'Software/Database/0']) AS extracted;
+RETURN
+    json_extract(
+        '{"Software": {"Database": ["duck", "kuzu"]}}',
+        ['Software/Database/1', 'Software/Database/0']
+    ) AS extracted;
 ```
 ```
 ┌─────────────────┐
@@ -788,8 +781,10 @@ RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', ['Software/D
 └─────────────────┘
 ```
 
-This example provides the path as an integer that represents the index of the item in the JSON array
-we want to extract:
+Example 3:
+
+An integer path that represents the index of the item in the JSON array
+we want to extract.
 
 ```cypher
 RETURN json_extract('[1, 2, 42]', 2) AS nums;
@@ -803,10 +798,14 @@ RETURN json_extract('[1, 2, 42]', 2) AS nums;
 └──────┘
 ```
 
-Extracting from an empty path results in empty `JSON` document:
+Extracting from an empty path results in an empty JSON:
 
 ```cypher
-RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', "") AS extracted;
+RETURN
+    json_extract(
+        '{"Software": {"Database": ["duck", "kuzu"]}}',
+        ""
+    ) AS extracted;
 ```
 ```
 ┌───────────┐
@@ -817,14 +816,9 @@ RETURN json_extract('{"Software": {"Database": ["duck", "kuzu"]}}', "") AS extra
 └───────────┘
 ```
 
+##### `json_array_length(json:JSON) -> UINT32`
 
-### `json_array_length`
-
-Signature: `JSON -> UINT32`
-
-`json_array_length(json[])`
-
-If the `json` is an JSON array, return its length. Otherwise return `0`.
+If the `json` is a JSON array, returns its length, otherwise returns `0`.
 
 Example 1:
 
@@ -842,7 +836,7 @@ RETURN json_array_length('["1", "1", "4", null]') AS len;
 Example 2:
 
 Trying to compute the length of a JSON array with a `null` value results in a length of zero, as
-this isn't valid JSON array.
+this isn't a valid JSON array.
 
 ```cypher
 RETURN json_array_length('{"kuzu": ["1", "1", "4", null]}') AS len;
@@ -856,13 +850,10 @@ RETURN json_array_length('{"kuzu": ["1", "1", "4", null]}') AS len;
 └────────┘
 ```
 
-### `json_contains`
+##### `json_contains(haystack:JSON, needle:JSON) -> BOOL`
 
-Signature: `JSON, JSON -> BOOL`
-
-`json_contains(json_haystack, json_needle)`
-
-Returns `True` if `json_needle` is contained in `json_haystack`. Both parameters are of `JSON` type, but `json_needle` can also be a numeric value or a `string`, however the `string` must be wrapped in double quotes.
+Returns true if `needle` is contained in `haystack`. Both parameters are of `JSON`.
+`needle` can be a numeric value or a `string` wrapped in double quotes.
 
 Example 1:
 
@@ -890,18 +881,17 @@ RETURN JSON_CONTAINS('{"age": 28}', '28') AS found_age;
 └───────────┘
 ```
 
-### `json_keys`
+##### `json_keys(json:JSON) -> STRING[]`
 
-Signature: `JSON -> STRING[]`
+Returns keys of the root `json` object. If the root is not a JSON object, returns an empty list.
 
-`json_keys(json)`
-
-Return keys of the root `json` object. If the root is not an JSON object, return an empty `list`.
-
-Examples:
+Example:
 
 ```cypher
-RETURN json_keys('{ "family": "anatidae", "species": [ "duck", "goose", "swan", null ] }') AS keys;
+RETURN
+    json_keys(
+        '{ "family": "anatidae", "species": [ "duck", "goose", "swan", null ] }'
+    ) AS keys;
 ```
 ```
 ┌──────────────────┐
@@ -912,17 +902,16 @@ RETURN json_keys('{ "family": "anatidae", "species": [ "duck", "goose", "swan", 
 └──────────────────┘
 ```
 
-### `json_structure`
+##### `json_structure(json:JSON) -> STRING`
 
-Signature: `JSON -> STRING`
-
-`json_structure(json)`
-
-Returns the structure of the `json` in Kuzu type notation. Integer widths are automatically inferred from input values.
+Returns the type structure of the `json` in Kuzu type notation. Integer widths are automatically inferred from input values.
 
 Example:
 ```cypher
-RETURN json_structure('[{"a": -1, "b": [1000, 2000, 3000]}, {"a": 2, "c": "hi"}]') AS structure;
+RETURN
+    json_structure(
+        '[{"a": -1, "b": [1000, 2000, 3000]}, {"a": 2, "c": "hi"}]'
+    ) AS structure;
 ```
 ```
 ┌─────────────────────────────────────────┐
@@ -933,13 +922,9 @@ RETURN json_structure('[{"a": -1, "b": [1000, 2000, 3000]}, {"a": 2, "c": "hi"}]
 └─────────────────────────────────────────┘
 ```
 
-### `json_valid`
+##### `json_valid(json:JSON) -> BOOL`
 
-Signature: `JSON -> BOOL`
-
-`json_valid(json)`
-
-Determines whether or not the provided `json` is valid JSON.
+Determines whether the provided `json` is valid.
 
 Example 1:
 
@@ -967,21 +952,22 @@ RETURN json_valid('"name": "Alicia", "age": 28') AS is_valid;
 └──────────┘
 ```
 
-### `json`
+##### `json(json:JSON) -> JSON`
 
-Signature: `JSON -> JSON`
-
-`json(json)`
-
-Parses and minifies the JSON.
+Parses and minifies the input `json`.
 
 Example:
 ```cypher
-UNWIND ['[        {"a":  [1],     "b": 2,"c": 1}, 1,    5, 9]', '[1, 2, 3]', '"ab"'] AS ARR RETURN json(ARR);
+UNWIND
+    [
+        '[   {"a":  [1],     "b": 2,"c": 1}, 1,    5, 9]', '[1, 2, 3]', '"ab"'
+    ] AS arr
+RETURN
+    json(arr);
 ```
 ```
 ┌───────────────────────────────┐
-│ json(ARR)                     │
+│ json(arr)                     │
 │ json                          │
 ├───────────────────────────────┤
 │ [{"a":[1],"b":2,"c":1},1,5,9] │

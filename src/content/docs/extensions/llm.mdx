@@ -1,5 +1,5 @@
 ---
-title: "LLM Extension"
+title: "LLM extension"
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
@@ -8,17 +8,14 @@ The **LLM extension** provides a `CREATE_EMBEDDING` function for creating text e
 
 We currently support the following providers:
 
-* [OpenAI](https://platform.openai.com/docs/guides/embeddings)
 * [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
 * [Google Vertex](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
 * [Google Gemini](https://ai.google.dev/gemini-api/docs/embeddings)
-* [Voyage AI](https://docs.voyageai.com/docs/embeddings)
 * [Ollama](https://ollama.com/blog/embedding-models)
----
+* [OpenAI](https://platform.openai.com/docs/guides/embeddings)
+* [Voyage AI](https://docs.voyageai.com/docs/embeddings)
 
 ## Usage
-
-Install and load the extension using the following commands:
 
 ```sql
 INSTALL llm;
@@ -65,20 +62,39 @@ You can generate text embeddings using the `CREATE_EMBEDDING` function. The func
 
 ```sql
 CALL CREATE_EMBEDDING(
-    'prompt',   // The input text to embed.
-    'provider', // The embedding provider. E.g., `'open-ai'`.
-    'model',    // The identifier of the embedding model. E.g., `'text-embedding-3-small'`.
-    // Optional parameters, if supported by the provider.
+    <PROMPT>,
+    <PROVIDER>,
+    <MODEL>,
+    dimensions := <INT64>,
+    region := <STRING>,
+    endpoint := 'http://localhost:11434'
 );
 ```
 
-### Optional parameters
+Required arguments:
 
-| Option |Type| Description | 
-|--------|------|-------| 
-| dimensions |`INT64`| The size of the embedding vector, if supported by the provider. Currently only `'open-ai'`, `'google-vertex'`, and `'voyage-ai'` support this option. |
-| region    |`STRING`| The region to send requests to, if supported by the provider. E.g., `'us-east-1'` for `'amazon-bedrock'`. |
-| endpoint   |`STRING`| The endpoint to send requests to. Only applies to Ollama. Default is `http://localhost:11434` |
+- `prompt`: The input text to embed.
+    - Type: `STRING`
+- `provider`: The embedding provider.
+    - Type: `STRING`
+    - Example: `open-ai`
+- `model`: The identifier of the embedding model.
+    - Type: `STRING`
+    - Example: `text-embedding-3-small`
+
+Optional arguments:
+
+- `dimensions`: The size of the embedding vector.
+    - Type: `INT64`
+    - Supported providers: `open-ai`, `google-vertex`, `voyage-ai`
+    - Example: `256` for `google-vertex`
+- `region`: The region to send requests to.
+    - Type: `STRING`
+    - Example: `us-east-1` for `amazon-bedrock`
+- `endpoint`: The endpoint to send requests to.
+    - Type: `STRING`
+    - Supported providers: `ollama`
+    - Default: `http://localhost:11434`
 
 :::note[Note]
 If an unsupported model, dimension, region, or endpoint is specified, the API call to the provider will fail. Check the provider's API documentation for the currently supported options.
@@ -87,22 +103,20 @@ If an unsupported model, dimension, region, or endpoint is specified, the API ca
 ### Examples
 
 ```sql
-CALL CREATE_EMBEDDING("Hello world", "open-ai", "text-embedding-3-small");
-
-CALL CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07");
-
-CALL CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
-
-CALL CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text", "http://endpoint.example.com:8000");
-
 CALL CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-text-v1", "us-east-1");
 
-CALL CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
-
+CALL CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07");
 CALL CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
+
+CALL CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
+CALL CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text", "http://endpoint.example.com:8000");
+
+CALL CREATE_EMBEDDING("Hello world", "open-ai", "text-embedding-3-small");
+
+CALL CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
 ```
----
 
 ## Storing embeddings in a vector index
 
-The embedding function can be used with the `vector` extension. The example in the [vector docs](/extensions/vector) shows how the `CREATE_EMBEDDING` function can be used to create the embeddings needed for the vector index directly in Kuzu.
+The `CREATE_EMBEDDING` function can be used together with the `vector` extension to store and search embeddings
+directly in Kuzu. Refer to the [vector docs](/extensions/vector) for an example.
