@@ -6,8 +6,8 @@ title: System requirements
 
 The Kuzu CLI and the C and C++ APIs are pre-compiled for:
 - **macOS >= 11.0**, as a universal binary that supports both Intel-based and ARM-based Macs.
-- **Linux**, as a universal binary that supports both x86-64 and aarch64 architectures and support most modern Linux distros such as **RHEL/CentOS/Rocky Linux/Oracle Linux 8.0 or later and Ubuntu 22.04 or later**.
-- **Windows**, as a universal binary that supports both x86-64 and aarch64 architectures and support most modern Windows versions such as **Windows 10 and 11**.
+- **Linux**, as a universal binary that supports both x86-64 and aarch64 architectures and supports most modern Linux distros such as **RHEL/CentOS/Rocky Linux/Oracle Linux 8.0 or later and Ubuntu 22.04 or later**.
+- **Windows**, as a universal binary that supports both x86-64 and aarch64 architectures and supports most modern Windows versions such as **Windows 10 and 11**.
 
 ## Python
 

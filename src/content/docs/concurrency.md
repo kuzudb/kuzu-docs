@@ -22,7 +22,7 @@ are in a directory named `./kuzu-db-dir`.
 ## Understand connections
 
 ### Database and connection objects
-Application processes must connect to a Kuzu database in 2 steps before they can start querying it:
+Application processes must connect to a Kuzu database in two steps before they can start querying it:
 
 **Step 1.** Create an instance of a `Database` object `db` and pass it the database directory (`./kuzu-db-dir` in our example below), and
 a read-write mode which can be either:
@@ -38,7 +38,7 @@ do both read (e.g., queries with `MATCH WHERE RETURN` statements) as well as wri
 queries that do read operations.
 
 Then, using `conn`, one can execute Cypher queries against the database stored under `./kuzu-db-dir`.
-Here's a simple example application in Python that demonstrates these 2 steps for creating a `READ_WRITE`
+Here's a simple example application in Python that demonstrates these two steps for creating a `READ_WRITE`
 database and a connection. The same principles apply to other language APIs as well:
 
 ```python
@@ -61,13 +61,13 @@ When working with in-memory databases, there are a few restrictions to keep in m
 ## Understand concurrency
 
 ### Limitations of creating multiple Database objects
-Kuzu is an embedded database, i.e., it is a library you embed inside an application process and runs as part
+Kuzu is an embedded database, i.e., it is a library you embed inside an application process and run as part
 of this application process, instead of a separate process.
 You can think of the Database object as the Kuzu database software.
 Specifically, the Database object contains
 different components of the Kuzu database software, such as its buffer manager, storage manager, transaction manager, etc. 
 Several of the components inside a Database object, such as the buffer manager,
-cache parts of the data that is stored on disk. This limits the number of Database objects that can be created
+cache parts of the data that are stored on disk. This limits the number of Database objects that can be created
 pointing to the same database directory, either in the same process or across multiple processes.
 
 The possible settings are:
@@ -230,8 +230,8 @@ in mind:
 - Whether you will read and write to the database or only read from it
 
 An in-memory database is stored in memory and not on disk. This means that the database is temporary
-and the data will be lost when the process that created the database is terminated, so from a working
-level perspective, in-memory databases require a `READ_WRITE` process.
+and the data will be lost when the process that created the database is terminated, so without a `READ_WRITE` process,
+in-memory databases won't have any data to operate on.
 
 See the [getting started](/get-started#in-memory-database) section for more details on how to create
 and work with in-memory databases in your client API of choice.

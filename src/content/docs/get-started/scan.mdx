@@ -24,7 +24,7 @@ Zhang,50
 Noura,25
 ```
 
-You can scan the file and print the first two rows to the console:
+You can scan the file and count the number of rows:
 ```cypher
 LOAD FROM "user.csv" (header = true)
 RETURN COUNT(*);
@@ -43,7 +43,7 @@ You can also apply filter predicates via the `WHERE` clause, like this:
 ```cypher
 LOAD FROM "user.csv" (header = true)
 WHERE age > 25
-RETURN *;
+RETURN COUNT(*);
 ```
 The above query counts only the rows where the `age` column is greater than 25.
 ```
@@ -73,8 +73,6 @@ LIMIT 2;
 ├───────┼─────────┤
 │ 30    │ Adam    │
 │ 40    │ Karissa │
-│ 50    │ Zhang   │
-│ 25    │ Noura   │
 └───────┴─────────┘
 ```
 

@@ -32,7 +32,6 @@ dataset is shown below.
 
 ![](/img/graph-algorithms/movie-schema.png)
 
-
 ```bash
 mkdir ./movie_data/
 curl -L -o ./movie_data/movies.csv https://kuzudb.com/data/movie-lens/movies.csv
@@ -45,22 +44,22 @@ curl -L -o ./movie_data/tags.csv https://kuzudb.com/data/movie-lens/tags.csv
 
 Import the data into a Kuzu database using the Python API:
 
-```py
+```python
 import shutil
 import kuzu
 db_path = './ml-small_db'
 shutil.rmtree(db_path, ignore_errors=True)
 
 def load_data(connection):
-    connection.execute('CREATE NODE TABLE Movie (movieId INT64 PRIMARY KEY, year INT64, title STRING, genres STRING)')
-    connection.execute('CREATE NODE TABLE User (userId INT64 PRIMARY KEY)')
-    connection.execute('CREATE REL TABLE Rating (FROM User TO Movie, rating DOUBLE, timestamp INT64)')
-    connection.execute('CREATE REL TABLE Tags (FROM User TO Movie, tag STRING, timestamp INT64)')
+    connection.execute('CREATE NODE TABLE Movie (movieId INT64 PRIMARY KEY, year INT64, title STRING, genres STRING);')
+    connection.execute('CREATE NODE TABLE User (userId INT64 PRIMARY KEY);')
+    connection.execute('CREATE REL TABLE Rating (FROM User TO Movie, rating DOUBLE, timestamp INT64);')
+    connection.execute('CREATE REL TABLE Tags (FROM User TO Movie, tag STRING, timestamp INT64);')
 
-    connection.execute('COPY Movie FROM "./movies.csv" (HEADER=TRUE)')
-    connection.execute('COPY User FROM "./users.csv" (HEADER=TRUE)')
-    connection.execute('COPY Rating FROM "./ratings.csv" (HEADER=TRUE)')
-    connection.execute('COPY Tags FROM "./tags.csv" (HEADER=TRUE)')
+    connection.execute('COPY Movie FROM "./movies.csv" (HEADER=TRUE);')
+    connection.execute('COPY User FROM "./users.csv" (HEADER=TRUE);')
+    connection.execute('COPY Rating FROM "./ratings.csv" (HEADER=TRUE);')
+    connection.execute('COPY Tags FROM "./tags.csv" (HEADER=TRUE);')
 
 db = kuzu.Database(db_path)
 conn = kuzu.Connection(db)
@@ -86,9 +85,9 @@ LIMIT 100;
 You can extract a subgraph of the edges between `User` and `Movie` nodes (ignoring `Tags` edges)
 and convert it to a NetworkX graph `G`.
 
-```py
+```python
 # pip install networkx
-res = conn.execute('MATCH (u:User)-[r:Rating]->(m:Movie) RETURN u, r, m')
+res = conn.execute('MATCH (u:User)-[r:Rating]->(m:Movie) RETURN u, r, m;')
 G = res.get_as_networkx(directed=False)
 ```
 
@@ -99,7 +98,7 @@ for the PageRank algorithm.
 
 Compute the PageRank of the subgraph `G` using NetworkX's `pagerank` function.
 
-```py
+```python
 import networkx as nx
 
 pageranks = nx.pagerank(G)
@@ -107,7 +106,7 @@ pageranks = nx.pagerank(G)
 
 The PageRank values for the `Movie` nodes can then be exported into a Pandas DataFrame:
 
-```py
+```python
 import pandas as pd
 
 pagerank_df = pd.DataFrame.from_dict(pageranks, orient="index", columns=["pagerank"])
@@ -131,7 +130,7 @@ Calculated pageranks for 9724 nodes
 
 Similarly, we can store the PageRank values for the `User` nodes in a Pandas DataFrame:
 
-```py
+```python
 user_df = pagerank_df[pagerank_df.index.str.contains("User")]
 user_df.index = user_df.index.str.replace("User_", "").astype(int)
 user_df = user_df.reset_index(names=["id"])
@@ -157,7 +156,7 @@ Kuzu is able to natively scan Pandas DataFrames in a zero-copy manner, allowing 
 transfer between the data in Python and Kuzu. The following code snippet shows how this is done for
 the `Movie` nodes:
 
-```py
+```python
 # Copy pagerank values to movie nodes
 x = conn.execute(
     """
@@ -179,7 +178,7 @@ x = conn.execute(
 
 The same can be done for the user nodes.
 
-```py
+```python
 # Copy user pagerank values to user nodes
 y = conn.execute(
     """
@@ -203,13 +202,13 @@ y = conn.execute(
 
 You can now run a query to print the top 5 `Movie` nodes ordered by their PageRank values:
 
-```py
+```python
 res1 = conn.execute(
     """
     MATCH (m:Movie)
     RETURN m.title, m.pagerank
     ORDER BY m.pagerank DESC
-    LIMIT 5
+    LIMIT 5;
     """
 )
 print(res1.get_as_df())
@@ -226,13 +225,13 @@ print(res1.get_as_df())
 
 And similarly, for the `User` nodes:
 
-```py
+```python
 res2 = conn.execute(
     """
     MATCH (u:User)
     RETURN u.userId, u.pagerank
     ORDER BY u.pagerank DESC
-    LIMIT 5
+    LIMIT 5;
     """
 )
 print(res2.get_as_df())
