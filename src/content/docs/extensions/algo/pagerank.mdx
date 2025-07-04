@@ -2,23 +2,22 @@
 title: PageRank
 ---
 
-The PageRank algorithm ranks entities in a network based on their importance by analyzing connections
-between them. Each entity (e.g., nodes in a social network, documents, or proteins) gets a score, with
-higher scores for those linked to by other high-scoring entities. Scores are iteratively calculated,
-distributing an entity’s rank across its outgoing connections, until stable. In general domains, like
-citation networks or recommendation systems, it identifies influential nodes, such as highly cited
-papers or key influencers.
+The PageRank algorithm ranks nodes in a network based on their importance by analyzing the connections
+between them. Each node gets a score, such that nodes linked with other high-scoring nodes get a higher score.
+Scores are iteratively calculated, distributing a node's rank across its outgoing connections, until the scores
+stabilize. In common domains, like citation networks or recommendation systems, it identifies influential nodes,
+such as highly cited papers or key influencers.
 
-Kuzu implements a parallelized version of PageRank based on [Ligra](https://jshun.csail.mit.edu/ligra.shtml).
+Kuzu implements a parallelized version of PageRank based on [Ligra](https://jshun.github.io/ligra/docs/examples.html).
 
 ## Syntax
 
-```
+```sql
 CALL page_rank(
-    graph_name,
+    <GRAPH_NAME>,
     dampingFactor := 0.85, 
     maxIterations := 20, 
-    tolerance := 0.0000001
+    tolerance := 0.0000001,
     normalizeInitial := true
 )
 RETURN node, rank
@@ -26,32 +25,39 @@ RETURN node, rank
 
 **Alias**: `pr`
 
-#### Parameters
+Required arguments:
 
-| Parameter | Type | Optional | Default | Description |
-|-----------|------|----------|---------|-------------|
-| graph_name | STRING | No | - | Name of the projected graph to run the algorithm on |
-| dampingFactor | FLOAT64 | Yes | 0.85 | Probability of following an outgoing edge, must between 0 and 1 |
-| maxIterations | INT64 | Yes | 20 | Maximum number of iterations to run |
-| tolerance | FLOAT64 | Yes | 0.00001 | Minimum change in scores between iterations to continue |
-| normalizeInitial | BOOLEAN | Yes | true | Whether to normalize initial scores to sum to 1 |
+- `GRAPH_NAME`: Name of the projected graph to run the algorithm on
+    - Type: `STRING`
 
+Optional arguments:
 
-#### Return
+- `dampingFactor`: Probability of following an outgoing edge, must be between 0 and 1
+    - Type: `DOUBLE`
+    - Default: `0.85`
+- `maxIterations`: Maximum number of iterations to run
+    - Type: `INT64`
+    - Default: `20`
+- `tolerance`: Minimum change in scores between iterations to continue
+    - Type: `DOUBLE`
+    - Default: `0.0000001`
+- `normalizeInitial`: Whether to normalize initial scores to sum to 1
+    - Type: `BOOLEAN`
+    - Default: `true`
 
-| Column | Type | Description |
-|--------|------|-------------|
-| node | NODE | Node object |
-| rank | FLOAT64 | PageRank score of the node |
+Returns:
+
+- `node`: A node object
+- `rank`: The PageRank score of the node
 
 ## Example
 
-Define schema
+Create the node and relationship tables:
 ```cypher
 CREATE NODE TABLE Person(name STRING PRIMARY KEY);
 CREATE REL TABLE KNOWS(FROM Person to Person);
 ```
-Insert nodes and edges
+Insert nodes and edges:
 ```cypher
 CREATE (u0:Person {name: 'Alice'}),
         (u1:Person {name: 'Bob'}),
@@ -64,11 +70,11 @@ CREATE (u0:Person {name: 'Alice'}),
         (u2)-[:KNOWS]->(u4),
         (u3)-[:KNOWS]->(u4);
 ```
-We'll first create a projected graph from the node and edge tables.
+Create a projected graph from the node and edge tables:
 ```cypher
 CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
-Run PageRank on the projected graph as follows:
+Run PageRank on the projected graph:
 ```cypher
 CALL page_rank('Graph')
 RETURN node.name, rank

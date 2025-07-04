@@ -3,25 +3,28 @@ title: Strongly Connected Components
 ---
 
 A strongly connected component (SCC) in a directed graph is a maximal subgraph where every pair of
-vertices is mutually reachable - meaning for any two nodes `u` and `v` in the component, there exists a
-directed path from `u` to `v` and a directed path from `v` to `u`. 
+vertices is mutually reachable, i.e., for any two nodes `u` and `v` in the component, there exists a
+directed path from `u` to `v` and a directed path from `v` to `u`.
+
 This mutual reachability property means that nodes within an SCC form a cycle where they can all
 reach each other through directed paths, and no additional nodes can be added to the component while
 maintaining this property.
 
 Kuzu implements two types of SCC algorithms:
 - Parallel BFS-based [coloring algorithm](https://www.cs.rpi.edu/~slotag/pub/SCC-IPDPS14.pdf)
-- DFS-based [Kosaraju's algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+- DFS-based single-threaded [Kosaraju's algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
 
 You can choose between either of the two algorithms, depending on your use case.
-See [below](#frequently-asked-questions) for more details.
+Kosaraju's algorithm is recommended in the following cases:
+- Your graph is very sparse, i.e. has a large number of nodes but a small number of edges.
+- Your graph has a very high [diameter](https://en.wikipedia.org/wiki/Diameter_(graph_theory)).
+
 
 ## Syntax
 
 ```cypher
-// BFS-based algorithm
 CALL strongly_connected_components(
-    graph_name,
+    <GRAPH_NAME>,
     maxIterations := 100
 )
 RETURN node, group_id
@@ -30,29 +33,32 @@ RETURN node, group_id
 **Alias**: `scc`
 
 ```cypher
-// DFS-based algorithm (Kosaraju's algorithm)
 CALL strongly_connected_components_kosaraju(
-    graph_name
+    <GRAPH_NAME>
 )
 RETURN node, group_id
 ```
 
 **Alias**: `scc_ko`
 
-**Parameters**
+Required arguments:
 
-| Parameter | Type | Optional | Default | Description |
-|-----------|------|----------|---------|-------------|
-| graph_name | STRING | No | - | Name of the projected graph to run the algorithm on |
-| maxIterations | INT64 | Yes | 100 | Maximum number of iterations to run (This parameter is **only for BFS-based algorithm**) |
+- `GRAPH_NAME`: Name of the projected graph to run the algorithm on
 
+Optional arguments:
 
-**Return** 
+- `maxIterations`: Maximum number of iterations to run
+    - Type: `INT64`
+    - Default: `100`
 
-| Column | Type | Description |
-|--------|------|-------------|
-| node | NODE | Node object |
-| group_id | INT64 | The ID of the SCC that the node belongs to |
+Returns:
+
+- `node`: A node object
+- `group_id`: The ID of the SCC that the node belongs to
+
+:::note[Note]
+`group_id` is assigned based on Kuzu's internal node offsets. Currently there is no way to assign `group_id` based on node properties.
+:::
 
 ## Example 
 
@@ -114,17 +120,3 @@ ORDER BY group_id;
 │ 3        │ [George,Eve,Derek,Alice,Bob] │
 └──────────┴──────────────────────────────┘
 ```
-
-## Frequently asked questions
-
-#### What's the difference between `scc` and `scc_ko`?
-
-`scc` is a parallel BFS-based algorithm. While `scc_ko` is a DFS-based algorithm.
-Due to the nature of DFS, `scc_ko` can only run in single-threaded mode. 
-Kosaraju's algorithm is recommended in the following cases:
-- If your graph is very sparse, i.e. with a large number of nodes but very small number of edges; or
-- If your graph has a very high [diameter](https://en.wikipedia.org/wiki/Diameter_(graph_theory))
-
-#### How is `group_id` assigned?
-
-`group_id` is assigned based on Kuzu's internal node offsets. Currently there is no way to assign `group_id` based on node properties.
