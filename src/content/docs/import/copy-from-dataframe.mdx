@@ -48,7 +48,7 @@ This method requires the dataframe to be a local variable that is in scope at th
 
 ```python
 def get_df():
-    df = pl.DataFrame({
+    return pl.DataFrame({
         "name": ["Adam", "Karissa", "Zhang"],
         "age": [30, 40, 50]
     })
@@ -61,12 +61,12 @@ Due to the above limitations, we generally do not recommend using this method to
 
 ```python
 def get_df():
-    df = pl.DataFrame({
+    return pl.DataFrame({
         "name": ["Adam", "Karissa", "Zhang"],
         "age": [30, 40, 50]
     })
 
-conn.execute("COPY Person FROM $df", {"df", get_df()})
+conn.execute("COPY Person FROM $df", {"df": get_df()})
 ```
 
 For more examples, refer to the [examples](#examples) on this page.
