@@ -25,11 +25,15 @@ and is more convenient to use.
 The synchronous API is the default and is a common way to work with Kuzu in Python.
 
 ```python
+import shutil
+
 import kuzu
 
 def main() -> None:
+    shutil.rmtree("./test_db", ignore_errors=True)
+
     # Create an empty on-disk database and connect to it
-    db = kuzu.Database("./demo_db")
+    db = kuzu.Database("./test_db")
     conn = kuzu.Connection(db)
 
     # Create schema 
@@ -53,6 +57,9 @@ def main() -> None:
     )
     for row in response:
         print(row)
+
+if __name__ == "__main__":
+    main()
 ```
 
 </TabItem>
@@ -69,7 +76,8 @@ import shutil
 import kuzu
 
 shutil.rmtree("test_db", ignore_errors=True)
-db = kuzu.Database("test_db")
+
+db = kuzu.Database("./test_db")
 # Create the async connection
 # The underlying connection pool will be automatically created and managed by the async connection
 conn = kuzu.AsyncConnection(db, max_concurrent_queries=4)
@@ -88,7 +96,7 @@ async def copy_data(conn: kuzu.AsyncConnection) -> None:
     await conn.execute("COPY Follows FROM 'example_data/follows.csv'")
     await conn.execute("COPY LivesIn FROM 'example_data/lives-in.csv'")
 
-async def query_1(conn: kuzu.AsyncConnection) -> None:
+async def query(conn: kuzu.AsyncConnection) -> None:
     result = await conn.execute("MATCH (u:User)-[:LivesIn]->(c:City) RETURN u.*")
     for row in result:
         print(row)
@@ -96,42 +104,15 @@ async def query_1(conn: kuzu.AsyncConnection) -> None:
 async def main():
     await create_tables(conn)
     await copy_data(conn)
-    # Run queries
-    await query_1(conn)
+    await query(conn)
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
 The async API in Python is backed by a thread pool. The thread pool is automatically
-created and managed by the async connection -- all you need to do is pass in the `max_concurrent_queries`
-parameter to the async connection constructor.
-
-:::caution[Note]
-The following features are not yet supported in the async API:
-- **`COPY FROM` or `LOAD FROM` with a Pandas or Polars DataFrame, or PyArrow Table**
-
-  When using the async API, you may currently encounter the following error:
-  ```
-  Binder exception: Variable df is not in scope.
-  ```
-
-  This is due to the fact that async connections execute queries using a separate thread from the
-  calling thread, and thus the dataframe isn't in scope for the executing thread. If you wish to reference dataframes when using the async API, please [pass them as query parameters](/import/copy-from-dataframe#query-parameter).
-
-- **Projected Graphs in `vector` and `algo` extensions**
-
-  When using the `PROJECT_GRAPH` feature with the async API, you may encounter the following error:
-
-  ```
-  Binder exception: Cannot find graph projected_graph.
-  ```
-
-  This error is due to the current design of projected graphs, which binds each projected graph to a specific Connection instance.
-  The async API, however, executes queries using a connection pool, meaning that queries may be handled by different connections.
-  As a result, a projected graph created in one connection may not be accessible from another. This is a known limitation
-  and will be addressed in a future release.
-:::
+created and managed by the async connection. You can configure the number of concurrent
+queries by setting the `max_concurrent_queries` parameter, as shown above.
 
 </TabItem>
 
@@ -177,7 +158,7 @@ You can output the results of a Cypher query to a Pandas DataFrame using the `ge
 import kuzu
 import pandas as pd
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
@@ -218,7 +199,7 @@ You can output the results of a Cypher query to a Polars DataFrame using the `ge
 import kuzu
 import polars as pl
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
@@ -271,7 +252,7 @@ You can output the results of a Cypher query to a PyArrow Table using the `get_a
 import kuzu
 import pyarrow as pa
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
@@ -286,8 +267,10 @@ Using the `get_as_arrow()` method on your query result returns the result as a P
 ```
 pyarrow.Table
 p.name: string
+p.age: int64
 ----
 p.name: [["Adam","Karissa","Zhang"]]
+p.age: [[30,40,50]]
 ```
 </TabItem>
 
@@ -307,7 +290,7 @@ Scanning a DataFrame or Table does *not* copy the data into Kuzu, it only reads 
 import kuzu
 import pandas as pd
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
@@ -333,7 +316,7 @@ Using the `get_as_df()` method on your query result returns the result as a Pand
 import kuzu
 import polars as pl
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 df = pl.DataFrame({
@@ -365,7 +348,7 @@ shape: (3, 2)
 import kuzu
 import pyarrow as pa
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 tbl = pa.table({
@@ -401,7 +384,7 @@ Copy from a Pandas DataFrame into a Kuzu table using the `COPY FROM` command:
 import kuzu
 import pandas as pd
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
@@ -433,7 +416,7 @@ Copy from a Polars DataFrame into a Kuzu table using the `COPY FROM` command:
 import kuzu
 import polars as pl
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
@@ -471,7 +454,7 @@ Copy from a PyArrow Table into a Kuzu table using the `COPY FROM` command:
 import kuzu
 import pyarrow as pa
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
@@ -539,7 +522,7 @@ difference between two numbers, and then apply it in a Cypher query.
 ```py
 import kuzu
 
-db = kuzu.Database("test_db")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 # define your function
@@ -587,10 +570,8 @@ Details on how to denote types are in the [type notation](#type-notation) sectio
 Once the UDF is registered, you can apply it in a Cypher query. First, let's create some data.
 
 ```py
-# create a table
 conn.execute("CREATE NODE TABLE IF NOT EXISTS Item (id INT64 PRIMARY KEY, a INT64, b INT64, c INT64)")
 
-# insert some data
 conn.execute("CREATE (i:Item {id: 1}) SET i.a = 134, i.b = 123")
 conn.execute("CREATE (i:Item {id: 2}) SET i.a = 44, i.b = 29")
 conn.execute("CREATE (i:Item {id: 3}) SET i.a = 32, i.b = 68")
@@ -598,7 +579,6 @@ conn.execute("CREATE (i:Item {id: 3}) SET i.a = 32, i.b = 68")
 
 We're now ready to apply the UDF in a Cypher query:
 ```py
-# apply the UDF and print the results
 result = conn.execute("MATCH (i:Item) RETURN i.a AS a, i.b AS b, difference (i.a, i.b) AS difference")
 print(result.get_as_df())
 ```
@@ -615,8 +595,7 @@ The output should be:
 In case you want to remove the UDF, you can call the `remove_function` method on the connection object.
 
 ```py
-# Use existing connection object
-conn.remove_function(difference)
+conn.remove_function("difference")
 ```
 
 ### Nested and complex types
@@ -641,21 +620,31 @@ def calculate_discounted_price(price: float, has_discount: bool) -> float:
     # Assume 10% discount on all items for simplicity
     return float(price) * 0.9 if has_discount else price
 
-# define the expected type of the UDF's parameters
 parameters = ['DECIMAL(7, 2)', kuzu.Type.BOOL]
 
-# define expected type of the UDF's returned value
 return_type = 'DECIMAL(7, 2)'
 
-# register the UDF
 conn.create_function(
     "current_price",
     calculate_discounted_price,
     parameters,
     return_type
 )
+
+result = conn.execute(
+    """
+    RETURN
+        current_price(100, true) AS discount,
+        current_price(100, false) AS no_discount;
+    """
+)
+print(result.get_as_df())
+```
+```
+  discount no_discount
+0    90.00      100.00
 ```
 
 The second parameter is a built-in native type in Kuzu, i.e., `kuzu.Type.BOOL`. For the first parameter,
-we need to specify a string, i.e. `"DECIMAL(7,2)"` that's then parsed and used by the binder in Kuzu
-to map to the internal Decimal representation.
+we need to specify a string, i.e. `DECIMAL(7,2)` that is then parsed and used by Kuzu
+to map to the internal decimal representation.
