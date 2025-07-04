@@ -193,3 +193,58 @@ CREATE NODE TABLE IF NOT EXISTS UW(ID INT64 PRIMARY KEY)
 This query tells Kuzu to only create the `UW` table if it doesn't exist.
 
 The same applies to relationship tables as well.
+
+## Create table as
+A common usage pattern is to create a table and then immediately populate it with a copy.
+Instead, we can use the `CREATE NODE TABLE AS` or `CREATE REL TABLE AS` statements which allow us to do both
+at once by providing a subquery to fetch the data from.
+
+### Create node table as
+For example, suppose we want to create a node table `Person` and populate it:
+
+```sql
+CREATE NODE TABLE Person (id INT64 PRIMARY KEY, name STRING, age INT64, height FLOAT)
+COPY Person FROM "person.csv"
+```
+
+With `CREATE NODE TABLE AS` we can instead do:
+
+```sql
+CREATE NODE TABLE Person AS LOAD FROM "person.csv" RETURN *
+```
+
+We don't need to define a schema for the table - it gets inferred from the result of the subquery.
+In the above example, the schema information is provided by the result of `LOAD FROM`, which sniffs
+the header of the `person.csv` file to determine the names and types of the properties (or, uses a default
+set of names and infers the types if no schema information was present in the header). Refer to the documentation
+on [`LOAD FROM`](https://docs.kuzudb.com/cypher/query-clauses/load-from/) for more information on this specific
+example.
+
+Here is another example, where the subquery is a `MATCH`.
+```sql
+CREATE NODE TABLE OldPerson AS MATCH (p:Person) WHERE p.age > 80 RETURN p.*
+```
+
+### Create rel table as
+Similar to the node table examples above, we can use `CREATE REL TABLE AS` to create and populate a rel table in a single command.
+For example, suppose we want to model a 'knows' relationship between two people. 
+```sql
+CREATE REL TABLE Knows (FROM Person TO Person)
+COPY Knows FROM "knows.csv"
+```
+With `CREATE REL TABLE AS`, we can instead do:
+```sql
+CREATE REL TABLE Knows (FROM Person TO Person) AS LOAD FROM "knows.csv" RETURN *
+```
+
+### Create table as if not exists
+
+We can also use `IF NOT EXISTS` with create table as statements. With `IF NOT EXISTS`, the table will only be
+created and populated if it doesn't already exist.
+```sql
+CREATE NODE TABLE IF NOT EXISTS Person AS LOAD FROM "person.csv" RETURN *
+```
+For rel tables:
+```sql
+CREATE REL TABLE IF NOT EXISTS Knows (FROM Person TO Person) AS LOAD FROM "knows.csv" RETURN *
+```
