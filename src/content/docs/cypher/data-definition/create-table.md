@@ -214,10 +214,9 @@ CREATE NODE TABLE Person AS LOAD FROM "person.csv" RETURN *
 ```
 
 We don't need to define a schema for the table - it gets inferred from the result of the subquery.
-In the above example, the schema information is provided by the result of `LOAD FROM`, which sniffs
-the header of the `person.csv` file to determine the names and types of the properties (or, uses a default
-set of names and infers the types if no schema information was present in the header). Refer to the documentation
-on [`LOAD FROM`](/cypher/query-clauses/load-from/) for more information on this specific
+In the above example, the schema information is provided by the result of `LOAD FROM`, which infers the types of the properties and sniffs
+the header of the `person.csv` file to determine the names of the properties (or, uses a default set of names if no schema information was provided).
+Refer to the documentation on [`LOAD FROM`](/cypher/query-clauses/load-from/) for more information on this specific
 example.
 
 Here is another example, where the subquery is a `MATCH`.
