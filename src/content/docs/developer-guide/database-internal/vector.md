@@ -9,7 +9,7 @@ Value vector is Kuzu's column-oriented in-memory data structure to store a chunk
 A value vector has the following core fields:
 - `data`: Stores the actual data which is a trivial byte array managed by a unique pointer. 
 - `nullMask`: Aligned with `data` and indicate if each entry is `NULL` or not.
-- `auxilaryBuffer`: Keeps track of additional data that does NOT fit in `data`.
+- `auxiliaryBuffer`: Keeps track of additional data that does NOT fit in `data`.
 
 #### Primitive Type ValueVector
 
@@ -23,7 +23,7 @@ Earlier versions of the storage layer required each element to have a fixed size
 
 Although nested type value vectors can be organized as overflow in the same way as `STRING`, we want to utilize the fact that the child type of a nested type is known and can still be stored in column-oriented value vector.
 
-For `STRUCT` type, we store children vectors in `auxilaryBuffer`.
+For `STRUCT` type, we store children vectors in `auxiliaryBuffer`.
 
 Example:
 
@@ -40,7 +40,7 @@ STRUCT value vector
             data: [12, 14, 16]
 ```
 
-For `VAR_LIST` type, we store size and offset of each entry in `data` and elements in `auxilaryBuffer`.
+For `VAR_LIST` type, we store size and offset of each entry in `data` and elements in `auxiliaryBuffer`.
 
 Example:
 ```

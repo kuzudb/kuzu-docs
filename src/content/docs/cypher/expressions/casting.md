@@ -8,7 +8,7 @@ This is done in Kuzu using the `CAST` function.
 
 There are two ways to utilize the `CAST` function. The syntax for either approach is below:
 
-- `CAST(source, "type:)`: In this approach, you pass in the source value as an argument to the `CAST` function, and the target data type as a string argument.
+- `CAST(source, "type")`: In this approach, you pass in the source value as an argument to the `CAST` function, and the target data type as a string argument.
 - `CAST(source AS type)`: In this approach, you use the `AS` keyword to cast the provided value to the target data type.
 
 A floating-point number can be cast to an integer:

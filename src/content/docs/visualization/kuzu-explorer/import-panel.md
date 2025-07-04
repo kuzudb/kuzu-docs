@@ -18,7 +18,7 @@ The supported formats for import are CSV and Parquet.
 
 Either drag-drop your desired files into the drop zone, or click "Browse Files" to
 multi-select files from your local file system. When you load the files, they will
-be "sniffed" (i.e., their headers parsed and the their overall structure validated).
+be "sniffed" (i.e., their headers parsed and their overall structure validated).
 Once file sniffing is successful, you will be taken to the file setup page, that looks like the
 following:
 
@@ -82,7 +82,7 @@ setting the tables names as follows:
 - `LivesIn`: Table name of the lives-in relationship between `User` and `City` nodes
 
 The naming convention for node tables is generally to capitalize the first letter, e.g., `City`. For relationship tables,
-it's recommended to use capitalized words separated by underscores (e.g., `LIVES_IN`) or use PascalCase, for e.g., `LivesIn`.
+it's recommended to use capitalized words separated by underscores (e.g., `LIVES_IN`) or use PascalCase, e.g., `LivesIn`.
 This clearly separates words in a readable fashion. The naming convention you follow is totally up to
 you, but it's recommended to be consistent in your naming across all database tables.
 

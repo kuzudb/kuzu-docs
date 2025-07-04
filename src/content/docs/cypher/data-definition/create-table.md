@@ -62,7 +62,7 @@ Kuzu requires a primary key column for node table which can be either a `STRING`
 Each property in a table can have a default value. If not specified, the default value is `NULL`.
 
 ```sql
-CREATE NODE TABLE User (name STRING, age INT64 DEFAULT 0, reg_date DATE, PRIMARY KEY (name))
+CREATE NODE TABLE User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE)
 ```
 
 In the above example, the `age` property is set to a default value of `0` rather than `NULL`. The
@@ -114,7 +114,7 @@ Knows_User_User
 Knows_User_City
 ```
 
-When bulk insert into a relationship table with multiple from-to pairs, user need to specify which child table to insert through `from, to` options. For exmaple, the following two statements will bulk insert into `Knows` relationship table.
+When bulk inserting into a relationship table with multiple from-to pairs, users need to specify which child table to insert through `from, to` options. For example, the following two statements will bulk insert into `Knows` relationship table.
 ```
 Copy Knows FROM 'knows_user_user.csv' (from='User', to='User');
 Copy Knows FROM 'knows_user_city.csv' (from='User', to='City');
@@ -188,7 +188,7 @@ the given table name already exists in the database.
 
 Example:
 ```sql
-CREATE NODE TABLE IF NOT EXISTS UW(ID INT64, PRIMARY KEY(ID))
+CREATE NODE TABLE IF NOT EXISTS UW(ID INT64 PRIMARY KEY)
 ```
 This query tells Kuzu to only create the `UW` table if it doesn't exist.
 

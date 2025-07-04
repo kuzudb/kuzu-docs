@@ -71,7 +71,7 @@ RETURN label(u), u.name, u.population;
 └──────────────────────────┴───────────┴──────────────┘
 ```
 
-Note that node tabel "User" doesn't contain the "population" property, thus tuples belonging to "User" table are ignored (reamining as NULLs) during `Set` operations.
+Note that node table "User" doesn't contain the "population" property, thus tuples belonging to "User" table are ignored (remaining as NULLs) during `Set` operations.
 
 ## Set Relationship Properties
 

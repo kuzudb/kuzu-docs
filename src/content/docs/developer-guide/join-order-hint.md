@@ -1,6 +1,6 @@
 ---
 title: Join order hints
-description: Join order hint that allow users to enforce a specific join order
+description: Join order hints that allow users to enforce a specific join order
 ---
 
 `HINT` is an optional clause, available since Kuzu 0.5.0 and upward, that allows you to enforce a specific query plan 
@@ -16,7 +16,7 @@ WHERE b.ID = 0
 RETURN *;
 ```
 The Kuzu optimizer has the freedom to generate a query plan that matches all relationships from `a` to `b` using 
-forward adjacency lists or from `b` to `a` using a backward adjacency lists. 
+forward adjacency lists or from `b` to `a` using backward adjacency lists. 
 Both query plans are correct and will generate the same query result. However, there is a potential performance difference because 
 there may be different number of nodes matching to `a` and `b`, i.e., `a` and `b` may have different cardinalities.
 In the above case because there is a filter on b, you can expect there to be very few, possibly only 1 `b` node that matches the predicate in the `WHERE` clause.
@@ -61,9 +61,9 @@ Using HINT, you can also force the optimizer to use a WCOJ operator as follows:
 Let us refer to these edges as `e1`, ..., `e(k-1)`. These edges must intersect at a single intersected node variable.
 Let us call that node variable `c`.  The last tree node, which we will call the "probe node" can be the result of an arbitrary sub-join plan.
 Let us refer to the probe node  with `(probeNode)`.
-- Start with the probe side node and list the `k-1` edge variables, all separated with `k-1` `MULTI_JOIN` clauses inside a single paranthesis.
+- Start with the probe side node and list the `k-1` edge variables, all separated with `k-1` `MULTI_JOIN` clauses inside a single parenthesis.
 That is, this component looks like `((probeNode) MULTI_JOIN e1 MULTI_JOIN e2 ... MULTI_JOIN e(k-1))`.
-- Then join this above paranthesis with the intersected node variable `c`. You can do either
+- Then join this above parenthesis with the intersected node variable `c`. You can do either
 `(((probeNode) MULTI_JOIN e1 MULTI_JOIN e2 ... MULTI_JOIN e(k-1)) JOIN c)` or
 `(c JOIN ((probeNode) MULTI_JOIN e1 MULTI_JOIN e2 ... MULTI_JOIN e(k-1)))`. This changes the build side and probe side
 of how the properties of c, if needed would be placed in the join plan (see above for the details of build and probe sides).

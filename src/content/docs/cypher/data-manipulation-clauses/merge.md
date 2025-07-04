@@ -6,7 +6,7 @@ description: Match existing pattern or, if not present, create the pattern.
 ![](/img/running-example.png)
 
 # MERGE
-`MERGE` clause tries to match the query pattern in database or, if not present, create the pattern in database. `MERGE <pattern>` can be interrepted as `If MATCH <pattern> then RETURN <pattern> ELSE CREATE <pattern>`. Note that there is no notion of partially matching of the pattern
+`MERGE` clause tries to match the query pattern in database or, if not present, create the pattern in database. `MERGE <pattern>` can be interpreted as `If MATCH <pattern> then RETURN <pattern> ELSE CREATE <pattern>`. Note that there is no notion of partially matching of the pattern
 and creating the remaining parts. That is, either the whole pattern is matched or the whole pattern is created.
 
 Similar to `INSERT ON CONFLICT` in SQL, `MERGE` clause comes with `ON CREATE` and `ON MATCH` set operation allowing users to specify additional update logic if the pattern is (not) found.
@@ -68,7 +68,7 @@ MATCH (:User) RETURN COUNT(*);
 ```
 
 ### Merge with `ON MATCH`
-`ON MATCH` specifies the `SET` operation once a match is found. The followng query updates age property if pattern is matched.
+`ON MATCH` specifies the `SET` operation once a match is found. The following query updates age property if pattern is matched.
 ```cypher
 MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
 ```
@@ -157,7 +157,7 @@ RETURN e;
 ```
 
 ### Merge with `ON MATCH`
-Similar to merge nodes, the following query update edge since property if the pattern is found.
+Similar to merge nodes, the following query updates edge since property if the pattern is found.
 ```cypher
 MATCH (a:User), (b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
@@ -174,7 +174,7 @@ RETURN e;
 ```
 
 ### Merge with `ON CREATE`
-Similar to merge nodes, the following query update edge since property if the pattern is not found.
+Similar to merge nodes, the following query updates edge since property if the pattern is not found.
 ```cypher
 MATCH (a:User), (b:User) 
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
@@ -191,7 +191,7 @@ RETURN e;
 ```
 
 ## Merge Complex Patterns
-Previous examples have shown how to merge single node and relationship pattern. It's also possible to merge a complex pattern involving 
+Previous examples have shown how to merge single node and relationship patterns. It's also possible to merge a complex pattern involving multiple nodes and relationships. 
 
 ```cypher
 MERGE (:User {name:'A'})-[:Follows]->(:User {name:'B'})-[:LivesIn]->(:City {name:'Toronto'});

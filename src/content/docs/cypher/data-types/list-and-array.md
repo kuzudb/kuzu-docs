@@ -27,7 +27,7 @@ of the elements is inferred by the query parser during the binding stage.
 ```cypher
 RETURN ["Alice", "Bob"] AS l;
 ```
-Output:
+
 ```
 ---------------
 | l           |
@@ -49,7 +49,7 @@ You can also create a `LIST` by explicitly calling the creation function as foll
 ```cypher
 RETURN list_creation(1,2,3,4) AS l;
 ```
-Output:
+
 ```
 -------------
 | l         |
@@ -64,7 +64,7 @@ UNWIND [[1,2], [3], [4, 5]] AS x
 UNWIND x as y 
 RETURN y;
 ```
-Output:
+
 ```
 -----
 | y |
@@ -109,7 +109,7 @@ This is an example of creating an array with elements that are primitive types (
 ```cypher
 RETURN CAST([3,4,12,11], 'INT64[4]');
 ```
-Output:
+
 ```
 --------------------------------------------
 | CAST(LIST_CREATION(3,4,12,11), INT64[4]) |
@@ -126,7 +126,7 @@ containing elements of a primitive type (integers).
 ```cypher
 RETURN CAST([[5,2,1],[2,3],[15,64,74]], 'INT64[][3]');
 ```
-Output:
+
 ```
 ----------------------------------------------------------------------------------------------------
 | CAST(LIST_CREATION(LIST_CREATION(5,2,1),LIST_CREATION(2,3),LIST_CREATION(15,64,74)), INT64[][3]) |
@@ -142,7 +142,7 @@ Output:
 ```cypher
 UNWIND CAST([[1,2,3],[3],[4,5]], 'INT64[][3]') AS x UNWIND x AS y RETURN y;
 ```
-Output:
+
 ```
 -----
 | y |

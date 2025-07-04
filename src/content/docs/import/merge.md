@@ -77,8 +77,8 @@ df = pd.DataFrame({
 })
 
 # Create tables
-conn.execute("CREATE NODE TABLE Person (name STRING, current_city STRING, PRIMARY KEY (name))")
-conn.execute("CREATE NODE TABLE Item (name STRING, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person (name STRING PRIMARY KEY, current_city STRING)")
+conn.execute("CREATE NODE TABLE Item (name STRING PRIMARY KEY)")
 conn.execute("CREATE REL TABLE Purchased (FROM Person TO Item)")
 # Copy data into tables
 conn.execute("COPY Person FROM (LOAD FROM df RETURN name, current_city)")

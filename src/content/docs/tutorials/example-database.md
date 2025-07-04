@@ -19,7 +19,7 @@ unzip tutorial_data.zip
 
 ### `User`
 The User node represents users within the social network. Each user has their information attached, such as:
-- **user_id** (INT64): This is an unique id which is used to sort and find users.
+- **user_id** (INT64): This is a unique id which is used to sort and find users.
 - **username** (STRING): This is the unique username which each user will have.
 - **account_creation_date** (DATE): This represents the date which the account was created.
 ```
@@ -33,7 +33,7 @@ userID,username,account_creation_date
 
 ### `Post`
 The Post node represents the posts which has been made on the social network. Each post has its information attached, such as:
-- **post_id** (INT64): This is an unique id which is used to sort and find posts.
+- **post_id** (INT64): This is a unique id which is used to sort and find posts.
 - **creation_date** (DATE): This represents the date which the account was created.
 - **like_count** (INT64): This represents the amount of likes the post has received.
 - **retweet_count** (INT64): This represents the amount of retweets the post has received.

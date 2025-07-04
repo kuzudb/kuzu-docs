@@ -16,7 +16,6 @@ RETURN u.name
 ORDER BY u.age DESC
 LIMIT 3;
 ```
-Result:
 ```
 ┌─────────┐
 │ u.name  │
@@ -44,8 +43,6 @@ The number of rows to limit can be given at the time of execution.
 ```c++
 conn->execute(prepared.get(), std::make_pair(std::string{"lt"}, 1))
 ```
-
-Result:
 ```
 ┌────────┐
 │ u.name │
@@ -60,7 +57,6 @@ MATCH (u:User)
 RETURN u.name
 limit 1+2
 ```
-Result:
 
 ```
 ┌─────────┐

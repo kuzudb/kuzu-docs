@@ -49,7 +49,7 @@ This section describes the schema functions that you can use with the `CALL` cla
 ```cypher
 CALL TABLE_INFO('User') RETURN *;
 ```
-Output:
+
 ```
 ┌─────────────┬──────────────┬────────┬──────────────────────┬──────────────┐
 │ property id │ name         │ type   │ default expression   │ primary key  │
@@ -67,7 +67,7 @@ Output:
 ```cypher
 CALL current_setting('threads') RETURN *;
 ```
-Output:
+
 ```
 ┌─────────┐
 │ threads │
@@ -89,7 +89,7 @@ Output:
 ```cypher
 CALL db_version() RETURN *;
 ```
-Output:
+
 ```
 ┌─────────┐
 │ version │
@@ -113,7 +113,7 @@ Output:
 ```cypher
 CALL show_tables() RETURN *;
 ```
-Output:
+
 ```
 ┌────────┬─────────┬────────┬───────────────┬─────────┐
 │ id     │ name    │ type   │ database name │ comment │
@@ -141,7 +141,7 @@ Show connection on a relationship table:
 ```cypher
 CALL show_connection('LivesIn') RETURN *;
 ```
-Output:
+
 ```
 ┌───────────────────┬────────────────────────┬──────────────────────────┬───────────────────────────────┐
 │ source table name │ destination table name │ source table primary key │ destination table primary key │
@@ -163,7 +163,7 @@ Output:
 ```cypher
 CALL show_attached_databases() RETURN *;
 ```
-Output:
+
 ```
 ┌─────────────┬────────────────┐
 │ name        │ database type  │
@@ -195,7 +195,7 @@ After `warning_limit` many warnings are stored, any new warnings generated will 
 ```cypher
 CALL show_warnings() RETURN *;
 ```
-Output:
+
 ```
 ┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
 │ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
@@ -225,7 +225,6 @@ If you would like to know all official [extensions](/extensions) available in Ku
 CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
 ```
 
-Output:
 ```
 ┌──────────┬─────────────────────────────────────────────────────────────────────────┐
 │ name     │ description                                                             │
@@ -330,8 +329,6 @@ CALL current_setting('threads')
 YIELD threads as threads_num
 RETURN *;
 ```
-
-Result:
 ```
 ┌─────────────┐
 │ threads_num │
@@ -349,8 +346,6 @@ CALL table_info('student')
 YIELD `property id` as student_id,  name as student_name, type as student_type, `default expression` as student_default, `primary key` as student_pk 
 RETURN *;
 ```
-
-Result:
 ```
 ┌───────────┬─────────────┬─────────────┬────────────────┬───────────┬────────────┬──────────────┬──────────────┬─────────────────┬────────────┐
 │ person_id │ person_name │ person_type │ person_default │ person_pk │ student_id │ student_name │ student_type │ student_default │ student_pk │

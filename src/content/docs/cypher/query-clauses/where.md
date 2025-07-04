@@ -19,7 +19,7 @@ MATCH (a:User)
 WHERE a.age > 45 OR starts_with(a.name, "Kar")
 RETURN *;
 ```
-Output:
+
 ```
 ┌──────────────────────────────────────────────────┐
 │ a                                                │
@@ -42,7 +42,7 @@ MATCH (a:User)
 WHERE a.age IS NOT NULL AND starts_with(a.name, "Kar")
 RETURN *;
 ```
-Output:
+
 ```
 ┌──────────────────────────────────────────────────┐
 │ a                                                │

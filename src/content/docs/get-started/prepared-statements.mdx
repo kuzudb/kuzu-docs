@@ -26,7 +26,7 @@ Parameterized variables in Cypher are marked using the `$` symbol.
 
 <TabItem label="Python">
 
-The query below is to search for persons who are between a minimum and maximum age.
+The query below searches for persons who are between a minimum and maximum age.
 The example Python code shows how to specify the parameters as a dictionary in the `parameters`
 argument of the `execute` method.
 
@@ -42,8 +42,8 @@ max_age = 30
 conn.execute(
     """
     MATCH (p:Person)
-    WHERE p.age > $min_age and p.age < $max_age
-    RETURN p.name
+    WHERE p.age > $min_age AND p.age < $max_age
+    RETURN p.name;
     """,
     parameters={"min_age": min_age, "max_age": max_age}
 )
@@ -61,8 +61,8 @@ max_age = 30
 conn.execute(
     f"""
     MATCH (p:Person)
-    WHERE p.age > {min_age} and p.age < {max_age}
-    RETURN p.name
+    WHERE p.age > {min_age} AND p.age < {max_age}
+    RETURN p.name;
     """
 )
 ```
@@ -76,7 +76,7 @@ Let's parameterize the `CALL QUERY_FTS_INDEX` calls to search for books on diffe
 
 We first prepare a Cypher statement with a `query` parameter.
 
-```c++
+```cpp
 auto preparedStatement = conn->prepare(
     "CALL QUERY_FTS_INDEX('Book', 'book_index', $query) RETURN node.ID, score;"
 );
@@ -86,7 +86,7 @@ Now, we can find books on multiple topics using the prepared statement.
 
 For example, to query the index with keywords `machine learning`:
 
-```c++
+```cpp
 auto result = conn->execute(
     prepared.get,
     std::make_pair(std::string("query"), std::string("machine learning"))
@@ -95,7 +95,7 @@ auto result = conn->execute(
 
 Similarly, to query the index with the keyword `dragons`:
 
-```c++
+```cpp
 auto result = conn->execute(
     prepared.get,
     std::make_pair(std::string("query"), std::string("dragons"))

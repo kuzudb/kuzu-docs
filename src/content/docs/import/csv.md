@@ -24,7 +24,7 @@ on how to skip erroneous CSV rows during the import.
 Create a node table `User` as follows:
 
 ```cypher
-CREATE NODE TABLE User(name STRING, age INT64, reg_date DATE, PRIMARY KEY (name))
+CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64, reg_date DATE)
 ```
 
 The CSV file `user.csv` contains the following fields:
@@ -173,7 +173,7 @@ If instead the query was:
 ```cypher
 COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
 ```
-Then, Kuzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `"` respectively (and use
+Then, Kuzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `\` respectively (and use
 the manually specified configurations for `HEADER` and `DELIM`).
 
 ### Sample size parameter
@@ -210,8 +210,6 @@ Then, you can use the `LOAD FROM` clause to scan the compressed file directly.
 ```cypher
 LOAD FROM 'user.csv.gz' RETURN *;
 ```
-
-Result:
 ```
 ┌─────────┬───────┬────────────┐
 │ name    │ age   │ reg_date   │

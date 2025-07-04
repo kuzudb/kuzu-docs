@@ -32,7 +32,7 @@ In addition, the processor contains a task scheduler which breaks down a physica
 
 ### Expression evaluator
 
-Expression evaluator is light-weight physical operator that's used to evaluate expressions. For e.g., `... RETURN a.age + 1` is mapped to a physical projection with an expression evaluator for `a.age + 1`.
+Expression evaluator is light-weight physical operator that's used to evaluate expressions. E.g., `... RETURN a.age + 1` is mapped to a physical projection with an expression evaluator for `a.age + 1`.
 
 ### Function
 

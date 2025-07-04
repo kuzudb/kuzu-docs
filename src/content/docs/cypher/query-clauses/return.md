@@ -19,7 +19,7 @@ is a syntactic sugar to return all properties of those variables. For example:
 MATCH (a:User)-[e:Follows]->(b:User)
 RETURN a, e;
 ```
-Output:
+
 ```
 ---------------------------------------------------------------------------------------------------
 | a                                         | e                                                   |
@@ -40,7 +40,7 @@ Returning all variables in the query can be written as `RETURN *` as a syntactic
 MATCH (a:User)-[:Follows]->(b:User)
 RETURN *;
 ```
-Output:
+
 ```
 -----------------------------------------------------------------------------------------
 | b                                         | a                                         |
@@ -61,7 +61,7 @@ You can also return properties of variables by explicitly specifying properties 
 MATCH (a:User)-[e:Follows]->(b:User)
 RETURN a.name, a.age, e.since;
 ```
-Output:
+
 ```
 -----------------------------
 | a.name  | a.age | e.since |
@@ -81,7 +81,7 @@ As a syntactic sugar, Kuzu supports returning all properties of node or rel with
 ```cypher
 MATCH (a:User) RETURN a.*;
 ```
-Output:
+
 ```
 -------------------
 | a.name  | a.age |
@@ -99,7 +99,7 @@ Output:
 ```cypher
 MATCH (a:User)-[e:Follows]->(b:User) WHERE a.name='Adam' RETURN e.*;
 ```
-Output:
+
 ```
 -----------
 | e.since |
@@ -118,7 +118,7 @@ eliminate one of the 2 (Adam, 30, 2020) tuples above:
 MATCH (a:User)-[e:Follows]->(b:User)
 RETURN DISTINCT a.name, a.age, e.since;
 ```
-Output:
+
 ```
 -----------------------------
 | a.name  | a.age | e.since |
@@ -138,7 +138,7 @@ in a RETURN clause. For example:
 MATCH (a:User)-[:Follows]->(b:User)
 RETURN a, avg(b.age) as avgFriendAge;
 ```
-Output:
+
 ```
 ------------------------------------------------------------
 | a                                         | avgFriendAge |

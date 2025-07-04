@@ -174,7 +174,7 @@ Consider that you have the following DDL file:
 
 ```cypher
 // schema.cypher
-CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name));
+CREATE NODE TABLE Person (name STRING PRIMARY KEY, age INT64);
 COPY Person FROM 'person.csv';
 ```
 
@@ -250,7 +250,7 @@ To change the output mode, use the `:mode` command followed by the desired mode:
 ```cypher
 kuzu> :mode json
 mode set as json
-kuzu> CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name));
+kuzu> CREATE NODE TABLE Person (name STRING PRIMARY KEY, age INT64);
 [{"result":"Table Person has been created."}]
 ```
 

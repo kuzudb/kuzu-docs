@@ -1,12 +1,10 @@
 ---
-title: "Query & visualize your graph"
+title: "Query and visualize your graph"
 ---
 
-import { LinkCard } from '@astrojs/starlight/components';
-
-Cypher is a declarative query language for graphs, and should be simple to read and write
-for anyone who is familiar with SQL. Kuzu's implementation
-of Cypher is based on the [openCypher standard](https://opencypher.org/).
+Cypher is a declarative query language for graphs, and should be easy to get started with for
+anyone who is familiar with SQL. Kuzu's implementation of Cypher is based on the
+[openCypher standard](https://opencypher.org/).
 
 This section will briefly cover how to use Cypher to query the graph created
 in the [previous section](/get-started). For a detailed guide on using Cypher in Kuzu and to see all the
@@ -16,41 +14,39 @@ available functions, see the [Cypher manual](/cypher).
 
 There are three ways you can query an existing Kuzu database:
 
-- **CLI**: Write Cypher queries directly in the Kuzu CLI shell
+- **CLI**: Write Cypher queries directly in the Kuzu CLI shell.
 - **Kuzu Explorer**: Interactively write and run Cypher queries using [Kuzu Explorer](/visualization/kuzu-explorer/),
-a web-based query interface that also provides graph visualization
-- **Client API**: Integrate Kuzu with your application in your preferred programming language
+a web-based query interface that also provides graph visualization.
+- **Client APIs**: Integrate Kuzu in your application using your preferred programming language.
 
 ## Cypher introduction
 
-For simplicity, we'll demonstrate how to run Cypher queries in this section using Kuzu Explorer
--- though you are welcome to run the queries via the CLI or your preferred client language API.
+For simplicity, we'll demonstrate how to run Cypher queries using Kuzu Explorer.
+You are welcome to run the same queries via the CLI or your preferred client language APIs.
 
 The advantage of using Kuzu Explorer to run queries during the prototyping and exploration phase
-is that you can visualize the graph as you query it. Additionally, you can also view the query
-results as a table or as JSON, allowing you to easily design your application logic.
+is that you can visualize the graph as you query it. Additionally, you can view the query results
+as a table or as JSON, allowing you to easily design and test your application logic.
 
-### Open database in Kuzu Explorer
+### Open a database in Kuzu Explorer
 
 Run the appropriate version of Kuzu Explorer via Docker as follows:
 
 ```bash
-docker run -p 8000:8000 \
+docker run --rm -p 8000:8000 \
     -v /absolute/path/to/demo_db:/database \
-    --rm kuzudb/explorer:latest
+    kuzudb/explorer:latest
 ```
 
-:::caution[Note]
-- It's always recommended to use the absolute path to the database directory in a Docker command.
-- If you want to install a specific version of Kuzu Explorer, replace `latest` with the version number.
-For example: `kuzudb/explorer:0.3.2`. The version number of the explorer must match with the version
-number of Kuzu, so that the storage format is compatible.
+:::note[Note]
+You can alternatively install a specific version of Kuzu Explorer by replacing `latest` with the version number,
+such as `kuzudb/explorer:0.10.0`. The explorer version must match the Kuzu version used to create
+any existing database in the provided path to ensure storage format compatibility.
 :::
 
-### Visualize nodes and rels
+### Visualize nodes and relationships
 
-The simplest Cypher query one can write is to display all nodes and rels, regardless of the table
-name, using a `MATCH` statement as follows:
+Our first Cypher query will use the `MATCH` statement to display all nodes and relationships from all tables:
 
 ```cypher
 MATCH (a)-[b]->(c)
@@ -59,62 +55,71 @@ RETURN *;
 
 ![](/img/visualization/query-result-graph-view.png)
 
-Of course, this is a sample graph with only a few nodes/rels. In a real-world scenario, you
-would likely limit the number of nodes/rels returned by using the `LIMIT` clause.
+Note that this is a sample graph with only a small number of nodes and relationships. For real-world
+graphs, you will likely want to limit the number of returned nodes and relationships by using the `LIMIT` clause.
 
 ```cypher
 MATCH (a)-[b]->(c)
-RETURN * LIMIT 10;
+RETURN *
+LIMIT 10;
 ```
 
-### Match nodes of a particular label
+### Match nodes by label
 
 You can match on a particular node label using its table name as shown below:
 
 ```cypher
-MATCH (a:User) RETURN a.name AS name, a.age AS age;
+MATCH (a:User)
+RETURN a.name AS name, a.age AS age;
+```
+```
+┌─────────┬───────┐
+│ name    │ age   │
+│ STRING  │ INT64 │
+├─────────┼───────┤
+│ Adam    │ 30    │
+│ Karissa │ 40    │
+│ Zhang   │ 50    │
+│ Noura   │ 25    │
+└─────────┴───────┘
 ```
 
 Note how the `name` and `age` properties are aliased in the `RETURN` statement.
 
-This returns the following result:
-
-| name | age |
-| --- | --- |
-| Adam | 30 |
-| Karissa | 40 |
-| Zhang | 50 |
-| Noura | 25 |
-
-### Match relationships of a particular label
+### Match relationships by label
 
 Similarly, you can match on a particular relationship label using its table name as shown below:
 
 ```cypher
-MATCH (a)-[e:Follows]->(b) RETURN e.*;
+MATCH (a)-[e:Follows]->(b)
+RETURN a.name AS user1, b.name AS user2, e.since AS follows_since;
+```
+```
+┌─────────┬─────────┬───────────────┐
+│ user1   │ user2   │ follows_since │
+│ STRING  │ STRING  │ INT64         │
+├─────────┼─────────┼───────────────┤
+│ Adam    │ Karissa │ 2020          │
+│ Adam    │ Zhang   │ 2020          │
+│ Karissa │ Zhang   │ 2021          │
+│ Zhang   │ Noura   │ 2022          │
+└─────────┴─────────┴───────────────┘
 ```
 
-This returns the following result:
-
-| user1 | user2 | follows_since |
-| --- | --- | --- |
-| Adam | Karissa | 2020 |
-| Adam | Zhang | 2020 |
-| Karissa | Zhang | 2021 |
-| Zhang | Noura | 2022 |
-
-### Match with equality predicates on node/rel properties
+### Equality predicates on node/relationship properties
 
 ```cypher
 MATCH (a:User)-[e:Follows {since: 2020}]->(b:User {name: "Karissa"})
 RETURN b.name AS user, a.name AS follower, e.since AS follows_since;
 ```
-
-This returns:
-
-| user | follower | follows_since |
-| --- | --- | --- |
-| Karissa | Adam | 2020 |
+```
+┌─────────┬──────────┬───────────────┐
+│ user    │ follower │ follows_since │
+│ STRING  │ STRING   │ INT64         │
+├─────────┼──────────┼───────────────┤
+│ Karissa │ Adam     │ 2020          │
+└─────────┴──────────┴───────────────┘
+```
 
 Note that the predicates on properties are enclosed in curly braces `{}`. This is functionally equivalent
 to using a `WHERE` clause in Cypher. The following query would return the same result:
@@ -127,11 +132,4 @@ RETURN b.name AS user, a.name AS follower, e.since AS follows_since;
 
 ## Cypher tutorial
 
-The following tutorial covers the basics of Cypher in much greater depth. You can work with it
-Python by launching the Google Colab notebook in your browser.
-
-<LinkCard
-  title="Introduction to Cypher"
-  description="Learn the basics of Cypher in Kuzu"
-  href="https://colab.research.google.com/drive/1zgTCEOFdskYRQ45COYRww7sA6fTXE66S"
-/>
+For a more detailed introduction to Cypher, read the [Cypher tutorial](/tutorials/cypher).

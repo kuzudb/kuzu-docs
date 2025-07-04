@@ -35,7 +35,7 @@ True
 ```
 
 ### Case-insensitive regular expressions
-To use case-insensitive regular expressions, preappend a regular expression with `?i`
+To use case-insensitive regular expressions, prepend a regular expression with `?i`
 
 Example:
 ```cypher
@@ -75,7 +75,7 @@ See the [options](#global-replacement-options) section for global replacement op
 
 #### `regexp_split_to_array(string, pattern[, options])`
 
-- Description: Splits the string along the regex and extract all occurences between regex.
+- Description: Splits the string along the regex and extracts all occurrences between regex.
 - Example: `regexp_split_to_array('hello world 42', ' ')`
 - Result: `['hello','world', '42']`
 
