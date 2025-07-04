@@ -196,7 +196,7 @@ The same applies to relationship tables as well.
 
 ## Create table as
 A common usage pattern is to create a table and then immediately populate it with a copy.
-Instead, we can use the `CREATE NODE TABLE AS` or `CREATE REL TABLE AS` statements which allow us to do both
+Instead, we can use a `CREATE NODE TABLE AS` or `CREATE REL TABLE AS` statement to do both
 at once by providing a subquery to fetch the data from.
 
 ### Create node table as
