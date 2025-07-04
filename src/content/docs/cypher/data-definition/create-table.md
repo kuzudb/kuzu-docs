@@ -217,7 +217,7 @@ We don't need to define a schema for the table - it gets inferred from the resul
 In the above example, the schema information is provided by the result of `LOAD FROM`, which sniffs
 the header of the `person.csv` file to determine the names and types of the properties (or, uses a default
 set of names and infers the types if no schema information was present in the header). Refer to the documentation
-on [`LOAD FROM`](https://docs.kuzudb.com/cypher/query-clauses/load-from/) for more information on this specific
+on [`LOAD FROM`](/cypher/query-clauses/load-from/) for more information on this specific
 example.
 
 Here is another example, where the subquery is a `MATCH`.
