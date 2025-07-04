@@ -573,7 +573,7 @@ RETURN p.id AS id, json_extract(p.description, 'age') AS age;
 
 This section lists the built-in functions that operate on the JSON data type within Kuzu.
 
-#### `to_json(value:ANY) -> JSON`
+##### `to_json(value:ANY) -> JSON`
 
 Converts `value` of any Kuzu type to JSON.
 
@@ -619,16 +619,16 @@ RETURN to_json('Alicia') AS simple_string;
 └───────────────┘
 ```
 
-#### `array_to_json(value:ARRAY) -> JSON`
+##### `array_to_json(value:ARRAY) -> JSON`
 
 Alias for `to_json` that only accepts `ARRAY`.
 
-#### `row_to_json(value:LIST) -> JSON`
+##### `row_to_json(value:LIST) -> JSON`
 
 Alias for `to_json` that only accepts `LIST`.
 
-#### `cast(value:ANY AS JSON) -> JSON`
-#### `cast(value:ANY, "JSON") -> ANY`
+##### `cast(value:ANY AS JSON) -> JSON`
+##### `cast(value:ANY, "JSON") -> ANY`
 
 Syntax sugar for `to_json`.
 
@@ -651,7 +651,7 @@ RETURN cast('{"name": "Alicia", "age": 28}' AS JSON);
 See [Casting](/cypher/expressions/casting) for more details.
 :::
 
-#### `json_object(key:STRING, value:ANY, ...) -> JSON`
+##### `json_object(key:STRING, value:ANY, ...) -> JSON`
 
 Create a JSON object from any number of `key`, `value` pairs.
 
@@ -681,7 +681,7 @@ RETURN json_object("name", "Alicia", "age", 28);
 └─────────────────────────────────┘
 ```
 
-#### `json_array(value:ANY, ...) -> JSON`
+##### `json_array(value:ANY, ...) -> JSON`
 
 Create an array of JSON objects. Each argument is converted into a JSON object.
 
@@ -700,7 +700,7 @@ RETURN json_array("Alicia", "25", NULL);
 ```
 
 
-#### `json_merge_patch(json1:JSON, json2:JSON) -> JSON`
+##### `json_merge_patch(json1:JSON, json2:JSON) -> JSON`
 
 Merges two JSON objects, following the [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386) specification.
 
@@ -733,9 +733,9 @@ RETURN json_merge_patch("3", NULL);
 └──────────────────────┘
 ```
 
-#### `json_extract(json:JSON, path:STRING) -> JSON`
-#### `json_extract(json:JSON, path:INTEGER) -> JSON`
-#### `json_extract(json:JSON, path:LIST) -> LIST[JSON]`
+##### `json_extract(json:JSON, path:STRING) -> JSON`
+##### `json_extract(json:JSON, path:INTEGER) -> JSON`
+##### `json_extract(json:JSON, path:LIST) -> LIST[JSON]`
 
 Extracts JSON from `json` at the given `path`, where `path` is an index into the JSON object. 
 Refer to the examples to see how `path` is interpreted.
@@ -816,7 +816,7 @@ RETURN
 └───────────┘
 ```
 
-#### `json_array_length(json:JSON) -> UINT32`
+##### `json_array_length(json:JSON) -> UINT32`
 
 If the `json` is a JSON array, returns its length, otherwise returns `0`.
 
@@ -850,7 +850,7 @@ RETURN json_array_length('{"kuzu": ["1", "1", "4", null]}') AS len;
 └────────┘
 ```
 
-#### `json_contains(haystack:JSON, needle:JSON) -> BOOL`
+##### `json_contains(haystack:JSON, needle:JSON) -> BOOL`
 
 Returns true if `needle` is contained in `haystack`. Both parameters are of `JSON`.
 `needle` can be a numeric value or a `string` wrapped in double quotes.
@@ -881,7 +881,7 @@ RETURN JSON_CONTAINS('{"age": 28}', '28') AS found_age;
 └───────────┘
 ```
 
-#### `json_keys(json:JSON) -> STRING[]`
+##### `json_keys(json:JSON) -> STRING[]`
 
 Returns keys of the root `json` object. If the root is not a JSON object, returns an empty list.
 
@@ -902,7 +902,7 @@ RETURN
 └──────────────────┘
 ```
 
-#### `json_structure(json:JSON) -> STRING`
+##### `json_structure(json:JSON) -> STRING`
 
 Returns the type structure of the `json` in Kuzu type notation. Integer widths are automatically inferred from input values.
 
@@ -922,7 +922,7 @@ RETURN
 └─────────────────────────────────────────┘
 ```
 
-#### `json_valid(json:JSON) -> BOOL`
+##### `json_valid(json:JSON) -> BOOL`
 
 Determines whether the provided `json` is valid.
 
@@ -952,7 +952,7 @@ RETURN json_valid('"name": "Alicia", "age": 28') AS is_valid;
 └──────────┘
 ```
 
-#### `json(json:JSON) -> JSON`
+##### `json(json:JSON) -> JSON`
 
 Parses and minifies the input `json`.
 
