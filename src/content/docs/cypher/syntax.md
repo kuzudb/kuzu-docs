@@ -38,11 +38,11 @@ To use reserved keywords in identifiers, you can escape them by encapsulating th
 For example, using the label `Return` for a node table requires escaping.
 
 ```cypher
-// Create a node table of house names that contain special characters
+// Create a node table using a label that is also a reserved keyword
 CREATE NODE TABLE `Return` (id INT64 PRIMARY KEY, date TIMESTAMP);
 CREATE (n:`Return` {id: 1})
 SET n.date = TIMESTAMP('2025-01-01');
-// Query on the unicode table name
+// Query the node table
 MATCH (n:`Return`)
 RETURN n.*;
 ```
