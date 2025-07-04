@@ -243,39 +243,31 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        {
-                            label: 'Graph algorithms',
-                            collapsed: true,
-                            badge: { text: 'New' },
-                            items: [
-                                { label: 'Overview', link: '/extensions/algo'},
-                                { label: 'K-Core decomposition', link: '/extensions/algo/kcore'},
-                                { label: 'Louvain', link: '/extensions/algo/louvain'},
-                                { label: 'PageRank', link: '/extensions/algo/pagerank'},
-                                { label: 'Strongly Connected Components', link: '/extensions/algo/scc'},
-                                { label: 'Weakly Connected Components', link: '/extensions/algo/wcc'},
-                                { label: 'Shortest path', link: '/extensions/algo/path'},
-                            ]
-                        },
-                        { label: 'HTTPS file system', link: '/extensions/httpfs#https-file-system' },
-                        { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
                         { 
                             label: 'Cloud storage systems',
                             collapsed: true,
                             items: [
                                 { label: 'Amazon S3', link: '/extensions/httpfs#aws-s3-file-system'},
-                                { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system', badge: { text: 'New' }},
+                                { label: 'Google Cloud Storage', link: '/extensions/httpfs#gcs-file-system'},
                             ]
                         },
-                        { 
-                            label: 'Relational databases',
+                        { label: 'External Kuzu databases', link: '/extensions/attach/kuzu' },
+                        { label: 'Full-text search', link: '/extensions/full-text-search' },
+                        {
+                            label: 'Graph algorithms',
                             collapsed: true,
                             items: [
-                                { label: 'PostgreSQL', link: '/extensions/attach/postgres' },
-                                { label: 'DuckDB', link: '/extensions/attach/duckdb' },
-                                { label: 'SQLite', link: '/extensions/attach/sqlite' },
+                                { label: 'Overview', link: '/extensions/algo'},
+                                { label: 'K-Core Decomposition', link: '/extensions/algo/kcore'},
+                                { label: 'Louvain', link: '/extensions/algo/louvain'},
+                                { label: 'PageRank', link: '/extensions/algo/pagerank'},
+                                { label: 'Shortest paths', link: '/extensions/algo/path'},
+                                { label: 'Strongly Connected Components', link: '/extensions/algo/scc'},
+                                { label: 'Weakly Connected Components', link: '/extensions/algo/wcc'},
                             ]
                         },
+                        { label: 'HTTPS file system', link: '/extensions/httpfs' },
+                        { label: 'JSON', link: '/extensions/json' },
                         {
                             label: 'Lakehouse formats',
                             collapsed: true,
@@ -285,11 +277,19 @@ export default defineConfig({
                                 { label: 'Unity Catalog', link: '/extensions/attach/unity' },
                             ]
                         },
-                        { label: 'Full-text search', link: '/extensions/full-text-search' },
-                        { label: 'JSON', link: '/extensions/json' },
-                        { label: 'Neo4j', link: '/extensions/neo4j', badge: { text: 'New' }},
-                        { label: 'Vector search', link: '/extensions/vector'},
                         { label: 'LLM', link: '/extensions/llm', badge: { text: 'New' }},
+                        { label: 'Neo4j', link: '/extensions/neo4j'},
+                        {
+                            label: 'Relational databases',
+                            collapsed: true,
+                            items: [
+                                { label: 'Overview', link: '/extensions/attach/rdbms' },
+                                { label: 'PostgreSQL', link: '/extensions/attach/postgres' },
+                                { label: 'DuckDB', link: '/extensions/attach/duckdb' },
+                                { label: 'SQLite', link: '/extensions/attach/sqlite' },
+                            ]
+                        },
+                        { label: 'Vector search', link: '/extensions/vector'},
                     ],
                 },
             ],

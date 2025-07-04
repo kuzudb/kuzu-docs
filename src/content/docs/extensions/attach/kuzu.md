@@ -4,7 +4,7 @@ title: External Kuzu databases
 
 Using the `ATTACH` statement, you can connect to an external Kuzu database. The external Kuzu database can be local or remote, e.g.,
 in an S3 bucket. Attaching to a local Kuzu database does not require installing any extensions. Attaching to a remote
-Kuzu database requires installing the `httpfs` extension. Aside from this requirement of installing the `httpfs` extension,
+Kuzu database requires installing the [`httpfs`](/extensions/httpfs) extension. Aside from this requirement of installing the `httpfs` extension,
 attaching to a local vs. remote Kuzu database works the same way. So, we only document how to attach to a remote Kuzu database here.
 
 ## Usage
