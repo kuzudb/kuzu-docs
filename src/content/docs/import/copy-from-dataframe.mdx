@@ -57,7 +57,7 @@ def get_df():
 conn.execute("COPY Person FROM get_df()")
 ```
 
-If you wish to do the above, you should pass the dataframe as a query parameter:
+Due to the above limitations, we generally do not recommend using this method to reference dataframes. Please [pass the dataframes as parameters](#query-parameter) instead:
 
 ```python
 def get_df():
@@ -66,7 +66,6 @@ def get_df():
         "age": [30, 40, 50]
     })
 
-# get_df() is not the name of a variable
 conn.execute("COPY Person FROM $df", {"df", get_df()})
 ```
 
@@ -116,7 +115,7 @@ conn = kuzu.Connection(db)
 # Create a Person node table with name as the primary key
 conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 # Enable the `ignore_errors` parameter below to ignore the erroneous rows
-conn.execute("COPY Person FROM df (ignore_errors=true)")
+conn.execute("COPY Person FROM $dataframe (ignore_errors=true)", {"dataframe": df})
 
 # Display results
 res = conn.execute("MATCH (p:Person) RETURN p.name, p.age")
@@ -156,7 +155,7 @@ df = pd.DataFrame({
     "age": [30, 40, 50]
 })
 
-conn.execute("COPY Person FROM df")
+conn.execute("COPY Person FROM $dataframe", {"dataframe": df})
 ```
 
 ### Arrow tables
@@ -178,7 +177,7 @@ pa_table = pa.table({
     "age": [30, 40, 50]
 })
 
-conn.execute("COPY Person FROM pa_table")
+conn.execute("COPY Person FROM $pa", {"pa": pa_table})
 ```
 
 ### Polars: Basic example
@@ -199,7 +198,7 @@ df = pl.DataFrame({
     "age": [30, 40, 50]
 })
 
-conn.execute("COPY Person FROM df")
+conn.execute("COPY Person FROM $dataframe", {"dataframe": df})
 ```
 
 The above code ingests the contents of the Polars DataFrame directly into the `Person` node table.
@@ -262,7 +261,7 @@ and their insurance providers is contained in this single JSON object.
 Some property keys are missing in some of the objects, as can be seen in the third object for the
 person named "Rebecca".
 
-#### Scan data to inspect its contents 
+#### Scan data to inspect its contents
 
 Let's first read this JSON file into a Polars DataFrame.
 
@@ -305,10 +304,11 @@ conn = kuzu.Connection(db)
 
 result = conn.execute(
     """
-    LOAD FROM df
+    LOAD FROM $dataframe
     UNWIND info.insurance_provider AS i
     RETURN DISTINCT i.*
-    """
+    """,
+    {"dataframe": df}
 )
 ```
 ```
@@ -374,10 +374,11 @@ Let's proceed to copy the data from Polars into the Kuzu tables.
 ```python
 conn.execute("""
     COPY Patient FROM (
-        LOAD FROM df
+        LOAD FROM $dataframe
         RETURN p_id, name, info.height, info.weight, CAST(info.age AS UINT8)
     )
-""")
+""",
+{"dataframe": df})
 ```
 
 The `LOAD FROM` subquery scans the entire DataFrame's contents, and returns only the relevant fields
@@ -395,11 +396,11 @@ Next, we copy the insurance provider records into the `InsuranceProvider` node t
 ```python
 conn.execute("""
     COPY InsuranceProvider FROM (
-        LOAD FROM df
+        LOAD FROM $dataframe
         UNWIND info.insurance_provider AS i
         RETURN DISTINCT i.*
     )
-""")
+""", {"dataframe": df})
 ```
 The `DISTINCT` keyword is used after the `RETURN` clause here to ensure unique values for the names
 of the insurance providers, because the `name` field is the primary key of the `InsuranceProvider` node table
@@ -412,11 +413,11 @@ The final step is to copy the `HAS_INSURANCE` relationship table using the follo
 ```python
 res = conn.execute("""
     COPY HAS_INSURANCE FROM (
-        LOAD FROM df
+        LOAD FROM $dataframe
         UNWIND info.insurance_provider AS i
         RETURN p_id, i.name AS name
     )
-""")
+""", {"dataframe": df})
 ```
 Because the `info.insurance_provider` field is a list of structs, we use `UNWIND` to obtain each of the
 insurance provider records in a row-wise manner, following which we organize the results into
