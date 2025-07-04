@@ -311,6 +311,11 @@ RETURN {first: 'Adam', last: 'Smith'};
 └───────────────────────────────────┘
 ```
 
+Alternatively, you can explicitly use the `STRUCT_PACK` function. This will produce the same result.
+```cypher
+RETURN STRUCT_PACK(first := 'Adam', last := 'Smith');
+```
+
 You can extract a value from a `STRUCT` using the dot notation:
 
 ```cypher
