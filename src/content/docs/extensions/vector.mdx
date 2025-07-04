@@ -131,7 +131,8 @@ CALL CREATE_VECTOR_INDEX(
     ml := 60,
     pu := 0.05,
     metric := 'cosine',
-    efc := 200
+    efc := 200,
+    cache_embeddings := true
 );
 ```
 
@@ -163,7 +164,7 @@ Optional arguments to tune the index:
   - A higher value will result in a more accurate index, but will also increase the time it takes to build the index.
   - Default: `200`
 - `cache_embeddings`
-  - Determines whether the embeddings columns is fully cached in memory before index construction.
+  - Determines whether the embeddings column should be fully cached in memory during the index construction.
   - This will decrease the amount of time needed to construct the index but will increase the memory usage. We recommend keeping this value set to true unless you are in a memory-constrained environment.
   - Default: `true`
 
