@@ -144,7 +144,7 @@ file (`has_condition.json`).
 </TabItem>
 </Tabs>
 
-In the following sections, we will first scan the JSON files to query its contents in Cypher, and
+In the following sections, we will first scan the JSON files to query their contents in Cypher, and
 then proceed to copy the JSON data and construct a graph.
 
 ### Scan the JSON file
@@ -171,7 +171,7 @@ LOAD FROM 'patient.json' RETURN *;
 └────────┴─────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Because `info` is a nested object, its type in Kuzu is inferred as a `STRUCT`, that itself contains
+Because `info` is a nested object, its type in Kuzu is inferred as a `STRUCT` that itself contains
 other types, like `DOUBLE`, `UINT8`, `STRING`, and `STRUCT`.
 
 #### Missing keys
@@ -202,7 +202,7 @@ As can be seen, the patient Rebecca is new in the system and is missing her info
 
 #### Enforcing types
 
-To enforce the data type during scanning, use the `LOAD WITH HEADERS` feature.
+You can enforce explicit data types during scanning by using the `LOAD WITH HEADERS` feature.
 
 Example:
 ```cypher
@@ -223,7 +223,7 @@ LOAD WITH HEADERS (
 FROM 'patient.json'
 RETURN name, info.height, info.weight;
 ```
-We can see that the types inside the `info` STRUCT are now enforced to `FLOAT`, rather than `DOUBLE`.
+We can see that the types inside the `info` STRUCT are now `FLOAT` rather than `DOUBLE`.
 ```
 ┌─────────┬─────────────────────────────┬─────────────────────────────┐
 │ name    │ STRUCT_EXTRACT(info,height) │ STRUCT_EXTRACT(info,weight) │
@@ -241,13 +241,13 @@ The following optional parameters are supported:
 
 |Name|Description|
 |---|---|
-| <span style="text-wrap: nowrap;"> `maximum_depth` </span>|Default value is `10`. Used by the type inference system to determine how "deep" into the json document to go to infer types.
-|`sample_size`|Default value `2048`. Used by the type inference system to determine the number of elements used to infer the json type.
+| <span style="text-wrap: nowrap;"> `maximum_depth` </span>|Default value is `10`. Used by the type inference system to determine how "deep" into the JSON document to go to infer types.
+|`sample_size`|Default value `2048`. Used by the type inference system to determine the number of elements used to infer the JSON type.
 
 ### Copy JSON files to a table
 
 The `COPY FROM` statement allows you to copy data from a JSON file into a node or relationship table in Kuzu.
-In this section we will walk through the example dataset shown above and build a graph from the JSON data.
+In this section, we will walk through the example dataset shown above and build a graph from the JSON data.
 
 #### Copy to node tables
 
@@ -270,15 +270,15 @@ CREATE NODE TABLE IF NOT EXISTS Patient(
         )[]
     ),
     PRIMARY KEY (p_id)
-)
+);
 ```
-The syntax `STRUCT( ... )[]` with the square braces at the end represents an arrya of STRUCTs.
+The syntax `STRUCT( ... )[]` with the square braces at the end represents an array of STRUCTs.
 
 You can then use a `COPY FROM` statement to directly copy the contents of the JSON file into the
 node table.
 
 ```cypher
-COPY Patient FROM 'patient.json'
+COPY Patient FROM 'patient.json';
 ```
 
 Similarly, we can define the node table for the patients' medical conditions.
@@ -289,11 +289,11 @@ CREATE NODE TABLE IF NOT EXISTS Condition(
     name STRING,
     description STRING,
     PRIMARY KEY (c_id)
-)
+);
 ```
 And copy the contents of `condition.json` to the node table as follows:
 ```sql
-COPY Condition FROM 'condition.json'
+COPY Condition FROM 'condition.json';
 ```
 
 #### Copy to relationship tables
@@ -328,7 +328,7 @@ CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
 ```
 The `has_condition.json` file can then directly be copied into the relationship table that was just created.
 ```cypher
-COPY HAS_CONDITION FROM 'has_condition.json'
+COPY HAS_CONDITION FROM 'has_condition.json';
 ```
 
 We obtain the following graph:
@@ -349,7 +349,7 @@ WITH
 UNWIND ip AS provider
 WITH name, age, provider, condition
 WHERE provider.type = "health"
-RETURN name, age, condition, provider.name AS health_insurance_provider
+RETURN name, age, condition, provider.name AS health_insurance_provider;
 ```
 ```
 ┌─────────┬───────┬───────────────────┬───────────────────────────┐
@@ -395,13 +395,13 @@ COPY InsuranceProvider FROM (
     RETURN DISTINCT
         provider.name AS name,
         provider.type AS type
-)
+);
 ```
 Let's break down the above query step by step:
 - The outer `COPY FROM` expects the result from the inner `LOAD FROM`
 - The info `STRUCT` from `patient.json` is passed to `UNWIND` so that we can obtain individual providers
 for each patient
-- A `DISTINCT` clause is used when returning the results of the subquery, because the `name` of a
+- A `DISTINCT` clause is used when returning the results of the subquery because the `name` of a
 provider is the primary key of the `InsuranceProvider` node table per the schema created above (we
 cannot have duplicate values for primary keys).
 
@@ -416,10 +416,10 @@ COPY HAS_PROVIDER FROM (
         p_id,
         provider.name AS name,
         provider.policy_number AS policy_number
-)
+);
 ```
 
-In this case, we didn't alias the first two entries to `from` and `to`, like we did when copying
+In this case, we didn't alias the first two entries to `from` and `to` like we did when copying
 from the `has_condition.json` file above. This is because the `COPY FROM` query is looking for the
 first two columns in the result as the `FROM` and the `TO` columns in the relationship, similar to
 how it's done in CSV.
@@ -514,11 +514,11 @@ The output JSON would look like this:
 
 When using the `json` extension, keep in mind the following considerations when copying data to Kuzu tables:
 
-1. The order of the keys in the JSON file doesn't need to match with the order of the columns defined
+1. The order of the keys in the JSON file doesn't need to match the order of the columns defined
 in the schema. Only the names need to match.
 
 2. If directly copying from a JSON file to a relationship table, there need to be keys named `from`
-and `to` in the file, whose values point to the primary key values of the underlying node tables.
+and `to` in the file whose values point to the primary key values of the underlying node tables.
 
 3. You can combine `LOAD FROM` subqueries with `COPY FROM` to have more control over the subset of
 JSON data being copied, as well as dynamically transform your data via `UNWIND` or `DISTINCT` clauses,
@@ -527,10 +527,10 @@ so it's not necessary to write your relationships to an intermediate file prior 
 ## JSON data type
 
 Using the `json` extension, you can model and store properties as JSON natively via the `JSON` logical type,
-which is interpreted as parsed as JSON, rather than as a string.
+which is interpreted and parsed as JSON, rather than as a string.
 
 The following example creates a node table `Person` with a `JSON` column `description`,
-it then creates two `json` objects in this column using `to_json` function, and outputs them.
+it then creates two JSON objects in this column using the `to_json` function, and outputs them.
 
 Example:
 ```cypher
@@ -739,7 +739,7 @@ RETURN json_merge_patch("3", NULL);
 
 Extracts JSON from `json` at the given `path`, where `path` is an index into the JSON object. 
 Refer to the examples to see how `path` is interpreted.
-Invalid paths returns an empty JSON.
+Invalid paths return an empty JSON.
 
 Example 1:
 
@@ -818,7 +818,7 @@ RETURN
 
 #### `json_array_length(json:JSON) -> UINT32`
 
-If the `json` is an JSON array, returns its length, otherwise returns `0`.
+If the `json` is a JSON array, returns its length, otherwise returns `0`.
 
 Example 1:
 
@@ -836,7 +836,7 @@ RETURN json_array_length('["1", "1", "4", null]') AS len;
 Example 2:
 
 Trying to compute the length of a JSON array with a `null` value results in a length of zero, as
-this isn't valid JSON array.
+this isn't a valid JSON array.
 
 ```cypher
 RETURN json_array_length('{"kuzu": ["1", "1", "4", null]}') AS len;
@@ -883,7 +883,7 @@ RETURN JSON_CONTAINS('{"age": 28}', '28') AS found_age;
 
 #### `json_keys(json:JSON) -> STRING[]`
 
-Returns keys of the root `json` object. If the root is not an JSON object, returns an empty list.
+Returns keys of the root `json` object. If the root is not a JSON object, returns an empty list.
 
 Example:
 

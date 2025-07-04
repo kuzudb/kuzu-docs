@@ -5,7 +5,7 @@ title: External Kuzu databases
 Using the `ATTACH` statement, you can connect to an external Kuzu database. The external Kuzu database can be local or remote, e.g.,
 in an S3 bucket. Attaching to a local Kuzu database does not require installing any extensions. Attaching to a remote
 Kuzu database requires installing the `httpfs` extension. Aside from this requirement of installing the `httpfs` extension,
-attaching to a local vs. remote Kuzu database work the same. So, we only document how to attach to a remote Kuzu database here.
+attaching to a local vs. remote Kuzu database works the same way. So, we only document how to attach to a remote Kuzu database here.
 
 ## Usage
 
@@ -22,7 +22,7 @@ Use the `ATTACH` statement to attach to a remote Kuzu database:
 ATTACH <DB_PATH> AS <alias> (dbtype kuzu)
 ```
 
-- `DB_PATH`: Path to the (remote) database directory  (can either be an S3, GCS or HTTP URL)
+- `DB_PATH`: Path to the (remote) database directory (can either be an S3, GCS or HTTP URL)
 - `alias`: Database alias to use. Aliases are mandatory for attaching to external Kuzu databases.
 
 Unlike attaching to external RDBMSs, the alias is not used as a prefix of node and relationship tables. This is because at any point in time,
@@ -30,7 +30,7 @@ you can attach to a single external Kuzu database (or be connected to the local 
 Therefore you don't need to prefix your node and relationship tables.
 Instead you will use the alias to `DETACH` from the external Kuzu database.
 
-Suppose you are connected to a local database `./demo_db`. After configuring a [S3 connection](/extensions/httpfs#configuring-the-s3-connection), you can attach a Kuzu database hosted on S3 directory as:
+Suppose you are connected to a local database `./demo_db`. After configuring a [S3 connection](/extensions/httpfs#configuring-the-s3-connection), you can attach a Kuzu database hosted on S3 as:
 
 ```sql
 ATTACH 's3://kuzu-example/university' AS uw (dbtype kuzu);
@@ -38,12 +38,13 @@ ATTACH 's3://kuzu-example/university' AS uw (dbtype kuzu);
 After attaching a remote Kuzu database, you no longer have access to the original local Kuzu database `./demo_db`.
 After the `ATTACH` statement above, you can only query the external Kuzu database under `s3://kuzu-example/university`.
 
-If you wish to attach to a database hosted on GCS instead, just replace the prefix `s3://` with `gs://` (in this case it would become `'gs://kuzu-example/university`). For more information on how to set up Kuzu with GCS, see [here](/extensions/httpfs#gcs-file-system).
+If you wish to attach to a database hosted on GCS instead, just replace the prefix `s3://` with `gs://` (in this case it would become `gs://kuzu-example/university`). For more information on how to set up Kuzu with GCS, see [here](/extensions/httpfs#gcs-file-system).
 
 #### Execute queries on external Kuzu database
-We only allow **read-only** queries to execute on external Kuzu database (even if the external database is stored on local disk).
-```sql
-MATCH (p:Person) RETURN p.name AS name, p.age AS age;
+We only allow **read-only** queries to execute on external Kuzu databases (even if the external database is stored on local disk).
+```cypher
+MATCH (p:Person)
+RETURN p.name AS name, p.age AS age;
 ```
 
 ```
@@ -78,9 +79,10 @@ from an external Kuzu database switches your Kuzu database to become the local d
 
 ### Use a local cache for remote files
 
-When connecting to a remote external Kuzu database, say the `'s3://kuzu-example/university`  database in our example above,
+When connecting to a remote external Kuzu database, say the `s3://kuzu-example/university` database in our example above,
 you would use the `httpfs` extension. When querying this remote database in Cypher, Kuzu will make HTTPS calls to the
-remote server to query this database. Similar to how you can speed up `LOAD FROM` queries using the [local httpfs cache](/extensions/httpfs#local-cache)
-for scanning remote files, you can also speed up your Cypher queries by using the local httpfs cache.
+remote server to query this database. You can speed up your Cypher queries by using the local httpfs cache,
+similar to how you can speed up `LOAD FROM` queries using the [local httpfs cache](/extensions/httpfs#local-cache)
+for scanning remote files.
 You can enable the local cache by running `CALL HTTP_CACHE_FILE=TRUE;` _after_ installing the `httpfs`
 extension and _before_ attaching to the remote Kuzu database.

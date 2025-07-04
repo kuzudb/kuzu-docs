@@ -13,7 +13,7 @@ LOAD sqlite;
 
 First, create a sample SQLite database of university students in Python.
 
-```py
+```python
 import sqlite3
 conn = sqlite3.connect('university.db')
 cursor = conn.cursor()
@@ -41,7 +41,7 @@ ATTACH
 - `alias`: Database alias to use in Kuzu. If not provided, the database name from SQLite will be used.
   When attaching multiple databases, we recommend using aliases.
 - `skip_unsupported_table`: A boolean flag to indicate whether Kuzu should exit with an error or skip
-   tables with unsupported datatypes. Defaults to `False`.
+   tables with unsupported data types. Defaults to `False`.
 
 For example, the `university.db` SQLite database can be attached to Kuzu using the alias `uw`:
 
@@ -53,7 +53,7 @@ ATTACH 'university.db' AS uw (dbtype sqlite);
 
 The following table shows the mapping from SQLite's data types to Kuzu's data types:
 
-| SQLite Storage Class / Datatype            | Corresponding Data Type in Kuzu |
+| SQLite Storage Class / Data Type            | Corresponding Data Type in Kuzu |
 |--------------------------------------------|----------------------------------|
 | `NULL`                                       | `BLOB`                            |
 | `INTEGER`                                    | `INT64`                           |
@@ -70,7 +70,7 @@ Use the `LOAD FROM` statement to scan the `person` table.
 
 ```sql
 LOAD FROM uw.person
-RETURN *
+RETURN *;
 ```
 ```
 ---------------
@@ -106,7 +106,7 @@ The above example can be simplified as:
 ATTACH 'university.db' AS uw (dbtype sqlite);
 USE uw;
 LOAD FROM person
-RETURN *
+RETURN *;
 ```
 
 ### Copy data from SQLite tables
@@ -124,7 +124,7 @@ When the schemas are the same, you can copy the data from the external DBMS tabl
 ```sql
 COPY Person FROM uw.person;
 ```
-If the schemas are not the same, e.g., `Person` contains only `name` property while the external `uw.person` contains
+If the schemas are not the same, e.g., `Person` contains only the `name` property while the external `uw.person` contains
 `name` and `age`, you can still use `COPY FROM` but with a subquery as:
 
 ```sql
@@ -156,7 +156,7 @@ MATCH (p:Person) RETURN p.*;
 To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
 via an alternate connection to attached RDBMSs, such as creation or deletion of tables, the cached
-schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
+schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh the cached
 schema information in such cases.
 
 ```sql
@@ -164,7 +164,7 @@ CALL clear_attached_db_cache();
 ```
 
 :::note[Note]
-If you have attached to databases from different RDBMSs, say Postgres, DuckDB, and Sqlite,
+If you have attached to databases from different RDBMSs, say Postgres, DuckDB, and SQLite,
 this call will clear the cache for _all_ of them.
 :::
 

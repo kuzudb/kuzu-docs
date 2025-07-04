@@ -21,7 +21,7 @@ LOAD httpfs;
 ```
 
 ## HTTP(S) file system
-`httpfs` allows you to read from a file hosted on a http(s) server in the same way as from a local file.
+`httpfs` allows you to read from a file hosted on an HTTP(S) server in the same way as from a local file.
 Example:
 
 ```sql
@@ -56,11 +56,11 @@ The following options are supported:
 
 | Option name | Description |
 |----------|----------|
-| `s3_access_key_id` | S3 access key id |
+| `s3_access_key_id` | S3 access key ID |
 | `s3_secret_access_key` | S3 secret access key |
 | `s3_endpoint` | S3 endpoint |
 | `s3_region` | S3 region |
-| `s3_url_style` | Uses [S3 url style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) (should either be vhost or path) |
+| `s3_url_style` | Uses [S3 URL style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) (should either be vhost or path) |
 | `s3_uploader_max_num_parts_per_file` | Used for [part size calculation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html) |
 | `s3_uploader_max_filesize` | Used for [part size calculation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html) |
 | `s3_uploader_threads_limit` | Maximum number of uploader threads |
@@ -73,7 +73,7 @@ You can alternatively set the following environment variables:
 | `S3_SECRET_ACCESS_KEY` | S3 secret access key |
 | `S3_ENDPOINT` | S3 endpoint |
 | `S3_REGION` | S3 region |
-| `S3_URL_STYLE` | S3 url style |
+| `S3_URL_STYLE` | S3 URL style |
 
 ### Scanning data from S3
 
@@ -129,7 +129,7 @@ The table below shows which parts of the S3 API are needed for each feature of t
 | Feature | Required S3 API |
 |----------|----------|
 | Public file reads | HTTP Range request |
-| Private file reads | Secret key authentication|
+| Private file reads | Secret key authentication |
 | File glob | [ListObjectV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html) |
 | File writes | [Multipart upload](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html) |
 
@@ -165,7 +165,7 @@ Alternatively, you can set the following environment variables:
 | `GCS_ACCESS_KEY_ID` | GCS access key ID |
 | `GCS_SECRET_ACCESS_KEY` | GCS secret access key |
 
-Since Kuzu communicates with GCS using its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. More detailed descriptions of the settings can be found [here](#aws-s3-file-system).
+Since Kuzu communicates with GCS using its [interoperability mode](https://cloud.google.com/storage/docs/aws-simple-migration), the following S3 settings also apply when uploading files to GCS. For more detailed descriptions of these settings, see the [AWS S3 file system](#aws-s3-file-system) section above.
 
 | Option name |
 |----------|

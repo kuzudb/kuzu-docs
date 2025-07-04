@@ -55,13 +55,13 @@ Iceberg tables that are moved from their original location.
 :::
 
 ### Copy Iceberg tables into Kuzu
-You can use a `COPY FROM` statement to copy the contents of a Iceberg table into Kuzu.
+You can use a `COPY FROM` statement to copy the contents of an Iceberg table into Kuzu.
 
 ```cypher
 CREATE NODE TABLE university (name STRING PRIMARY KEY, age INT64);
-COPY student FROM
+COPY university FROM
     '/tmp/iceberg_tables/person_table'
-    (file_format='iceberg', allow_moved_paths=true)
+    (file_format='iceberg', allow_moved_paths=true);
 ```
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -73,7 +73,7 @@ COPY student FROM
 ```
 
 ### Access Iceberg metadata
-At the heart of Iceberg’s table structure is the metadata, which tracks everything from the schema, to partition information
+At the heart of Iceberg’s table structure is the metadata, which tracks everything from the schema, to partition information,
 and snapshots of the table's state.
 
 The `ICEBERG_METADATA` function lists the metadata files for an Iceberg table.
@@ -140,7 +140,7 @@ CALL <option_name>='<option_value>'
 | Feature | Required S3 API features |
 |----------|----------|
 | Public file reads | HTTP Range request |
-| Private file reads | Secret key authentication|
+| Private file reads | Secret key authentication |
 
 #### Scan Iceberg tables from S3
 
@@ -148,7 +148,7 @@ CALL <option_name>='<option_value>'
 LOAD FROM
     's3://path/to/iceberg_table'
     (file_format='iceberg', allow_moved_paths=true)
-RETURN *
+RETURN *;
 ```
 
 #### Copy Iceberg tables from S3 into Kuzu
@@ -157,7 +157,7 @@ RETURN *
 CREATE NODE TABLE student (ID INT64 PRIMARY KEY, name STRING);
 COPY student FROM
     's3://path/to/iceberg_table'
-    (file_format='iceberg', allow_moved_paths=true)
+    (file_format='iceberg', allow_moved_paths=true);
 ```
 
 ## Optional parameters

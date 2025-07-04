@@ -58,12 +58,12 @@ apoc.export.file.enabled=true
 apoc.import.file.use_neo4j_config=false
 ```
 This [doc](https://neo4j.com/docs/operations-manual/current/configuration/file-locations/#neo4j-config) provides instructions on Neo4j's default conf file locations.
-The `apoc.conf` file may not exist in the `conf` directory, under which case, you'd have to create a new one under the `conf` directory.
+The `apoc.conf` file may not exist in the `conf` directory, in which case, you would have to create a new one under the `conf` directory.
 
 If you're running Neo4j in Docker, you can use `-e NEO4J_apoc_export_file_enabled=true -e NEO4J_apoc_import_file_use__neo4j__config=false` to configure APOC.
 Additionally, you'll need to mount `/tmp` as `-v /tmp:/tmp` to allow access to the exported data from Neo4j.
 
-The following section shows how to migrate the *labels* from Neo4j to *__tables__* in Kuzu.
+The following section shows how to migrate _labels_ from Neo4j to _tables_ in Kuzu.
 
 ### Importing data from Neo4j
 
@@ -81,11 +81,11 @@ CALL NEO4J_MIGRATE(
 
 Required arguments:
 
-- `URL`: A `http://hostname:port` connection url to a Neo4j server.
+- `URL`: A `http://hostname:port` connection URL to a Neo4j server.
 - `USER_NAME`: Neo4j username. Leave blank if not needed.
 - `PASSWORD`: Neo4j password. Leave blank if not needed.
 - `NODE_LABELS`: A list of node labels to migrate to Kuzu. Use `["*"]` to import all nodes with labels.
-- `REL_LABELS`: A list of rel labels to migrate to Kuzu. Use `["*"]` to import all rels with labels.
+- `REL_LABELS`: A list of relationship labels to migrate to Kuzu. Use `["*"]` to import all relationships with labels.
 
 #### Example
 

@@ -28,7 +28,7 @@ The graph algorithms run on _projected graphs_ instead of operating directly on 
 A projected graph contains only the nodes and relationships that are relevant for
 the algorithm you want to run, and is created by matching on a given table name and predicates. 
 
-### Example data
+### Example dataset
 
 Let's first create the node and relationship tables we will use for creating projected graphs.
 
@@ -159,14 +159,14 @@ For example, to drop the projected graph `filtered_graph`, use:
 CALL DROP_PROJECTED_GRAPH('filtered_graph');
 ```
 
-### Life cycle of projected graphs
+### Lifecycle of projected graphs
 
 A projected graph is kept alive until:
 - It is dropped explicitly, or
 - The connection is closed.
 
 A projected graph is evaluated _only_ when an algorithm is executed.
-Kuzu does not materialize projected graphs in memory and the corresponding data
+Kuzu does not materialize projected graphs in memory, and the corresponding data
 is scanned from disk on the fly.
 
 ## Edge direction

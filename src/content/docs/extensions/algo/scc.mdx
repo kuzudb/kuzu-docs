@@ -19,7 +19,6 @@ Kosaraju's algorithm is recommended in the following cases:
 - Your graph is very sparse, i.e. has a large number of nodes but a small number of edges.
 - Your graph has a very high [diameter](https://en.wikipedia.org/wiki/Diameter_(graph_theory)).
 
-
 ## Syntax
 
 ```cypher
@@ -44,6 +43,7 @@ RETURN node, group_id
 Required arguments:
 
 - `GRAPH_NAME`: Name of the projected graph to run the algorithm on
+    - Type: `STRING`
 
 Optional arguments:
 
@@ -62,12 +62,12 @@ Returns:
 
 ## Example 
 
-Define schema
+Create the node and relationship tables:
 ```cypher
 CREATE NODE TABLE Person(name STRING PRIMARY KEY);
 CREATE REL TABLE KNOWS(FROM Person to Person);
 ```
-Insert nodes and edges
+Insert nodes and edges:
 ```cypher
 CREATE (u0:Person {name: 'Alice'}),
         (u1:Person {name: 'Bob'}),
@@ -94,11 +94,11 @@ CREATE (u0:Person {name: 'Alice'}),
         (u7)-[:KNOWS]->(u8),
         (u8)-[:KNOWS]->(u5);
 ```
-We first create a projected graph from the node and edge tables.
+Create a projected graph from the node and relationship tables:
 ```cypher
 CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
-Then, you can run SCC using either of the two algorithms.
+Run SCC using either of the two algorithms:
 ```cypher
 // BFS-based algorithm
 CALL strongly_connected_components('Graph')

@@ -53,7 +53,7 @@ LOAD FROM '/tmp/student' (file_format='delta') RETURN *;
 └────────┴───────┘
 ```
 :::note[Note]
-Note: The `file_format` parameter is required here to explicitly specify the file format of the given path.
+The `file_format` parameter is required here to explicitly specify the file format of the given path.
 Kuzu is currently not capable of autodetecting Delta tables.
 :::
 
@@ -62,7 +62,7 @@ You can use a `COPY FROM` statement to copy the contents of a Delta table into K
 
 ```cypher
 CREATE NODE TABLE student (ID INT64 PRIMARY KEY, name STRING);
-COPY student FROM '/tmp/student' (file_format='delta')
+COPY student FROM '/tmp/student' (file_format='delta');
 ```
 ```
 ┌─────────────────────────────────────────────────┐
@@ -86,30 +86,30 @@ CALL <option_name>='<option_value>'
 The following options are supported:
 | Option | Description |
 |----------|----------|
-| `s3_access_key_id` | S3 access key id |
+| `s3_access_key_id` | S3 access key ID |
 | `s3_secret_access_key` | S3 secret access key |
 | `s3_endpoint` | S3 endpoint |
 | `s3_region` | S3 region |
-| `s3_url_style` | Uses [S3 url style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) (should either be vhost or path) |
+| `s3_url_style` | Uses [S3 URL style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) (should either be vhost or path) |
 
 #### Requirements on the S3 server API
 
 | Feature | Required S3 API features |
 |----------|----------|
 | Public file reads | HTTP Range request |
-| Private file reads | Secret key authentication|
+| Private file reads | Secret key authentication |
 
 #### Scan Delta tables from S3
 ```sql
 LOAD FROM 's3://kuzu-sample/sample-delta' (file_format='delta')
-RETURN *
+RETURN *;
 ```
 
 #### Copy Delta tables from S3 into Kuzu
 
 ```cypher
 CREATE NODE TABLE student (ID INT64 PRIMARY KEY, name STRING);
-COPY student FROM 's3://kuzu-sample/student-delta' (file_format='delta')
+COPY student FROM 's3://kuzu-sample/student-delta' (file_format='delta');
 ```
 
 ## Limitations

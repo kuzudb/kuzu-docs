@@ -27,9 +27,9 @@ Moreover, the password is provided via plain text, which is not recommended in a
 The above command is for **testing purposes only**.
 :::
 
-###  Example PostgreSQL database
+### Example PostgreSQL database
 
-To illustrate the usage of the extension, we create a sample Postgres database of university
+To illustrate the usage of the extension, we create a sample PostgreSQL database of university
 students. We will use [asyncpg](https://magicstack.github.io/asyncpg/current/index.html),
 an asynchronous PostgreSQL client library for Python, to create the database and insert some sample data
 via a Python script.
@@ -38,7 +38,7 @@ via a Python script.
 pip install asyncpg
 ```
 
-```py
+```python
 import asyncio
 import asyncpg
 
@@ -71,14 +71,14 @@ ATTACH
   When attaching multiple databases, we recommend using aliases.
 - `skip_unsupported_table`: A boolean flag to indicate whether Kuzu should exit with an error or skip
    tables with unsupported datatypes. Defaults to `False`.
-- `schema`: The name of the schema in Postgres to attach. Kuzu attaches to the `public` schema of postgres by default.
+- `schema`: The name of the schema in PostgreSQL to attach. Kuzu attaches to the `public` schema of PostgreSQL by default.
 
 `PG_CONNECTION_STRING` accepts the following parameters:
 
 - `dbname`: Database name
 - `host`: Host IP address. Defaults to `localhost`.
-- `user`: Postgres username. Defaults to `postgres`.
-- `password`: Postgres password. Defaults to an empty string.
+- `user`: PostgreSQL username. Defaults to `postgres`.
+- `password`: PostgreSQL password. Defaults to an empty string.
 - `port`: Port number. Defaults to `5432`.
 
 For example, the `university` PostgreSQL database can be attached to Kuzu as:
@@ -162,14 +162,14 @@ RETURN *
 
 ### Scan PostgreSQL tables with SQL
 
-You can use the `SQL_QUERY` function to execute arbitrary **read-only** SQL queries on any attached Postgres database
+You can use the `SQL_QUERY` function to execute arbitrary **read-only** SQL queries on any attached PostgreSQL database
 and retrieve its results in Kuzu.
 
 For example, the following query filters out all people who are younger than 20:
 
 ```sql
-CALL SQL_QUERY('uw', 'SELECT * FROM person WHERE age > 20') 
-RETURN *
+CALL SQL_QUERY('uw', 'SELECT * FROM person WHERE age >= 20') 
+RETURN *;
 ```
 
 ```
@@ -192,7 +192,7 @@ The above example can be simplified as:
 ATTACH 'university' AS uw (dbtype postgres);
 USE uw;
 LOAD FROM person
-RETURN *
+RETURN *;
 ```
 
 ### Copy data from PostgreSQL tables
@@ -205,7 +205,7 @@ First, create a `Person` table in Kuzu, with the same schema as the one defined 
 CREATE NODE TABLE Person (name STRING PRIMARY KEY, age INT32);
 ```
 
-When the schemas are the same, you can copy the data from the external DBMS table to the Kuzu table simply as:
+When the schemas are the same, you can copy the data from the external DBMS table to the Kuzu table as:
 
 ```sql
 COPY Person FROM uw.person;
@@ -246,20 +246,20 @@ MATCH (p:Person) RETURN p.*;
 To avoid redundantly retrieving schema information from attached databases, Kuzu maintains a schema cache
 including table names and their respective columns and types. Should modifications occur in the schema
 via an alternate connection to attached RDBMSs, such as creation or deletion of tables, the cached
-schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh cached
+schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh the cached
 schema information in such cases.
 
 ```sql
 CALL clear_attached_db_cache();
 ```
 :::note[Note]
-If you have attached to databases from different RDBMSs, say Postgres, DuckDB, and Sqlite, this call will clear the cache for _all_ of them.
+If you have attached to databases from different RDBMSs, say PostgreSQL, DuckDB, and SQLite, this call will clear the cache for _all_ of them.
 :::
 
 ### Detach a database
 
 To detach a database, use `DETACH [ALIAS]` as follows:
 
-```
+```sql
 DETACH uw;
 ```

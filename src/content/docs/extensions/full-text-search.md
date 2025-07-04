@@ -2,7 +2,7 @@
 title: "Full-text search extension"
 ---
 
-The full-text search (`FTS`) extension can be used to efficiently seach within the contents of
+The full-text search (`FTS`) extension can be used to efficiently search within the contents of
 any string property and return results based on a similarity score. The extension
 works by building an index on specified string properties.
 
@@ -63,13 +63,13 @@ Required arguments:
 
 Optional arguments:
 
-- `stemmer` The text normalization technique to use.
+- `stemmer`: The text normalization technique to use.
   - Accepted values: `arabic`, `basque`, `catalan`, `danish`, `dutch`, `english`, `finnish`, `french`, `german`, `greek`, `hindi`, `hungarian`, `indonesian`, `irish`, `italian`, `lithuanian`, `nepali`, `norwegian`, `porter`, `portuguese`, `romanian`, `russian`, `serbian`, `spanish`, `swedish`, `tamil`, or `turkish`.
   - Use `none` if you do not want to use any stemming
   - Defaults to `english`, which uses a Snowball stemmer.
 
-- `stopwords`: To make the full-text search results more useful, it's useful to provide a list of omitted words that are excluded when building and querying the full-text search index. These are termed "stopwords".
-  - A default list of built-in english stopwords is used, but if you want to use a custom stopwords list, you can provide it via the `stopwords` parameter in the following formats:
+- `stopwords`: You can make the full-text search results more relevant by providing a list of omitted words that are excluded when building and querying the full-text search index. These are termed "stopwords".
+  - A default list of built-in English stopwords is used, but if you want to use a custom stopwords list, you can provide it via the `stopwords` parameter in the following formats:
     - A node table with only a single column of stopwords.
     - A Parquet/CSV file with only a single string column of stopwords (no header required). This file can be stored in cloud storage platforms like Amazon S3 or Google Cloud Storage (GCS) or made accessible via HTTPS. If hosted remotely, ensure the httpfs extension is enabled and valid credentials (e.g., access keys) are configured to authenticate and securely access the file.
   - If the provided stopwords parameter matches both a node table and a file with the same name, the node table takes precedence and will be used.
@@ -99,7 +99,7 @@ CALL CREATE_FTS_INDEX(
 
 ### Query an FTS index
 
-The `QUERY_FTS_INDEX` function can be used to query a FTS index. Internally, it uses the [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) scoring algorithm.
+The `QUERY_FTS_INDEX` function can be used to query an FTS index. Internally, it uses the [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) scoring algorithm.
 
 ```cypher
 CALL QUERY_FTS_INDEX(
@@ -122,16 +122,16 @@ Optional arguments:
 
 - `conjunctive`: Whether all keywords in the query should appear in a string for it to be retrieved.
   - Defaults to `false`.
-- `K`: controls the influence of term frequency saturation. This limits the effect of multiple occurrences of a term within a string.
+- `K`: Controls the influence of term frequency saturation. This limits the effect of multiple occurrences of a term within a string.
   - Defaults to `1.2`.
-- `B`: controls the influence of string length on length normalization.
+- `B`: Controls the influence of string length on length normalization.
   - Defaults to `0.75`.
 
 You can read more about the `K` and `B` parameters [here](https://learn.microsoft.com/en-us/azure/search/index-ranking-similarity).
 
 #### Example
 
-The example below shows how to find books related to the `quantum machine` and return the results ordered by the similarity score:
+The example below shows how to find books related to `quantum machine` and return the results ordered by the similarity score:
 
 ```cypher
 CALL

@@ -24,6 +24,7 @@ RETURN node, group_id;
 Required arguments:
 
 - `GRAPH_NAME`: Name of the projected graph to run the algorithm on
+    - Type: `STRING`
 
 Optional arguments:
 
@@ -67,7 +68,7 @@ CREATE (u0:Person {name: 'Alice'}),
         (u7)-[:KNOWS]->(u4),
         (u6)-[:KNOWS]->(u5);
 ```
-Create a projected graph from the node and edge tables:
+Create a projected graph from the node and relationship tables:
 ```cypher
 CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```

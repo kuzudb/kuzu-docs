@@ -14,7 +14,6 @@ We currently support the following providers:
 * [Ollama](https://ollama.com/blog/embedding-models)
 * [OpenAI](https://platform.openai.com/docs/guides/embeddings)
 * [Voyage AI](https://docs.voyageai.com/docs/embeddings)
----
 
 ## Usage
 
@@ -72,7 +71,7 @@ CALL CREATE_EMBEDDING(
 
 ### Optional parameters
 
-| Option |Type| Description | 
+| Option | Type | Description | 
 |--------|------|-------| 
 | dimensions |`INT64`| The size of the embedding vector, if supported by the provider. Currently only `'open-ai'`, `'google-vertex'`, and `'voyage-ai'` support this option. |
 | region    |`STRING`| The region to send requests to, if supported by the provider. E.g., `'us-east-1'` for `'amazon-bedrock'`. |
@@ -101,4 +100,4 @@ CALL CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
 ## Storing embeddings in a vector index
 
 The `CREATE_EMBEDDING` function can be used together with the `vector` extension to store and search embeddings
-directly in Kuzu. Refer to the [the vector docs](/extensions/vector) for an example.
+directly in Kuzu. Refer to the [vector docs](/extensions/vector) for an example.

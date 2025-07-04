@@ -13,17 +13,16 @@ LOAD duckdb;
 
 First, create a sample DuckDB database of university students in Python.
 
-```py
+```python
 import duckdb
 
 conn = duckdb.connect('university.db')
 
-# Insert data to person table
 conn.execute("CREATE TABLE IF NOT EXISTS person (name VARCHAR, age INTEGER);")
-conn.execute("INSERT INTO person values ('Alice', 30);")
-conn.execute("INSERT INTO person values ('Bob', 27);")
-conn.execute("INSERT INTO person values ('Carol', 19);")
-conn.execute("INSERT INTO person values ('Dan', 25);")
+conn.execute("INSERT INTO person VALUES ('Alice', 30);")
+conn.execute("INSERT INTO person VALUES ('Bob', 27);")
+conn.execute("INSERT INTO person VALUES ('Carol', 19);")
+conn.execute("INSERT INTO person VALUES ('Dan', 25);")
 ```
 
 ### Attach a DuckDB database
@@ -40,7 +39,7 @@ ATTACH
 - `alias`: Database alias to use in Kuzu. If not provided, the database name from DuckDB will be used.
   When attaching multiple databases, we recommend using aliases.
 - `skip_unsupported_table`: A boolean flag to indicate whether Kuzu should exit with an error or skip
-   tables with unsupported datatypes. Defaults to `False`.
+   tables with unsupported data types. Defaults to `False`.
 - `schema`: The name of the schema in DuckDB to attach. Kuzu attaches to the `main` schema of DuckDB by default.
 
 For example, the `university.db` DuckDB database can be attached to Kuzu using the alias `uw`:
@@ -55,11 +54,11 @@ You can also attach a remote DuckDB database hosted on S3.
 
 First, configure the [S3 connection](/extensions/httpfs#configuring-the-s3-connection).
 
-Then, attach the database using a S3 url:
+Then, attach the database using an S3 URL:
 
 ```sql
 SET S3_URL_STYLE='VHOST';
-ATTACH 's3://duckdb-blobs/databases/stations.duckdb' as station (dbtype duckdb);
+ATTACH 's3://duckdb-blobs/databases/stations.duckdb' AS station (dbtype duckdb);
 LOAD FROM station.stations RETURN count(*);
 ```
 ```
@@ -75,37 +74,37 @@ LOAD FROM station.stations RETURN count(*);
 
 The following table shows the mapping from DuckDB's data types to Kuzu's data types:
 
-| Data type in DuckDB         | Corresponding data type in Kuzu |
-|-----------------------------|----------------------------------|
+| Data type in DuckDB          | Corresponding data type in Kuzu   |
+|------------------------------|-----------------------------------|
 | `BIGINT`                     | `INT64`                           |
-| `BIT`                        | Unsupported                          |
-| `BLOB`                       | `BLOB`                                 |
-| `BOOLEAN`                    | `BOOL`                                 |
-| `DATE`                       | `DATE`                                 |
-| `DECIMAL(prec, scale)`       | `DECIMAL(prec, scale)`             |
-| `DOUBLE`                     | `DOUBLE`                                 |
-| `FLOAT`                      | `FLOAT`                                 |
-| `HUGEINT`                    | `INT128`                                 |
-| `INTEGER`                    | `INT32`                                 |
-| `INTERVAL`                   | `INTERVAL`                                 |
-| `SMALLINT`                   | `INT16`                                 |
-| `TIME`                       | Unsupported                      |
-| `TIMESTAMP WITH TIME ZONE`   | Unsupported                                 |
-| `TIMESTAMP`                  | `TIMESTAMP`                                 |
-| `TINYINT`                    | `INT8`                                 |
-| `UBIGINT`                    | `UINT64`                                 |
-| `UHUGEINT`                   | Unsupported                                 |
-| `UINTEGER`                   | `UINT32`                                 |
-| `USMALLINT`                  | `UINT16`                                 |
-| `UTINYINT`                   | `UINT8`                                 |
-| `UUID`                       | `UUID`                                 |
-| `VARCHAR`                    | `STRING`                                 |
-| `ENUM`                       | Unsupported                                 |
-| `ARRAY`                      | `ARRAY`                                 |
-| `LIST`                       | `LIST`                                 |
-| `MAP`                       | `MAP`                                 |
-| `STRUCT`                       | `STRUCT`                                 |
-| `UNION`                       | `UNION`                                 |
+| `BIT`                        | Unsupported                       |
+| `BLOB`                       | `BLOB`                            |
+| `BOOLEAN`                    | `BOOL`                            |
+| `DATE`                       | `DATE`                            |
+| `DECIMAL(prec, scale)`       | `DECIMAL(prec, scale)`            |
+| `DOUBLE`                     | `DOUBLE`                          |
+| `FLOAT`                      | `FLOAT`                           |
+| `HUGEINT`                    | `INT128`                          |
+| `INTEGER`                    | `INT32`                           |
+| `INTERVAL`                   | `INTERVAL`                        |
+| `SMALLINT`                   | `INT16`                           |
+| `TIME`                       | Unsupported                       |
+| `TIMESTAMP WITH TIME ZONE`   | Unsupported                       |
+| `TIMESTAMP`                  | `TIMESTAMP`                       |
+| `TINYINT`                    | `INT8`                            |
+| `UBIGINT`                    | `UINT64`                          |
+| `UHUGEINT`                   | Unsupported                       |
+| `UINTEGER`                   | `UINT32`                          |
+| `USMALLINT`                  | `UINT16`                          |
+| `UTINYINT`                   | `UINT8`                           |
+| `UUID`                       | `UUID`                            |
+| `VARCHAR`                    | `STRING`                          |
+| `ENUM`                       | Unsupported                       |
+| `ARRAY`                      | `ARRAY`                           |
+| `LIST`                       | `LIST`                            |
+| `MAP`                        | `MAP`                             |
+| `STRUCT`                     | `STRUCT`                          |
+| `UNION`                      | `UNION`                           |
 
 ### Scan a DuckDB table
 
@@ -113,7 +112,7 @@ You can use the `LOAD FROM` statement to scan the `person` table from the attach
 
 ```sql
 LOAD FROM uw.person
-RETURN *
+RETURN *;
 ```
 ```
 ---------------
@@ -139,7 +138,7 @@ The above example can be simplified as:
 ATTACH 'university.db' AS uw (dbtype duckdb);
 USE uw;
 LOAD FROM person
-RETURN *
+RETURN *;
 ```
 
 ### Copy data from DuckDB tables
