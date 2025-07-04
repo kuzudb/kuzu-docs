@@ -72,7 +72,7 @@ By default, NULLs are put at the beginning of the list when sorting in descendin
 ```cypher
 RETURN list_sort([3,10, NULL, 4], 'DESC') AS result;
 ```
-Output:
+
 ```
 ┌───────────┐
 │ result    │
@@ -90,7 +90,7 @@ specifying `NULLS LAST` as the third argument.
 ```cypher
 RETURN list_sort([3,10, NULL, 4], 'DESC', 'NULLS LAST') AS result;
 ```
-Output:
+
 ```
 ┌───────────┐
 │ result    │
@@ -136,7 +136,6 @@ The only difference is that `COALESCE` can take more than two arguments.
 RETURN coalesce(NULL, 'a', NULL) AS result;
 ```
 
-Output:
 ```
 ┌────────┐
 │ result │
@@ -150,7 +149,6 @@ Output:
 RETURN ifnull(NULL, 'a') AS result;
 ```
 
-Output:
 ```
 ┌────────┐
 │ result │

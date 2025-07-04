@@ -16,7 +16,7 @@ Dropping a table removes the table and all its data from the database.
 For example, consider the following database:
 
 ```sql
-CREATE NODE TABLE User(name STRING, age INT64, reg_date DATE, PRIMARY KEY (name));
+CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64, reg_date DATE);
 CREATE REL TABLE Follows(FROM User TO User, since DATE);
 ```
 

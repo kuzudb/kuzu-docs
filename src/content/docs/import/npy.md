@@ -22,7 +22,7 @@ Consider a `Paper` table with an `id` column, a feature column that is an embedd
 a `year` column and a `label` column as ground truth. We first define the schema with the following statement:
 
 ```cypher
-CREATE NODE TABLE Paper(id INT64, feat FLOAT[768], year INT64, label DOUBLE, PRIMARY KEY(id));
+CREATE NODE TABLE Paper(id INT64 PRIMARY KEY, feat FLOAT[768], year INT64, label DOUBLE);
 ```
 
 The raw data is stored in `.npy` format where each column is represented as a NumPy array on disk. The files are

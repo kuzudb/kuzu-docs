@@ -17,8 +17,8 @@ Consider that we have a database of `Person`, `Product` and `HasReward` relation
 person is eligible for a product reward if they have made a certain number of purchases).
 
 ```cypher
-CREATE NODE TABLE Person(name STRING, num_purchases INT64, PRIMARY KEY (name));
-CREATE NODE TABLE Product(name STRING, price DOUBLE, PRIMARY KEY (name));
+CREATE NODE TABLE Person(name STRING PRIMARY KEY, num_purchases INT64)
+CREATE NODE TABLE Product(name STRING PRIMARY KEY, price DOUBLE)
 CREATE REL TABLE HasReward(FROM Person TO Product);
 ```
 
@@ -53,7 +53,7 @@ df = pd.DataFrame({
     "age": [30, 40, 50, 25]
 })
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 
 # Apply a predicate filter while scanning the DataFrame
 # Pass the results of the scan to the COPY FROM command

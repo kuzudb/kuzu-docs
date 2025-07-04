@@ -81,7 +81,7 @@ import pandas as pd
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64);")
 
 df = pd.DataFrame({
     "name": ["Adam", "Karissa", "Zhang"],
@@ -103,7 +103,7 @@ import pyarrow as pa
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64);")
 
 pa_table = pa.table({
     "name": ["Adam", "Karissa", "Zhang"],
@@ -124,7 +124,7 @@ import polars as pl
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64);")
 
 df = pl.DataFrame({
     "name": ["Adam", "Karissa", "Zhang"],

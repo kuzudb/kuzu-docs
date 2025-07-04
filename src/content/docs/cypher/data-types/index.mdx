@@ -98,7 +98,7 @@ You can explicitly cast a number (either integer or float) to a `DECIMAL` as fol
 ```cypher
 RETURN CAST(127.3, "DECIMAL(5, 2)") AS result;
 ```
-Output:
+
 ```
 ┌───────────────┐
 │ result        │
@@ -139,7 +139,6 @@ Example:
 RETURN UUID('A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11') as result;
 ```
 
-Output:
 ```
 ┌──────────────────────────────────────┐
 │ result                               │
@@ -163,7 +162,6 @@ Example:
 RETURN 'Зарегистрируйтесь, σπαθιοῦ, Yen [jɛn], kΩ' AS str;
 ```
 
-Output:
 
 ```
 ┌───────────────────────────────────────────┐
@@ -191,7 +189,7 @@ Compare a value with `NULL`:
 ```cypher
 RETURN 3 = null;
 ```
-Output:
+
 ```
 ┌────────────┐
 │ EQUALS(3,) │
@@ -205,7 +203,7 @@ Compare `NULL` with `NULL`:
 ```cypher
 RETURN null = null;
 ```
-Output:
+
 ```
 ┌───────────┐
 │ EQUALS(,) │
@@ -228,7 +226,7 @@ Example:
 ```cypher
 RETURN date('2022-06-06') as x;
 ```
-Output:
+
 ```
 ┌────────────┐
 │ x          │
@@ -254,7 +252,7 @@ Example:
 ```cypher
 RETURN timestamp("1970-01-01 00:00:00.004666-10") as x;
 ```
-Output:
+
 ```
 ┌────────────────────────────┐
 │ x                          │
@@ -278,7 +276,7 @@ Example:
 ```cypher
 RETURN interval("1 year 2 days") as x;
 ```
-Output:
+
 ```
 ┌───────────────┐
 │ x             │
@@ -304,7 +302,6 @@ To construct a `STRUCT`, provide a mapping of keys to values as follows:
 RETURN {first: 'Adam', last: 'Smith'};
 ```
 
-Output:
 ```
 ┌───────────────────────────────────┐
 │ STRUCT_PACK(first,last)           │
@@ -320,7 +317,7 @@ You can extract a value from a `STRUCT` using the dot notation:
 WITH {first: 'Adam', last: 'Smith'} AS full_name
 RETURN full_name.first AS first_name;
 ```
-Output:
+
 ```
 ┌────────────┐
 │ first_name │
@@ -359,7 +356,7 @@ Example:
 ```cypher
 RETURN map([1, 2], ['a', 'b']) AS m;
 ```
-Output:
+
 ```
 ┌────────────────────┐
 │ m                  │
@@ -392,7 +389,7 @@ aa
 
 Example
 ```cypher
-CREATE NODE TABLE demo(a SERIAL, b UNION(num INT64, str STRING), PRIMARY KEY(a));
+CREATE NODE TABLE demo(a SERIAL PRIMARY KEY, b UNION(num INT64, str STRING));
 COPY demo from "demo.csv";
 ```
 
@@ -425,7 +422,7 @@ Below is an example of how to create a blob object with 3 bytes (188, 189, 186, 
 ```cypher
 RETURN BLOB('\\xBC\\xBD\\xBA\\xAA') as result;
 ```
-Output:
+
 ```
 ┌──────────────────┐
 │ result           │
@@ -452,11 +449,11 @@ Dan
 ```
 
 ```cypher
-CREATE NODE TABLE Person(id SERIAL, name STRING, PRIMARY KEY(id));
+CREATE NODE TABLE Person(id SERIAL PRIMARY KEY, name STRING);
 COPY Person FROM 'person.csv';
 MATCH (a:Person) RETURN a.*;
 ```
-Output:
+
 ```
 ┌────────┬────────┐
 │ a.id   │ a.name │
@@ -492,11 +489,11 @@ Here's how to return `NODE` column for a file `person.csv`:
 
 ```
 ```cypher
-CREATE NODE TABLE Person(id SERIAL, name STRING, age INT64, PRIMARY KEY(id));
+CREATE NODE TABLE Person(id SERIAL PRIMARY KEY, name STRING, age INT64);
 COPY Person FROM 'person.csv';
 MATCH (a:Person) RETURN a;
 ```
-Output:
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ a                                                       │
@@ -524,7 +521,7 @@ Here's how to return a relationship column that's of type `REL`:
 MATCH (a:Person)-[r:Follows]->(b:Person)
 RETURN r;
 ```
-Output:
+
 ```
 ┌───────────────────────────────────────────────┐
 │ r                                             │
@@ -549,7 +546,7 @@ MATCH p = (a:User)-[:Follows]->(b:User)
 WHERE a.name = 'Adam' AND b.name = 'Karissa' 
 RETURN p;
 ```
-Output:
+
 ```
 {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name: Karissa, age: 40}], _RELS: [(0:0)-{_LABEL: Follows, _ID: 2:0, since: 2020}->(0:1)]}
 ```
@@ -560,7 +557,7 @@ MATCH p = (a:Person)-[:Follows]->(b:Person)
 WHERE a.name = 'Alice' AND b.name = 'Bob' 
 RETURN nodes(p);
 ```
-Output:
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ NODES(p)                                                                        │
@@ -576,7 +573,7 @@ MATCH p = (a:Person)-[:Follows]->(b:Person)
 WHERE a.name = 'Alice' AND b.name = 'Bob' 
 RETURN rels(p);
 ```
-Output:
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ RELS(p)                                                 │
@@ -600,12 +597,12 @@ Kuzu supports two list-like data types: (i) variable-length lists, simply called
 
 ## JSON
 
-:::note[Requires the JSON extension]
+:::note[Note]
 The JSON data type is not natively available in Kuzu, and requires the [JSON extension](/extensions/json)
 :::
 
-Using the Kuzu JSON extension, you can model store properties as JSON natively via the `JSON`
-logical type, which is interpreted as parsed as JSON, rather than as a string.
+Using the official `json` extension, you can model and operate on properties as JSON natively via the `JSON`
+logical type, rather than as a string.
 
 <LinkCard
   title="How to work with JSON"

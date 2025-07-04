@@ -18,7 +18,7 @@ MATCH (u:User)
 RETURN u.name, u.age
 ORDER BY u.age;
 ```
-Output:
+
 ```
 -------------------
 | u.name  | u.age |
@@ -43,7 +43,7 @@ WHERE c.name = 'Waterloo'
 RETURN u.name, u.age
 ORDER BY u.age DESC;
 ```
-Output:
+
 ```
 -------------------
 | u.name  | u.age |
@@ -67,7 +67,7 @@ MATCH (a:User)-[:Follows]->(b:User)
 RETURN b.age, a.name 
 ORDER BY b.age DESC, a.name DESC;
 ```
-Output:
+
 ```
 -------------------
 | b.age | a.name  |

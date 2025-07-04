@@ -33,8 +33,8 @@ def main() -> None:
     conn = kuzu.Connection(db)
 
     # Create schema 
-    conn.execute("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))")
-    conn.execute("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))")
+    conn.execute("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)")
+    conn.execute("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)")
     conn.execute("CREATE REL TABLE Follows(FROM User TO User, since INT64)")
     conn.execute("CREATE REL TABLE LivesIn(FROM User TO City)")
 
@@ -181,7 +181,7 @@ import pandas as pd
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 conn.execute("CREATE (a:Person {name: 'Adam', age: 30})")
 conn.execute("CREATE (a:Person {name: 'Karissa', age: 40})")
 conn.execute("CREATE (a:Person {name: 'Zhang', age: 50})")
@@ -222,7 +222,7 @@ import polars as pl
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 conn.execute("CREATE (a:Person {name: 'Adam', age: 30})")
 conn.execute("CREATE (a:Person {name: 'Karissa', age: 40})")
 conn.execute("CREATE (a:Person {name: 'Zhang', age: 50})")
@@ -275,7 +275,7 @@ import pyarrow as pa
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 conn.execute("CREATE (a:Person {name: 'Adam', age: 30})")
 conn.execute("CREATE (a:Person {name: 'Karissa', age: 40})")
 conn.execute("CREATE (a:Person {name: 'Zhang', age: 50})")
@@ -405,7 +405,7 @@ import pandas as pd
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 
 df = pd.DataFrame({
     "name": ["Adam", "Karissa", "Zhang"],
@@ -437,7 +437,7 @@ import polars as pl
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 
 df = pl.DataFrame({
     "name": ["Adam", "Karissa", "Zhang"],
@@ -475,7 +475,7 @@ import pyarrow as pa
 db = kuzu.Database("tmp")
 conn = kuzu.Connection(db)
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 
 tbl = pa.table({
     "name": ["Adam", "Karissa", "Zhang"],
@@ -589,7 +589,7 @@ Once the UDF is registered, you can apply it in a Cypher query. First, let's cre
 
 ```py
 # create a table
-conn.execute("CREATE NODE TABLE IF NOT EXISTS Item (id INT64, a INT64, b INT64, c INT64, PRIMARY KEY(id))")
+conn.execute("CREATE NODE TABLE IF NOT EXISTS Item (id INT64 PRIMARY KEY, a INT64, b INT64, c INT64)")
 
 # insert some data
 conn.execute("CREATE (i:Item {id: 1}) SET i.a = 134, i.b = 123")

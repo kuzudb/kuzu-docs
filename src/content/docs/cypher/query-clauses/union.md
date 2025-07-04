@@ -24,7 +24,6 @@ MATCH (u3:User)-[:Follows]->(u4:User)
 WHERE u4.name = 'Karissa'
 RETURN u3.age;
 ```
-Result:
 
 ```
 ----------

@@ -29,7 +29,7 @@ MATCH (a:User) RETURN
         WHEN 50 THEN a.name 
     END AS x;
 ```
-Output:
+
 ```
 ---------
 | x     |
@@ -65,7 +65,7 @@ MATCH (a:User) RETURN
     ELSE 'dummy'
     END AS x;
 ```
-Output:
+
 ```
 -----------
 | x       |

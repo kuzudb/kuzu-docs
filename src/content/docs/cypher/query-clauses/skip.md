@@ -18,7 +18,6 @@ RETURN u.name
 ORDER BY u.age
 SKIP 2;
 ```
-Result:
 ```
 ┌─────────┐
 │ u.name  │
@@ -47,8 +46,6 @@ The number of rows to skip can be given at the time of execution.
 ```c++
 conn->execute(prepared.get(), std::make_pair(std::string{"sp"}, 2))
 ```
-
-Result:
 ```
 ┌────────┐
 │ u.name │
@@ -64,7 +61,6 @@ MATCH (u:User)
 RETURN u.name
 skip 2+1
 ```
-Result:
 
 ```
 ┌────────┐

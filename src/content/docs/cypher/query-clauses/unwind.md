@@ -17,7 +17,6 @@ UNWIND ["Amy", "Bob", "Carol"] AS x
 RETURN x;
 ```
 
-Output:
 ```
 ┌────────┐
 │ x      │
@@ -37,7 +36,7 @@ list of strings, after unwinding, you'd get a table of list of strings. For exam
 UNWIND [["Amy"], ["Bob", "Carol"]] AS x
 RETURN x;
 ```
-Output:
+
 ```
 ┌─────────────┐
 │ x           │
@@ -77,7 +76,6 @@ WHERE x > 2
 RETURN x;
 ```
 
-Output:
 ```
 ┌───────┐
 │ x     │

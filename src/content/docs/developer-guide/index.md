@@ -9,26 +9,24 @@ please refer to the [installation guide](https://docs.kuzudb.com/installation) f
 
 To build from source code, Kuzu requires CMake (`>=3.15`), Python (`>=3.9`), and a compiler that supports C++20. The minimum supported version of C++ compilers is GCC 12, Clang 18, and MSVC 19.20. The preferred compiler on Linux is GCC; on macOS, Apple Clang; and on Windows, MSVC. On Linux, Clang is also tested. Other compilers which support C++20 may also work, but are not tested.
 
-Below are the instructions for building Kuzu on Ubuntu 22.04 LTS, AlmaLinux 9.2, Arch Linux, macOS 12, and Windows 10. These instructions should also work for other similar platforms:
+Below are the instructions for building Kuzu on Ubuntu, AlmaLinux, Arch Linux, macOS, and Windows. These instructions should also work for other similar platforms:
 
-- For other Debian-based Linux distros, such as *Debian*, *Linux Mint*, and *Pop!\_OS*, the instructions should be similar to Ubuntu 22.04 LTS.
-- For other Red Hat-based Linux distros, such as *Red Hat Enterprise Linux (RHEL)*, *CentOS*, *Fedora*, *Rocky Linux*, and *Oracle Linux*, the instructions should be similar to AlmaLinux 9.2.
+- For other Debian-based Linux distros, such as *Debian*, *Linux Mint*, and *Pop!\_OS*, the instructions should be similar to Ubuntu.
+- For other Red Hat-based Linux distros, such as *Red Hat Enterprise Linux (RHEL)*, *CentOS*, *Fedora*, *Rocky Linux*, and *Oracle Linux*, the instructions should be similar to AlmaLinux.
 - For other Arch-based Linux distros, such as *Manjaro*, the instructions should be similar to Arch Linux.
-- For other versions of *macOS*, the instructions should be similar to macOS 14.
-- For other versions of *Windows*, the instructions should be similar to Windows 10.
+
+:::note[Tip]
+You can refer to our [multi-platform Github Actions workflow](https://github.com/kuzudb/kuzu/blob/master/.github/workflows/multiplatform-build-test.yml) for the exact commands we use on different platforms.
+:::
 
 ## Building Instructions
 
-### Ubuntu 22.04 LTS
-
-#### Install dependencies
+### Ubuntu 24.04 LTS
 
 ```bash
 apt update
 apt install -y build-essential cmake gcc g++ python3
 ```
-
-#### Build Kuzu
 
 ```bash
 make release NUM_THREADS=$(nproc)
@@ -36,14 +34,10 @@ make release NUM_THREADS=$(nproc)
 
 ### AlmaLinux 9.2
 
-#### Install dependencies
-
 ```bash
 dnf update
 dnf install -y cmake gcc gcc-c++ python3
 ```
-
-#### Build Kuzu
 
 ```bash
 make release NUM_THREADS=$(nproc)
@@ -51,14 +45,10 @@ make release NUM_THREADS=$(nproc)
 
 ### Arch Linux
 
-#### Install dependencies
-
 ```bash
 pacman -Syu
 pacman -S --needed base-devel cmake gcc python
 ```
-
-#### Build Kuzu
 
 ```bash
 make release NUM_THREADS=$(nproc)
@@ -66,23 +56,15 @@ make release NUM_THREADS=$(nproc)
 
 ### macOS 14
 
-#### Install command line tools
+Install [Homebrew](https://brew.sh/).
 
 ```bash
 xcode-select --install
 ```
 
-#### Install homebrew
-
-Follow the instructions at [https://brew.sh/](https://brew.sh/).
-
-#### Install dependencies
-
 ```bash
 brew install cmake python
 ```
-
-#### Build Kuzu
 
 ```bash
 make release NUM_THREADS=$(sysctl -n hw.physicalcpu)
@@ -143,7 +125,7 @@ By default, only C and C++ libraries and the CLI are built. To build other langu
 To install the dependencies, please run the following command.
 
 ```bash
-pip3 install -r tools/python_api/requirements_dev.txt
+make -C tools/python_api requirements
 ```
 
 In addition, the python development headers are required. For example, on Ubuntu, the `python3-dev` package should be installed.
@@ -151,13 +133,13 @@ In addition, the python development headers are required. For example, on Ubuntu
 #### Build Python bindings
 
 ```bash
-make python NUM_THREADS=X
+make python NUM_THREADS=$(nproc)
 ```
 
 #### Run Python tests
 
 ```bash
-make pytest NUM_THREADS=X
+make pytest-venv NUM_THREADS=$(nproc)
 ```
 
 ### Node.js
@@ -169,19 +151,19 @@ Install Node.js and npm. Please refer to [the download page](https://nodejs.org/
 #### Install dependencies
 
 ```bash
-cd tools/nodejs_api && npm i --include=dev
+make nodejs-deps
 ```
 
 #### Build Node.js bindings
 
 ```bash
-make nodejs NUM_THREADS=X
+make nodejs NUM_THREADS=$(nproc)
 ```
 
 #### Run Node.js tests
 
 ```bash
-make nodejstest NUM_THREADS=X
+make nodejstest NUM_THREADS=$(nproc)
 ```
 
 ### Java
@@ -197,13 +179,13 @@ The minimum supported version of JDK is 11. Oracle JDK, OpenJDK, and Eclipse Tem
 #### Build Java bindings
 
 ```bash
-make java NUM_THREADS=X
+make java NUM_THREADS=$(nproc)
 ```
 
 #### Run Java tests
 
 ```bash
-make javatest NUM_THREADS=X
+make javatest NUM_THREADS=$(nproc)
 ```
 
 ### Rust
@@ -215,11 +197,11 @@ Rust 1.81.0 or later is required. Installing Rust with [rustup](https://rustup.r
 #### Build Rust bindings
 
 ```bash
-cd tools/rust_api && CARGO_BUILD_JOBS=X cargo build
+cd tools/rust_api && CARGO_BUILD_JOBS=$(nproc) cargo build
 ```
 
 #### Run Rust tests
 
 ```bash
-cd tools/rust_api && CARGO_BUILD_JOBS=X cargo test --features arrow -- --test-threads=1
+make rusttest
 ```

@@ -20,7 +20,6 @@ MATCH (u:User)
 OPTIONAL MATCH (u)-[:Follows]->(u1:User)
 RETURN u.name, u1.name;
 ```
-Result:
 ```
 ---------------------
 | u.name  | u1.name |

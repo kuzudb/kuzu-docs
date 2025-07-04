@@ -17,7 +17,7 @@ CREATE (u:User {name: 'Alice', age: 35});
 ```
 The properties to be set are specified using a mapping: `{prop1 : val1, prop2 : val2, ...}`.
 
-If you queried the database now for a `User` node with name `Alice`, you would get the following result:
+You can now query the database for a `User` node with name `Alice`:
 ```cypher
 MATCH (a:User) 
 WHERE a.name = 'Alice' 

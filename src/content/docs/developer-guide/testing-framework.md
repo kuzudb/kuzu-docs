@@ -267,7 +267,7 @@ Error: Binder exception: Variable intended is not in scope.
 ^Error: Binder exception: Variable .* is not in scope\.$
 
 # Success results don't need anything after the dashes
--STATEMENT CREATE NODE TABLE  Person (ID INT64, PRIMARY KEY (ID));
+-STATEMENT CREATE NODE TABLE  Person (ID INT64 PRIMARY KEY);
 ---- ok
 
 -CHECK_COLUMN_NAMES
@@ -355,8 +355,8 @@ A statement can contain multiple queries, each separated by semi-colons, as per 
 The statement would then have multiple results, in the order of the queries.
 
 ```
--STATEMENT CREATE NODE TABLE V1 (id UUID, PRIMARY KEY(id));
-           CREATE NODE TABLE V2 (id INT64, PRIMARY KEY(id));
+-STATEMENT CREATE NODE TABLE V1 (id UUID PRIMARY KEY);
+           CREATE NODE TABLE V2 (id INT64 PRIMARY KEY);
            WITH NULL as bid MATCH (b:V1 {id: bid}) RETURN b;
 ---- ok
 ---- ok

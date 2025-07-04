@@ -75,7 +75,7 @@ values at a later time.
 
 The DDL for the `Person` node table is as follows:
 ```sql
-CREATE NODE TABLE Person(id INT64, name STRING, age INT64, address STRING, PRIMARY KEY(id));
+CREATE NODE TABLE Person(id INT64 PRIMARY KEY, name STRING, age INT64, address STRING);
 ```
 
 However, the given CSV file to `COPY FROM` has only 3 columns -- the address information will be
@@ -128,7 +128,7 @@ Here is an example of using `IGNORE_ERRORS` when [reading from a CSV file](/impo
 Consider the following `User` node table:
 
 ```cypher
-CREATE NODE TABLE User (name String, age INT32, PRIMARY KEY (name));
+CREATE NODE TABLE User (name STRING PRIMARY KEY, age INT32);
 ```
 
 Let the CSV file `user.csv` contain the following rows:
@@ -147,7 +147,7 @@ To check that only one `User` node has been inserted, we can run the following q
 ```cypher
 MATCH (a:User) RETURN count(*)
 ```
-Output:
+
 ```
 ┌──────────┬
 │ count(*) │
@@ -173,7 +173,6 @@ you can run the [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) func
 CALL show_warnings() RETURN *;
 ```
 
-Output:
 ```
 ┌──────────┬─────────────────────────────────────────────────────────────────────────────┬───────────┬─────────────┬────────────────────────┐
 │ query_id │ message                                                                     │ file_path │ line_number │ skipped_line_or_record │
@@ -195,7 +194,6 @@ After clearing the warnings, the Warnings table will be empty.
 CALL show_warnings() RETURN *;
 ```
 
-Output:
 ```
 ┌──────────┬─────────┬───────────┬─────────────┬────────────────────────┐
 │ query_id │ message │ file_path │ line_number │ skipped_line_or_record │
