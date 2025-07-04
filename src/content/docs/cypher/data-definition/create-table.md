@@ -36,21 +36,21 @@ justifying our choice of using the term "table" in our design of the system.
 To create a node table, use the `CREATE NODE TABLE` statement as shown below:
 
 ```sql
-CREATE NODE TABLE User (name STRING, age INT64 DEFAULT 0, reg_date DATE, PRIMARY KEY (name))
+CREATE NODE TABLE User (name STRING, age INT64 DEFAULT 0, reg_date DATE, PRIMARY KEY (name));
 ```
 
 Alternatively, you can specify the keyword `PRIMARY KEY` immediately after the column name, as follows:
 ```sql
-CREATE NODE TABLE User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE)
+CREATE NODE TABLE User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE);
 ```
 
-The above statements adds a `User` table to the catalog of the system with three properties: `name`, `age`, and `reg_date`,
-with the primary key being set to the `name` property in this case.
+The above statements add a `User` table to the database with three properties: `name`, `age`, and `reg_date`,
+with `name` set as the primary key of the table.
 
 The name of the node table, `User`, specified above will serve as the "label" which we want to query
 in Cypher, for example:
-```sql
-MATCH (a:User) RETURN *
+```cypher
+MATCH (a:User) RETURN *;
 ```
 
 ### Primary key
@@ -62,7 +62,7 @@ Kuzu requires a primary key column for node table which can be either a `STRING`
 Each property in a table can have a default value. If not specified, the default value is `NULL`.
 
 ```sql
-CREATE NODE TABLE User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE)
+CREATE NODE TABLE User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE);
 ```
 
 In the above example, the `age` property is set to a default value of `0` rather than `NULL`. The
@@ -77,7 +77,7 @@ you can use the `current_timestamp()` function.
 CREATE NODE TABLE User (
     id INT64 PRIMARY KEY,
     happens_at TIMESTAMP DEFAULT current_timestamp()
-)
+);
 ```
 :::
 
@@ -102,33 +102,35 @@ CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
 
 - **Syntax**: There is no comma between the `FROM` and `TO` clauses, however a comma is needed between two node table pairs.
 - **Directionality**: Each relationship has a direction following the property graph model. So when `Follows` relationship records are added, each one has a specific source (FROM) node and a specific destination (TO) node.
-- **Primary keys**: You cannot define a primary key for relationship records. Each relationship gets a unique system-level edge ID, which are internally generated. You can check if two edges are the same, i.e., have the same edge ID, using the `=` and `!=` operator between the `ID()` function on two variables that bind to relationships. For example, you can query `MATCH (n1:User)-[r1:Follows]->(n2:User)<-[r2:Follows]-(n3:User) WHERE ID(r1) != ID(r2) RETURN *` to ensure that the same relationship does not bind to both r1 and r2.
+- **Primary keys**: You cannot define a primary key for relationship records. Each relationship gets a unique system-level edge ID, which are internally generated. You can check if two edges are the same, i.e., have the same edge ID, using the `=` and `!=` operator between the `ID()` function on two variables that bind to relationships. For example, you can query `MATCH (n1:User)-[r1:Follows]->(n2:User)<-[r2:Follows]-(n3:User) WHERE ID(r1) != ID(r2) RETURN *` to ensure that the same relationship does not bind to both `r1` and `r2`.
 :::
 
 ### Bulk insert to relationship table with multiple from-to pairs
 
 Internally, a relationship table with multiple from-to pairs creates a child table per from-to pair. In the example above, the following two children
-tables are created internally
+tables are created internally:
 ```
 Knows_User_User
 Knows_User_City
 ```
 
-When bulk inserting into a relationship table with multiple from-to pairs, users need to specify which child table to insert through `from, to` options. For example, the following two statements will bulk insert into `Knows` relationship table.
-```
-Copy Knows FROM 'knows_user_user.csv' (from='User', to='User');
-Copy Knows FROM 'knows_user_city.csv' (from='User', to='City');
+When bulk inserting into a relationship table with multiple from-to pairs, users need to specify which child table to insert through `from, to` options. For example, the following two statements will bulk insert into `Knows` relationship table:
+```sql
+COPY Knows FROM 'knows_user_user.csv' (from='User', to='User');
+COPY Knows FROM 'knows_user_city.csv' (from='User', to='City');
 ```
 
 Alternatively, you can also directly copy into a child table. Though this approach is not recommended and will be deprecated in the future release.
-```
-Copy Knows_User_User FROM 'knows_user_user.csv';
-Copy Knows_User_City FROM 'knows_user_city.csv';
+```sql
+COPY Knows_User_User FROM 'knows_user_user.csv';
+COPY Knows_User_City FROM 'knows_user_city.csv';
 ```
 
-### Relationship Multiplicities
+### Relationship multiplicities
 
-For any relationship label E, e.g., , by default there can be multiple relationships from any node v both in the forward and backward direction. In database terminology, relationships are by default many-to-many. For example in the first `Follows` example above: (i) any `User` node `v` can follow multiple `User` nodes; and (ii) be followed by multiple `User` nodes. You can also constrain the multiplicity to _at most 1_ (we don't yet support "exactly 1" semantics as you may be used to via foreign key constraints in relational systems) in either direction.
+For any relationship label `E`, by default there can be multiple relationships from any node `v` both in the forward and backward direction. In database terminology, relationships are by default many-to-many. In the first `Follows` example above: (i) any `User` node `v` can follow multiple `User` nodes; and (ii) be followed by multiple `User` nodes.
+
+You can constrain the multiplicity to _at most 1_ (we don't yet support "exactly 1" semantics as you may be used to via foreign key constraints in relational systems) in either direction.
 
 :::note[Note]
 You can optionally declare the multiplicity of relationships by adding `MANY_MANY`, `ONE_MANY`, `MANY_ONE`, or `ONE_ONE` clauses to the end of the `CREATE REL TABLE` command.
@@ -137,45 +139,45 @@ You can optionally declare the multiplicity of relationships by adding `MANY_MAN
 Below are a few examples:
 
 ```sql
-CREATE REL TABLE LivesIn(FROM User TO City, MANY_ONE)
+CREATE REL TABLE LivesIn(FROM User TO City, MANY_ONE);
 ```
 
 The DDL shown above indicates that `LivesIn` has `n-1` multiplicity. This command enforces an additional constraint that each `User` node `v` might live in at most one `City` node (assuming our database has `City` nodes). It does not put any constraint in the "backward" direction, i.e., there can be multiple `User`s living in the same `City`. As another example to explain the semantics of multiplicity constraints in the presence of multiple node labels, consider the following:
 
 ```sql
-CREATE REL TABLE Likes(FROM Pet TO User, ONE_MANY)
+CREATE REL TABLE Likes(FROM Pet TO User, ONE_MANY);
 ```
 
 The DDL above indicates that `Likes` has 1-to-n multiplicity. This DDL command enforces the constraint that each `User` node `v` might be `Liked` by one `Pet` node. It does not place any constraints in the forward direction, i.e., each `Pet` node might know multiple `User`s.
 
 In general in a relationship `E`'s multiplicity, if the "source side" is `ONE`, then for each node `v` that can be the destination of `E` relationships, `v` can have at most one backward edge. If the "destination side" is `ONE`, then each node `v` that can be the source of `E` relationships, `v` can have at most one forward edge.
 
-## Create relationship table group [Deprecated]
+### Create relationship table group [deprecated]
 :::note[Note]
 Relationship table group has been deprecated since our v0.8.0 release. Users can now define multiple node table pairs in rel table using multiple `FROM ... TO ...` clauses.
 :::
 
 
-You can use relationship table groups to gain added flexibility in your data modelling, by defining a relationship table with multiple node table pairs. This is done via the `CREATE REL TABLE GROUP` statement. This has a similar syntax to `CREATE REL TABLE`, but uses multiple `FROM ... TO ...` clauses. Internally, a relationship table group defines a relationship table for _each_ `FROM ... TO ...` block. Any query to a relationship table group is treated as a query on the union of _all_ relationship tables in the group.
+You can use relationship table groups to gain added flexibility in your data modeling, by defining a relationship table with multiple node table pairs. This is done via the `CREATE REL TABLE GROUP` statement. This has a similar syntax to `CREATE REL TABLE`, but uses multiple `FROM ... TO ...` clauses. Internally, a relationship table group defines a relationship table for _each_ `FROM ... TO ...` block. Any query to a relationship table group is treated as a query on the union of _all_ relationship tables in the group.
 
 
 
 ```sql
-CREATE REL TABLE GROUP Knows (FROM User To User, FROM User to City, year INT64);
+CREATE REL TABLE GROUP Knows (FROM User TO User, FROM User TO City, year INT64);
 ```
 
-The statement above creates a `Knows_User_User` rel table and a `Knows_User_City` rel table. And a `Knows` rel table group refering these two rel tables.
+The statement above creates a `Knows_User_User` rel table and a `Knows_User_City` rel table. And a `Knows` rel table group referring these two rel tables.
 
 A relationship table group can be used as a regular relationship table for querying purposes.
 
-```sql
+```cypher
 MATCH (a:User)-[:Knows]->(b) RETURN *;
 ```
 
 The query above is equivalent to the following:
 
-```sql
-MATCH (a:User)-[:Knows_User_User|:Knows_User_city]->(b) RETURN *;
+```cypher
+MATCH (a:User)-[:Knows_User_User|:Knows_User_City]->(b) RETURN *;
 ```
 
 As you can imagine, the more relationships you want to selectively query on, the more useful relationship table groups become.
@@ -183,67 +185,56 @@ As you can imagine, the more relationships you want to selectively query on, the
 ## Create table if not exists
 
 If the given table name already exists in the database, Kuzu throws an exception when you try to create it.
-To avoid the exception being raised, use the `IF NOT EXISTS` clause. This tells Kuzu to do nothing when
-the given table name already exists in the database.
-
-Example:
+You can use the `IF NOT EXISTS` clause to avoid the error. This tells Kuzu to do nothing when
+the given table name already exists in the database. For example:
 ```sql
-CREATE NODE TABLE IF NOT EXISTS UW(ID INT64 PRIMARY KEY)
+CREATE NODE TABLE IF NOT EXISTS User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE);
+CREATE NODE TABLE IF NOT EXISTS User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE);
+CREATE REL TABLE IF NOT EXISTS Follows(FROM User TO User, since DATE);
+CREATE REL TABLE IF NOT EXISTS Follows(FROM User TO User, since DATE);
 ```
-This query tells Kuzu to only create the `UW` table if it doesn't exist.
-
-The same applies to relationship tables as well.
+The second node and relationship table creation statements will be ignored.
 
 ## Create table as
-A common usage pattern is to create a table and then immediately populate it with a copy.
-Instead, we can use a `CREATE NODE TABLE AS` or `CREATE REL TABLE AS` statement to do both
-at once by providing a subquery to fetch the data from.
 
-### Create node table as
-For example, suppose we want to create a node table `Person` and populate it:
+A common operation is to create a table and then immediately import some data into it.
+For example, you may want to create a `Person` node table and import a CSV file:
 
 ```sql
-CREATE NODE TABLE Person (id INT64 PRIMARY KEY, name STRING, age INT64, height FLOAT)
-COPY Person FROM "person.csv"
+CREATE NODE TABLE Person (id INT64 PRIMARY KEY, name STRING, age INT64, height FLOAT);
+COPY Person FROM "person.csv";
 ```
 
-With `CREATE NODE TABLE AS` we can instead do:
+You can instead use `CREATE NODE TABLE AS` to perform the two operations in a single query:
 
 ```sql
-CREATE NODE TABLE Person AS LOAD FROM "person.csv" RETURN *
+CREATE NODE TABLE Person AS LOAD FROM "person.csv" RETURN *;
 ```
 
-We don't need to define a schema for the table - it gets inferred from the result of the subquery.
-In the above example, the schema information is provided by the result of `LOAD FROM`, which infers the types of the properties and sniffs
-the header of the `person.csv` file to determine the names of the properties (or, uses a default set of names if no schema information was provided).
-Refer to the documentation on [`LOAD FROM`](/cypher/query-clauses/load-from/) for more information on this specific
-example.
+Note that the above query did not define a schema for the table. Kuzu automatically infers the
+schema from the result of the subquery. In this case, `LOAD FROM` infers the properties names and types from
+the CSV file header, which in turn is used to define the schema of the `Person` table.
 
-Here is another example, where the subquery is a `MATCH`.
-```sql
-CREATE NODE TABLE OldPerson AS MATCH (p:Person) WHERE p.age > 80 RETURN p.*
+Another example is to use a `MATCH` clause to create a new node table from an existing one:
+
+```cypher
+CREATE NODE TABLE YoungPerson AS MATCH (p:Person) WHERE p.age < 25 RETURN p.*;
 ```
 
-### Create rel table as
-Similar to the node table examples above, we can use `CREATE REL TABLE AS` to create and populate a rel table in a single command.
-For example, suppose we want to model a 'knows' relationship between two people. 
+You can use the same technique to create relationship tables:
 ```sql
-CREATE REL TABLE Knows (FROM Person TO Person)
-COPY Knows FROM "knows.csv"
-```
-With `CREATE REL TABLE AS`, we can instead do:
-```sql
-CREATE REL TABLE Knows (FROM Person TO Person) AS LOAD FROM "knows.csv" RETURN *
+// From a CSV file
+CREATE REL TABLE Knows (FROM Person TO Person) AS LOAD FROM "knows.csv" RETURN *;
+
+// From a MATCH clause
+CREATE REL TABLE Knows (FROM Person TO Person) AS
+    MATCH (a:Person)-[e:Knows]->(b:Person)
+    WHERE a.Gender = b.Gender
+    RETURN a.id, b.id;
 ```
 
-### Create table as if not exists
-
-We can also use `IF NOT EXISTS` with create table as statements. With `IF NOT EXISTS`, the table will only be
-created and populated if it doesn't already exist.
+Finally, you can use `IF NOT EXISTS` to create the tables only if they don't already exist:
 ```sql
-CREATE NODE TABLE IF NOT EXISTS Person AS LOAD FROM "person.csv" RETURN *
-```
-For rel tables:
-```sql
-CREATE REL TABLE IF NOT EXISTS Knows (FROM Person TO Person) AS LOAD FROM "knows.csv" RETURN *
+CREATE NODE TABLE IF NOT EXISTS Person AS LOAD FROM "person.csv" RETURN *;
+CREATE REL TABLE IF NOT EXISTS Knows (FROM Person TO Person) AS LOAD FROM "knows.csv" RETURN *;
 ```
