@@ -132,7 +132,7 @@ the column name in the source is `mycolumn`.
 
 The following naming rules and guidelines apply to node and relationship table names:
 
-- Should begin with an valid alphabetic character of type unicode string: `Person`, `CarOwner` 
+- Should begin with a valid alphabetic character of type unicode string: `Person`, `CarOwner` 
 - Should **not** begin with a number: `1Person` is invalid, but `Person1` is valid
 - Should **not** contain whitespaces or special characters other than underscores: `CarOwner` is valid, but `Car Owner` is invalid
 

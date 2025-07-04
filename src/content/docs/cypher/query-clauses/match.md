@@ -415,7 +415,7 @@ The above query returns empty result as we apply the filter `is_acyclic(p)` to f
 ### Filter recursive relationships
 We also support running predicates on recursive relationships to constrain the relationship being traversed.
 
-The following query finds name of users and the number of path that are followed between 1-2 hops from Adam by person with age more than 45 and before 2022.
+The following query finds name of users and the number of path that are followed between 1-2 hops from Adam by people with age more than 45 and before 2022.
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2 (r, n | WHERE r.since < 2022 AND n.age > 45) ]->(b:User)
 WHERE a.name = 'Adam' 
@@ -432,7 +432,7 @@ RETURN b.name, COUNT(*);
 └─────────┴──────────────┘
 ```
 
-Our filter grammar is similar to that used by [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms). For example, in Cypher list comprehensions. The first variable represents intermediate relationships and the second one represents intermediate nodes. Currently Kuzu only supports predicates that can be evaluated just on node (`n.age > 45`) or just on relationship (`r.since < 2022`) or conjuctive of such predicates (`n.age > 45 AND r.since < 2022`). Complex predicates that involves both node and relationship (`n.age > 45 OR r.since < 2022`) is not supported.
+Our filter grammar is similar to that used by [Memgraph](https://memgraph.com/docs/memgraph/reference-guide/built-in-graph-algorithms). For example, in Cypher list comprehensions. The first variable represents intermediate relationships and the second one represents intermediate nodes. Currently Kuzu only supports predicates that can be evaluated just on node (`n.age > 45`) or just on relationship (`r.since < 2022`) or conjunctive of such predicates (`n.age > 45 AND r.since < 2022`). Complex predicates that involves both node and relationship (`n.age > 45 OR r.since < 2022`) is not supported.
 
 ### Project properties of intermediate nodes/relationships
 You can project a subset of properties for the intermediate nodes and relationships that bind within a recursive

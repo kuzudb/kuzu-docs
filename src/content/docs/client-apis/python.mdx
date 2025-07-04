@@ -71,7 +71,7 @@ import kuzu
 shutil.rmtree("test_db", ignore_errors=True)
 db = kuzu.Database("test_db")
 # Create the async connection
-# The undelying connection pool will be automatically created and managed by the async connection
+# The underlying connection pool will be automatically created and managed by the async connection
 conn = kuzu.AsyncConnection(db, max_concurrent_queries=4)
 
 async def create_tables(conn: kuzu.AsyncConnection) -> None:
@@ -90,7 +90,7 @@ async def copy_data(conn: kuzu.AsyncConnection) -> None:
 
 async def query_1(conn: kuzu.AsyncConnection) -> None:
     result = await conn.execute("MATCH (u:User)-[:LivesIn]->(c:City) RETURN u.*")
-    for row in response:
+    for row in result:
         print(row)
 
 async def main():
@@ -354,8 +354,8 @@ shape: (3, 2)
 │ str     ┆ i64 │
 ╞═════════╪═════╡
 │ Adam    ┆ 30  │
-│ Karissa ┆ 25  │
-│ Zhang   ┆ 20  │
+│ Karissa ┆ 40  │
+│ Zhang   ┆ 50  │
 └─────────┴─────┘
 ```
 </TabItem>

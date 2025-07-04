@@ -24,7 +24,7 @@ path. All transactions are logged to a Write-Ahead Log (WAL) and updates are per
 database files during checkpoints.
 
 :::tip[When do I need an on-disk database?]
-On-disk databases allow you to process larger-than-memory workloads, and provide transactional guarantees and persistence.
+On-disk databases allow you to process larger-than-memory workloads, and provide transactional guarantees, and persistence.
 :::
 
 ### In-memory database
@@ -344,7 +344,7 @@ Zhang|2022|Noura
 
 When installing the `kuzu` crate via Cargo, it will by default build and statically link Kuzu's C++
 library from source. You can also link against the dynamic release libraries (see the Rust
-[crate docs](https://docs.rs/kuzu/0.1.1-pre.31/kuzu/) for details).
+[crate docs](https://docs.rs/kuzu/latest/kuzu/) for details).
 
 The `main.rs` file contains the following code:
 

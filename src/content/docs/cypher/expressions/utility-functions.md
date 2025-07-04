@@ -14,7 +14,7 @@ but are broadly useful.
 | `ifnull(arg1, arg2)` | a two-argument version of coalesce | `ifnull(NULL, 'a')` | `'a'` |
 | `nullif(arg1, arg2)`| if `arg1 = arg2` return null, otherwise return `arg1` | `nullif('hello', 'world')` | `'hello'` |
 | `constant_or_null(arg1, arg2)` | if `arg2` is null return null, otherwise return `arg1` | `constant_or_null(1, NULL)`| `NULL` |
-| `count_if(arg)`| if `arg` is true or non-zero number return 1, other wise return 0 | `count_if(true)`| `1` |
+| `count_if(arg)`| if `arg` is true or non-zero number return 1, otherwise return 0 | `count_if(true)`| `1` |
 | `typeof(arg)` | return name of the data type of `arg` | `typeof(true)` | `BOOL` |
 | `error(arg)` | throw `arg` as a Runtime exception | `error('something is wrong.')` | |
 

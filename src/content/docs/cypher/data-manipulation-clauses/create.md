@@ -32,8 +32,8 @@ RETURN a.*;
 └────────┴───────┘
 ```
 
-Any node property which is not specified in the mapping but which exists in the schema, will be set to NULL.
-For example the following query will set the age property
+Any node property that is not specified in the mapping but exists in the schema will be set to NULL.
+For example, the following query will set the age property of
 the inserted node record to NULL.
 
 :::caution[Note]

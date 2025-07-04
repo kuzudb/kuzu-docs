@@ -173,7 +173,7 @@ If instead the query was:
 ```cypher
 COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
 ```
-Then, Kuzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `"` respectively (and use
+Then, Kuzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `\` respectively (and use
 the manually specified configurations for `HEADER` and `DELIM`).
 
 ### Sample size parameter

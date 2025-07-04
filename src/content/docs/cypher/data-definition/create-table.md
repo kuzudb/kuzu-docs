@@ -114,7 +114,7 @@ Knows_User_User
 Knows_User_City
 ```
 
-When bulk insert into a relationship table with multiple from-to pairs, user need to specify which child table to insert through `from, to` options. For exmaple, the following two statements will bulk insert into `Knows` relationship table.
+When bulk inserting into a relationship table with multiple from-to pairs, users need to specify which child table to insert through `from, to` options. For example, the following two statements will bulk insert into `Knows` relationship table.
 ```
 Copy Knows FROM 'knows_user_user.csv' (from='User', to='User');
 Copy Knows FROM 'knows_user_city.csv' (from='User', to='City');

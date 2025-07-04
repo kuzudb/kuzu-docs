@@ -155,7 +155,7 @@ to find the output from a failed test. In this situation, the flag
 `--gtest_break_on_failure` might be helpful to break the test on failure.
 :::
 
-### Running `SKIP`ed tests
+### Running skipped tests
 
 Some tests in test files are marked as `SKIP` which are ignored by default when running the tests.
 To run those tests without editing the files, you can use `--gtest_also_run_disabled_tests`:
@@ -205,7 +205,7 @@ without storing the same dataset in the codebase twice.
 
 Other optional parameters include `-BUFFER_POOL_SIZE`, `-CHECKPOINT_WAIT_TIMEOUT` and `-SKIP`. A
 `-SKIP` in the header disables the entire suite, with the tests displayed as disabled when running `ctest`.
-Skipped tests can be [forced to run](#running-skiped-tests) with a flag.
+Skipped tests can be [forced to run](#running-skipped-tests) with a flag.
 
 ## Test case
 

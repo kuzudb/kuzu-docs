@@ -54,9 +54,9 @@ ALTER TABLE User DROP age;
 
 ## Drop column if exists
 
-If the given column name does not exists in the table, Kuzu throws an exception when you try to drop it.
+If the given column name does not exist in the table, Kuzu throws an exception when you try to drop it.
 To avoid the exception being raised, use the `IF EXISTS` clause. This tells Kuzu to do nothing when
-the given column name does not exists in the table.
+the given column name does not exist in the table.
 
 Example:
 ```sql
