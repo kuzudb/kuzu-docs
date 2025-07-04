@@ -9,25 +9,22 @@ LOAD azure;
 ```
 ## Usage
 ### Configuration
-The Azure extension adds a few configurable options, primarily for authentication:
+The Azure extension adds two configurable options for authentication.
 - `AZURE_CONNECTION_STRING`
 - `AZURE_ACCOUNT_NAME`
-- `AZURE_HTTP_PROXY`
-- `AZURE_PROXY_USER_NAME`
-- `AZURE_PROXY_PASSWORD`
 
-Upon loading the extension, for all options, if there exists an environment variable with
-the same name, then it is initialized with that value. Otherwise it is left as an empty string
-by default. You can configure an option yourself like usual:
+At least one of the above options must be set. For most use cases, `AZURE_CONNECTION_STRING` should be used.
+`AZURE_ACCOUNT_NAME` is only useful for scanning from a public / anonymous container.
+
+Upon loading the extension, both options are initialized from the environment variable of the same name, if it exists.
+Otherwise it is left as an empty string by default. You can configure an option yourself like usual:
 ```sql
-CALL azure_connection_string = '...';
+CALL AZURE_CONNECTION_STRING = '...';
 ```
-For more information,
-refer to the documentation on [`CALL`](/cypher/query-clauses/call/).
 
 ### Scanning
 The supported URI schemes are `az` and `abfss`. While they could both work for both Azure blob storage and ADLS,
-it is recommended to use `abfss` when scanning from ADLS as it has potential for significantly better performance.
+it is recommended to use `abfss` when scanning from ADLS as it can potentially lead to significantly better performance.
 ```sql
 LOAD FROM 'az://container/path/test.csv'
 RETURN *;
