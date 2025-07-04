@@ -115,22 +115,21 @@ The following features are not yet supported in the async API:
   ```
   Binder exception: Variable df is not in scope.
   ```
-  
+
   This is due to the fact that async connections execute queries using a separate thread from the
-  calling thread, and thus the dataframe isn't in scope for the executing thread. This will be handled
-  appropriately and addressed in a future release.
+  calling thread, and thus the dataframe isn't in scope for the executing thread. If you wish to reference dataframes when using the async API, please [pass them as query parameters](/import/copy-from-dataframe#query-parameter).
 
 - **Projected Graphs in `vector` and `algo` extensions**
-  
+
   When using the `PROJECT_GRAPH` feature with the async API, you may encounter the following error:
-  
+
   ```
   Binder exception: Cannot find graph projected_graph.
   ```
 
-  This error is due to the current design of projected graphs, which binds each projected graph to a specific Connection instance. 
-  The async API, however, executes queries using a connection pool, meaning that queries may be handled by different connections. 
-  As a result, a projected graph created in one connection may not be accessible from another. This is a known limitation 
+  This error is due to the current design of projected graphs, which binds each projected graph to a specific Connection instance.
+  The async API, however, executes queries using a connection pool, meaning that queries may be handled by different connections.
+  As a result, a projected graph created in one connection may not be accessible from another. This is a known limitation
   and will be addressed in a future release.
 :::
 

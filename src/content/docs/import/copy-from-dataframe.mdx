@@ -6,6 +6,74 @@ You can copy from Pandas or Polars DataFrames, or in-memory Arrow tables directl
 This is useful when you are doing your data transformations with these libraries and rapidly ingest
 their columns into Kuzu node or relationship tables.
 
+There are two different ways in Kuzu to reference dataframes:
+
+### Query Parameter
+
+The dataframe can be passed as a query parameter:
+
+```python
+import kuzu
+import polars as pl
+
+db = kuzu.Database("tmp")
+conn = kuzu.Connection(db)
+
+conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+
+df = pl.DataFrame({
+    "name": ["Adam", "Karissa", "Zhang"],
+    "age": [30, 40, 50]
+})
+
+conn.execute("COPY Person FROM $dataframe", {"dataframe": df})
+```
+
+This is the most reliable way of referencing a dataframe.
+
+### Referencing by Name
+
+The dataframe can also be referenced by name:
+
+```python
+df = pl.DataFrame({
+    "name": ["Adam", "Karissa", "Zhang"],
+    "age": [30, 40, 50]
+})
+
+conn.execute("COPY Person FROM df")
+```
+
+This method requires the dataframe to be a local variable that is in scope at the call to `conn.execute()`. For example, the code below will not work:
+
+```python
+def get_df():
+    df = pl.DataFrame({
+        "name": ["Adam", "Karissa", "Zhang"],
+        "age": [30, 40, 50]
+    })
+
+# get_df() is not the name of a variable
+conn.execute("COPY Person FROM get_df()")
+```
+
+If you wish to do the above, you should pass the dataframe as a query parameter:
+
+```python
+def get_df():
+    df = pl.DataFrame({
+        "name": ["Adam", "Karissa", "Zhang"],
+        "age": [30, 40, 50]
+    })
+
+# get_df() is not the name of a variable
+conn.execute("COPY Person FROM $df", {"df", get_df()})
+```
+
+For more examples, refer to the [examples](#examples) on this page.
+
+---
+
 ## Ignore malformed rows
 
 When copying from DataFrames, you can ignore rows that contain duplicate, null
