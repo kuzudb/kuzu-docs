@@ -62,20 +62,39 @@ You can generate text embeddings using the `CREATE_EMBEDDING` function. The func
 
 ```sql
 CALL CREATE_EMBEDDING(
-    'prompt',   // The input text to embed.
-    'provider', // The embedding provider. E.g., `'open-ai'`.
-    'model',    // The identifier of the embedding model. E.g., `'text-embedding-3-small'`.
-    // Optional parameters, if supported by the provider.
+    <PROMPT>,
+    <PROVIDER>,
+    <MODEL>,
+    dimensions := <INT64>,
+    region := <STRING>,
+    endpoint := 'http://localhost:11434'
 );
 ```
 
-### Optional parameters
+Required arguments:
 
-| Option | Type | Description | 
-|--------|------|-------| 
-| dimensions |`INT64`| The size of the embedding vector, if supported by the provider. Currently only `'open-ai'`, `'google-vertex'`, and `'voyage-ai'` support this option. |
-| region    |`STRING`| The region to send requests to, if supported by the provider. E.g., `'us-east-1'` for `'amazon-bedrock'`. |
-| endpoint   |`STRING`| The endpoint to send requests to. Only applies to Ollama. Default is `http://localhost:11434` |
+- `prompt`: The input text to embed.
+    - Type: `STRING`
+- `provider`: The embedding provider.
+    - Type: `STRING`
+    - Example: `open-ai`
+- `model`: The identifier of the embedding model.
+    - Type: `STRING`
+    - Example: `text-embedding-3-small`
+
+Optional arguments:
+
+- `dimensions`: The size of the embedding vector.
+    - Type: `INT64`
+    - Supported providers: `open-ai`, `google-vertex`, `voyage-ai`
+    - Example: `256` for `google-vertex`
+- `region`: The region to send requests to.
+    - Type: `STRING`
+    - Example: `us-east-1` for `amazon-bedrock`
+- `endpoint`: The endpoint to send requests to.
+    - Type: `STRING`
+    - Supported providers: `ollama`
+    - Default: `http://localhost:11434`
 
 :::note[Note]
 If an unsupported model, dimension, region, or endpoint is specified, the API call to the provider will fail. Check the provider's API documentation for the currently supported options.

@@ -78,14 +78,16 @@ CALL NEO4J_MIGRATE(
     [<REL_LABEL1>, <REL_LABEL2>, <REL_LABEL3>, ...]    // REL_LABELS
 );
 ```
-
-Required arguments:
-
 - `URL`: A `http://hostname:port` connection URL to a Neo4j server.
+  - Type: `STRING`
 - `USER_NAME`: Neo4j username. Leave blank if not needed.
+  - Type: `STRING`
 - `PASSWORD`: Neo4j password. Leave blank if not needed.
+  - Type: `STRING`
 - `NODE_LABELS`: A list of node labels to migrate to Kuzu. Use `["*"]` to import all nodes with labels.
+  - Type: `STRING[]`
 - `REL_LABELS`: A list of relationship labels to migrate to Kuzu. Use `["*"]` to import all relationships with labels.
+  - Type: `STRING[]`
 
 #### Example
 

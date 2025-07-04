@@ -52,24 +52,30 @@ CALL CREATE_FTS_INDEX(
   <INDEX_NAME>,
   [<PROPERTY1>, <PROPERTY2>, ...], // PROPERTIES
   stemmer := 'porter',
-  stopwords := '/path/to/stopwords.csv'
+  stopwords := <STRING>
 );
 ```
 
 Required arguments:
+
 - `TABLE_NAME`: The name of the node table to build FTS index.
+  - Type: `STRING`
 - `INDEX_NAME`: The name of the FTS index to create.
+  - Type: `STRING`
 - `PROPERTIES`: A list of properties in the table to build FTS index on. Full text search will only search these properties.
+  - Type: `STRING[]`
 
 Optional arguments:
 
 - `stemmer`: The text normalization technique to use.
+  - Type: `STRING`
   - Accepted values: `arabic`, `basque`, `catalan`, `danish`, `dutch`, `english`, `finnish`, `french`, `german`, `greek`, `hindi`, `hungarian`, `indonesian`, `irish`, `italian`, `lithuanian`, `nepali`, `norwegian`, `porter`, `portuguese`, `romanian`, `russian`, `serbian`, `spanish`, `swedish`, `tamil`, or `turkish`.
-  - Use `none` if you do not want to use any stemming
-  - Defaults to `english`, which uses a Snowball stemmer.
-
+    - Use `none` if you do not want to use any stemming.
+  - Default: `english`, which uses a Snowball stemmer.
 - `stopwords`: You can make the full-text search results more relevant by providing a list of omitted words that are excluded when building and querying the full-text search index. These are termed "stopwords".
-  - A default list of built-in English stopwords is used, but if you want to use a custom stopwords list, you can provide it via the `stopwords` parameter in the following formats:
+  - Type: `STRING`
+  - Default: A list of built-in English stopwords.
+  - If you want to use a custom stopwords list, you can provide it via the `stopwords` parameter in the following formats:
     - A node table with only a single column of stopwords.
     - A Parquet/CSV file with only a single string column of stopwords (no header required). This file can be stored in cloud storage platforms like Amazon S3 or Google Cloud Storage (GCS) or made accessible via HTTPS. If hosted remotely, ensure the httpfs extension is enabled and valid credentials (e.g., access keys) are configured to authenticate and securely access the file.
   - If the provided stopwords parameter matches both a node table and a file with the same name, the node table takes precedence and will be used.
@@ -114,18 +120,25 @@ RETURN node, score;
 ```
 
 Required arguments:
+
 - `TABLE_NAME`: The name of the table to query.
-- `INDEX_NAME`: The name of the FTS index to query. 
+  - Type: `STRING`
+- `INDEX_NAME`: The name of the FTS index to query.
+  - Type: `STRING`
 - `QUERY`: The query string that contains the keywords to search.
+  - Type: `STRING`
 
 Optional arguments:
 
 - `conjunctive`: Whether all keywords in the query should appear in a string for it to be retrieved.
-  - Defaults to `false`.
+  - Type: `BOOLEAN`
+  - Default: `false`
 - `K`: Controls the influence of term frequency saturation. This limits the effect of multiple occurrences of a term within a string.
-  - Defaults to `1.2`.
+  - Type: `DOUBLE`
+  - Default: `1.2`
 - `B`: Controls the influence of string length on length normalization.
-  - Defaults to `0.75`.
+  - Type: `DOUBLE`
+  - Default: `0.75`
 
 You can read more about the `K` and `B` parameters [here](https://learn.microsoft.com/en-us/azure/search/index-ranking-similarity).
 

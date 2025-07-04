@@ -194,17 +194,23 @@ CALL QUERY_VECTOR_INDEX(
 )
 RETURN node.id, distance;
 ```
+
 Required arguments:
+
 - `TABLE_NAME`: The node table on which the index was created.
+  - Type: `STRING`
 - `INDEX_NAME`: The name of the vector index.
+  - Type: `STRING`
 - `QUERY_VECTOR`: The vector to search for.
+  - Type: `LIST[FLOAT]`
 - `K`: The number of nearest neighbors to return.
+  - Type: `INT64`
 
 Optional arguments to tune the search behavior:
 
-- `efs`
-  - Number of candidate vertices to consider during search.
-  - A higher value will result in a more accurate search, but will also increase the time it takes to search.
+- `efs`: The number of candidate vertices to consider during search. A higher value will result in a
+  more accurate search, but will also increase the time it takes to search.
+  - Type: `INT64`
   - Default: `200`
 
 Returns:
