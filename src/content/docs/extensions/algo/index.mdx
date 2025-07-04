@@ -169,6 +169,19 @@ A projected graph is evaluated _only_ when an algorithm is executed.
 Kuzu does not materialize projected graphs in memory, and the corresponding data
 is scanned from disk on the fly.
 
+:::caution[Note]
+When creating projected graphs with the Python async API, you may encounter the following error:
+
+```
+Binder exception: Cannot find graph filtered_graph.
+```
+
+This error is because projected graphs are bound to a specific `Connection` instance, as mentioned above.
+The async API, however, executes queries using a connection pool. Depending on which connection is used
+to execute a query, the projected graph may not be available.
+This is a known limitation and will be addressed in a future release.
+:::
+
 ## Edge direction
 
 In Kuzu, both the base graph and projected graphs are directed. For algorithms that are only
