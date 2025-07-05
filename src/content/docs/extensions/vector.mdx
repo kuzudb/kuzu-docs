@@ -168,10 +168,6 @@ Optional arguments to tune the index:
   - This will decrease the amount of time needed to construct the index but will increase the memory usage. We recommend keeping this value set to true unless you are in a memory-constrained environment.
   - Default: `true`
 
-:::note[Immutable index]
-Once created, the vector index is immutable and cannot be modified. If the data in the underlying table changes,
-you must drop and re-create the index.
-:::
 
 #### Example
 
