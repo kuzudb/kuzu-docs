@@ -1,7 +1,7 @@
 ---
 title: "Azure extension"
 ---
-The Azure extension adds support for scanning from Azure Blob Storage and Azure Data Lake Storage (ADLS).
+The Azure extension adds support for scanning from [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview) and [Azure Data Lake Storage (ADLS)](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction).
 
 ## Usage
 
@@ -29,7 +29,7 @@ You can also set the above options using environment variables.
 
 ### Scan from Azure
 
-The extension supports both `az` and `abfss` URI schemes. We recommend using `abfss` when scanning
+The extension supports both `az` and [`abfss`](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction-abfs-uri) URI schemes. We recommend using `abfss` when scanning
 from ADLS for much better performance.
 
 For example, to scan from a container:
