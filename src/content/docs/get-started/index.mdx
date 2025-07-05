@@ -102,6 +102,28 @@ Result:
 The approach shown above returned a list of lists containing query results. See below for more
 output options for Python.
 
+**Output as a dictionary**
+
+You can also get the results of a Cypher query as a dictionary.
+
+```py
+response = conn.execute(
+    """
+    MATCH (a:User)-[f:Follows]->(b:User)
+    RETURN a.name, b.name, f.since;
+    """
+)
+for row in response.rows_as_dict():
+    print(row)
+```
+
+```bash
+{'a.name': 'Adam', 'b.name': 'Karissa', 'f.since': 2020}
+{'a.name': 'Adam', 'b.name': 'Zhang', 'f.since': 2020}
+{'a.name': 'Karissa', 'b.name': 'Zhang', 'f.since': 2021}
+{'a.name': 'Zhang', 'b.name': 'Noura', 'f.since': 2022}
+```
+
 **Pandas**
 
 You can also pass the results of a Cypher query to a [Pandas](https://pandas.pydata.org/) DataFrame

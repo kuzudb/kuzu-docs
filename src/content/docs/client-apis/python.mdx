@@ -138,6 +138,28 @@ The following features are not yet supported in the async API:
 
 </Tabs>
 
+## Output utilities
+
+The Python API provides some utilities to process query results.
+
+```py
+# Get all rows as a list of tuples
+print(response.get_all())
+
+# Change the output format to a dictionary, where the keys are the column names
+print(response.rows_as_dict().get_all())
+
+# Get the first 2 rows as a list of tuples
+print(response.get_n(2))
+
+# Get the next row as a tuple
+if response.has_next():
+    print(response.get_next())
+
+# Get all rows as a list of tuples
+print(list(response))
+```
+
 ## Run multiple queries in one execution
 
 By default, executing a single query in the Python API will return a `QueryResult` object. However,
