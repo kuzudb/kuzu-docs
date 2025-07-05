@@ -139,9 +139,8 @@ Finally, we can print out a list of tables:
 ```py
 result = conn.execute("CALL SHOW_TABLES() RETURN *")
 
-print(result.get_column_names())
-while result.has_next():
-    print(result.get_next())
+for row in result:
+    print(row)
 ```
 
 ### Running the code
@@ -178,9 +177,8 @@ def main() -> None:
     # Query to be filled out below
     result = conn.execute(...)
 
-    print(result.get_column_names())
-    while result.has_next():
-        print(result.get_next())
+    for row in result:
+        print(row)
 
 if __name__ == "__main__":
     main()
@@ -385,9 +383,8 @@ def main() -> None:
 
     result = conn.execute("CALL SHOW_TABLES() RETURN *")
 
-    print(result.get_column_names())
-    while result.has_next():
-        print(result.get_next())
+    for row in result:
+        print(row)
 
 if __name__ == "__main__":
     main()
@@ -407,9 +404,8 @@ def main() -> None:
     # Query to be filled out below
     result = conn.execute(...)
 
-    print(result.get_column_names())
-    while result.has_next():
-        print(result.get_next())
+    for row in result:
+        print(row)
 
 if __name__ == "__main__":
     main()
