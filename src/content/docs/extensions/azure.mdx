@@ -23,7 +23,7 @@ The following options are supported:
 - `AZURE_ACCOUNT_NAME`: The name of the Azure storage account.
 
 At least one of the above options must be set. Generally, `AZURE_CONNECTION_STRING` should be used.
-`AZURE_ACCOUNT_NAME` is only useful for connecting to a public or anonymous container.
+`AZURE_ACCOUNT_NAME` is only useful for connecting to a container that allows anonymous read access.
 
 You can also set the above options using environment variables.
 
@@ -32,7 +32,7 @@ You can also set the above options using environment variables.
 The extension supports both `az` and `abfss` URI schemes. We recommend using `abfss` when scanning
 from ADLS for much better performance.
 
-For example, to scan from a public container:
+For example, to scan from a container:
 ```sql
 LOAD FROM 'az://container/path/to/file.csv'
 RETURN *;
