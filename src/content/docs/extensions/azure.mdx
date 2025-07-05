@@ -2,38 +2,46 @@
 title: "Azure extension"
 ---
 The Azure extension adds support for scanning from Azure Blob Storage and Azure Data Lake Storage (ADLS).
-To install and load the Azure extension, run the following commands:
+
+## Usage
+
 ```sql
 INSTALL azure;
 LOAD azure;
 ```
-## Usage
-### Configuration
-The Azure extension adds two configurable options for authentication.
-- `AZURE_CONNECTION_STRING`
-- `AZURE_ACCOUNT_NAME`
 
-At least one of the above options must be set. For most use cases, `AZURE_CONNECTION_STRING` should be used.
-`AZURE_ACCOUNT_NAME` is only useful for scanning from a public / anonymous container.
+### Configure the connection
 
-Upon loading the extension, both options are initialized from the environment variable of the same name, if it exists.
-Otherwise it is left as an empty string by default. You can configure an option yourself like usual:
+Before reading and writing from Azure, you have to configure the connection using CALL statements.
+
 ```sql
-CALL AZURE_CONNECTION_STRING = '...';
+CALL <OPTION_NAME> = <OPTION_VALUE>;
 ```
+The following options are supported:
 
-### Scanning
-The supported URI schemes are `az` and `abfss`. While they could both work for both Azure blob storage and ADLS,
-it is recommended to use `abfss` when scanning from ADLS as it can potentially lead to significantly better performance.
+- `AZURE_CONNECTION_STRING`: The connection string to use for the Azure storage account.
+- `AZURE_ACCOUNT_NAME`: The name of the Azure storage account.
+
+At least one of the above options must be set. Generally, `AZURE_CONNECTION_STRING` should be used.
+`AZURE_ACCOUNT_NAME` is only useful for connecting to a public or anonymous container.
+
+You can also set the above options using environment variables.
+
+### Scan from Azure
+
+The extension supports both `az` and `abfss` URI schemes. We recommend using `abfss` when scanning
+from ADLS for much better performance.
+
+For example, to scan from a public container:
 ```sql
-LOAD FROM 'az://container/path/test.csv'
+LOAD FROM 'az://container/path/to/file.csv'
 RETURN *;
 ```
 ```sql
 LOAD FROM 'abfss://container/path/to/file.csv'
 RETURN *;
 ```
-One can also use a fully qualified path:
+You can also use a fully qualified path:
 ```sql
 LOAD FROM 'az://account_name.blob.core.windows.net/container/path/to/file.csv'
 RETURN *;
