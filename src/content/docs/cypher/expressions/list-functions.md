@@ -36,8 +36,8 @@ Scroll to the right to see the example usage in the below table.
 | `list_has(list, element)` | alias of `list_contains` | `list_has([3,4,5], 5)` | `true` |
 | `array_contains(list, element)` | alias of `list_contains` | `array_contains([3,4,5], 5)` | `true` |
 | `array_has(list, element)` | alias of `list_contains` | `array_has([3,4,5], 5)` | `true` |
-| `list_slice(list, begin, end)` | extracts a sub-list using slice conventions and negative values are accepted. | `list_slice([3,4,5], 2, 3)` | `[4]` |
-| `array_slice(list, begin, end)` | alias of `list_slice` | `array_slice([6,7,1], 1, 3)` | `[6,7]` |
+| `list_slice(list, begin, end)` | extracts a sub-list using slice conventions and negative values are accepted. | `list_slice([3,4,5], 2, 3)` | `[4,5]` |
+| `array_slice(list, begin, end)` | alias of `list_slice` | `array_slice([6,7,1], 1, 3)` | `[6,7,1]` |
 | `list_reverse(list)` | reverse list elements | `list_reverse([1,2,3])` | `[3,2,1]` |
 | `list_sort(list)`| sorts the elements of the list. More configurations available [here](#list_sort) | `list_sort([3,10,4])` | `[3,4,10]` |
 | `list_reverse_sort(list)` | alias of `list_sort(list, 'DESC')` | `list_reverse_sort([3,10,4])` | `[10,4,3]` |
@@ -46,7 +46,7 @@ Scroll to the right to see the example usage in the below table.
 | `list_distinct(list)` | removes NULLs and duplicate values from the list. | `list_distinct([3,3,3,NULL])` | `[3]` |
 | `list_unique(list)` | counts number of unique elements of the list. NULLs are ignored. | `list_unique([3,3,3,NULL])` | `1` |
 | `list_any_value(list)` | returns the first non-NULL value of the list | `list_any_value(NULL, 'a', NULL)` | `'a'` |
-| `list_to_string(list, separator)` | converts a list to a string separated by the given separator | `list_to_string([1,2,3], '..' )` | `'1..2..3'` |
+| `list_to_string(separator, list)` | converts a list to a string separated by the given separator | `list_to_string('..', [1,2,3])` | `'1..2..3'` |
 | `range(start, stop)` | returns a list of values from `start` to `stop`. Specify the step as shown [here](#range) | `range(1,3)` | `[1,2,3]` |
 | `list_transform(list, lambda)` | returns a list by applying lambda function to each element of input list  | `list_transform([1,2,3], x->x+1)` | [2,3,4] |
 | `list_filter(list, lambda)` | returns list containing elements whose lambda function result is true | `list_filter([1,2,3], x->x>1)` | [2,3] |
