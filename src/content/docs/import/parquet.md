@@ -60,16 +60,6 @@ To load this Parquet file into a `Follows` table, simply run:
 COPY Follows FROM "follows.Parquet";
 ```
 
-### Relationship table with multiple `FROM-TO` pairs
-
-If a relationship table has multiple `FROM-TO` pairs, you need to specify which pair to insert by specifying `from` and `to` parameters. For example:
-
-```sql
-COPY Knows FROM 'knows_user_user.parquet' (from='User', to='User');
-```
-
-More information can be found [here](/cypher/data-definition/create-table).
-
 ## Import multiple files to a single table
 
 It is common practice to divide large Parquet files into several smaller files for cleaner data management.

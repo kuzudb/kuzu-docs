@@ -105,27 +105,6 @@ CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
 - **Primary keys**: You cannot define a primary key for relationship records. Each relationship gets a unique system-level edge ID, which are internally generated. You can check if two edges are the same, i.e., have the same edge ID, using the `=` and `!=` operator between the `ID()` function on two variables that bind to relationships. For example, you can query `MATCH (n1:User)-[r1:Follows]->(n2:User)<-[r2:Follows]-(n3:User) WHERE ID(r1) != ID(r2) RETURN *` to ensure that the same relationship does not bind to both `r1` and `r2`.
 :::
 
-### Bulk insert to relationship table with multiple from-to pairs
-
-Internally, a relationship table with multiple from-to pairs creates a child table per from-to pair. In the example above, the following two children
-tables are created internally:
-```
-Knows_User_User
-Knows_User_City
-```
-
-When bulk inserting into a relationship table with multiple from-to pairs, users need to specify which child table to insert through `from, to` options. For example, the following two statements will bulk insert into `Knows` relationship table:
-```sql
-COPY Knows FROM 'knows_user_user.csv' (from='User', to='User');
-COPY Knows FROM 'knows_user_city.csv' (from='User', to='City');
-```
-
-Alternatively, you can also directly copy into a child table. Though this approach is not recommended and will be deprecated in the future release.
-```sql
-COPY Knows_User_User FROM 'knows_user_user.csv';
-COPY Knows_User_City FROM 'knows_user_city.csv';
-```
-
 ### Relationship multiplicities
 
 For any relationship label `E`, by default there can be multiple relationships from any node `v` both in the forward and backward direction. In database terminology, relationships are by default many-to-many. In the first `Follows` example above: (i) any `User` node `v` can follow multiple `User` nodes; and (ii) be followed by multiple `User` nodes.
