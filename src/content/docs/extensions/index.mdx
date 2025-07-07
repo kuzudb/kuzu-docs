@@ -77,7 +77,7 @@ For example, to load the official `json` extension:
 ```sql
 load json;
 ```
-However, for a self-compiled extension such as httpfs, you must specify the path to the compiled shared library:
+If you want to load an extension you have compiled yourself, you can specify the path to the compiled library. For example, to load a self-compiled `json` extension:
 
 ```sql
 #Assuming the user has compiled the httpfs extension and placed the binary under `extension/httpfs/build/`
