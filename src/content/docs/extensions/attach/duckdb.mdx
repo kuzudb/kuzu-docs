@@ -35,7 +35,7 @@ ATTACH
   (dbtype duckdb, skip_unsupported_table = OPTION, schema = SCHEMA_NAME)
 ```
 
-- `DB_PATH`: Path to the DuckDB database instance (can be a relative/absolute/https/s3 path)
+- `DB_PATH`: Path to the DuckDB database instance (can be a relative, absolute, https or S3 path)
 - `alias`: Database alias to use in Kuzu. If not provided, the database name from DuckDB will be used.
   When attaching multiple databases, we recommend using aliases.
 - `skip_unsupported_table`: A boolean flag to indicate whether Kuzu should exit with an error or skip
@@ -52,7 +52,7 @@ ATTACH 'university.db' AS uw (dbtype duckdb);
 
 You can also attach a remote DuckDB database hosted on S3.
 
-First, configure the [S3 connection](/extensions/httpfs#configure-the-s3-connection).
+First, configure the [S3 connection](/extensions/s3#configure-the-connection).
 
 Then, attach the database using an S3 URL:
 
