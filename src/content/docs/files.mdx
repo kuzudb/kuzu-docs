@@ -4,13 +4,16 @@ title: Files Managed by Kuzu
 
 ## Database files
 
-Prior to v0.11.0, Kuzu expects the given database path is a directory. It automatically creates and manages multiple files under the directory.
+Prior to v0.11.0, Kuzu required the database path to be a directory and automatically created and managed multiple files within that directory.
 
-Starting from [v0.11.0](), Kuzu switched to the single-file format, where the given database path is no longer a directory, but a file.
-This can make move and share the database much easier. The single-file format has also been adopted by other database systems, such as [DuckDB]() and [SQLite]().
+Starting from v0.11.0, Kuzu switched to a single-file format, where the database path is required to be a file rather than a directory.
+This change makes it easier to move and share databases. 
+The single-file format has also been adopted by other database systems, such as DuckDB and SQLite.
 
-When opening a Kuzu database under on-disk & read-write mode, Kuzu creates a file of the given path if not existing.
-Additionally, there might be other temporary files created during the runtime.
+When opening a Kuzu database in on-disk read-write mode, Kuzu creates a file at the specified path if it doesn't exist.
+Additionally, temporary files might be created during runtime.
+
+We list all types of files that may be created and maanged by Kuzu in the following table:
 
 | File Type | Example |
 | --- | --- |
@@ -22,31 +25,33 @@ Additionally, there might be other temporary files created during the runtime.
 | Extension files | `~/.kuzu/extensions/0.11.0/osx_arm64/json/libjson.kuzu_extension` |
 
 #### Database file
-It keeps all on-disk data of the database since last checkpoint. 
+Stores all on-disk data of the database since the last checkpoint. 
 
 #### Lock file
-It is created to ensure that no two Kuzu `Database`s can open the same database file at the same time if one of them is under read-write mode. It is removed when the database exits.
+Created to ensure that no two Kuzu `Database` objects can open the same database file simultaneously when one of them is in the read-write mode. 
+The lock file is removed when the database exits.
 
-Please see [Limitations of creating multiple database objects](https://docs.kuzudb.com/concurrency/#limitations-of-creating-multiple-database-objects) for more details. 
+For more details, please see [Limitations of creating multiple database objects](https://docs.kuzudb.com/concurrency/#limitations-of-creating-multiple-database-objects). 
 
 #### WAL file
-It records all transaction changes since last checkpoint. It is only created when there are write transactions committed in the database. It is removed when a checkpoint succeeds.
+Records all transaction changes since the last checkpoint. The file is only created when write transactions are committed in the database, and is removed when a checkpoint succeeds.
 
 #### Shadow file
 A temporary file created during the checkpoint phase.
-It is only created when the database starts a checkpoint, and is removed when a checkpoint succeeds.
+It is only created when the database starts a checkpoint, and is removed when the database exits.
 
 #### Tmp file
 A temporary file for spilling in-memory intermediate data during query execution.
-It is only created when the memory pressure is high, and there is a need to spill intermediate data. Once created, it is removed upon database exits.
+This file is only created when the database's memory pressure is high and there is a need to spill intermediate data.
+Once created, it is removed when the database exits.
 
 ## Extension binaries and HTTPS local cache
 Whenever a user executes `INSTALL extension_name`, Kuzu downloads the extension binaries from the official repo into a local directory `~/.kuzu/extensions`.
 When loading an extension (`LOAD extension_name`), Kuzu reads from the local extension directory `~/.kuzu/extensions` by default.
 
-Additionally, for the `httpfs` extension, when its [local cache](https://docs.kuzudb.com/extensions/httpfs/#local-cache) is turned on (`CALL HTTP_CACHE_FILE=TRUE;`), Kuzu saves the locally cached files under `.cache` in the extension's local directory.
+Additionally, for the `httpfs` extension, when its [local cache](https://docs.kuzudb.com/extensions/httpfs/#local-cache) is enabled (`CALL HTTP_CACHE_FILE=TRUE;`), Kuzu saves the locally cached files under `.cache` in the extension's local directory.
 The locally cached files are always removed when the transaction commits or rolls back.
 
 ## Shell files
 #### History file
-Kuzu shell creates a `history.txt` file under the directory which opens the shell. The file records a list of commands executed within the shell.
+The Kuzu shell creates a `history.txt` file in the directory where the shell is opened. The file records a list of commands executed within the shell.
