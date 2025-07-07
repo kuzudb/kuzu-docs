@@ -55,3 +55,13 @@ automatic rollback is not supported. Therefore, if the `IMPORT DATABASE` command
 database directory you are connected to and reload it again.
 2. The `IMPORT DATABASE` command also imports all indexes, regardless of whether their dependent extensions were loaded during import. If the dependent extension was not loaded during import, it will be automatically loaded during import.
 :::
+
+## Export database with DDL only
+Similar to the SQL `.schema` command, Kuzu provides an option to export a database schema without exporting the actual data. This can be especially useful when you only need the structure of the database and not the data itself.
+
+To export the schema only, use the schema_only option as follows:
+
+```cypher
+EXPORT DATABASE '/path/to/export' (schema_only=true);
+```
+This command will generate a schema.cypher file containing only the DDL (Data Definition Language) statements, and will not include the data itself, ensuring a lightweight export of the database structure.
