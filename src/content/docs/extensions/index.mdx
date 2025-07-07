@@ -53,9 +53,9 @@ INSTALL <EXTENSION_NAME>;
 You only need to install an extension once. 
 
 ### Force install an official extension
-If the user attempts to install an extension that is already installed, the install command will skip downloading it from the official repository and will use the existing local copy instead.
+If you run the `INSTALL` command for an extension that is already installed, the second install command will not perform any action.
 
-To force Kuzu to download the extension from the official repository regardless of the presence of a local copy, users can use the `FORCE INSTALL` command followed by the extension name:
+If you want to forcefully download an extension for any reason, for example if the extension is not working properly, you can use the `FORCE INSTALL` command:
 
 ```sql
 FORCE INSTALL <EXTENSION_NAME>;
