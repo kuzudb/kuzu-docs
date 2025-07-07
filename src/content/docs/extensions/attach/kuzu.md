@@ -30,7 +30,7 @@ you can attach to a single external Kuzu database (or be connected to the local 
 Therefore you don't need to prefix your node and relationship tables.
 Instead you will use the alias to `DETACH` from the external Kuzu database.
 
-Suppose you are connected to a local database `./demo_db`. After configuring a [S3 connection](/extensions/httpfs#configure-the-s3-connection), you can attach a Kuzu database hosted on S3 as:
+Suppose you are connected to a local database `./demo_db`. After configuring a [S3 connection](/extensions/s3#configure-the-s3-connection), you can attach a Kuzu database hosted on S3 as:
 
 ```sql
 ATTACH 's3://kuzu-example/university' AS uw (dbtype kuzu);
@@ -38,7 +38,7 @@ ATTACH 's3://kuzu-example/university' AS uw (dbtype kuzu);
 After attaching a remote Kuzu database, you no longer have access to the original local Kuzu database `./demo_db`.
 After the `ATTACH` statement above, you can only query the external Kuzu database under `s3://kuzu-example/university`.
 
-If you wish to attach to a database hosted on GCS instead, just replace the prefix `s3://` with `gs://` (in this case it would become `gs://kuzu-example/university`). For more information on how to set up Kuzu with GCS, see [here](/extensions/httpfs#gcs-file-system).
+If you wish to attach to a database hosted on GCS instead, just replace the prefix `s3://` with `gs://` (in this case it would become `gs://kuzu-example/university`). For more information on how to set up Kuzu with GCS, see [here](/extensions/gcs).
 
 #### Execute queries on external Kuzu database
 We only allow **read-only** queries to execute on external Kuzu databases (even if the external database is stored on local disk).
