@@ -115,6 +115,7 @@ CALL QUERY_FTS_INDEX(
   conjunctive := false,
   K := 1.2,
   B := 0.75
+  TOP := 3
 )
 RETURN node, score;
 ```
@@ -139,6 +140,9 @@ Optional arguments:
 - `B`: Controls the influence of string length on length normalization.
   - Type: `DOUBLE`
   - Default: `0.75`
+- `TOP`: Retrieves the top-k documents with the highest scores (return order of docs is not guaranteed).
+  - Type: `UINT64`
+  - Default: Retrieves all documents in the table.
 
 You can read more about the `K` and `B` parameters [here](https://learn.microsoft.com/en-us/azure/search/index-ranking-similarity).
 
@@ -182,6 +186,24 @@ ORDER BY score DESC;
 ├───────────────────┼──────────────────────────────────────┼──────────┤
 │ The Dragon's Call │ A fantasy tale of dragons and magic. │ 1.208044 │
 └───────────────────┴──────────────────────────────────────┴──────────┘
+```
+
+The `top` option can be used when you are only interested in retrieving the top-k documents with the highest scores.
+For example, to find the document most likely to contain the keywords `dragon magic`, you can run the following query:
+```cypher
+CALL
+  QUERY_FTS_INDEX('Book', 'book_index', 'dragon magic', top := 1)
+RETURN
+  node.title as title,
+  score;
+```
+```
+┌───────────────────┬──────────┐
+│ title             │ score    │
+│ STRING            │ DOUBLE   │
+├───────────────────┼──────────┤
+│ The Dragon's Call │ 1.208044 │
+└───────────────────┴──────────┘
 ```
 
 ### Drop an FTS index
