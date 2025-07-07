@@ -44,21 +44,57 @@ This section describes how to use officially supported extensions in Kuzu.
 ### Install an official extension
 
 Kuzu requires the user to install the extension before loading and using it.
+
 Official extensions can be installed by running the `INSTALL` command:
 
 ```sql
 INSTALL <EXTENSION_NAME>;
 ```
-You only need to install an extension once.
+You only need to install an extension once. 
 
-### Load an official extension
+### Force install an official extension
+If the user attempts to install an extension that is already installed, the install command will skip downloading it from the official repository and will use the existing local copy instead.
+
+To force Kuzu to download the extension from the official repository regardless of the presence of a local copy, users can use the `FORCE INSTALL` command followed by the extension name:
+
+```sql
+FORCE INSTALL <EXTENSION_NAME>;
+```
+
+### Load an extension
+
 Extensions must be loaded before they can be used:
 
 ```sql
 LOAD <EXTENSION_NAME>;
 ```
 
+Official extensions can be loaded by simply specifying the extension name after installation.  
+In contrast, self-compiled extensions must be loaded by providing the full file path to the compiled extension library.
+
+For example:
+To load the official `json` extension (after it has been installed), use:
+
+```sql
+load json;
+```
+However, for a self-compiled extension such as httpfs, you must specify the path to the compiled shared library:
+
+```sql
+#Assuming the user has compiled the httpfs extension and placed the binary under `extension/httpfs/build/`
+LOAD EXTENSION 'extension/httpfs/build/libhttpfs.kuzu_extension';
+```
+
 :::note[Note]
 Extensions are scoped to the session within which they are loaded. Thus, the `LOAD` command must be
 run every time a new CLI session is started or a client script is run.
 :::
+
+
+### Uninstall an official extension.
+
+Extensions can also be uninstalled after installation. To uninstall an extension, simply run the `UNINSTALL` command along with the extension name.
+
+```sql
+UNINSTALL <EXTENSION_NAME>;
+```
