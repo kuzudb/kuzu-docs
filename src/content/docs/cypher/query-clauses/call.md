@@ -27,7 +27,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
 | `SHOW_PROJECTED_GRAPHS` | returns all existing projected graphs in the system |
-| `PROJECT_GRAPH_INFO` | returns the given projected graph information | 
+| `PROJECTED_GRAPH_INFO` | returns the given projected graph information | 
 
 </div>
 
@@ -298,8 +298,7 @@ To list all existing projected graphs in a Kuzu database, you can use the `SHOW_
 | Column | Description | Type |
 | ------ | ----------- | ---- |
 | name | the name of the projected graph | STRING |
-| nodes | the nodes with predicates in the projected graph | STRING |
-| rels | the rels with predicates in the projected graph | STRING |
+| type | the type of the projected graph | STRING |
 
 ```cypher
 CALL SHOW_PROJECTED_GRAPHS() RETURN *;
