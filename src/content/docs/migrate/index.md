@@ -57,11 +57,9 @@ database directory you are connected to and reload it again.
 :::
 
 ## Export database with DDL only
-Similar to the SQL `.schema` command, Kuzu provides an option to export a database schema without exporting the actual data. This can be especially useful when you only need the structure of the database and not the data itself.
-
-To export the schema only, use the schema_only option as follows:
+Similar to SQLite's `.schema` command, you can use the `schema_only = true` option to export only the database schema without exporting the data itself:
 
 ```cypher
 EXPORT DATABASE '/path/to/export' (schema_only=true);
 ```
-This command will generate a schema.cypher file containing only the DDL (Data Definition Language) statements, and will not include the data itself, ensuring a lightweight export of the database structure.
+This command will generate a `schema.cypher` file containing only the DDL (Data Definition Language) statements that can be used to recreate the schema of the database inside Kuzu.
