@@ -1,9 +1,14 @@
 ---
 title: "Azure extension"
 ---
-The Azure extension adds support for scanning from [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview) and [Azure Data Lake Storage (ADLS)](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction).
+The Azure extension adds support for scanning from [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview)
+and [Azure Data Lake Storage (ADLS)](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction).
 
 ## Usage
+
+Unlike the [S3](/extensions/s3) and [GCS](/extensions/gcs) extensions, the Azure extension
+is not implemented as a feature of the `httpfs` extension, but rather, as its own extension.
+Install the `azure` extension as follows:
 
 ```sql
 INSTALL azure;
@@ -34,7 +39,7 @@ Alternatively, you can set the following environment variables:
 At least one of the options must be set. Generally, `azure_connection_string` should be used.
 `azure_account_name` is only useful for connecting to a container that allows anonymous read access.
 
-### Scan from Azure
+### Scan data from Azure
 
 The extension supports both `az` and [`abfss`](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction-abfs-uri) URI schemes. We recommend using `abfss` when scanning
 from ADLS for much better performance.
@@ -53,3 +58,7 @@ You can also use a fully qualified path:
 LOAD FROM 'az://account_name.blob.core.windows.net/container/path/to/file.csv'
 RETURN *;
 ```
+
+Currently, we only support scanning from Azure Blob Storage. If you're looking for other specific features,
+open a an issue on [GitHub](https://github.com/kuzudb/kuzu/issues) (please check if there's already
+an existing issue related to "Azure" first).

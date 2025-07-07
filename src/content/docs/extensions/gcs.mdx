@@ -2,18 +2,18 @@
 title: "Google Cloud Storage extension"
 description: "The GCS extension allows you to read, write or glob files hosted on Google Cloud Storage"
 ---
-The GCS extension allows you to read, write or glob files hosted on object storage servers using the
+The GCS extension allows you to read, write, or glob files hosted on object storage servers using the
 [Google Cloud Storage](https://cloud.google.com/storage) API.
 
 ## Usage
 
-To use the GCS extension, install and load the `httpfs` extension as follows:
+The GCS extension is implemented as a feature of the `httpfs` extension, so you need to install and load it first.
 
 ```sql
 INSTALL httpfs;
 LOAD httpfs;
 ```
-### Configure the GCS connection
+### Configure the connection
 
 Before reading and writing from private GCS buckets, you have to configure the connection using [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statements.
 ```sql
