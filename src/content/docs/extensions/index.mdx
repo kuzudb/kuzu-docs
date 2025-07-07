@@ -44,21 +44,54 @@ This section describes how to use officially supported extensions in Kuzu.
 ### Install an official extension
 
 Kuzu requires the user to install the extension before loading and using it.
+
 Official extensions can be installed by running the `INSTALL` command:
 
 ```sql
 INSTALL <EXTENSION_NAME>;
 ```
-You only need to install an extension once.
+You only need to install an extension once. 
 
-### Load an official extension
+### Force install an official extension
+If you run the `INSTALL` command for an extension that is already installed, the second install command will not perform any action.
+
+If you want to forcefully download an extension for any reason, for example if the extension is not working properly, you can use the `FORCE INSTALL` command:
+
+```sql
+FORCE INSTALL <EXTENSION_NAME>;
+```
+
+### Load an extension
+
 Extensions must be loaded before they can be used:
 
 ```sql
 LOAD <EXTENSION_NAME>;
 ```
 
+Official extensions can be loaded by simply specifying the extension name after installation.  
+
+For example, to load the official `json` extension:
+
+```sql
+load json;
+```
+If you want to load an extension you have compiled yourself, you can specify the path to the compiled library. For example, to load a self-compiled `json` extension:
+
+```sql
+LOAD EXTENSION 'extension/httpfs/build/libhttpfs.kuzu_extension';
+```
+
 :::note[Note]
 Extensions are scoped to the session within which they are loaded. Thus, the `LOAD` command must be
 run every time a new CLI session is started or a client script is run.
 :::
+
+
+### Uninstall an official extension.
+
+You can uninstall extensions if you don't need them anymore by using the `UNINSTALL` command:
+
+```sql
+UNINSTALL <EXTENSION_NAME>;
+```
