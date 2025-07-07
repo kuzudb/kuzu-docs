@@ -197,6 +197,10 @@ The possible configurations for different configurations are:
 
 ### Null strings handling
 By default, Kuzu treats only empty strings (`""`) as `NULL` values. However, in certain scenarios the default behavior may not be sufficient. For example, if you're working with a CSV file exported by a tool that uses the string `"NULL"` to represent nulls. In such cases, you can modify Kuzu's behavior by setting the `NULL_STRINGS` parameter to include both the empty string and the string `"NULL"`.
+For example:
+```
+LOAD FROM 'xxx.csv'(null_strings=[null_str1, null_str2, null_str3]) RETURN *;
+```
  
 ## Compressed CSV files
 To reduce file size, CSV files are often distributed in compressed formats. Kuzu supports directly scanning `*.csv.gz` files (compressed with `gzip`)
