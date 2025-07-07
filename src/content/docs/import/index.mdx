@@ -61,7 +61,7 @@ COPY person FROM 'person.dsv' (file_format = 'csv')
 ```
 :::
 
-## `COPY FROM` a partial subset
+## Bulk insert from a subset
 
 In certain cases, you may only want to partially fill your Kuzu table using the data from your input
 source. This is common in cases where you want to create extra columns during DDL that will hold
@@ -97,7 +97,33 @@ node table being copied into. If the node table had fewer columns than the data 
 lead to a Runtime error because of a column number mismatch.
 :::
 
-## Copy large relationship tables
+## Bulk insert into relationship table with multiple FROM-TO connections 
+
+Given a relationship table with multiple from-to connections, internally Kuzu will create a child table per connection.
+
+Consider the following statement
+```
+CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
+```
+Two children tables will be created internally
+```
+Knows_User_User
+Knows_User_City
+```
+
+When bulk inserting into a relationship table with multiple from-to pairs, users need to specify which child table to insert through `from, to` options, e.g.
+```sql
+COPY Knows FROM 'knows_user_user.csv' (from='User', to='User');
+COPY Knows FROM 'knows_user_city.csv' (from='User', to='City');
+```
+
+Alternatively, you can also directly copy into a child table. This approach is **deprecated** since v0.11.
+```sql
+COPY Knows_User_User FROM 'knows_user_user.csv';
+COPY Knows_User_City FROM 'knows_user_city.csv';
+```
+
+## Bulk insert into large relationship tables
 
 Importing large relationship tables from external files (100M+ scale) can use significant amounts of memory.
 If the memory used to prepare the
