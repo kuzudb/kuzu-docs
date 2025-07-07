@@ -27,6 +27,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
 | `SHOW_PROJECTED_GRAPHS` | returns all existing projected graphs in the system |
+| `PROJECT_GRAPH_INFO` | returns the given projected graph information | 
 
 </div>
 
@@ -305,12 +306,60 @@ CALL SHOW_PROJECTED_GRAPHS() RETURN *;
 ```
 
 ```
-┌────────────────┬───────────────────────┬──────────────────────┐
-│ name           │ nodes                 │ rels                 │
-│ STRING         │ STRING                │ STRING               │
-├────────────────┼───────────────────────┼──────────────────────┤
-│ social_network │ [{'table': 'person'}] │ [{'table': 'knows'}] │
-└────────────────┴───────────────────────┴──────────────────────┘
+┌────────────────┬────────┐
+│ name           │ type   │
+│ STRING         │ STRING │
+├────────────────┼────────┤
+│ student        │ CYPHER │
+│ social-network │ NATIVE │
+└────────────────┴────────┘
+```
+
+### PROJECTED_GRAPH_INFO
+To show the detail information of the projected graph, you can utilize the `PROJECTED_GRAPH_INFO` function.
+
+There are two types of the projected graph:
+
+### Native projected graph
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| table type | the type of the table (NODE/REL) | STRING |
+| table name | the name of the table | STRING |
+| predicate | the predicates defined on the table | STRING |
+
+
+### Cypher projected graph
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| cypher statement | the cypher statement used to create the projected graph | STRING |
+
+### Cypher
+
+```cypher
+call PROJECTED_GRAPH_INFO('student-social-network') RETURN *;
+```
+
+```
+┌────────────┬────────────┬────────────────┐
+│ table type │ table name │ predicate      │
+│ STRING     │ STRING     │ STRING         │
+├────────────┼────────────┼────────────────┤
+│ NODE       │ person     │ n.age < 18     │
+│ REL        │ knows      │ r.since > 1997 │
+└────────────┴────────────┴────────────────┘
+```
+
+```cypher
+call PROJECTED_GRAPH_INFO('student') RETURN *;
+```
+
+```
+┌─────────────────────────────────────┐
+│ cypher statement                    │
+│ STRING                              │
+├─────────────────────────────────────┤
+│ MATCH (n) WHERE n.age < 18 RETURN n │
+└─────────────────────────────────────┘
 ```
 
 ## YIELD
