@@ -30,7 +30,7 @@ you can attach to a single external Kuzu database (or be connected to the local 
 Therefore you don't need to prefix your node and relationship tables.
 Instead you will use the alias to `DETACH` from the external Kuzu database.
 
-Suppose you are connected to a local database `./demo_db`. After configuring a [S3 connection](/extensions/s3#configure-the-s3-connection), you can attach a Kuzu database hosted on S3 as:
+Suppose you are connected to a local database `./demo_db`. After configuring a [S3 connection](/extensions/s3#configure-the-connection), you can attach a Kuzu database hosted on S3 as:
 
 ```sql
 ATTACH 's3://kuzu-example/university' AS uw (dbtype kuzu);
