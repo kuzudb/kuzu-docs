@@ -4,14 +4,16 @@ description: "The HTTPFS extension allows you to read from files hosted on remot
 ---
 
 The `httpfs` extension extends the Kuzu file system by allowing reading from or writing to files hosted on
-remote file systems. The following extensions are provided via HTTPFS, each supporting a different remote file system:
+remote file systems. The `httpfs` extension provides support for the following remote file systems:
 
 - This extension: Plain HTTP(S) file systems
 - [S3 extension](/extensions/s3): Object storage via the AWS S3 API
 - [GCS extension](/extensions/gcs): Object storage via the Google Cloud Storage (GCS) API
 
+If you're looking to use Kuzu with Azure Blob Storage, see the [Azure extension](/extensions/azure).
+
 :::note[Note]
-The S3 and GCS extensions are implemented as features of the `httpfs` extension.
+The S3 and GCS extensions are implemented as _features_ of the `httpfs` extension.
 
 - Over plain HTTP(S), Kuzu only supports reading files.
 - For object storage via the S3 or GCS API, Kuzu supports reading, writing, and globbing files.
