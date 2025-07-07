@@ -56,7 +56,7 @@ database directory you are connected to and reload it again.
 2. The `IMPORT DATABASE` command also imports all indexes, regardless of whether their dependent extensions were loaded during import. If the dependent extension was not loaded during import, it will be automatically loaded during import.
 :::
 
-## Export database with DDL only
+## Export database with schema only
 Similar to SQLite's `.schema` command, you can use the `schema_only = true` option to export only the database schema without exporting the data itself:
 
 ```cypher
