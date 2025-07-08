@@ -103,17 +103,17 @@ If an unsupported model, dimension, region, or endpoint is specified, the API ca
 ### Examples
 
 ```sql
-CALL CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-text-v1", "us-east-1");
+RETURN CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-text-v1", "us-east-1");
 
-CALL CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07");
-CALL CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
+RETURN CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07");
+RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
 
-CALL CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
-CALL CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text", "http://endpoint.example.com:8000");
+RETURN CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
+RETURN CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text", "http://endpoint.example.com:8000");
 
-CALL CREATE_EMBEDDING("Hello world", "open-ai", "text-embedding-3-small");
+RETURN CREATE_EMBEDDING("Hello world", "open-ai", "text-embedding-3-small");
 
-CALL CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
+RETURN CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
 ```
 
 ## Storing embeddings in a vector index
