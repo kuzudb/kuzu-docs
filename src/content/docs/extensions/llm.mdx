@@ -65,9 +65,7 @@ CALL CREATE_EMBEDDING(
     <PROMPT>,
     <PROVIDER>,
     <MODEL>,
-    dimensions := <INT64>,
-    region := <STRING>,
-    endpoint := 'http://localhost:11434'
+    -- optional params
 );
 ```
 
@@ -88,8 +86,10 @@ Optional arguments:
     - Type: `INT64`
     - Supported providers: `open-ai`, `google-vertex`, `voyage-ai`
     - Example: `256` for `google-vertex`
+    - Note: This value must be positive.
 - `region`: The region to send requests to.
     - Type: `STRING`
+    - Supported providers: `amazon-bedrock`, `google-vertex`
     - Example: `us-east-1` for `amazon-bedrock`
 - `endpoint`: The endpoint to send requests to.
     - Type: `STRING`
