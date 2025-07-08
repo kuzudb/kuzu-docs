@@ -104,3 +104,7 @@ You can uninstall extensions if you don't need them anymore by using the `UNINST
 ```sql
 UNINSTALL <EXTENSION_NAME>;
 ```
+:::note[Note]
+Uninstalling a currently loaded extension won't affect the running database instance. However, you won't be able to load that extension again until it's reinstalled.
+:::
+
