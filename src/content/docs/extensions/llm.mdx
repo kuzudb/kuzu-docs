@@ -79,13 +79,22 @@ RETURN CREATE_EMBEDDING(
     <DIMENSIONS>
 );
 
--- for amazon-bedrock, google-vertex, ollama
+-- for amazon-bedrock, google-vertex
 RETURN CREATE_EMBEDDING(
     <PROMPT>,
     <PROVIDER>,
     <MODEL>,
-    <REGION/ENDPOINT>
+    <REGION>
 );
+
+-- for ollama
+RETURN CREATE_EMBEDDING(
+    <PROMPT>,
+    <PROVIDER>,
+    <MODEL>,
+    <ENDPOINT>
+);
+
 
 -- for google-vertex
 RETURN CREATE_EMBEDDING(
@@ -93,7 +102,7 @@ RETURN CREATE_EMBEDDING(
     <PROVIDER>,
     <MODEL>,
     <DIMENSIONS>,
-    <REGION/ENDPOINT>
+    <REGION>
 );
 ```
 
