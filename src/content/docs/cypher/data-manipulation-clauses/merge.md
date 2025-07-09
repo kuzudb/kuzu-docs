@@ -14,7 +14,7 @@ We will use the example database for demonstration, whose schema and data import
 ## Merge Nodes
 
 ### Merge existing nodes
-The following query tries to merge a user with name "Adam". Since user "Adam" exists in the database, no user is created.
+The following query tries to merge a user with the name "Adam". Since "Adam" exists in the database, no user is created.
 ```cypher
 MERGE (n:User {name : 'Adam'}) RETURN n.*;
 ```
@@ -40,7 +40,7 @@ MATCH (:User) RETURN COUNT(*);
 ```
 
 ### Merge non-existing nodes
-The following query tries to merge a user with name "Bob". Since user "Bob" does not exist in the database, a new user with name "Bob" is created.
+The following query tries to merge a user with the name "Bob". Since "Bob" does not exist in the database, a new user with the name "Bob" is created.
 ```cypher
 MERGE (n:User {name : 'Bob', age: 45}) RETURN n.*;
 ```

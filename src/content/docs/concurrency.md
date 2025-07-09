@@ -84,7 +84,7 @@ The reason for this limitation is that if a connection `conn1` from `db1` makes 
 write operation, say deleting some node record, then the `db1` object is able to ensure
 that any cached data in `db1` is refreshed and is accurate. However, it cannot notify other Database objects that may exist
 about the change. So in our example, `db2`'s cache would no longer represent the true state of the
-data on disk that is cached. This can lead to problems if
+data on disk that was cached. This can lead to problems if
 connections from `db2` try to run queries after `db1`'s modification. Therefore, Kuzu will
 not allow multiple Database objects to be created unless they are all `READ_ONLY`.
 
@@ -165,7 +165,7 @@ as HTTP or gRPC). You are free to open any number of client processes that issue
 
 Note that in terms of processes that embed Kuzu, this design pattern follows
 [scenario 1](#scenario-1-one-process-that-creates-a-read_write-database) above as there is actually
-one process that creates a `READ_WRITE` Database object. To enable users to get up and running with such an architecture, 
+one process that creates a `READ_WRITE` Database object. To enable you to get up and running with such an architecture, 
 we provide a REST-style [Kuzu API server](https://github.com/kuzudb/api-server) powered by Express.js. 
 Pictorially, this design pattern looks as follows:
 

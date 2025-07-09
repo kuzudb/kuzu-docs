@@ -8,7 +8,7 @@ clause to fetch the top-k tuples from the query result. Note that `LIMIT` accept
 
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
 
-For example, the following query returns the top three oldest users.
+For example, the following query returns the three oldest users:
 
 ```cypher
 MATCH (u:User)

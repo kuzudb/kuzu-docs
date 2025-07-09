@@ -12,8 +12,8 @@ some query, before performing other querying on those top-k. We give examples of
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
 
 ### Using WITH for aggregations
-The following query returns all Users whose ages are greater than the average age of Users in the database. This
-can be done in two steps: (i) compute the average age of Users in the database and assign it to an alias `avgAge`;
+The following query returns all users whose ages are greater than the average age of users in the database. This
+can be done in two steps: (i) compute the average age of users in the database and assign it to an alias `avgAge`;
 and (ii) use `avgAge` in a following query part in a comparison predicate. This is done in the following query:
 ```cypher
 MATCH (a:User) 
@@ -34,8 +34,8 @@ RETURN *;
 ```
 
 ## Using WITH for top-k computations
-Suppose you want to return the Users that the oldest Users in your database follows. This can be done
-in two steps: (i) compute the oldest person "a"; and (ii) find the Users that "a" follows and return.  
+Suppose you want to return the users that the oldest user in your database follows. This can be done
+in two steps: (i) compute the oldest user `a`; and (ii) find the users that `a` follows.  
 This is done in the below query:
 ```cypher
 MATCH (a:User)
@@ -54,5 +54,4 @@ RETURN *;
 -------------------------------------------------------------------------------------
 ```
 
-The part of the query until LIMIT computes the oldest user Zhang (aged 50) and then the last `MATCH (a)-[:Follows]->(b:User) RETURN *` returns
-the users that `Zhang` follows (there is only one such user, who is `Noura`.) 
+The query fragment before `LIMIT` finds the oldest user as `Zhang` and then the ending `MATCH` fragment is used to find the users that `Zhang` follows. There is only one such user, who is `Noura`.

@@ -97,7 +97,7 @@ Initially, there are 3 rows in the `Person` and `Item` tables:
 2    James  San Francisco  headphones
 ```
 
-Now, say you obtain updated information about users Karissa and Rhea who purchased new items.
+Now, say you obtain updated information about Karissa and Rhea who purchased new items.
 Also, say Karissa has moved to a new city, so her `current_city` is now `Boston`.
 
 ```py

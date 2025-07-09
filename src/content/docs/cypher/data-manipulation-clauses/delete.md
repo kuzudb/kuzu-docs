@@ -28,10 +28,14 @@ RETURN u.*;
 ```
 
 ### Delete multi label nodes
-The following statements first create a user node and a city node both with name "A" and then delete them. 
+The following statements first create a user node and a city node both with the name "A" and then delete them. 
 ```cypher
 CREATE (:User {name: 'A'}), (:City {name: 'A'});
-MATCH (u) WHERE u.name = 'A' DELETE u RETURN u.*;
+
+MATCH (u)
+WHERE u.name = 'A'
+DELETE u
+RETURN u.*;
 ```
 ```
 ┌────────┬───────┬──────────────┐
@@ -43,7 +47,7 @@ MATCH (u) WHERE u.name = 'A' DELETE u RETURN u.*;
 └────────┴───────┴──────────────┘
 ```
 
-## Detach delete
+### Detach delete
 `DELETE` can only delete nodes that do not have any relationships. To delete a node and all of its relationships with
 a single clause, use `DETACH DELETE`.
 
@@ -108,6 +112,7 @@ RETURN u.name, u1.name;
 MATCH (u:User)-[f]->(u1)
 WHERE u.name = 'Karissa' 
 DELETE f;
+
 MATCH (u:User)-[f]->(u1)
 WHERE u.name = 'Karissa' 
 RETURN u.name, u1.name;

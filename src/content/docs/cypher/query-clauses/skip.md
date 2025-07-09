@@ -9,7 +9,7 @@ Note: SKIP accepts any expression that can be evaluated to an integer.
 
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
 
-For example, the following query skips the youngest 2 users
+For example, the following query skips the 2 youngest users
 and returns the rest of the users' ages.
 Query:
 ```cypher

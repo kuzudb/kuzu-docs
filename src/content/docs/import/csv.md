@@ -171,7 +171,7 @@ the manually specified configurations for `HEADER` and `DELIM`).
 By default, Kuzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
 If you want to use a different number of lines, you can specify the `sample_size` parameter.
 
-For interested users, below are more details of how Kuzu automatically tries to detect these configurations.
+You can find more information on how Kuzu automatically tries to detect these configurations below.
 
 ### Header auto detection
 Kuzu parses the first line of the CSV into columns and checks if each column can be cast to the data type of the target column in the node or rel table that is being copied into.

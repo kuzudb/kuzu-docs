@@ -165,7 +165,7 @@ RETURN e;
 ```
 
 ### Match undirected relationships
-Users can match a relationship in both directions by not specifying a relationship direction (i.e. `-`). The following query finds all `b` users who either follow or are followed by `Karissa`. 
+You can match a relationship in both directions by not specifying a direction (i.e., using `-`). The following query finds all users who either follow or are followed by `Karissa`. 
 
 ```cypher
 MATCH (a:User)-[e:Follows]-(b:User)
@@ -598,7 +598,7 @@ There are two interpretations when the lower bound is greater than 1:
 :::
 
 ## Named paths
-Kuzu treats paths as first-class citizens, so users can assign a named variable to a path (i.e., connected graph) and use it later on.
+Kuzu treats paths as first-class citizens. You can assign a named variable to a path (i.e., connected graph) and use it later on.
 
 The following query returns all paths between `Adam` and `Karissa`.
 ```cypher

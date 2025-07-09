@@ -71,7 +71,7 @@ load_data(conn)
 You can visualize the imported data in Kuzu Explorer as shown in the [previous section](/get-started/cypher-intro):
 
 ```cypher
-// Return the first two users, their movies and their ratings
+// Return the first two users, their movies, and their ratings
 MATCH (u:User)-[r:Rating]->(m:Movie)
 WHERE u.userId IN [1, 2]
 RETURN u, r, m

@@ -30,7 +30,7 @@ RETURN *;
 └──────────────────────────────────────────────────┘
 ```
 
-The boolean predicate specified above can be understood as it reads: Find users `a` whose ages are
+The boolean predicate specified above can be understood as it reads: Find users whose ages are
 greater than `45` OR whose names start with `Kar`. It combines several means to construct expressions in high-level database query languages, such as a boolean operator (OR), a numeric comparison operator (>), and a string function (starts_with). You can learn more about the operators, functions, and expressions [here](/cypher/expressions).
 
 ## Filter with NULL
