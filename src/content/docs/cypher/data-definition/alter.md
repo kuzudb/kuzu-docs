@@ -12,11 +12,12 @@ Column names must be unique within a node or relationship table.
 For example, consider that you try to run the following command to add a column `age`, but it
 already exists in the `User` table:
 ```sql
+CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64);
 ALTER TABLE User ADD age INT64;
 ```
 The query will raise the following exception:
 ```
-"Binder exception: Property: age already exists."
+Error: Runtime exception: User table already has property age.
 ```
 
 The following query adds a new column with the default value `NULL` to the User table.
@@ -70,7 +71,14 @@ The same applies to relationship tables.
 
 `ADD FROM <node_table_name> TO <node_table_name>` allows you to add a connection between two node tables into an existing relationship table.
 
-The following example creates a node table `Celebrity` and adds `User` follows `Celebrity` into `Follows` relationship table.
+First, create a relationship table:
+
+```sql
+CREATE REL TABLE Follows(from User TO User);
+```
+
+The following example creates a node table `Celebrity` and adds `User` follows `Celebrity` into `Follows` relationship table:
+
 ```sql
 CREATE NODE TABLE Celebrity(name STRING PRIMARY KEY);
 ALTER TABLE Follows ADD FROM User TO Celebrity;
@@ -78,9 +86,8 @@ ALTER TABLE Follows ADD FROM User TO Celebrity;
 
 #### Add connection if not exists
 
-Use the `IF NOT EXISTS` modifier to do nothing if the given connection already exists.
+Use the `IF NOT EXISTS` modifier to do nothing if the given connection already exists:
 
-Example:
 ```sql
 ALTER TABLE Follows ADD IF NOT EXISTS FROM User TO Celebrity;
 ```
@@ -96,9 +103,8 @@ ALTER TABLE Follows DROP FROM User TO Celebrity;
 
 #### Drop connection if exists
 
-Use the `IF  EXISTS` modifier to do nothing if the given connection does not exist.
+Use the `IF  EXISTS` modifier to do nothing if the given connection does not exist:
 
-Example:
 ```sql
 ALTER TABLE Follows DROP IF EXISTS FROM User TO Celebrity;
 ```
@@ -129,15 +135,18 @@ The following query adds a comment to `User` table.
 ```sql
 COMMENT ON TABLE User IS 'User information';
 ```
-Comments can be extracted through the `SHOW_TABLES()` function. See [CALL](/cypher/query-clauses/call) for more information.
+You can retrieve existing comments using the `SHOW_TABLES()` [CALL](/cypher/query-clauses/call) function.
+
 ```sql
 CALL SHOW_TABLES() RETURN *;
---------------------------------------------
-| TableName | TableType | TableComment     |
---------------------------------------------
-| User      | NODE      | User information |
---------------------------------------------
-| City      | NODE      |                  |
---------------------------------------------
 ```
-
+```
+┌────────┬───────────┬────────┬───────────────┬──────────────────┐
+│ id     │ name      │ type   │ database name │ comment          │
+│ UINT64 │ STRING    │ STRING │ STRING        │ STRING           │
+├────────┼───────────┼────────┼───────────────┼──────────────────┤
+│ 0      │ User      │ NODE   │ local(kuzu)   │ User information │
+│ 3      │ Celebrity │ NODE   │ local(kuzu)   │                  │
+│ 2      │ Follows   │ REL    │ local(kuzu)   │                  │
+└────────┴───────────┴────────┴───────────────┴──────────────────┘
+```

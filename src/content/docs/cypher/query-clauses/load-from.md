@@ -1,5 +1,5 @@
 ---
-title: Load (Scan)
+title: Load from (scan)
 description: Direct scan over file using the LOAD FROM clause
 ---
 
@@ -7,8 +7,8 @@ The `LOAD FROM` clause performs a direct scan over an input file **without copyi
 This clause is very useful for inspecting a subset of a larger file to display or load into a node table, or to
 perform simple transformation tasks like rearranging column order.
 
-`LOAD FROM` can be followed by arbitrary clauses like `MATCH`, `CREATE`, `WHERE`, `RETURN`, and so on.
-For an input source with `k` columns, `LOAD FROM` will bind each tuple `t=(col0, col1, ..., col(k-1))` of the scanned input source to `k` variables
+`LOAD FROM` can be followed by arbitrary clauses like `MATCH`, `CREATE`, `WHERE`, or `RETURN`.
+For an input source with `k` columns, `LOAD FROM` will bind each tuple of the scanned input source to `k` variables
 with the same property names and data types. The names and data types of the properties can either be specified
 in the `LOAD FROM` statement using the [`WITH HEADERS`](#bound-variable-names-and-data-types) clause, or they will be automatically inferred from the source.
 
@@ -62,7 +62,7 @@ provide the names of the columns. The data types are always automatically inferr
 if `LOAD WITH HEADERS (...) FROM` is used, in which case the data types provided inside the `(...)` are used as 
 described [above](#bound-variable-names-and-data-types)).
 
-Suppose `user.csv` is a CSV file with the following contents:
+Suppose `user.csv` has the following contents:
 ```
 name,age
 Adam,30
@@ -70,7 +70,7 @@ Karissa,40
 Zhang,50
 ```
 
-Then if you run the following query, Kuzu will infer the column names `name` and `age` from the first line of the CSV:
+For the following query, Kuzu will infer the column names `name` and `age` from the first line of the CSV:
 
 ```cypher
 LOAD FROM "user.csv" (header = true) RETURN *;
@@ -85,13 +85,7 @@ LOAD FROM "user.csv" (header = true) RETURN *;
 ```
 
 
-If (header = false), then the names of the columns will be column0, column1, ..., column(k-1), where k is the number of columns in the CSV file.
-Suppose user.csv has the following contents instead:
-```
-Adam,30
-Karissa,40
-Zhang,50
-```
+If `header = false`, then `k` columns will be named `column0`, `column1`, ..., `column(k-1)`.
 
 ```cypher
 LOAD FROM "user.csv" (header = false) RETURN *;
@@ -108,13 +102,16 @@ LOAD FROM "user.csv" (header = false) RETURN *;
 
 ### Parquet
 
-Since Parquet files contain schema information in their metadata, Kuzu will always use the available
-schema information when loading from Parquet files (except again
-if `LOAD WITH HEADERS (...) FROM` is used). Suppose we have a Parquet file `user.parquet` with two columns `f0` and `f1` 
-and the same content as in the `user.csv` file above. Then the query below will scan the Parquet file and output the following:
+Parquet files contain schema information in their metadata. Kuzu will use this schema when scanning
+Parquet files, unless `LOAD WITH HEADERS (...) FROM` is used.
+
+Suppose we have a Parquet file `user.parquet` with two columns `f0` and `f1` and the same content as
+the `user.csv` file above. The query below will scan the Parquet file as follows:
 
 ```cypher
 LOAD FROM "user.parquet" RETURN *;
+```
+```
 ┌─────────┬───────┐
 │ f0      │  f1   │
 │ STRING  │ INT64 │
@@ -127,16 +124,15 @@ LOAD FROM "user.parquet" RETURN *;
 
 ### Pandas
 
-Kuzu allows zero-copy access to Pandas DataFrames. The variable names and data types of scanned columns 
-within a Pandas DataFrame will be
-inferred from the schema information of the data frame. Here is an example:
+Kuzu allows zero-copy access to Pandas dataframes. The variable names and data types of scanned columns
+within a Pandas dataframe will be inferred from the schema information of the dataframe.
 
 ```py
 # main.py
 import kuzu
 import pandas as pd
 
-db = kuzu.Database("persons")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
@@ -153,23 +149,23 @@ print(result.get_as_df())
 1  Karissa   40
 2    Zhang   50
 ```
-Here, `name` and `age` have string and integer types in the defined Pandas DataFrame, and so the output table
+Here, `name` and `age` have string and integer types in the defined Pandas dataframe. The Kuzu table
 contains two columns with the same names and data types.
 
 :::note[Note]
-Pandas can use either a NumPy or Arrow backend - Kuzu can natively scan from either backend.
+Pandas can use either a NumPy or Arrow backend. Kuzu can natively scan from either backend.
 :::
 
 ### Polars
 
-Kuzu can also scan Polars DataFrames via the underlying PyArrow layer. The rules for determining the 
-variable names and data types is identical to scanning Pandas data frames. Here is an example:
+Kuzu can also scan Polars dataframes via the underlying PyArrow layer. The rules for determining the
+variable names and data types is identical to scanning Pandas dataframes.
 
 ```python
 import kuzu
 import polars as pl
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 df = pl.DataFrame({
@@ -194,7 +190,7 @@ shape: (3, 2)
 ```
 
 
-### Arrow tables
+### Arrow
 
 You can scan an existing PyArrow table as follows:
 
@@ -202,7 +198,7 @@ You can scan an existing PyArrow table as follows:
 import kuzu
 import pyarrow as pa
 
-db = kuzu.Database("tmp")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 pa_table = pa.table({
@@ -225,8 +221,9 @@ age: [[30,40,50]]
 
 ### JSON files
 
-Kuzu can scan directly scan JSON files `LOAD FROM`, but it requires installing the JSON extension.
-Say you have a JSON file with the following contents:
+Kuzu can scan JSON files using `LOAD FROM`, but it requires installing the [`json` extension](/extensions/json).
+
+Suppose we have a JSON file with the following contents:
 
 ```json
 [
@@ -267,68 +264,45 @@ LOAD FROM "user.json" RETURN *;
 └─────────┴─────┘
 ```
 
-See the documentation on the JSON extension [here](/extensions/json) for details.
-
 ### In-memory JSON objects
 
-Sometimes, you may have JSON objects you obtain from an external source, such as a REST API, or a
-document database like MongoDB (or even a search engine like Elasticsearch). In such cases, you
-may want to scan these objects without persisting them to JSON files.
+Sometimes, you may have JSON objects you obtain from an external source, such as a REST API or a
+document database like MongoDB. In such cases, you may want to scan these objects without persisting them to JSON files.
 
-The JSON extension provides the `json_structure` function for this use case (see its documentation
-[here](/extensions/json#json-functions)).
+The JSON extension provides the [`json_structure` function](/extensions/json#json-functions) for this use case.
 
-As an example, let's say we have the same JSON object as shown above in the JSON file example,
-but this time, we obtain the JSON object on the fly from a REST API. We can use the client language
-to return a _string_ representation of the JSON object, and then use the `json_structure` function
-in Kuzu's JSON extension to read the JSON string and convert its contents into the types needed
-for the Kuzu table.
+Consider the same JSON object shown above obtained on the fly from a REST API. We can use a programming language API to
+use a _string_ representation of the JSON object and the `json_structure` function to create a Kuzu table.
 
-```js
-// This is the JSON string we get from the REST API
-'[{"name": "Rebecca", "age": 25}, {"name": "Gregory", "age": 30}, {"name": "Alicia", "age": 28}]'
-```
-```
-┌───────────────────────────────────────┐
-│ structure                             │
-│ STRING                                │
-├───────────────────────────────────────┤
-│ STRUCT(name STRING, age UINT8)[]      │
-└───────────────────────────────────────┘
-```
-
-Alternatively. you can handle the JSON string in your client language and pass it to Kuzu.
-Here's how you would do it in Python:
+For example, in Python:
 
 ```python
 import json
+import kuzu
 
+# JSON string from a REST API call
 json_str = '[{"name": "Rebecca", "age": 25}, {"name": "Gregory", "age": 30}, {"name": "Alicia", "age": 28}]'
 
+db = kuzu.Database(":memory:")
+conn = kuzu.Connection(db)
+
 result = conn.execute("RETURN json_structure($obj) AS json_obj", {"obj": json_str})
-
-for row in response:
-    print(row)
+print(result.get_as_df())
 ```
-
 ```
-['STRUCT(name STRING, age UINT8)[]']
+                           json_obj
+0  STRUCT(name STRING, age UINT8)[]
 ```
-
-Once you have the JSON structure, you can handle query the properties as structs using the dot notation in Kuzu.
 
 ## Basic usage
 
-Basic usage examples for the `LOAD FROM` clause are shown below.
-
-### Filtering/aggregating
+### Filter and aggregate
 
 ```cypher
 LOAD FROM "user.csv" (header = true)
 WHERE age > 25
 RETURN COUNT(*);
 ```
-This returns:
 ```
 ┌──────────────┐
 │ COUNT_STAR() │
@@ -353,12 +327,12 @@ You can pass the contents of `LOAD FROM` to a
 
 ```cypher
 // Create a node table
-// Scan file and use its contents to create nodes
 LOAD FROM "user.csv" (header = true)
 CREATE (:User {name: name, age: CAST(age AS INT64)});
 
 // Return the nodes we just created
-MATCH (u:User) RETURN u.name, u.age;
+MATCH (u:User)
+RETURN u.name, u.age;
 ```
 ```
 ┌─────────┬───────┐
@@ -372,16 +346,16 @@ MATCH (u:User) RETURN u.name, u.age;
 └─────────┴───────┘
 ```
 
-### Reorder and subset columns
+### Reorder and project columns
 
-You can also use the scan functionality to reorder and subset columns from a given dataset. For
+You can also use the scan functionality to reorder and project columns from a given dataset. For
 example, the following query will return just the `age` and `name` in that order, even if the
 input file has more columns specified in a different order.
 
 ```cypher
-// Return age column before the name column
 LOAD FROM "user.csv" (header = true)
-RETURN age, name LIMIT 3;
+RETURN age, name
+LIMIT 3;
 ```
 ```
 ┌───────┬─────────┐
@@ -404,7 +378,7 @@ to `COPY FROM` statements. We review the details of this behavior [below](#csv).
 to have the [JSON extension](/extensions/json) installed. More details on using `LOAD FROM` with JSON files is provided
 on the documentation page for the [JSON extension](/extensions/json).
 
-You can enforce specific column names and data types when reading, by using the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
+You can enforce specific column names and data types by using the `LOAD WITH HEADERS (<name> <dataType>, ...) FROM ...` syntax.
 
 The following query will first bind the column `name` to the `STRING` type and second column `age` to the `INT64` type.
 You can combine this with a `WHERE` clause to filter the data as needed.

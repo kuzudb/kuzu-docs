@@ -8,77 +8,30 @@ and `LivesIn` relationships between users and cities.
 
 ![](/img/running-example.png)
 
-The DDL statements to define the schema of this database, the csv files containing
-the records of the tables in the database and the data import (`COPY FROM`) commands
-are shown below.
-
-### User nodes
-Schema:
-```
-CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)
-```
-
-user.csv:
-```
-Adam,30
-Karissa,40
-Zhang,50
-Noura,25
-```
-Data import (You need to give full path to user.csv. We assume ${PATH-TO-DIR} is that directory):
 ```cypher
-COPY User FROM "${PATH-TO-DIR}/user.csv"
-```
+CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64);
+CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64);
+CREATE REL TABLE Follows(FROM User TO User, since INT64);
+CREATE REL TABLE LivesIn(FROM User TO City);
 
-### City nodes
+CREATE
+    (adam:User {name: 'Adam', age: 30}),
+    (karissa:User {name: 'Karissa', age: 40}),
+    (zhang:User {name: 'Zhang', age: 50}),
+    (noura:User {name: 'Noura', age: 25}),
 
-Schema:
-```cypher
-CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)
-```
-city.csv
-```
-Waterloo,150000
-Kitchener,200000
-Guelph,75000
-```
-Data import:
-```cypher
-COPY City FROM "${PATH-TO-DIR}/city.csv"
-```
+    (waterloo:City {name: 'Waterloo', population: 150000}),
+    (kitchener:City {name: 'Kitchener', population: 200000}),
+    (guelph:City {name: 'Guelph', population: 75000}),
 
-### Follows relationships
+    (adam)-[:Follows {since: 2020}]->(karissa),
+    (adam)-[:Follows {since: 2020}]->(zhang),
+    (karissa)-[:Follows {since: 2021}]->(zhang),
+    (zhang)-[:Follows {since: 2022}]->(noura),
 
-Schema:
-```cypher
-CREATE REL TABLE Follows(FROM User TO User, since INT64)
-```
-follows.csv
-```
-Adam,Karissa,2020
-Adam,Zhang,2020
-Karissa,Zhang,2021
-Zhang,Noura,2022
-```
-Data import:
-```cypher
-COPY Follows FROM "${PATH-TO-DIR}/follows.csv"
-```
-
-### LivesIn relationships
-
-Schema:
-```cypher
-CREATE REL TABLE LivesIn(FROM User TO City)
-```
-lives-in.csv
-```
-Adam,Waterloo
-Karissa,Waterloo
-Zhang,Kitchener
-Noura,Guelph
-```
-Data import:
-```cypher
-COPY LivesIn FROM "${PATH-TO-DIR}/lives-in.csv"
+    (adam)-[:LivesIn]->(waterloo),
+    (karissa)-[:LivesIn]->(waterloo),
+    (zhang)-[:LivesIn]->(kitchener),
+    (noura)-[:LivesIn]->(guelph)
+;
 ```

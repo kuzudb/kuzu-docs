@@ -3,11 +3,11 @@ title: Match
 description: MATCH is the clause where you define a graph pattern, i.e., a join of node or relationship records, to find in the database.
 ---
 
-MATCH is the clause where you define a "graph pattern", i.e., a join of node or relationship records,
-to find in the database[^1]. MATCH is often accompanied by [WHERE](/cypher/query-clauses/where) (equivalent to SQL's WHERE clause)
-to define more predicates on the patterns that are matched.
+The `MATCH` clause defines a "graph pattern", i.e., a join of node or relationship records,
+to find in the database[^1]. `MATCH` is often accompanied by [WHERE](/cypher/query-clauses/where)
+to filter the patterns that are matched.
 
-You can find the example dataset for this guide [here](/cypher/query-clauses/example-database).
+We will use the [example dataset](/cypher/query-clauses/example-database) below.
 
 ## Match nodes
 
@@ -44,13 +44,13 @@ RETURN a;
 │ a                                                             │
 │ NODE                                                          │
 ├───────────────────────────────────────────────────────────────┤
-│ {_ID: 1:0, _LABEL: City, name: Waterloo, population: 150000}  │
+│ {_ID: 0:0, _LABEL: User, name: Noura, age: 25}                │
+│ {_ID: 0:1, _LABEL: User, name: Zhang, age: 50}                │
+│ {_ID: 0:2, _LABEL: User, name: Karissa, age: 40}              │
+│ {_ID: 0:3, _LABEL: User, name: Adam, age: 30}                 │
+│ {_ID: 1:0, _LABEL: City, name: Guelph, population: 75000}     │
 │ {_ID: 1:1, _LABEL: City, name: Kitchener, population: 200000} │
-│ {_ID: 1:2, _LABEL: City, name: Guelph, population: 75000}     │
-│ {_ID: 0:0, _LABEL: User, name: Adam, age: 30}                 │
-│ {_ID: 0:1, _LABEL: User, name: Karissa, age: 40}              │
-│ {_ID: 0:2, _LABEL: User, name: Zhang, age: 50}                │
-│ {_ID: 0:3, _LABEL: User, name: Noura, age: 25}                │
+│ {_ID: 1:2, _LABEL: City, name: Waterloo, population: 150000}  │
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -61,7 +61,6 @@ The query below matches variable `a` to nodes with any label. In the example dat
 MATCH (a)
 RETURN a;
 ```
-
 ```
 ┌───────────────────────────────────────────────────────────────┐
 │ a                                                             │
@@ -470,8 +469,6 @@ On top of variable length relationships, kuzu also support different shortest pa
 
 #### Single shortest path
 
-**Syntax**
-
 `-[:Label* SHORTEST 1..max]-`
 
 The following query finds a shortest path between `Adam` and any city and returns city name as well as length of the path.
@@ -494,8 +491,6 @@ RETURN b.name, length(e) AS length;
 
 #### All shortest path
 
-**Syntax**
-
 `-[:Label* ALL SHORTEST 1..max]-`
 
 The following query finds all shortest paths between `Zhang` and `Waterloo`.
@@ -516,12 +511,7 @@ RETURN COUNT(*) AS num_shortest_path;
 
 #### Weighted shortest path
 
-**Syntax**
-
 `-[:Label* WSHORTEST(rel property) 1..max]-`
-
-
-**Example**
 
 We add a `score` property to `Follows` and manually assign a score to each `Follows` edge. The modified database is shown as
 ```
@@ -553,11 +543,7 @@ RETURN properties(nodes(p), 'name'), cost(e);
 
 #### All weighted shortest path
 
-**Syntax**
-
 `-[:Label* ALL WSHORTEST(rel property) 1..max]-`
-
-**Example**
 
 We insert one more `Follows` edge between `Adam` and `Zhang` with score=11. The modified database is shown as
 ```

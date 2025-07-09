@@ -29,16 +29,18 @@ RETURN a.name, a.age;
 ```
 
 #### Nested `EXISTS` subquery
-You can also specify nested subqueries, i.e., a `WHERE EXISTS` subquery inside another `WHERE EXISTS`.
-
-For example:
+You can also specify nested subqueries, i.e., a `WHERE EXISTS` subquery inside another `WHERE EXISTS`:
 
 ```cypher
 MATCH (a:User)
-WHERE a.age < 100 AND EXISTS { MATCH (a)-[:Follows*3..3]->(b:User) WHERE EXISTS {MATCH (b)-[:Follows]->(c:User)} } 
+WHERE a.age < 100 AND EXISTS {
+    MATCH (a)-[:Follows*3..3]->(b:User)
+    WHERE EXISTS {
+        MATCH (b)-[:Follows]->(c:User)
+    }
+}
 RETURN a.name, a.age;
 ```
-
 ```
 ┌────────┬───────┐
 │ a.name │ a.age │
@@ -57,10 +59,14 @@ we would get the `(Adam, 30)` tuple back because `Noura` has incoming `Follows` 
 
 ```cypher
 MATCH (a:User)
-WHERE a.age < 100 AND EXISTS { MATCH (a)-[:Follows*3..3]->(b:User) WHERE EXISTS {MATCH (b)<-[:Follows]-(c:User)} } 
+WHERE a.age < 100 AND EXISTS {
+    MATCH (a)-[:Follows*3..3]->(b:User)
+    WHERE EXISTS {
+        MATCH (b)<-[:Follows]-(c:User)
+    }
+}
 RETURN a.name, a.age;
 ```
-
 ```
 ┌────────┬───────┐
 │ a.name │ a.age │
@@ -79,7 +85,10 @@ For example, the following query counts number of followers for each user.
 
 ```cypher
 MATCH (a:User)
-RETURN a.name, COUNT { MATCH (a)<-[:Follows]-(b:User) } AS num_follower ORDER BY num_follower;
+RETURN a.name, COUNT {
+    MATCH (a)<-[:Follows]-(b:User)
+} AS num_follower
+ORDER BY num_follower;
 ```
 
 ```
@@ -122,7 +131,6 @@ MATCH (a:User)-[e:Follows*1..2]->(b:User)
 WHERE a.name = 'Karissa'
 RETURN COUNT(DISTINCT b) AS num_unique_followers;
 ```
-
 ```
 ┌──────────────────────┐
 │ num_unique_followers │
@@ -131,5 +139,3 @@ RETURN COUNT(DISTINCT b) AS num_unique_followers;
 │ 2                    │
 └──────────────────────┘
 ```
-
-
