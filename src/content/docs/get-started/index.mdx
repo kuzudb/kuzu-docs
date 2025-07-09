@@ -500,7 +500,8 @@ func main() {
 Initialize a new project using Swift Package Manager:
 
 ```bash
-mkdir kuzu-swift-get-started
+mkdir kuzu-swift-example
+cd kuzu-swift-example
 swift package init --type=executable
 ```
 
@@ -510,7 +511,7 @@ Change your `Package.swift` file to include the following:
 import PackageDescription
 
 let package = Package(
-    name: "kuzu-swift-get-started",
+    name: "kuzu-swift-example",
     platforms: [
         .macOS(.v11),
         .iOS(.v14),
@@ -522,7 +523,7 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .executableTarget(
-            name: "kuzu-swift-get-started",
+            name: "kuzu-swift-example",
             dependencies: [
                 .product(name: "Kuzu", package: "kuzu-swift"),
             ]
@@ -533,7 +534,7 @@ let package = Package(
 
 This configuration sets the minimum deployment target and adds the Kuzu Swift client as a dependency.
 
-Next, replace the contents of `Sources/kuzu-swift-get-started/main.swift` with the following code:
+Next, replace the contents of `Sources/main.swift` with the following code:
 
 ```swift
 import Kuzu
@@ -547,10 +548,10 @@ let queries = [
     "CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)",
     "CREATE REL TABLE Follows(FROM User TO User, since INT64)",
     "CREATE REL TABLE LivesIn(FROM User TO City)",
-    "COPY User FROM \"user.csv\"",
-    "COPY City FROM \"city.csv\"",
-    "COPY Follows FROM \"follows.csv\"",
-    "COPY LivesIn FROM \"lives-in.csv\"",
+    "COPY User FROM 'data/user.csv'",
+    "COPY City FROM 'data/city.csv'",
+    "COPY Follows FROM 'data/follows.csv'",
+    "COPY LivesIn FROM 'data/lives-in.csv'",
 ]
 
 for query in queries {
@@ -568,13 +569,13 @@ for tuple in res {
 Build the project using Swift Package Manager:
 
 ```bash
-swift build
+swift build -c release
 ```
 
 Copy the built executable to the data directory:
 
 ```bash
-cp ./.build/arm64-apple-macosx/debug/kuzu-swift-get-started ./data
+cp ./.build/arm64-apple-macosx/release/kuzu-swift-example . 
 ```
 
 If you are using an Intel Mac or Linux, replace `arm64-apple-macosx` with your specific architecture accordingly.
@@ -582,8 +583,7 @@ If you are using an Intel Mac or Linux, replace `arm64-apple-macosx` with your s
 Finally, run the executable:
 
 ```bash
-cd ./data
-./kuzu-swift-get-started
+./kuzu-swift-example
 ```
 
 You should see the following output:
