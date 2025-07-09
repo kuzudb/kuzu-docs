@@ -4,9 +4,11 @@ title: "LLM extension"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-The **LLM extension** provides a `CREATE_EMBEDDING` function for creating text embeddings using API calls to supported providers.
+The goal of the **LLM extension** is to provide a unified interface for using LLMs from popular providers via Kuzu's Cypher interface.
+Currently, the extension provides a `CREATE_EMBEDDING` function for calling text embedding model APIs from supported providers.
+In the future, we plan on extending this extension to support other functions, such as prompting LLMs.
 
-We currently support the following providers:
+The `CREATE_EMBEDDING` function supports the following providers:
 
 * [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
 * [Google Vertex](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
@@ -38,7 +40,7 @@ To allow API calls to the providers, you must set the appropriate environment va
 See how to set environment variables below:
 
 <Tabs>
-<TabItem value="cypher" label="Cypher">
+<TabItem value="bash" label="Terminal">
 
 ```bash
 # Set the OpenAI API key
@@ -119,4 +121,4 @@ RETURN CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
 ## Storing embeddings in a vector index
 
 The `CREATE_EMBEDDING` function can be used together with the `vector` extension to store and search embeddings
-directly in Kuzu. Refer to the [vector docs](/extensions/vector) for an example.
+directly in Kuzu. Refer to the [vector search docs](/extensions/vector) for an example.
