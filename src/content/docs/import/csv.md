@@ -129,6 +129,7 @@ The following configuration parameters are supported:
 | `IGNORE_ERRORS`        | Skips malformed rows in CSV files if set to true. Use [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) function to view information about malformed rows. Also see [`CLEAR_WARNINGS`](/cypher/query-clauses/call#clear_warnings) function. See more on [Warnings table](/import#warnings-table-inspecting-skipped-rows) to inspect skipped rows. | `false`       |
 | `auto_detect`          | Turn ON/OFF the auto detection of configurations (more details below)                                                                                                                                                                                                                                                                                       | `true`        |
 | `sample_size`          | The number of sample CSV lines to use when auto detecting CSV configurations (more details below)                                                                                                                                                                                                                                                           | 256          |
+| `NULL_STRINGS`         | The strings that should be treated as nulls in the CSV file.                                                                                                                                                                                                                                                           | `""`(empty string)          |
 
 For example, the query below specifies that the CSV delimiter is `|` and also that the header row exists.
 
@@ -184,9 +185,13 @@ The possible configurations for different configurations are:
 - QUOTE: `"`, `'` and (no quote character)
 - ESCAPE: `"`, `'`, `\` and (no escape character)
 
-For the unspecified configurations, Kuzu considers parsing the samples lines it scans (see the `sample_size` parameter)
-for each possible configuration combination and then picks the configuration combination that successfully parses the most lines and with the most consistent number of columns in each row.
-
+### Null strings handling
+By default, Kuzu treats only empty strings (`""`) as `NULL` values. However, in certain scenarios the default behavior may not be sufficient. For example, if you're working with a CSV file exported by a tool that uses the string `"NULL"` to represent nulls. In such cases, you can modify Kuzu's behavior by setting the `NULL_STRINGS` parameter to include both the empty string and the string `"NULL"`.
+For example:
+```
+LOAD FROM 'xxx.csv'(null_strings=[null_str1, null_str2, null_str3]) RETURN *;
+```
+ 
 ## Compressed CSV files
 To reduce file size, CSV files are often distributed in compressed formats. Kuzu supports directly scanning `*.csv.gz` files (compressed with `gzip`)
 without requiring manual decompression. Simply specify the file path in the `LOAD FROM` or `COPY FROM` clause.
