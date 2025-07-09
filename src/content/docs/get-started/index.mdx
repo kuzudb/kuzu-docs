@@ -497,7 +497,7 @@ func main() {
 
 <TabItem label="Swift">
 
-Initialize a new project using Swift Package Manager:
+Initialize a new project using the Swift package manager:
 
 ```bash
 mkdir kuzu-swift-example
@@ -505,7 +505,7 @@ cd kuzu-swift-example
 swift package init --type=executable
 ```
 
-Change your `Package.swift` file to include the following:
+Update the `Package.swift` file:
 
 ```swift
 import PackageDescription
@@ -532,9 +532,9 @@ let package = Package(
 )
 ```
 
-This configuration sets the minimum deployment target and adds the Kuzu Swift client as a dependency.
+This configuration sets the minimum deployment target and adds the `kuzu-swift` client as a dependency.
 
-Next, replace the contents of `Sources/main.swift` with the following code:
+Next, replace the contents of `Sources/main.swift`:
 
 ```swift
 import Kuzu
@@ -566,21 +566,21 @@ for tuple in res {
 }
 ```
 
-Build the project using Swift Package Manager:
+Build the project:
 
 ```bash
 swift build -c release
 ```
 
-Copy the built executable to the data directory:
+Copy the output executable so that it can access the `data` directory:
 
 ```bash
 cp ./.build/arm64-apple-macosx/release/kuzu-swift-example . 
 ```
 
-If you are using an Intel Mac or Linux, replace `arm64-apple-macosx` with your specific architecture accordingly.
+If you are using an Intel Mac or Linux, replace `arm64-apple-macosx` with your specific architecture.
 
-Finally, run the executable:
+Finally, run the executable.
 
 ```bash
 ./kuzu-swift-example
