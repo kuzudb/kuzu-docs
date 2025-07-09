@@ -167,25 +167,26 @@ cargo add kuzu
 Kuzu's Go API is a wrapper around the C API of Kuzu. The installation step below assumes that you have
 initialized a Go project that has a `go.mod` file. If you need to create a new Go module, follow [the official tutorial](https://go.dev/doc/tutorial/create-module).
 
-<Tabs>
-
-<TabItem label="Linux, macOS">
-
 ```bash
 go get github.com/kuzudb/go-kuzu
 ```
 
-</TabItem>
+## Swift
 
-<TabItem label="Windows">
+The installation step below assumes that you have initialized a Swift project that has a `Package.swift` file or a Xcode project.
 
-We do not yet provide a pre-compiled Go package for Windows. If you need to use the Go API on Windows,
-please upvote this [issue](https://github.com/kuzudb/go-kuzu/issues/12) on GitHub and leave a comment
-to notify the Kuzu team.
+To add kuzu-swift to your Swift project, you can use the Swift Package Manager:
 
-</TabItem>
+Add `.package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "main"),` to your Swift.package dependencies.
 
-</Tabs>
+You can change the branch to a tag to use a specific version, e.g., `.package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "v0.11.0"),` to use version 0.11.0.
+
+Alternatively, you can add the package through Xcode:
+1. Open your Xcode project.
+2. Go to `File` > `Add Packages Dependencies...`.
+3. Enter the URL of the kuzu-swift repository: `https://github.com/kuzudb/kuzu-swift`.
+4. Select the version you want to use (e.g., `main` branch or a specific tag).
+
 
 ## C/C++
 

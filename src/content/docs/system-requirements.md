@@ -32,3 +32,12 @@ The minimum supported Rust version is 1.81.0. Kuzu's Rust API is also closely li
 ## Go
 
 Kuzu's Go API is a wrapper around the C API. The minimum supported Go version is 1.20.
+
+## Swift
+
+kuzu-swift requires Swift 5.9 or later. It supports the following platforms:
+- macOS v11 or later
+- iOS v14 or later
+- Linux platforms (see the [official documentation](https://www.swift.org/platform-support/) for the supported distros)
+
+Windows platform is not supported and there is no future plan to support it. 
