@@ -61,13 +61,35 @@ os.environ["OPENAI_API_KEY"] = "sk-proj-key"
 ## Creating embeddings
 
 You can generate text embeddings using the `CREATE_EMBEDDING` function. The function returns a `LIST[FLOAT]` type.
+The function may be called in the following ways:
 
 ```sql
-CALL CREATE_EMBEDDING(
+RETURN CREATE_EMBEDDING(
+    <PROMPT>,
+    <PROVIDER>,
+    <MODEL>
+);
+
+RETURN CREATE_EMBEDDING(
     <PROMPT>,
     <PROVIDER>,
     <MODEL>,
-    -- optional params
+    <DIMENSIONS>
+);
+
+RETURN CREATE_EMBEDDING(
+    <PROMPT>,
+    <PROVIDER>,
+    <MODEL>,
+    <REGION/ENDPOINT>
+);
+
+RETURN CREATE_EMBEDDING(
+    <PROMPT>,
+    <PROVIDER>,
+    <MODEL>,
+    <DIMENSIONS>,
+    <REGION/ENDPOINT>
 );
 ```
 
