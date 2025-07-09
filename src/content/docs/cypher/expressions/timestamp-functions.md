@@ -20,8 +20,8 @@ Timestamp functions are used to create and extract fields from timestamps.
 | `greatest(timestamp, timestamp)` | returns the later of the two timestamps | `greatest(TIMESTAMP('2013-12-11 10:22:11'), TIMESTAMP('2011-05-13 13:22:11'))` | `2013-12-11 10:22:11` `(TIMESTAMP)` |
 | `least(timestamp, timestamp)` | returns the earlier of the two timestamps | `least(TIMESTAMP('1966-12-21 15:22:11'), TIMESTAMP('2005-11-12'))` | `1966-12-21 15:22:11` `(TIMESTAMP)` |
 | `last_day(timestamp)` | returns the last day of the month of the timestamp | `last_day(TIMESTAMP('2022-11-08 05:11:31'))` | `2022-11-30` `(DATE)` |
-| `monthname(timestamp)` | returns the english name of the month of the date | `monthname(TIMESTAMP('2022-04-21 06:11:22'))` | `April` `(STRING)` |
+| `monthname(timestamp)` | returns the English name of the month of the date | `monthname(TIMESTAMP('2022-04-21 06:11:22'))` | `April` `(STRING)` |
 | `to_timestamp(sec)` | converts an epoch second to a timestamp | `to_timestamp(701222723)` | `1992-03-22 00:05:23` `(TIMESTAMP)` |
-| `current_timestamp()` | returns current timestamp | `current_timestamp()` | |
+| `current_timestamp()` | returns the current timestamp | `current_timestamp()` | |
 
 </div>

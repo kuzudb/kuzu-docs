@@ -3,10 +3,7 @@ title: Set
 description: Update properties of node or relationship records to new values.
 ---
 
-# Database
-
-# SET 
-`SET` is similar to that in SQL. It allows updating properties of node or relationship records (possibly NULL).
+The `SET` clause is similar to that in SQL. It allows updating properties of node or relationship records (possibly `NULL`).
 
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/data-manipulation-clauses/example-database).
 
@@ -71,7 +68,7 @@ RETURN label(u), u.name, u.population;
 └──────────────────────────┴───────────┴──────────────┘
 ```
 
-Note that the node table `User` doesn't contain the `population` property, thus tuples belonging to the `User` table (showing `NULL` in the output) are ignored during `SET` operations.
+Note that the node table `User` doesn't contain the `population` property, so tuples belonging to the `User` table (showing `NULL` in the output) are ignored during `SET` operations.
 
 ## Set Relationship Properties
 

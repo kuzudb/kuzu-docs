@@ -78,11 +78,11 @@ Kuzu supports `EXISTS` and `COUNT` subquery. See [Subqueries](/cypher/subquery) 
 
 ## Data Types
 
-Kuzu following Postgres typing system. For `LIST` type, all elements should be of the same type. For `MAP` type, all keys should be of the same type and all values should be of the same type. For more information, see [data types](/cypher/data-types).
+Kuzu follows the Postgres typing system. For `LIST` type, all elements should be of the same type. For `MAP` type, all keys should be of the same type and all values should be of the same type. For more information, see [data types](/cypher/data-types).
 
 ## Functions
 
-- `labels()` function is named as `label()` instead.
+- `labels()` function is named `label()` instead.
 - type predicate expression `n.property IS :: INTEGER` is supported as `typeOf(n.property)=INT64`
 - internal id function `elementId` is supported as `id()`.
 - spatial functions are not supported.

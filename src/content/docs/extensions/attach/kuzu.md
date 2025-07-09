@@ -2,10 +2,10 @@
 title: External Kuzu databases
 ---
 
-Using the `ATTACH` statement, you can connect to an external Kuzu database. The external Kuzu database can be local or remote, e.g.,
+Using the `ATTACH` statement, you can connect to an external Kuzu database. The external Kuzu database can be local or remote, for example,
 in an S3 bucket. Attaching to a local Kuzu database does not require installing any extensions. Attaching to a remote
 Kuzu database requires installing the [`httpfs`](/extensions/httpfs) extension. Aside from this requirement of installing the `httpfs` extension,
-attaching to a local vs. remote Kuzu database works the same way. So, we only document how to attach to a remote Kuzu database here.
+attaching to a local vs. remote Kuzu database works the same way. Therefore, we only document how to attach to a remote Kuzu database here.
 
 ## Usage
 
@@ -27,8 +27,8 @@ ATTACH <DB_PATH> AS <alias> (dbtype kuzu)
 
 Unlike attaching to external RDBMSs, the alias is not used as a prefix of node and relationship tables. This is because at any point in time,
 you can attach to a single external Kuzu database (or be connected to the local Kuzu database you opened at the beginning of your session).
-Therefore you don't need to prefix your node and relationship tables.
-Instead you will use the alias to `DETACH` from the external Kuzu database.
+Therefore, you don't need to prefix your node and relationship tables.
+Instead, you will use the alias to `DETACH` from the external Kuzu database.
 
 Suppose you are connected to a local database `./demo_db`. After configuring a [S3 connection](/extensions/s3#configure-the-connection), you can attach a Kuzu database hosted on S3 as:
 
@@ -75,7 +75,7 @@ DETACH uw;
 ```
 
 After the `DETACH` statement, you can continue querying your local Kuzu database `./demo_db`. Therefore, detaching
-from an external Kuzu database switches your Kuzu database to become the local database you had started your session with.
+from an external Kuzu database switches your Kuzu database back to the local database you had started your session with.
 
 ### Use a local cache for remote files
 

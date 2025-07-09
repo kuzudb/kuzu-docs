@@ -129,7 +129,7 @@ The following query adds a comment to `User` table.
 ```sql
 COMMENT ON TABLE User IS 'User information';
 ```
-Comments can be extracted through `SHOW_TABLES()` function. See [CALL](https://docs.kuzudb.com/query-clauses/call) for more information.
+Comments can be extracted through the `SHOW_TABLES()` function. See [CALL](https://docs.kuzudb.com/query-clauses/call) for more information.
 ```sql
 CALL SHOW_TABLES() RETURN *;
 --------------------------------------------

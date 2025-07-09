@@ -4,7 +4,7 @@ description: Direct scan over file using the LOAD FROM clause
 ---
 
 The `LOAD FROM` clause performs a direct scan over an input file **without copying it into the database**.
-This clause is very useful to inspect a subset of a larger file to display or load into a node table, or to
+This clause is very useful for inspecting a subset of a larger file to display or load into a node table, or to
 perform simple transformation tasks like rearranging column order.
 
 `LOAD FROM` can be followed by arbitrary clauses like `MATCH`, `CREATE`, `WHERE`, `RETURN`, and so on.
@@ -25,7 +25,7 @@ in the `LOAD FROM` statement using the [`WITH HEADERS`](#bound-variable-names-an
 ### File format detection
 `LOAD FROM` determines the file format based on the file extension if the `file_format` option is not given. For instance, files with a `.csv` extension are automatically recognized as CSV format.
 
-If the file format cannot be inferred from the extension, or if you need to override the default sniffing behaviour, the `file_format` option can be used.
+If the file format cannot be inferred from the extension, or if you need to override the default sniffing behavior, the `file_format` option can be used.
 
 For example, to load a CSV file that has a `.tsv` extension (for tab-separated data), you must explicitly specify the file format using the `file_format` option, as shown below:
 ```cypher
@@ -86,7 +86,7 @@ LOAD FROM "user.csv" (header = true) RETURN *;
 
 
 If (header = false), then the names of the columns will be column0, column1, ..., column(k-1), where k is the number of columns in the CSV file.
-Suppose user.csv has instead the following contents:
+Suppose user.csv has the following contents instead:
 ```
 Adam,30
 Karissa,40

@@ -91,7 +91,7 @@ res = conn.execute('MATCH (u:User)-[r:Rating]->(m:Movie) RETURN u, r, m;')
 G = res.get_as_networkx(directed=False)
 ```
 
-We store the extracted subgraph as an undirected graph in NetworkX as the direction doesn't matter
+We store the extracted subgraph as an undirected graph in NetworkX because the direction doesn't matter
 for the PageRank algorithm.
 
 ### Compute PageRank

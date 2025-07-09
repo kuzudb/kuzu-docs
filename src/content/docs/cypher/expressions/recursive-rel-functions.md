@@ -6,7 +6,7 @@ description: Functions that are used to manipulate paths
 | Function | Description |
 | ----------- | ----------- |
 | `NODES`| returns all nodes from a path |
-| `RELS` | returns all rels from a path |
+| `RELS` | returns all relationships from a path |
 | `PROPERTIES` | return a given property from nodes or relationships |
 | `IS_TRAIL` | check if a path contains repeated relationships |
 | `IS_ACYCLIC` | check if a path contains repeated nodes |

@@ -3,7 +3,7 @@ title: Limit
 description: LIMIT controls the number of tuples returned from a query.
 ---
 
-`LIMIT` controls the number of tuples returned from a query. It is often used within in an [ORDER BY](/cypher/query-clauses/order-by)
+`LIMIT` controls the number of tuples returned from a query. It is often used within an [ORDER BY](/cypher/query-clauses/order-by)
 clause to fetch the top-k tuples from the query result. Note that `LIMIT` accepts any expression that can be evaluated to an integer.
 
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
@@ -27,12 +27,12 @@ LIMIT 3;
 └─────────┘
 ```
 
-If you omit the `ORDER BY`, you would get some k tuples in a `LIMIT k` query
+If you omit the `ORDER BY`, you would get some k tuples in a `LIMIT k` query,
 but you have no guarantee about which ones will be selected.
 
 
 The number of rows to limit can either be:
-1. A parameter expression when used with prepared statement:
+1. A parameter expression when used with a prepared statement:
 
 Prepare:
 ```c++
@@ -55,7 +55,7 @@ conn->execute(prepared.get(), std::make_pair(std::string{"lt"}, 1))
 ```cypher
 MATCH (u:User)
 RETURN u.name
-limit 1+2
+LIMIT 1+2
 ```
 
 ```

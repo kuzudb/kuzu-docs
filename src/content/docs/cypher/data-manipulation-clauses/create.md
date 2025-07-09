@@ -4,7 +4,7 @@ description: Insert records into your node and relationship tables.
 ---
 
 Not to be confused with the `CREATE` statement from the DDL, the `CREATE` clause in openCypher is
-similar to the `INSERT` clause of SQL and lets you insert records into your node and relationship
+similar to the `INSERT` clause of SQL and allows you to insert records into your node and relationship
 tables. We describe the generic semantics of the `CREATE` clause [below](#general-semantics).
 
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/data-manipulation-clauses/example-database).

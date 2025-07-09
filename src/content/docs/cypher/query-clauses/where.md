@@ -70,7 +70,7 @@ RETURN a;
 └────────────────────────────────────────────────┘
 ```
 
-The above query matches users who follow "Noura" and lives in "Guelph". Note that you can only
+The above query matches users who follow `Noura` and live in `Guelph`. Note that you can only
 `RETURN` the nodes that are in the scope of the `MATCH` clause (the nodes and relationships that
 are in the `WHERE` clause are not returned).
 

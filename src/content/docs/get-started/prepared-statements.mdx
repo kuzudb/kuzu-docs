@@ -88,7 +88,7 @@ For example, to query the index with keywords `machine learning`:
 
 ```cpp
 auto result = conn->execute(
-    prepared.get,
+    prepared.get(),
     std::make_pair(std::string("query"), std::string("machine learning"))
 );
 ```
@@ -97,7 +97,7 @@ Similarly, to query the index with the keyword `dragons`:
 
 ```cpp
 auto result = conn->execute(
-    prepared.get,
+    prepared.get(),
     std::make_pair(std::string("query"), std::string("dragons"))
 );
 ```

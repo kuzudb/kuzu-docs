@@ -7,7 +7,7 @@ that query as a subquery of a `COPY FROM` statement. Because the `COPY FROM` com
 the Data Definition Language (DDL) in Kuzu, it follows SQL's semantics and hence, a subquery
 is passed within parentheses `()` that contains a `RETURN` clause.
 
-Copy using a subquery is useful when you need to transform data
+Copying using a subquery is useful when you need to transform data
 before inserting it into the database, or if you want to copy data from a `LOAD FROM` scan operation
 on a data structure that's already in memory, such as a DataFrame.
 

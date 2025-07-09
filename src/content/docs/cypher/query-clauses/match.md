@@ -32,7 +32,7 @@ RETURN a;
 ```
 
 ### Match nodes with multiple labels
-The query below matches variable `a` to nodes with label `User` or label `City`. `RETURN a` will return all properties of the node together with the label and internal ID. Properties not present in a label will be returned as `NULL` value (e.g. `population` not exists in `User`). Properties present in multiple labels are expected to have the same data type (e.g. `name` has `STRING` data type in `User` and `City` ).
+The query below matches variable `a` to nodes with label `User` or label `City`. `RETURN a` will return all properties of the node together with the label and internal ID. Properties not present in a label will be returned as `NULL` values (e.g., `population` does not exist in `User`). Properties present in multiple labels are expected to have the same data type (e.g., `name` has `STRING` data type in `User` and `City`).
 
 ```cypher
 MATCH (a:User:City)
@@ -55,7 +55,7 @@ RETURN a;
 ```
 
 ### Match nodes with any label
-Below query matches variable `a` to nodes with any label. In example database, it is equivalent to `MATCH (a:User:City) RETURN a;`.
+The query below matches variable `a` to nodes with any label. In the example database, it is equivalent to `MATCH (a:User:City) RETURN a;`.
 
 ```cypher
 MATCH (a)
@@ -118,7 +118,7 @@ RETURN a.name, e, b.name;
 ```
 
 ### Match relationships with multi labels
-Similar to matching nodes with multiple labels, you can bind variables to relationships with multiple labels. Below query finds all users `a` that follow user `b` or lives in city `b`.
+Similar to matching nodes with multiple labels, you can bind variables to relationships with multiple labels. The query below finds all users `a` that follow user `b` or live in city `b`.
 
 ```cypher
 MATCH (a:User)-[e:Follows|:LivesIn]->(b:User:City)
@@ -142,7 +142,7 @@ RETURN a.name, e, b.name;
 ```
 
 ### Match relationships with any label
-Similar to matching nodes with any label, you can bind variables to relationships with any label by not specifying a label. Below query finds all relationships in the database.
+Similar to matching nodes with any label, you can bind variables to relationships with any label by not specifying a label. The query below finds all relationships in the database.
 ```cypher
 MATCH ()-[e]->()
 RETURN e;
@@ -165,7 +165,7 @@ RETURN e;
 ```
 
 ### Match undirected relationships
-Users can match a relationship in both directions by not specifying a relationship direction (i.e. `-`). The following query finds all `b` users who either follows or being followed by `Karissa`. 
+Users can match a relationship in both directions by not specifying a relationship direction (i.e. `-`). The following query finds all `b` users who either follow or are followed by `Karissa`. 
 
 ```cypher
 MATCH (a:User)-[e:Follows]-(b:User)
@@ -283,7 +283,7 @@ RETURN b.name, length(e) AS length;
 - Noura is found through `Adam -> Zhang -> Noura`
 
 Similar to matching relationships, you can match undirected relationships or relationship with multiple labels.
-The following query finds all Nodes excluding "Noura" that connects to "Noura" in both directions through any relationship with 2 hops.
+The following query finds all nodes excluding "Noura" that connect to "Noura" in both directions through any relationship with 2 hops.
 ```cypher
 MATCH (a:User)-[e*2..2]-(b) 
 WHERE a.name = 'Noura' AND b.name <> 'Noura'
@@ -306,7 +306,7 @@ RETURN b.name, length(e) AS length;
 
 ### Return recursive relationships
 
-A recursive relationship has the logical data type `RECURSIVE_REL` and is physically represented as `STURCT{LIST[NODE], LIST[REL]}`. Returning a recursive relationship will return all properties 
+A recursive relationship has the logical data type `RECURSIVE_REL` and is physically represented as `STRUCT{LIST[NODE], LIST[REL]}`. Returning a recursive relationship will return all properties 
 ```cypher
 MATCH (a:User)-[e:Follows* 4..4]-(b:User)
 WHERE a.name = 'Zhang'
@@ -415,7 +415,7 @@ The above query returns empty result as we apply the filter `is_acyclic(p)` to f
 ### Filter recursive relationships
 We also support running predicates on recursive relationships to constrain the relationship being traversed.
 
-The following query finds name of users and the number of path that are followed between 1-2 hops from Adam by people with age more than 45 and before 2022.
+The following query finds the names of users and the number of paths that are followed between 1-2 hops from Adam by people with age more than 45 and before 2022.
 ```cypher
 MATCH p = (a:User)-[:Follows*1..2 (r, n | WHERE r.since < 2022 AND n.age > 45) ]->(b:User)
 WHERE a.name = 'Adam' 
@@ -598,7 +598,7 @@ There are two interpretations when the lower bound is greater than 1:
 :::
 
 ## Named paths
-Kuzu treats paths as a first-class citizen, so users can assign a named variable to a path (i.e. connected graph ) and use it later on.
+Kuzu treats paths as first-class citizens, so users can assign a named variable to a path (i.e., connected graph) and use it later on.
 
 The following query returns all paths between `Adam` and `Karissa`.
 ```cypher

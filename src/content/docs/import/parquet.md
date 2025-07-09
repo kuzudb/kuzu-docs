@@ -30,7 +30,7 @@ name: [["Adam","Karissa","Zhang","Noura"]]
 age: [[30,40,50,25]]
 ```
 
-To load this Parquet file into a `User` table, simply run:
+To load this Parquet file into a `User` table, run:
 
 ```cypher
 COPY User FROM "user.Parquet";
@@ -54,7 +54,7 @@ to: [["Karissa","Zhang","Zhang","Noura"]]
 since: [[2020,2020,2021,2022]]
 ```
 
-To load this Parquet file into a `Follows` table, simply run:
+To load this Parquet file into a `Follows` table, run:
 
 ```cypher
 COPY Follows FROM "follows.Parquet";

@@ -6,7 +6,7 @@ title: System requirements
 
 The Kuzu CLI and the C and C++ APIs are pre-compiled for:
 - **macOS >= 11.0**, as a universal binary that supports both Intel-based and ARM-based Macs.
-- **Linux**, as a universal binary that supports both x86-64 and aarch64 architectures and supports most modern Linux distros such as **RHEL/CentOS/Rocky Linux/Oracle Linux 8.0 or later and Ubuntu 22.04 or later**.
+- **Linux**, as a universal binary that supports both x86-64 and aarch64 architectures and supports most modern Linux distributions such as **RHEL/CentOS/Rocky Linux/Oracle Linux 8.0 or later and Ubuntu 22.04 or later**.
 - **Windows**, as a universal binary that supports both x86-64 and aarch64 architectures and supports most modern Windows versions such as **Windows 10 and 11**.
 
 ## Python
@@ -19,9 +19,9 @@ Kuzu's Node.js API is based on **Node-API version 5**. For a list of compatible 
 
 ## Java
 
-Kuzu's Java API is compatible with **Java 11+**. The OS compatibility is the same as C/C++ APIs. 
+Kuzu's Java API is compatible with **Java 11+**. The OS compatibility is the same as the C/C++ APIs.
 
-The Java API also works on Android ARMv8-A platform. The precompiled binaries are compiled targeting [API level 21](https://developer.android.com/tools/releases/platforms). 
+The Java API also works on the Android ARMv8-A platform. The precompiled binaries are compiled targeting [API level 21](https://developer.android.com/tools/releases/platforms). 
 
 The Java API is distributed as a JAR file with pre-compiled native libraries for all supported platforms bundled inside. It does not require any additional dependencies.
 

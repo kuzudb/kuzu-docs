@@ -9,7 +9,7 @@ section below to get answers to common questions.
 :::
 
 In this section, we will go over the basics of how applications connect to a Kuzu database and list some
-best practices on how to do so concurrently.
+best practices for concurrent connection handling.
 
 Kuzu supports both **on-disk** and **in-memory** modes of operation. 
 When operating under on-disk mode, your data and the underlying database files are stored in a
@@ -62,7 +62,7 @@ When working with in-memory databases, there are a few restrictions to keep in m
 
 ### Limitations of creating multiple Database objects
 Kuzu is an embedded database, i.e., it is a library you embed inside an application process and run as part
-of this application process, instead of a separate process.
+of this application process, rather than as a separate process.
 You can think of the Database object as the Kuzu database software.
 Specifically, the Database object contains
 different components of the Kuzu database software, such as its buffer manager, storage manager, transaction manager, etc. 
@@ -84,7 +84,7 @@ The reason for this limitation is that if a connection `conn1` from `db1` makes 
 write operation, say deleting some node record, then the `db1` object is able to ensure
 that any cached data in `db1` is refreshed and is accurate. However, it cannot notify other Database objects that may exist
 about the change. So in our example, `db2`'s cache would no longer represent the true state of the
-data on disk that was cached. This can lead to problems if
+data on disk that is cached. This can lead to problems if
 connections from `db2` try to run queries after `db1`'s modification. Therefore, Kuzu will
 not allow multiple Database objects to be created unless they are all `READ_ONLY`.
 

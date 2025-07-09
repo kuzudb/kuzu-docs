@@ -146,18 +146,20 @@ You can use relationship table groups to gain added flexibility in your data mod
 CREATE REL TABLE GROUP Knows (FROM User TO User, FROM User TO City, year INT64);
 ```
 
-The statement above creates a `Knows_User_User` rel table and a `Knows_User_City` rel table. And a `Knows` rel table group referring these two rel tables.
+The above statement creates a `Knows_User_User` rel table, a `Knows_User_City` rel table, and a `Knows` rel table group referring to these two rel tables.
 
 A relationship table group can be used as a regular relationship table for querying purposes.
 
 ```cypher
-MATCH (a:User)-[:Knows]->(b) RETURN *;
+MATCH (a:User)-[:Knows]->(b)
+RETURN *;
 ```
 
 The query above is equivalent to the following:
 
 ```cypher
-MATCH (a:User)-[:Knows_User_User|:Knows_User_City]->(b) RETURN *;
+MATCH (a:User)-[:Knows_User_User|:Knows_User_City]->(b)
+RETURN *;
 ```
 
 As you can imagine, the more relationships you want to selectively query on, the more useful relationship table groups become.

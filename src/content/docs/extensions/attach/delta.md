@@ -90,7 +90,7 @@ The following options are supported:
 | `s3_secret_access_key` | S3 secret access key |
 | `s3_endpoint` | S3 endpoint |
 | `s3_region` | S3 region |
-| `s3_url_style` | Uses [S3 URL style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) (should either be vhost or path) |
+| `s3_url_style` | Uses [S3 URL style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) (should either be `vhost` or `path`) |
 
 #### Requirements on the S3 server API
 

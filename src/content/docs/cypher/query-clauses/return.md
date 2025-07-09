@@ -35,7 +35,7 @@ RETURN a, e;
 ```
 
 ## Returning all variables
-Returning all variables in the query can be written as `RETURN *` as a syntactic sugar. Below query returns `a` and `b`, relationship is omitted because no variable binds to it.
+Returning all variables in the query can be written as `RETURN *` as syntactic sugar. The query below returns `a` and `b`. The relationship is omitted because no variable binds to it.
 ```cypher
 MATCH (a:User)-[:Follows]->(b:User)
 RETURN *;
@@ -76,7 +76,7 @@ RETURN a.name, a.age, e.since;
 -----------------------------
 ```
 
-As a syntactic sugar, Kuzu supports returning all properties of node or rel with `*`.
+As syntactic sugar, Kuzu supports returning all properties of node or rel with `*`.
 
 ```cypher
 MATCH (a:User) RETURN a.*;
