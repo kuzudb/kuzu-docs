@@ -43,7 +43,7 @@ The following extensions are currently implemented:
 
 This section describes how to use officially supported extensions in Kuzu.
 
-### List official extensions
+### List available extensions
 
 You can list all available official extensions by running:
 
@@ -51,7 +51,7 @@ You can list all available official extensions by running:
 CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
 ```
 
-### Install an official extension
+### Install an extension
 
 Kuzu requires you to install the extension before loading and using it.
 
@@ -62,41 +62,37 @@ INSTALL <EXTENSION_NAME>;
 ```
 You only need to install an extension once. 
 
-### Update an official extension
+### Update an extension
 
-To update an official extension you can use the `UPDATE` command:
+If you run the `INSTALL` command for an extension that is already installed,
+the second install command will not perform any action.
+
+If you want to re-download an extension for any reason, for example if the extension is not working
+properly, you can use the `UPDATE` command:
 
 ```sql
 UPDATE <EXTENSION_NAME>;
 ```
 
-If you run the `INSTALL` command for an extension that is already installed, the second install command will not perform any action.
-
-If you want to forcefully download an extension for any reason, for example if the extension is not working properly, you can use the `FORCE INSTALL` command:
-
-```sql
-FORCE INSTALL <EXTENSION_NAME>;
-```
-
 ### Load an extension
 
-Extensions must be loaded before they can be used:
+You must load extensions before you can use them:
 
 ```sql
 LOAD <EXTENSION_NAME>;
 ```
 
-Official extensions can be loaded by simply specifying the extension name after installation.  
-
-For example, to load the official `json` extension:
+Official extensions can be loaded by simply specifying the extension name.
+For example, to load the `json` extension:
 
 ```sql
 load json;
 ```
-If you want to load an extension you have compiled yourself, you can specify the path to the compiled library. For example, to load a self-compiled `json` extension:
+If you want to load an extension you have compiled yourself, you can specify the path to the compiled library.
+For example, to load a self-compiled `json` extension:
 
 ```sql
-LOAD EXTENSION 'extension/httpfs/build/libhttpfs.kuzu_extension';
+LOAD EXTENSION 'extension/custom_json/build/libjson.kuzu_extension';
 ```
 
 ### List loaded extensions
@@ -109,11 +105,11 @@ CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 
 :::note[Note]
 Extensions are scoped to the session within which they are loaded. Thus, the `LOAD` command must be
-run every time a new CLI session is started or a client script is run.
+executed for every new CLI session or client script invocation.
 :::
 
 
-### Uninstall an official extension.
+### Uninstall an extension
 
 You can uninstall extensions if you don't need them anymore by using the `UNINSTALL` command:
 

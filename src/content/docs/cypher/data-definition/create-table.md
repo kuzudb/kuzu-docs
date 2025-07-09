@@ -71,7 +71,7 @@ Alternatively, you can use the [`SERIAL`](/cypher/data-types/#serial) data type 
 Each property in a table can have a default value. If not specified, the default value is `NULL`.
 
 ```sql
-CREATE NODE TABLE User (
+CREATE NODE TABLE User(
     name STRING PRIMARY KEY,
     age INT64 DEFAULT 0,
     reg_date DATE
@@ -86,7 +86,7 @@ The default value can also be a function call.
 For example, if you want to set the default value of a timestamp property to the current timestamp,
 you can use the `current_timestamp()` function.
 ```cypher
-CREATE NODE TABLE User (
+CREATE NODE TABLE User(
     id INT64 PRIMARY KEY,
     happens_at TIMESTAMP DEFAULT current_timestamp()
 );
@@ -155,7 +155,7 @@ You can use relationship table groups to gain added flexibility in your data mod
 
 
 ```sql
-CREATE REL TABLE GROUP Knows (FROM User TO User, FROM User TO City, year INT64);
+CREATE REL TABLE GROUP Knows(FROM User TO User, FROM User TO City, year INT64);
 ```
 
 The above statement creates a `Knows_User_User` rel table, a `Knows_User_City` rel table, and a `Knows` rel table group referring to these two rel tables.
@@ -193,10 +193,14 @@ The second node and relationship table creation statements will be ignored.
 ## Create table as
 
 A common operation is to create a table and then immediately import some data into it.
-For example, you may want to create a `Person` node table and insert data from a CSV file:
+You can simplify this process by using the `CREATE NODE TABLE AS` or `CREATE REL TABLE AS` clauses.
+
+### Create node table as
+
+Say you want to create a `Person` node table and insert data from a CSV file:
 
 ```sql
-CREATE NODE TABLE Person (id INT64 PRIMARY KEY, name STRING, age INT64, height FLOAT);
+CREATE NODE TABLE Person(id INT64 PRIMARY KEY, name STRING, city STRING, age INT64);
 COPY Person FROM "person.csv";
 ```
 
@@ -221,27 +225,31 @@ CREATE NODE TABLE YoungPerson AS
     RETURN p.*;
 ```
 
-You can use the same technique to create relationship tables:
-```sql
+### Create rel table as
+
+You can use the same technique to create relationship tables. For example:
+```cypher
 // From a CSV file
-CREATE REL TABLE Knows (FROM Person TO Person) AS
+CREATE REL TABLE Knows(FROM Person TO Person) AS
     LOAD FROM "knows.csv"
     RETURN *;
 
 // From a MATCH clause
-CREATE REL TABLE Knows (FROM Person TO Person) AS
+CREATE REL TABLE KnowsSameCity(FROM Person TO Person) AS
     MATCH (a:Person)-[e:Knows]->(b:Person)
-    WHERE a.Gender = b.Gender
+    WHERE a.city = b.city
     RETURN a.id, b.id;
 ```
 
+### Create table as if not exists
+
 You can also use `IF NOT EXISTS` to create the tables only if they don't already exist:
-```sql
+```cypher
 CREATE NODE TABLE IF NOT EXISTS Person AS
     LOAD FROM "person.csv"
     RETURN *;
 
-CREATE REL TABLE IF NOT EXISTS Knows (FROM Person TO Person) AS
+CREATE REL TABLE IF NOT EXISTS Knows(FROM Person TO Person) AS
     LOAD FROM "knows.csv"
     RETURN *;
 ```

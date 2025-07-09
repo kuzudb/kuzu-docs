@@ -18,8 +18,8 @@ RETURN *;
 The Kuzu optimizer has the freedom to generate a query plan that matches all relationships from `a` to `b` using 
 forward adjacency lists or from `b` to `a` using backward adjacency lists. 
 Both query plans are correct and will generate the same query result. However, there is a potential performance difference because 
-there may be a different number of nodes matching to `a` and `b`, i.e., `a` and `b` may have different cardinalities.
-In the above case, because there is a filter on b, you can expect there to be very few, possibly only 1 `b` node that matches the predicate in the `WHERE` clause.
+there may be a different number of nodes connected to `a` and `b`, i.e., `a` and `b` may have different cardinalities.
+In the above case, because there is a filter on `b`, you can expect there to be very few, possibly only one `b` node that matches the predicate in the `WHERE` clause.
 
 For experimental purposes, or when the optimizer provides a sub-optimal plan, you can enforce a particular join order 
 by using the `HINT` clause and writing a join order. This works as follows:
@@ -35,6 +35,7 @@ WHERE b.ID = 0
 HINT a JOIN (e JOIN b)
 RETURN *;
 ```
+
 The full parenthesization is this: `(a JOIN (e JOIN b))`. The top join operator joins `a` 
 with the result of `(e JOIN b)`. The `(e JOIN b)` enforces the join of b node records with e, which will happen by scanning the b nodes in the backward direction.
 The result of this will then be joined with `a` node records. If the parenthesization was `((a JOIN e) JOIN b)`, then the
