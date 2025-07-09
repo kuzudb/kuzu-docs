@@ -1,6 +1,6 @@
 ---
 title: Match
-description: MATCH is the clause where you define a graph pattern", i.e., a join of node or relationship records, to find in the database.
+description: MATCH is the clause where you define a graph pattern, i.e., a join of node or relationship records, to find in the database.
 ---
 
 MATCH is the clause where you define a "graph pattern", i.e., a join of node or relationship records,

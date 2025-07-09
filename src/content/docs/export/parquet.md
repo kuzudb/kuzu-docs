@@ -9,7 +9,7 @@ and used as shown below.
 COPY (MATCH (u:User) return u.*) TO 'user.parquet' (compression = 'snappy');
 ```
 
-The `LOAD FROM` clause can used to scan the Parquet file and to verify that the export worked:
+The `LOAD FROM` clause can be used to scan the Parquet file and to verify that the export worked:
 
 ```cypher
 > LOAD FROM 'user.parquet' RETURN *;

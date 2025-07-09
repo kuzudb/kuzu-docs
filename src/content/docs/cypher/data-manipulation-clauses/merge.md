@@ -191,7 +191,8 @@ RETURN e;
 ```
 
 ## Merge Complex Patterns
-Previous examples have shown how to merge single node and relationship patterns. It's also possible to merge a complex pattern involving multiple nodes and relationships. 
+Previous examples have shown how to merge single node and relationship patterns.
+It is also possible to merge complex patterns involving multiple nodes and relationships. 
 
 ```cypher
 MERGE (:User {name:'A'})-[:Follows]->(:User {name:'B'})-[:LivesIn]->(:City {name:'Toronto'});

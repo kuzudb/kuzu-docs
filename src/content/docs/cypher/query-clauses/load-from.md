@@ -153,7 +153,7 @@ print(result.get_as_df())
 1  Karissa   40
 2    Zhang   50
 ```
-Here `name` and `age` have string and integer types in the define Pandas Dataframe, and so the output table
+Here, `name` and `age` have string and integer types in the defined Pandas DataFrame, and so the output table
 contains two columns with the same names and data types.
 
 :::note[Note]

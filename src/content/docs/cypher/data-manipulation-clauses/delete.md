@@ -11,11 +11,13 @@ We will use the example database for demonstration, whose schema and data import
 ## Delete Nodes
 
 ### Delete Single Label Nodes
-The following statements first create a User (Alice, 35) node record, without inserting any relationships to that node record, and then deletes the record
+The following statements first create a `User (Alice, 35)` node record, without inserting any relationships to that node record, and then delete the record.
 
 ```cypher
 CREATE (u:User {name: 'Alice', age: 35});
-MATCH (u:User) WHERE u.name = 'Alice' DELETE u RETURN u.*;
+MATCH (u:User) WHERE u.name = 'Alice'
+DELETE u
+RETURN u.*;
 ```
 ```
 ┌────────┬───────┐

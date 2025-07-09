@@ -87,10 +87,10 @@ Examples of subclauses (that must reside under a clause) include:
 
 Comments are for humans to read and document their code, and are ignored by the
 query parser.
-- Single line comments begin with a double slash (`//`) and continue up until the end of the
+- Single line comments begin with `//` and continue up to the end of the
 line. They can be placed at the beginning, in the middle, or at the end of a query.
-- Multi-line comments begins with a slash and asterisk (`/*`) and continues until it ends with an
-asterisk and a slash (`*/`). They can be useful for comments that are too long for one line.
+- Multi-line comments begin with `/*` and continue until they encounter `*/`.
+They can be used for comments that are too long to fit on one line.
 
 Some examples are below.
 

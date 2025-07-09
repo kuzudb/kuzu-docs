@@ -28,7 +28,7 @@ return addWithDefault(4, 7);  // returns 11 (4 + 7)
 
 ## Supported macro expression types
 
-The belows expression types are supported by macros.
+The following expression types are supported by macros.
 
 ### Case expression macro
 

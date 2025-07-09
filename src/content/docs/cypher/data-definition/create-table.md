@@ -55,7 +55,9 @@ MATCH (a:User) RETURN *;
 
 ### Primary key
 
-Kuzu requires a primary key column for node table which can be either a `STRING`, numeric, `DATE`, or `BLOB` property of the node. Kuzu will generate an index to do quick lookups on the primary key (e.g., `name` in the above example). Alternatively, you can use the [`SERIAL`](/cypher/data-types/#serial) data type to generate an auto-increment column as primary key.
+Kuzu requires a primary key column for node tables, which can be a property of the node of type `STRING`, numeric, `DATE`, or `BLOB`.
+Kuzu will generate an index to do quick lookups on the primary key (e.g., `name` in the above example).
+Alternatively, you can use the [`SERIAL`](/cypher/data-types/#serial) data type to use an auto-incremented integers as the primary key.
 
 ### Default value
 

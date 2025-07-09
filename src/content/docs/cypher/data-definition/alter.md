@@ -5,9 +5,9 @@ description: Alter DDL statements
 
 ## Add column
 
-`ADD COLUMN` allows you to add a new column to a node/rel table. If you don't specify a default value, the newly added column is filled with `NULLs`.
+`ADD COLUMN` allows you to add a new column to a node or relationship table. If you don't specify a default value, the newly added column is filled with `NULL` values.
 
-Column names must be unique within a node/relationship table.
+Column names must be unique within a node or relationship table.
 
 For example, consider that you try to run the following command to add a column `age`, but it
 already exists in the `User` table:

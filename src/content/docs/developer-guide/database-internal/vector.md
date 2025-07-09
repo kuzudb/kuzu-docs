@@ -33,7 +33,7 @@ Data to represent:
 
 STRUCT value vector
     data: [0, 1, 2] // offset
-    auxilaryBuffer:
+    auxiliaryBuffer:
         child vector:
             data: [11, 13, 15]
         child vector
@@ -49,7 +49,7 @@ Data to represent:
 
 List value vector
     data: [(0,1), (1,2), (3,3)] // offset,size
-    auxilaryBuffer:
+    auxiliaryBuffer:
         child vector:
             data: [10,11,12,13,14,15]
 ```

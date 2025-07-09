@@ -152,11 +152,11 @@ RETURN a, avg(b.age) as avgFriendAge;
 ```
 
 The semantics is exactly the same as SQL's semantics, which is a 3-step process:
-1. for each tuple  t in the previous part of the query, i.e., before the RETURN clause, 
-    group t according to (one or more) group by key expressions into a group. Let us refer
-    to the result of these expressions as t's keys.
-1. For each group G, compute the (or or more) aggregations in the query.
-1. Output for each group G, G's key(s) and the result of the aggregations. 
+1. For each tuple `t` in the previous part of the query, i.e., before the RETURN clause, 
+    group `t` according to (one or more) group by key expressions into a group. Let us refer
+    to the result of these expressions as `t`'s keys.
+2. For each group `G`, compute the (one or more) aggregations in the query.
+3. Output for each group `G`, `G`'s key(s) and the result of the aggregations. 
 
 You can find the list of aggregation functions supported in Kuzu [here](/cypher/expressions/aggregate-functions).
 

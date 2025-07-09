@@ -8,7 +8,7 @@ with other query clauses, such as `RETURN` or `YIELD` (see below for example usa
 defined here is different from the standalone [`CALL`](/cypher/configuration) **statement** used for changing
 the database configuration.
 
-The following tables lists the built-in schema functions you can use with the `CALL` clause:
+The following table lists the built-in schema functions you can use with the `CALL` clause:
 
 <div class="scroll-table">
 

@@ -198,7 +198,7 @@ You can return all the columns of a node table by using the `*` wildcard in the 
 1  Karissa     40
 2    Zhang     50
 ```
-Return specific columns by name and optionally, alias them, as follows:
+Return specific columns by name and optionally alias them as follows:
 ```py
 result = conn.execute("MATCH (p:Person) RETURN p.name AS name")
 print(result.get_as_df())
@@ -245,7 +245,7 @@ shape: (3, 2)
 │ Zhang   ┆ 50    │
 └─────────┴───────┘
 ```
-Return specific columns by name and optionally, alias them, as follows:
+Return specific columns by name and optionally alias them as follows:
 ```py
 result = conn.execute("MATCH (p:Person) RETURN p.name AS name")
 print(result.get_as_pl())

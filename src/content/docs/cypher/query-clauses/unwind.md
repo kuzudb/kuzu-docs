@@ -66,7 +66,7 @@ Error: Parser exception: Query must conclude with RETURN clause (line: 1, offset
  ^^^^^^
 ```
 
-The use of `WHERE`predicates directly after `UNWIND` is not allowed. You can attach a `WITH` clause
+The use of `WHERE` predicates directly after `UNWIND` is not allowed. You can attach a `WITH` clause
 immediately after `UNWIND` to achieve the result.
 
 ```cypher

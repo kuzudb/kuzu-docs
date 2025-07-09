@@ -234,7 +234,7 @@ export default defineConfig({
                         { label: 'Performance debugging', link: '/developer-guide/performance-debugging' },
                         { label: 'Testing framework', link: '/developer-guide/testing-framework' },
                         { label: 'Join order hints', link: '/developer-guide/join-order-hint' },
-                        { label: 'Files', link: '/developer-guide/files' },
+                        { label: 'On-disk files', link: '/developer-guide/files' },
                         {
                             label: 'Database internals',
                             items: [

@@ -114,7 +114,7 @@ between the columns of the CSV is. See below for the list of all supported confi
 configurations can be manually set by specifying parameters inside `( )` at the
 end of the `COPY FROM` clause. Several of the supported configurations, such as the header and delimiter characters,
 are automatically detected if they are not manually specified at the end of  `COPY FROM` clause.
-See the subsections below for more details onhow Kuzu automatically detects these configurations.
+See the subsections below for more details on how Kuzu automatically detects these configurations.
 
 The following configuration parameters are supported:
 

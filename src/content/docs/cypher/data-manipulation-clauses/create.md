@@ -70,8 +70,8 @@ MATCH (u1:User), (u2:User)
 WHERE u1.name = 'Adam' AND u2.name = 'Noura' 
 CREATE (u1)-[:Follows {since: 2011}]->(u2);
 ```
-Similar to inserting node records, any relationship property which is not
-specified in the query will be set to NULL.
+Similar to node records, any relationship property that is not
+specified in the insert statement will be set to `NULL`.
 
 ## General semantics
 The general semantics of `CREATE` is described here. You can specify

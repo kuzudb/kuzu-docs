@@ -16,7 +16,8 @@ the graph database. See our [DDL](/cypher/data-definition/create-table) docs for
 
 ### CREATE and MERGE
 
-It is recommended to always specifying node and relationship labels explicitly in the `CREATE` and `MERGE` clause. If not specified, Kuzu will try to infer the label by looking at the schema.
+We recommend always specifying node and relationship labels explicitly in the `CREATE` and `MERGE` clauses.
+However, if not specified, Kuzu will try to infer the label by looking at the schema.
 
 ### FINISH
 

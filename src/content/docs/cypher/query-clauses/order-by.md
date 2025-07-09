@@ -82,8 +82,8 @@ ORDER BY b.age DESC, a.name DESC;
 -------------------
 ```
 
-Noe that there is tie for b.age in first two rows and the order is 
-decided based on a.name (in descending order). If you removed the
+Note that there is a tie for `b.age` in the first two rows and the order is 
+decided based on `a.name` (in descending order). If you removed the
 last `DESC` in the above query, the first two tuples in the result
 would be swapped.
 
