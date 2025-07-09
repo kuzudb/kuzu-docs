@@ -311,6 +311,7 @@ export default defineConfig({
                   ]
                 : [],
             lastUpdated: true,
+            routeMiddleware: './src/route-data.ts',
         }),
     ],
 });
