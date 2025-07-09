@@ -43,6 +43,14 @@ The following extensions are currently implemented:
 
 This section describes how to use officially supported extensions in Kuzu.
 
+### List official extensions
+
+You can list all available official extensions by running:
+
+```sql
+CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
+```
+
 ### Install an official extension
 
 Kuzu requires the user to install the extension before loading and using it.
@@ -89,6 +97,14 @@ If you want to load an extension you have compiled yourself, you can specify the
 
 ```sql
 LOAD EXTENSION 'extension/httpfs/build/libhttpfs.kuzu_extension';
+```
+
+### List loaded extensions
+
+You can view all your loaded extensions by running:
+
+```sql
+CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 ```
 
 :::note[Note]
