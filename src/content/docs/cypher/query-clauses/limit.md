@@ -28,7 +28,7 @@ LIMIT 3;
 ```
 
 If you omit the `ORDER BY`, you would get some k tuples in a `LIMIT k` query,
-but you have no guarantee about which ones will be selected.
+but there is no guarantee about which ones will be selected.
 
 
 The number of rows to limit can either be:

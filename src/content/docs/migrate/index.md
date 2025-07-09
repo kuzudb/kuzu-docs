@@ -17,7 +17,7 @@ are needed to import this database to a new Kuzu version:
 - `Data files`: These files contain the actual database data (in CSV or Parquet format).
 
 The parameters for `EXPORT DATABASE` are the same as those used
-when running [`COPY TO`](https://docs.kuzudb.com/export/) statements. The example below shows how to export a database using default configurations.
+when running [`COPY TO`](/export) statements. The example below shows how to export a database using default configurations.
 ```cypher
 EXPORT DATABASE '/path/to/export'
 ```

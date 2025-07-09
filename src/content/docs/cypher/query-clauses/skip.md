@@ -29,7 +29,7 @@ SKIP 2;
 ```
 
 If you omit the `ORDER BY`, you would skip some k tuples in a `SKIP` k query
-but you have no guarantee about which ones will be skipped.
+but there is no guarantee about which ones will be skipped.
 
 
 The number of rows to skip can either be:

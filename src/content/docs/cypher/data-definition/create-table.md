@@ -135,7 +135,7 @@ In general in a relationship `E`'s multiplicity, if the "source side" is `ONE`, 
 
 ### Create relationship table group [deprecated]
 :::note[Note]
-Relationship table group has been deprecated since our v0.8.0 release. Users can now define multiple node table pairs in rel table using multiple `FROM ... TO ...` clauses.
+Relationship table group has been deprecated since our v0.8.0 release. You can now define multiple node table pairs in rel table using multiple `FROM ... TO ...` clauses.
 :::
 
 

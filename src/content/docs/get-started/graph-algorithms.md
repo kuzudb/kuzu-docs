@@ -176,7 +176,7 @@ x = conn.execute(
 4  50       0.000724
 ```
 
-The same can be done for the user nodes.
+The same can be done for user nodes.
 
 ```python
 # Copy user pagerank values to user nodes

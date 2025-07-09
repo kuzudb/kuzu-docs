@@ -97,8 +97,8 @@ Initially, there are 3 rows in the `Person` and `Item` tables:
 2    James  San Francisco  headphones
 ```
 
-Now, say you obtain updated information about the users Karissa and Rhea who purchased new items.
-Also, say the user Karissa has moved to a new city, so her `current_city` is now `Boston`.
+Now, say you obtain updated information about users Karissa and Rhea who purchased new items.
+Also, say Karissa has moved to a new city, so her `current_city` is now `Boston`.
 
 ```py
 df = pd.DataFrame({
@@ -132,8 +132,8 @@ The following steps are performed:
 1. The `LOAD FROM` clause loads the data from the DataFrame into the database.
 2. The first two `MERGE` clauses merge the data into the `Person` and `Item` tables.
 3. The third `MERGE` clause merges the data into the `Purchased` relationship table.
-4. The `ON MATCH SET` clause updates the `current_city` property for the user Karissa if she is already in the database.
-5. The `ON CREATE SET` clause sets the `current_city` property for the user Karissa if she is created
+4. The `ON MATCH SET` clause updates the `current_city` property for Karissa if she is already in the database.
+5. The `ON CREATE SET` clause sets the `current_city` property for Karissa if she is created
 (i.e., if she is not already in the database).
 
 The resulting data looks like this:

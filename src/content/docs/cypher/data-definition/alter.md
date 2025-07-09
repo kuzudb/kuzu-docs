@@ -105,7 +105,7 @@ ALTER TABLE Follows DROP IF EXISTS FROM User TO Celebrity;
 
 ## Rename table
 
-`RENAME TABLE` allows the user to rename a table.
+`RENAME TABLE` allows you to rename a table.
 
 The following query renames table User to Student.
 ```sql
@@ -114,7 +114,7 @@ ALTER TABLE User RENAME TO Student;
 
 ## Rename column
 
-`RENAME COLUMN` allows the user to rename a column of a table.<br />
+`RENAME COLUMN` allows you to rename a column of a table.<br />
 
 The following query renames the age column to grade.
 ```sql
@@ -129,7 +129,7 @@ The following query adds a comment to `User` table.
 ```sql
 COMMENT ON TABLE User IS 'User information';
 ```
-Comments can be extracted through the `SHOW_TABLES()` function. See [CALL](https://docs.kuzudb.com/query-clauses/call) for more information.
+Comments can be extracted through the `SHOW_TABLES()` function. See [CALL](/cypher/query-clauses/call) for more information.
 ```sql
 CALL SHOW_TABLES() RETURN *;
 --------------------------------------------

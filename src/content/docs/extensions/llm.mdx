@@ -4,18 +4,15 @@ title: "LLM extension"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-The goal of the **LLM extension** is to provide a unified interface for using LLMs from popular providers via Kuzu's Cypher interface.
-Currently, the extension provides a `CREATE_EMBEDDING` function for calling text embedding model APIs from supported providers.
-In the future, we plan on extending this extension to support other functions, such as prompting LLMs.
+The `llm` extension allows you to use LLMs from different providers directly from Kuzu using Cypher.
 
-The `CREATE_EMBEDDING` function supports the following providers:
+Currently, this extension provides the following function:
 
-* [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
-* [Google Vertex](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
-* [Google Gemini](https://ai.google.dev/gemini-api/docs/embeddings)
-* [Ollama](https://ollama.com/blog/embedding-models)
-* [OpenAI](https://platform.openai.com/docs/guides/embeddings)
-* [Voyage AI](https://docs.voyageai.com/docs/embeddings)
+- `CREATE_EMBEDDING`: Create embeddings from text
+
+:::note[Note]
+In the future, we plan to add more functions to this extension, such as sending queries to LLMs directly from Kuzu.
+:::
 
 ## Usage
 
@@ -23,6 +20,17 @@ The `CREATE_EMBEDDING` function supports the following providers:
 INSTALL llm;
 LOAD llm;
 ```
+
+## Create embeddings
+
+The `CREATE_EMBEDDING` function allows you to create embeddings from text using the following providers:
+
+* [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
+* [Google Vertex](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
+* [Google Gemini](https://ai.google.dev/gemini-api/docs/embeddings)
+* [Ollama](https://ollama.com/blog/embedding-models)
+* [OpenAI](https://platform.openai.com/docs/guides/embeddings)
+* [Voyage AI](https://docs.voyageai.com/docs/embeddings)
 
 ### Configuration
 
@@ -36,29 +44,6 @@ To allow API calls to the providers, you must set the appropriate environment va
 | `open-ai` | `OPENAI_API_KEY` |
 | `voyage-ai` | `VOYAGE_API_KEY` |
 | `ollama` | None |
-
-See how to set environment variables below:
-
-<Tabs>
-<TabItem value="bash" label="Terminal">
-
-```bash
-# Set the OpenAI API key
-export OPENAI_API_KEY=sk-proj-key
-```
-
-</TabItem>
-
-<TabItem value="python" label="Python">
-```python
-os.environ["OPENAI_API_KEY"] = "sk-proj-key"
-#...
-```
-
-</TabItem>
-</Tabs>
-
-## Creating embeddings
 
 You can generate text embeddings using the `CREATE_EMBEDDING` function. The function returns a `LIST[FLOAT]` type.
 The function may be called in the following ways:
@@ -140,7 +125,7 @@ RETURN CREATE_EMBEDDING("Hello world", "open-ai", "text-embedding-3-small");
 RETURN CREATE_EMBEDDING("Hello world", "voyage-ai", "voyage-3-large", 512);
 ```
 
-## Storing embeddings in a vector index
+### Storing embeddings in a vector index
 
 The `CREATE_EMBEDDING` function can be used together with the `vector` extension to store and search embeddings
 directly in Kuzu. Refer to the [vector search docs](/extensions/vector) for an example.
