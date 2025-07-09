@@ -43,6 +43,14 @@ The following extensions are currently implemented:
 
 This section describes how to use officially supported extensions in Kuzu.
 
+### List official extensions
+
+You can list all available official extensions by running:
+
+```sql
+CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
+```
+
 ### Install an official extension
 
 Kuzu requires the user to install the extension before loading and using it.
@@ -76,6 +84,14 @@ Extensions must be loaded before they can be used:
 
 ```sql
 LOAD <EXTENSION_NAME>;
+```
+
+### List loaded extensions
+
+You can view all your loaded extensions by running:
+
+```sql
+CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 ```
 
 Official extensions can be loaded by simply specifying the extension name after installation.  
