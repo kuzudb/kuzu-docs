@@ -495,6 +495,108 @@ func main() {
 
 </TabItem>
 
+<TabItem label="Swift">
+
+Initialize a new project using Swift Package Manager:
+
+```bash
+mkdir kuzu-swift-example
+cd kuzu-swift-example
+swift package init --type=executable
+```
+
+Change your `Package.swift` file to include the following:
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "kuzu-swift-example",
+    platforms: [
+        .macOS(.v11),
+        .iOS(.v14),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "main"),
+    ],
+    targets: [
+        // Targets are the basic building blocks of a package, defining a module or a test suite.
+        // Targets can depend on other targets in this package and products from dependencies.
+        .executableTarget(
+            name: "kuzu-swift-example",
+            dependencies: [
+                .product(name: "Kuzu", package: "kuzu-swift"),
+            ]
+        ),
+    ]
+)
+```
+
+This configuration sets the minimum deployment target and adds the Kuzu Swift client as a dependency.
+
+Next, replace the contents of `Sources/main.swift` with the following code:
+
+```swift
+import Kuzu
+
+let db = try! Database()
+let conn = try! Connection(db)
+
+// Create schema and load data
+let queries = [
+    "CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)",
+    "CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)",
+    "CREATE REL TABLE Follows(FROM User TO User, since INT64)",
+    "CREATE REL TABLE LivesIn(FROM User TO City)",
+    "COPY User FROM 'data/user.csv'",
+    "COPY City FROM 'data/city.csv'",
+    "COPY Follows FROM 'data/follows.csv'",
+    "COPY LivesIn FROM 'data/lives-in.csv'",
+]
+
+for query in queries {
+    _ = try! conn.query(query)
+}
+
+// Execute Cypher query
+let res = try! conn.query("MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.since, b.name")
+for tuple in res {
+    let dict = try! tuple.getAsDictionary()
+    print(dict)
+}
+```
+
+Build the project using Swift Package Manager:
+
+```bash
+swift build -c release
+```
+
+Copy the built executable to the data directory:
+
+```bash
+cp ./.build/arm64-apple-macosx/release/kuzu-swift-example . 
+```
+
+If you are using an Intel Mac or Linux, replace `arm64-apple-macosx` with your specific architecture accordingly.
+
+Finally, run the executable:
+
+```bash
+./kuzu-swift-example
+```
+
+You should see the following output:
+
+```bash
+["b.name": Optional("Karissa"), "e.since": Optional(2020), "a.name": Optional("Adam")]
+["e.since": Optional(2020), "a.name": Optional("Adam"), "b.name": Optional("Zhang")]
+["b.name": Optional("Zhang"), "e.since": Optional(2021), "a.name": Optional("Karissa")]
+["e.since": Optional(2022), "a.name": Optional("Zhang"), "b.name": Optional("Noura")]
+```
+
+</TabItem>
+
 <TabItem label="C++">
 
 The Kuzu C++ client is distributed as `so`/`dylib`/`dll+lib` library files along with a header file (`kuzu.hpp`).
