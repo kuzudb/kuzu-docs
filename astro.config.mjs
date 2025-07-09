@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
+import fs from "fs";
 
 const site = "https://docs.kuzudb.com";
 
@@ -79,6 +80,11 @@ export default defineConfig({
                 {
                     tag: 'meta',
                     attrs: { name: 'twitter:image', content: site + '/img/og.png' },
+                },
+                // Script
+                {
+                    tag: "script",
+                    attrs: { src: "/reb2b.js", type: "text/javascript", async: true }
                 },
             ],
             components: {
