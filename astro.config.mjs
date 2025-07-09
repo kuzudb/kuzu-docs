@@ -209,6 +209,7 @@ export default defineConfig({
                         { label: 'Java', link: '/client-apis/java' },
                         { label: 'Rust', link: '/client-apis/rust' },
                         { label: 'Go', link: '/client-apis/go' },
+                        { label: 'Swift', link: '/client-apis/swift' },
                         { label: 'C++', link: '/client-apis/cpp' },
                         { label: 'C', link: '/client-apis/c' },
                         { label: '.NET', link: '/client-apis/net', badge: { text: 'Community', variant: 'caution'}},
