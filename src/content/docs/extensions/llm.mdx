@@ -64,12 +64,14 @@ You can generate text embeddings using the `CREATE_EMBEDDING` function. The func
 The function may be called in the following ways:
 
 ```sql
+-- for google-gemini, ollama, open-ai, voyage-ai
 RETURN CREATE_EMBEDDING(
     <PROMPT>,
     <PROVIDER>,
     <MODEL>
 );
 
+-- for open-ai, voyage-ai
 RETURN CREATE_EMBEDDING(
     <PROMPT>,
     <PROVIDER>,
@@ -77,6 +79,7 @@ RETURN CREATE_EMBEDDING(
     <DIMENSIONS>
 );
 
+-- for amazon-bedrock, google-vertex, ollama
 RETURN CREATE_EMBEDDING(
     <PROMPT>,
     <PROVIDER>,
@@ -84,6 +87,7 @@ RETURN CREATE_EMBEDDING(
     <REGION/ENDPOINT>
 );
 
+-- for google-vertex
 RETURN CREATE_EMBEDDING(
     <PROMPT>,
     <PROVIDER>,
