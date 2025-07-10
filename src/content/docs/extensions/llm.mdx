@@ -4,14 +4,14 @@ title: "LLM extension"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-The `llm` extension allows you to use LLMs from different providers directly from Kuzu using Cypher.
+The `llm` extension helps you run LLM-based workflows directly within Kuzu using Cypher.
 
 Currently, this extension provides the following function:
 
 - `CREATE_EMBEDDING`: Create embeddings from text
 
 :::note[Note]
-In the future, we plan to add more functions to this extension, such as sending queries to LLMs directly from Kuzu.
+We plan to add more functions to this extension in the future, such as sending queries to LLMs directly from Kuzu.
 :::
 
 ## Usage
@@ -40,9 +40,10 @@ CREATE_EMBEDDING(
     <PROMPT>,
     <PROVIDER>,
     <MODEL>
-    // Optional provider-specific arguments
+    // Provider-specific arguments
     <DIMENSIONS>,
-    <REGION or ENDPOINT>
+    <REGION>,
+    <ENDPOINT>
 );
 ```
 
@@ -55,29 +56,29 @@ Required arguments:
 - `MODEL`: The identifier of the embedding model.
     - Type: `STRING`
 
-Optional arguments:
+Additional provider-specific arguments:
 
 - `DIMENSIONS`: The size of the embedding vector.
     - Type: `INT64`
-    - Default: See provider API reference
     - Note: This value must be positive.
 - `REGION`: The region to send requests to.
     - Type: `STRING`
-    - Default: `None` (If a provider supports this argument it must be specified).
+    - Note: This value is required when the provider supports it.
 - `ENDPOINT`: The endpoint to send requests to.
     - Type: `STRING`
     - Default: `http://localhost:11434`
 
-The following table shows the optional arguments supported by each provider:
+The additional arguments that you can use depends on the provider. The following table shows
+the arguments associated with each provider:
 
 | Provider | `dimensions` | `region` | `endpoint` |
 | --- | --- | --- | --- |
-| `amazon-bedrock` | - | Yes | - |
-| `google-vertex` | Yes | Yes | - |
+| `amazon-bedrock` | - | Required | - |
+| `google-vertex` | Optional | Required | - |
 | `google-gemini` | - | - | - |
-| `open-ai` | Yes | - | - |
-| `voyage-ai` | Yes | - | - |
-| `ollama` | - | - | Yes |
+| `open-ai` | Optional | - | - |
+| `voyage-ai` | Optional | - | - |
+| `ollama` | - | - | Optional |
 
 :::note[Note]
 If an unsupported model, dimension, region, or endpoint is specified, the API call to the provider will fail. Check the provider's API documentation for the currently supported options.
