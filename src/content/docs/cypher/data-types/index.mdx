@@ -242,23 +242,40 @@ RETURN date('2022-06-06') as x;
 | --- | ---
 | 4 bytes | combination of time and date
 
-`TIMESTAMP` combines date and a time (hour, minute, second, millisecond) and is formatted
+`TIMESTAMP` combines date and a time (hour, minute, second, and/or millisecond) and is formatted
 according to the ISO-8601 format (`YYYY-MM-DD hh:mm:ss[.zzzzzz][+-TT[:tt]]`),
-which specifies the date (`YYYY-MM-DD`), time (`hh:mm:ss[.zzzzzz]`) and a time offset
-`[+-TT[:tt]]`. Only the Date part is mandatory. If time is specified, then the millisecond
-`[.zzzzzz]` part and the time offset are optional.
+which specifies the date (`YYYY-MM-DD`), time (`hh:mm:ss[.zzzzzz]`) and a timezone offset
+`[+-TT[:tt]]`. Only the date section is mandatory. If the time is specified, then the millisecond
+`[.zzzzzz]` is left out. The default timezone is UTC, and Kuzu stores the timestamp based on the
+timezone offset relative to UTC.
 
 Example:
 ```cypher
-RETURN timestamp("1970-01-01 00:00:00.004666-10") as x;
-```
+// Midnight in UTC-10
+kuzu> RETURN timestamp("1970-01-01 00:00:00-10") as x;
+┌─────────────────────┐
+│ x                   │
+│ TIMESTAMP           │
+├─────────────────────┤
+│ 1970-01-01 10:00:00 │
+└─────────────────────┘
 
-```
+// Midnight in UTC+10
+kuzu> RETURN timestamp("1970-01-01 00:00:00+10") as x;
+┌─────────────────────┐
+│ x                   │
+│ TIMESTAMP           │
+├─────────────────────┤
+│ 1969-12-31 14:00:00 │
+└─────────────────────┘
+
+// 4.666ms after midnight in UTC
+kuzu> RETURN timestamp("1970-01-01 00:00:00.004666") as x;
 ┌────────────────────────────┐
 │ x                          │
 │ TIMESTAMP                  │
 ├────────────────────────────┤
-│ 1970-01-01 10:00:00.004666 │
+│ 1970-01-01 00:00:00.004666 │
 └────────────────────────────┘
 ```
 
