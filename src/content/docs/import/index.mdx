@@ -128,9 +128,8 @@ COPY Knows_User_City FROM 'knows_user_city.csv';
 Importing large relationship tables from external files (100M+ scale) can use significant amounts of memory.
 If the memory used to prepare the
 imported relationship table data comes close to exceeding the buffer pool size,
-Kuzu will spill some of this data to a `.tmp` file in the database directory.
+Kuzu will spill some of this data to a `.tmp` file in the local directory.
 You can disable spilling to disk by `CALL spill_to_disk=false`.
-
 
 This feature is disabled for in-memory or read-only databases.
 

@@ -175,7 +175,7 @@ dataset is required, use the keyword 'empty'.
 | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `-DATASET [type] [dataset name]` | **Type:** CSV, PARQUET, NPY, KUZU or empty<br/> **Dataset name:** the name of a directory inside `dataset/`. E.g., `tinysnb`. |
 
-The `KUZU` dataset type is a Kuzu database directory.
+The `KUZU` dataset type is a Kuzu database file.
 
 Examples:
 

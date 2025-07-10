@@ -22,7 +22,7 @@ Use the `ATTACH` statement to attach to a remote Kuzu database:
 ATTACH <DB_PATH> AS <alias> (dbtype kuzu)
 ```
 
-- `DB_PATH`: Path to the (remote) database directory (can either be an S3, GCS or HTTP URL)
+- `DB_PATH`: Path to the (remote) database file (can either be an S3, GCS or HTTP URL)
 - `alias`: Database alias to use. Aliases are mandatory for attaching to external Kuzu databases.
 
 Unlike attaching to external RDBMSs, the alias is not used as a prefix of node and relationship tables. This is because at any point in time,
@@ -30,12 +30,12 @@ you can attach to a single external Kuzu database (or be connected to the local 
 Therefore, you don't need to prefix your node and relationship tables.
 Instead, you will use the alias to `DETACH` from the external Kuzu database.
 
-Suppose you are connected to a local database `./demo_db`. After configuring a [S3 connection](/extensions/s3#configure-the-connection), you can attach a Kuzu database hosted on S3 as:
+Suppose you are connected to a local database `example.kuzu`. After configuring a [S3 connection](/extensions/s3#configure-the-connection), you can attach a Kuzu database hosted on S3 as:
 
 ```sql
 ATTACH 's3://kuzu-example/university' AS uw (dbtype kuzu);
 ```
-After attaching a remote Kuzu database, you no longer have access to the original local Kuzu database `./demo_db`.
+After attaching a remote Kuzu database, you no longer have access to the original local Kuzu database `example.kuzu`.
 After the `ATTACH` statement above, you can only query the external Kuzu database under `s3://kuzu-example/university`.
 
 If you wish to attach to a database hosted on GCS instead, just replace the prefix `s3://` with `gs://` (in this case it would become `gs://kuzu-example/university`). For more information on how to set up Kuzu with GCS, see [here](/extensions/gcs).
@@ -74,7 +74,7 @@ To detach from an external Kuzu database, use `DETACH [ALIAS]`:
 DETACH uw;
 ```
 
-After the `DETACH` statement, you can continue querying your local Kuzu database `./demo_db`. Therefore, detaching
+After the `DETACH` statement, you can continue querying your local Kuzu database `example.kuzu`. Therefore, detaching
 from an external Kuzu database switches your Kuzu database back to the local database you had started your session with.
 
 ### Use a local cache for remote files

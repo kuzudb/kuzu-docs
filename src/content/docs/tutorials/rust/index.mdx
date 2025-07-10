@@ -92,10 +92,10 @@ fn main() -> Result<(), Error> {
 
 Create and connect to an empty Kuzu database:
 ```rs
-let db = Database::new("./social_network_db", SystemConfig::default())?;
+let db = Database::new("social_network.kuzu", SystemConfig::default())?;
 let conn = Connection::new(&db)?;
 ```
-This will create a database directory `./social_network_db` where the imported CSV data will be stored.
+This will create a database `social_network.kuzu` where the imported CSV data will be stored.
 
 Kuzu also supports an `in-memory` mode where the database is active only during the execution of the Rust program. For more information, refer to the example in the [create your first graph](/get-started) section.
 
@@ -165,12 +165,12 @@ id|name|type|database name|comment
 3|POSTS|REL|local(kuzu)|
 4|LIKES|REL|local(kuzu)|
 ```
-The CSV data has been copied into a new Kuzu database in `./social_network_db`.
+The CSV data has been copied into a new Kuzu database in `social_network.kuzu`.
 
 :::note[Note]
 If you run the program again, you'll get an error about duplicated primary keys.
 This is because the data has already been imported into the Kuzu database. You
-will have to delete the database directory (i.e. `rm -rf ./social_network_db`)
+will have to delete the database file (i.e. `rm social_network.kuzu`)
 in between runs.
 :::
 
@@ -183,7 +183,7 @@ Replace the contents of `src/main.rs` with the following code snippet:
 use kuzu::{Connection, Database, Error, SystemConfig, Value};
 
 fn main() -> Result<(), Error> {
-    let db = Database::new("./social_network_db", SystemConfig::default())?;
+    let db = Database::new("social_network.kuzu", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
     // Rest of the code goes here.
@@ -384,7 +384,7 @@ cargo run --bin kuzu_social_network
 use kuzu::{Connection, Database, Error, SystemConfig};
 
 fn main() -> Result<(), Error> {
-    let db = Database::new("./social_network_db", SystemConfig::default())?;
+    let db = Database::new("social_network.kuzu", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
     conn.query(
@@ -438,7 +438,7 @@ fn main() -> Result<(), Error> {
 use kuzu::{Connection, Database, Error, SystemConfig, Value};
 
 fn main() -> Result<(), Error> {
-    let db = Database::new("./social_network_db", SystemConfig::default())?;
+    let db = Database::new("social_network.kuzu", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
     let mut result1 = conn.query(

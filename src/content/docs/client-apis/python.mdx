@@ -25,15 +25,11 @@ and is more convenient to use.
 The synchronous API is the default and is a common way to work with Kuzu in Python.
 
 ```python
-import shutil
-
 import kuzu
 
 def main() -> None:
-    shutil.rmtree("./test_db", ignore_errors=True)
-
-    # Create an empty on-disk database and connect to it
-    db = kuzu.Database("./test_db")
+   # Create an empty on-disk database and connect to it
+    db = kuzu.Database("example.kuzu")
     conn = kuzu.Connection(db)
 
     # Create schema 
@@ -71,13 +67,9 @@ such as in web frameworks like FastAPI or cases where you need to concurrently r
 
 ```python
 import asyncio
-import shutil
-
 import kuzu
 
-shutil.rmtree("test_db", ignore_errors=True)
-
-db = kuzu.Database("./test_db")
+db = kuzu.Database("example.kuzu")
 # Create the async connection
 # The underlying connection pool will be automatically created and managed by the async connection
 conn = kuzu.AsyncConnection(db, max_concurrent_queries=4)

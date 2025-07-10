@@ -74,7 +74,7 @@ import kuzu
 Next, create and connect to an empty Kuzu database:
 ```py
 def main() -> None:
-    db = kuzu.Database("./social_network_db")
+    db = kuzu.Database("social_network.kuzu")
     conn = kuzu.Connection(db)
 
     # Rest of the code goes here
@@ -82,7 +82,7 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 ```
-This will create a database directory `./social_network_db` where the imported CSV data will be stored.
+This will create a database `social_network.kuzu` where the imported CSV data will be stored.
 
 :::note[Note]
 Kuzu also supports an "in-memory" mode where the database is active only during the execution of the Python program.
@@ -90,7 +90,7 @@ This mode is useful when you want to create on-the-fly graphs for ephemeral quer
 For more information, refer to the example in the [create your first graph](/get-started) section.
 :::
 
-For this tutorial, we are using the "on-disk" mode, and the database will be persisted to the `./social_network_db` directory.
+For this tutorial, we are using the "on-disk" mode, and the database will be persisted to the `social_network.kuzu` database file.
 
 ### Define schema
 The first step in building a Kuzu graph is to define a schema.
@@ -159,7 +159,7 @@ $ python src/create_db.py
 If you run the program again, you'll get an error about duplicated primary keys.
 This is because the data has already been imported into the Kuzu database, and because
 Kuzu is strictly typed, you cannot overwrite data when there are primary key conflicts.
-To ingest the data again, you will have to delete the database directory (i.e. `rm -rf ./social_network_db`)
+To ingest the data again, you will have to delete the database file (i.e. `rm social_network.kuzu`)
 in between runs.
 :::
 
@@ -171,7 +171,7 @@ Replace the contents of `src/main.py` with the following code snippet:
 import kuzu
 
 def main() -> None:
-    db = kuzu.Database("./social_network_db")
+    db = kuzu.Database("social_network.kuzu")
     conn = kuzu.Connection(db)
 
     # Query to be filled out below
@@ -346,7 +346,7 @@ python src/main.py
 import kuzu
 
 def main() -> None:
-    db = kuzu.Database("./social_network_db")
+    db = kuzu.Database("social_network.kuzu")
     conn = kuzu.Connection(db)
 
     conn.execute("""
@@ -398,7 +398,7 @@ if __name__ == "__main__":
 import kuzu
 
 def main() -> None:
-    db = kuzu.Database("./social_network_db")
+    db = kuzu.Database("social_network.kuzu")
     conn = kuzu.Connection(db)
 
     # Query to be filled out below

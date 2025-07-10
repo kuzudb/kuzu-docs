@@ -45,12 +45,10 @@ curl -L -o ./movie_data/tags.csv https://kuzudb.com/data/movie-lens/tags.csv
 Import the data into a Kuzu database using the Python API:
 
 ```python
-import shutil
 import kuzu
-db_path = './ml-small_db'
-shutil.rmtree(db_path, ignore_errors=True)
+db_name = 'ml_small.kuzu'
 
-def load_data(connection):
+def copy_data(connection):
     connection.execute('CREATE NODE TABLE Movie (movieId INT64 PRIMARY KEY, year INT64, title STRING, genres STRING);')
     connection.execute('CREATE NODE TABLE User (userId INT64 PRIMARY KEY);')
     connection.execute('CREATE REL TABLE Rating (FROM User TO Movie, rating DOUBLE, timestamp INT64);')
@@ -61,9 +59,9 @@ def load_data(connection):
     connection.execute('COPY Rating FROM "./ratings.csv" (HEADER=TRUE);')
     connection.execute('COPY Tags FROM "./tags.csv" (HEADER=TRUE);')
 
-db = kuzu.Database(db_path)
+db = kuzu.Database(db_name)
 conn = kuzu.Connection(db)
-load_data(conn)
+copy_data(conn)
 ```
 
 ### Visualize subgraphs in Kuzu Explorer
