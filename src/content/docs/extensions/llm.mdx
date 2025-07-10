@@ -32,9 +32,7 @@ The `CREATE_EMBEDDING` function allows you to create embeddings from text using 
 * [OpenAI](https://platform.openai.com/docs/guides/embeddings)
 * [Voyage AI](https://docs.voyageai.com/docs/embeddings)
 
-The general form of the
-function is shown below. The first three arguments are required, and the last two arguments are
-only required if the provider supports region configuration (for e.g., `amazon-bedrock` or `google-vertex`. Kuzu does not assume a default region. It returns an embedding of type `LIST[FLOAT]`.
+The general form of the function is shown below. It returns an embedding of type `LIST[FLOAT]`.
 
 ```cypher
 CREATE_EMBEDDING(
@@ -50,21 +48,23 @@ CREATE_EMBEDDING(
 
 Required arguments:
 
-- `prompt`: The input text to embed.
+- `PROMPT`: The input text to embed.
     - Type: `STRING`
-- `provider`: The embedding provider.
+- `PROVIDER`: The embedding provider.
     - Type: `STRING`
-- `model`: The identifier of the embedding model.
+- `MODEL`: The identifier of the embedding model.
     - Type: `STRING`
 
 Optional arguments:
 
-- `dimensions`: The size of the embedding vector.
+- `DIMENSIONS`: The size of the embedding vector.
     - Type: `INT64`
+    - Default: See provider API reference
     - Note: This value must be positive.
-- `region`: The region to send requests to.
+- `REGION`: The region to send requests to.
     - Type: `STRING`
-- `endpoint`: The endpoint to send requests to.
+    - Default: `None` (If a provider supports this argument it must be specified).
+- `ENDPOINT`: The endpoint to send requests to.
     - Type: `STRING`
     - Default: `http://localhost:11434`
 
