@@ -175,7 +175,7 @@ Returned columns:
 
 Example:
 
-<!-- auto-check id=call-7 -->
+<!-- auto-check id=call-7 check_only -->
 ```cypher
 CALL SHOW_ATTACHED_DATABASES() RETURN *;
 ```
@@ -214,7 +214,7 @@ Returned columns:
 
 Example:
 
-<!-- auto-check id=call-8 -->
+<!-- auto-check id=call-8 check_only -->
 ```cypher
 CALL SHOW_WARNINGS() RETURN *;
 ```
@@ -290,7 +290,7 @@ Returned columns:
 
 Example:
 
-<!-- auto-check id=call-11 -->
+<!-- auto-check id=call-11 check_only -->
 ```cypher
 CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 ```
@@ -341,6 +341,33 @@ CALL SHOW_INDEXES() RETURN *;
 └────────────┴───────────────────┴────────────┴───────────────────┴──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### `SHOW_PROJECTED_GRAPHS`
+
+Returns a list of all current projected graphs in the database.
+
+Returned columns:
+
+- `name`: the name of the projected graph
+    - type: `STRING`
+- `type`: the type of the projected graph
+    - type: `STRING`
+
+Example:
+
+<!-- auto-check id=call-15 -->
+```cypher
+CALL SHOW_PROJECTED_GRAPHS() RETURN *;
+```
+```
+┌────────────────┬────────┐
+│ name           │ type   │
+│ STRING         │ STRING │
+├────────────────┼────────┤
+│ student        │ CYPHER │
+│ social-network │ NATIVE │
+└────────────────┴────────┘
+```
+
 ### `PROJECTED_GRAPH_INFO`
 
 Returns detailed information about a given projected graph.
@@ -364,7 +391,6 @@ Example:
 ```cypher
 CALL PROJECTED_GRAPH_INFO('student-social-network') RETURN *;
 ```
-
 ```
 ┌────────────┬────────────┬────────────────┐
 │ table type │ table name │ predicate      │
@@ -387,7 +413,6 @@ Example:
 ```cypher
 CALL PROJECTED_GRAPH_INFO('student') RETURN *;
 ```
-
 ```
 ┌─────────────────────────────────────┐
 │ cypher statement                    │
@@ -395,32 +420,6 @@ CALL PROJECTED_GRAPH_INFO('student') RETURN *;
 ├─────────────────────────────────────┤
 │ MATCH (n) WHERE n.age < 18 RETURN n │
 └─────────────────────────────────────┘
-```
-
-### `SHOW_PROJECTED_GRAPHS`
-Returns a list of all existing projected graphs in a Kuzu database.
-
-Returned columns:
-
-- `name`: the name of the projected graph
-    - type: `STRING`
-- `type`: the type of the projected graph
-    - type: `STRING`
-
-Example:
-
-<!-- auto-check id=call-15 -->
-```cypher
-CALL SHOW_PROJECTED_GRAPHS() RETURN *;
-```
-```
-┌────────────────┬────────┐
-│ name           │ type   │
-│ STRING         │ STRING │
-├────────────────┼────────┤
-│ student        │ CYPHER │
-│ social-network │ NATIVE │
-└────────────────┴────────┘
 ```
 
 ## Yielding columns
