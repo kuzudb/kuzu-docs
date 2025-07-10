@@ -58,5 +58,17 @@ LOAD FROM 'az://account_name.blob.core.windows.net/container/path/to/file.csv'
 RETURN *;
 ```
 
-Currently, we only support scanning from Azure Blob Storage. If you're looking for other specific features,
+### Glob data from Azure
+
+You can glob data from Azure just as you would from a local file system.
+
+For example, the following query will scan the contents of all files matching the pattern `vPerson*.csv`.
+
+```sql
+LOAD FROM "az://tinysnb/vPerson*.csv" RETURN *;
+```
+
+----
+
+Currently, we only support scanning from Azure Blob Storage or ADLS. If you're looking for other specific features,
 open an issue on [GitHub](https://github.com/kuzudb/kuzu/issues).
