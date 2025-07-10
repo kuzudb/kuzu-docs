@@ -835,7 +835,7 @@ RETURN json_array_length('["1", "1", "4", null]') AS len;
 ```
 Example 2:
 
-Trying to compute the length of a JSON array with a `null` value results in a length of zero, as
+Trying to compute the length of a JSON array containing a `null` value results in a length of zero, as
 this isn't a valid JSON array.
 
 ```cypher

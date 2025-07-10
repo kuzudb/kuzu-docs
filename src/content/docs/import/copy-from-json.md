@@ -143,7 +143,7 @@ See the [`JSON`](/extensions/json) extension documentation for more related feat
 ### Ignoring erroneous rows
 
 Like for CSV files, Kuzu can skip rows when some types of errors are encountered when importing from JSON.
-However, now every error type that is skippable by the CSV reader can be skipped by the JSON reader.
+However, not every error type that is skippable by the CSV reader can be skipped by the JSON reader.
 See the [Ignore erroneous rows](/import#ignore-erroneous-rows) section for more details.
 
 

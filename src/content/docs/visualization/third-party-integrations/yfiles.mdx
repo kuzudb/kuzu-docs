@@ -157,7 +157,7 @@ Kuzu stores all relationships as directed, but the yFiles Jupyter Graphs widget 
 visualize them as undirected. The default behaviour in yFiles is to visualize graphs as directed,
 based on the source and target node IDs in each item of the result set.
 
-To visualize a relationships as undirected, you can pass the `undirected` parameter to e
+To visualize relationships as undirected, you can pass the `undirected` parameter to the `show_cypher` method:
 
 ```py
 g2.show_cypher("MATCH (a:Person)-[r:MENTORED*1..3]->(b:Person {name: 'Christian Christiansen'}) RETURN *", undirected=True)

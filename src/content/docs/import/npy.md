@@ -13,7 +13,7 @@ to import a set of `*.npy` files into a node table.
 This feature is an experimental feature and will evolve. Currently, this feature has the following constraints:
 - **Import to node table only**: For now, Kuzu supports loading `.npy` files into **node tables** only.
 - **NPY file mapped to column**: Each `.npy` file will be loaded as a node table column. So, in the `COPY FROM` statement, the
-number of `.npy` files must be equal to the number of columns defined in DDL.
+number of `.npy` files must be equal to the number of columns defined in the DDL.
 - **Numerical types only**: A `.npy` file can only contain numerical values.
 :::
 

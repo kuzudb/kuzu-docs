@@ -20,18 +20,18 @@ First, query results can be rendered as a graph view as shown below.
 There is a side panel in the graph view, which you can open and close to see the properties of
 individual nodes and relationships you click on or hover over. The graph view is enabled
 and is the default view if the query's `RETURN` statement contains node (and relationship) variables.
-For example if the query about returned only the name property of `a` nodes, i.e.,
+For example, if the query above returned only the name property of `a` nodes, i.e.,
 if the return statement was `RETURN a.name`, then you would not see the results in a graph view,
 as the return values are only a column of strings. As long as one of the variables projected
-in the `RETURN` statement is a node you will get by default a graph view.
+in the `RETURN` statement is a node, you will get by default a graph view.
 
-Second, query results can be output as a table as shown below by clicking the table icon on the left hand
+Second, query results can be output as a table as shown below by clicking the table icon on the left-hand
 side of a canvas.
 
 <img src="/img/visualization/query-result-table-view.png" />
 
-Finally query results can be output in JSON format as shown below by clicking the `</>` icon on the
-left hand side of a canvas.
+Finally, query results can be output in JSON format as shown below by clicking the `</>` icon on the
+left-hand side of a canvas.
 
 <img src="/img/visualization/query-result-json-view.png" />
 
@@ -85,11 +85,11 @@ and select the desired OpenAI model. Copy-paste your OpenAI API key into API key
 
 <img src="/img/visualization/ai-query-2.png" />
 
-### Open-AI compatible endpoints
+### OpenAI-compatible endpoints
 
-The Query panel supports Open-AI compatible endpoints that are not OpenAI models, for example, [Ollama](https://ollama.com/).
-To use endpoints like these, select the "Open-AI compatible endpoint" option in the "Query Generation Options" section.
-For open source models, no API key is needed. The screenshot below shows the settings for using Ollama with the `gemma3:27b` model
+The Query panel supports OpenAI-compatible endpoints that are not OpenAI models, for example, [Ollama](https://ollama.com/).
+To use endpoints like these, select the "OpenAI-compatible endpoint" option in the "Query Generation Options" section.
+For open-source models, no API key is needed. The screenshot below shows the settings for using Ollama with the `gemma3:27b` model
 for query generation.
 
 <img src="/img/visualization/ai-query-1.png" />

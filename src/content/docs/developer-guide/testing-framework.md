@@ -229,7 +229,7 @@ In the example above:
 `-STATEMENT` is followed by 4 dashes `----` alongside the expected result (error, success, hash, or the number of the tuples).
 
 When specifying a number after the dashes, it's necessary to add the same number of tuples in the
-next following lines.
+following lines.
 
 If the subsequent lines contain additional statements to validate, they will be incorporated into the same test case
 unless a new `-CASE` is written.

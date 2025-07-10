@@ -69,7 +69,7 @@ a default value, and only a subset of the Kuzu table's columns are filled during
 
 This is better illustrated with an example. Consider a case where you have a CSV file `person.csv`
 that has 3 columns: `id`, `name` and `age`.
-Assume you have a data model where you want to attach and addtional property to a `Person` node,
+Assume you have a data model where you want to attach an additional property to a `Person` node,
 i.e., the address they live in, initially populated as nulls but to be filled in with appropriate
 values at a later time.
 
@@ -111,7 +111,7 @@ Knows_User_User
 Knows_User_City
 ```
 
-When bulk inserting into a relationship table with multiple from-to pairs, users need to specify which child table to insert through `from, to` options, e.g.
+When bulk inserting into a relationship table with multiple from-to pairs, you need to specify which child table to insert through `from, to` options, e.g.
 ```sql
 COPY Knows FROM 'knows_user_user.csv' (from='User', to='User');
 COPY Knows FROM 'knows_user_city.csv' (from='User', to='City');

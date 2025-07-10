@@ -30,8 +30,8 @@ RETURN *;
 └──────────────────────────────────────────────────┘
 ```
 
-The boolean predicate specified above can be understood as it reads: Users "a" whose ages are
-greater than 45 OR whose names start with "Kar". It combines several means to construct expressions in high-level database query languages, such as as boolean operator (OR), a numeric comparison operator (>), and a string function (starts_with). You can learn more about the operators, functions and expressions [here](/cypher/expressions).
+The boolean predicate specified above can be understood as it reads: Find users whose ages are
+greater than `45` OR whose names start with `Kar`. It combines several means to construct expressions in high-level database query languages, such as a boolean operator (OR), a numeric comparison operator (>), and a string function (starts_with). You can learn more about the operators, functions, and expressions [here](/cypher/expressions).
 
 ## Filter with NULL
 If an expression is evaluated as NULL, it will be treated as FALSE in `WHERE` clause. To check if an expression is NULL, please refer to [comparison operators on NULLs](/cypher/data-types#null).
@@ -70,7 +70,7 @@ RETURN a;
 └────────────────────────────────────────────────┘
 ```
 
-The above query matches users who follow "Noura" and lives in "Guelph". Note that you can only
+The above query matches users who follow `Noura` and live in `Guelph`. Note that you can only
 `RETURN` the nodes that are in the scope of the `MATCH` clause (the nodes and relationships that
 are in the `WHERE` clause are not returned).
 

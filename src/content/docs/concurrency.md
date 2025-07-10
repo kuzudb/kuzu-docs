@@ -9,7 +9,7 @@ section below to get answers to common questions.
 :::
 
 In this section, we will go over the basics of how applications connect to a Kuzu database and list some
-best practices on how to do so concurrently.
+best practices for concurrent connection handling.
 
 Kuzu supports both **on-disk** and **in-memory** modes of operation. 
 When operating under on-disk mode, your data and the underlying database files are stored in a
@@ -62,7 +62,7 @@ When working with in-memory databases, there are a few restrictions to keep in m
 
 ### Limitations of creating multiple Database objects
 Kuzu is an embedded database, i.e., it is a library you embed inside an application process and run as part
-of this application process, instead of a separate process.
+of this application process, rather than as a separate process.
 You can think of the Database object as the Kuzu database software.
 Specifically, the Database object contains
 different components of the Kuzu database software, such as its buffer manager, storage manager, transaction manager, etc. 
@@ -165,7 +165,7 @@ as HTTP or gRPC). You are free to open any number of client processes that issue
 
 Note that in terms of processes that embed Kuzu, this design pattern follows
 [scenario 1](#scenario-1-one-process-that-creates-a-read_write-database) above as there is actually
-one process that creates a `READ_WRITE` Database object. To enable users to get up and running with such an architecture, 
+one process that creates a `READ_WRITE` Database object. To enable you to get up and running with such an architecture, 
 we provide a REST-style [Kuzu API server](https://github.com/kuzudb/api-server) powered by Express.js. 
 Pictorially, this design pattern looks as follows:
 

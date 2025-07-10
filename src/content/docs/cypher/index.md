@@ -23,7 +23,7 @@ query languages, most of its semantics can be understood as mappings to relation
 for selections, joins, projections and aggregations.
 
 Kuzu implements openCypher's[^1] standard predicates and expressions. The following sections in this
-chapter covers all Cypher statements, clauses, expressions and functions implemented in Kuzu.
+chapter cover all Cypher statements, clauses, expressions and functions implemented in Kuzu.
 
 ## Statements vs. clauses
 

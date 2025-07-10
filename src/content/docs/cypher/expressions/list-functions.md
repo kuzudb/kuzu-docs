@@ -41,7 +41,7 @@ Scroll to the right to see the example usage in the below table.
 | `list_reverse(list)` | reverse list elements | `list_reverse([1,2,3])` | `[3,2,1]` |
 | `list_sort(list)`| sorts the elements of the list. More configurations available [here](#list_sort) | `list_sort([3,10,4])` | `[3,4,10]` |
 | `list_reverse_sort(list)` | alias of `list_sort(list, 'DESC')` | `list_reverse_sort([3,10,4])` | `[10,4,3]` |
-| `list_sum(list)` | sums the elements of the list. | `list_sum(1,2,3)` | `6` |
+| `list_sum(list)` | sums the elements of the list. | `list_sum([1,2,3])` | `6` |
 | `list_product(list)` | multiply elements of the list. | `list_product([1, 2, 3])` | `6` |
 | `list_distinct(list)` | removes NULLs and duplicate values from the list. | `list_distinct([3,3,3,NULL])` | `[3]` |
 | `list_unique(list)` | counts number of unique elements of the list. NULLs are ignored. | `list_unique([3,3,3,NULL])` | `1` |
@@ -62,12 +62,12 @@ Scroll to the right to see the example usage in the below table.
 For functions that specifically work with `ARRAY` data types, refer to the [Array functions](/cypher/expressions/array-functions) section.
 
 ## LIST_SORT
-`LIST_SORT` takes can be configured to sort in ascending or descending order as well as whether `NULL`
-values should be put at the beginning or at the end of the list. By default, LIST_SORT will sort in
-ascending order and put NULL values at first. User can change sort order with `ASC` or `DESC` key word as the
+`LIST_SORT` can be configured to sort in ascending or descending order. It can also be configured to put `NULL`
+values at the beginning or at the end of the list. By default, `LIST_SORT` will sort in
+ascending order and put `NULL` values first. You can change the sort order with the `ASC` or `DESC` keywords as the
 second argument and change `NULL` values position with `NULLS FIRST` or `NULLS LAST` as the third argument.
 
-By default, NULLs are put at the beginning of the list when sorting in descending order.
+By default, `NULL`s are put at the beginning of the list when sorting in descending order.
 
 ```cypher
 RETURN list_sort([3,10, NULL, 4], 'DESC') AS result;
@@ -84,7 +84,7 @@ RETURN list_sort([3,10, NULL, 4], 'DESC') AS result;
 
 ### NULLS LAST
 
-In certain cases, having the NULLs at the end of the returned is useful. This can be achieved by
+In certain cases, having the NULLs at the end of the returned list is useful. This can be achieved by
 specifying `NULLS LAST` as the third argument.
 
 ```cypher
@@ -102,7 +102,7 @@ RETURN list_sort([3,10, NULL, 4], 'DESC', 'NULLS LAST') AS result;
 
 ## RANGE
 
-`range(start, stop)` returns a list of value from start to stop. Both ends are inclusive.
+`range(start, stop)` returns a list of values from start to stop. Both ends are inclusive.
 
 ```cypher
 RETURN range(1,3);
@@ -114,7 +114,7 @@ RETURN range(1,3);
 └────────────┘
 ```
 
-`range(start, stop, step)` returns a list of value from start to stop with the given step.
+`range(start, stop, step)` returns a list of values from start to stop with the given step.
 Both ends are inclusive.
 
 ```cypher

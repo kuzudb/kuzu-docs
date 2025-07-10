@@ -71,7 +71,7 @@ load_data(conn)
 You can visualize the imported data in Kuzu Explorer as shown in the [previous section](/get-started/cypher-intro):
 
 ```cypher
-// Return the first two users, their movies and their ratings
+// Return the first two users, their movies, and their ratings
 MATCH (u:User)-[r:Rating]->(m:Movie)
 WHERE u.userId IN [1, 2]
 RETURN u, r, m
@@ -91,7 +91,7 @@ res = conn.execute('MATCH (u:User)-[r:Rating]->(m:Movie) RETURN u, r, m;')
 G = res.get_as_networkx(directed=False)
 ```
 
-We store the extracted subgraph as an undirected graph in NetworkX as the direction doesn't matter
+We store the extracted subgraph as an undirected graph in NetworkX because the direction doesn't matter
 for the PageRank algorithm.
 
 ### Compute PageRank
@@ -176,7 +176,7 @@ x = conn.execute(
 4  50       0.000724
 ```
 
-The same can be done for the user nodes.
+The same can be done for user nodes.
 
 ```python
 # Copy user pagerank values to user nodes

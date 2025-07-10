@@ -1,22 +1,23 @@
 ---
-title: "S3 extension"
-description: "The S3 extension allows you to read, write or glob files hosted on Amazon S3"
+title: "S3 storage"
+description: "Read, write or glob files hosted on Amazon S3"
 ---
-The S3 extension allows you to read, write, or glob files hosted on object storage servers using the
+You can read, write, or glob files hosted on object storage servers using the
 [Amazon S3](https://aws.amazon.com/s3/) API.
 
 ## Usage
 
-The S3 extension is implemented as a feature of the `httpfs` extension, so you need to install and load it first.
+Accessing S3 storage is implemented as a feature of the `httpfs` extension.
 
 ```sql
 INSTALL httpfs;
 LOAD httpfs;
 ```
+
 ### Configure the connection
 
 Once the `httpfs` extension is loaded, you can configure the S3 connection using
-[CALL](https://kuzudb.com/docusaurus/cypher/configuration) statements in Cypher.
+[CALL](/cypher/configuration) statements in Cypher.
 ```sql
 CALL <option_name>=<option_value>
 ```

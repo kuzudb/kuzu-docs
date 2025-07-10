@@ -177,7 +177,7 @@ conn->query("MATCH (p:person) return addMicro(p.registerTime, to_int32(p.ID))")
 
 ### Vectorized functions
 
-Due its columnar storage and architecture decisions, Kuzu can execute functions on input data in an
+Due to its columnar storage and architecture decisions, Kuzu can execute functions on input data in an
 efficient and vectorized manner. In addition to creating scalar UDFs, Kuzu also provides support for
 user-defined vectorized UDFs. The `createVectorizedFunction` interface also offers two APIs to enhance clarity in datatype mapping.
 

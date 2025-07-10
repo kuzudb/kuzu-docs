@@ -3,12 +3,12 @@ title: Call
 description: CALL clause is a reading clause used for executing schema functions.
 ---
 
-The `CALL` clause is used for executing schema functions. This way of using `CALL` needs to be followed
-with other query clauses, such as `RETURN` or `YIELD` (see below for example usage). Note that the `CALL` clause
+The `CALL` clause is used for executing schema functions. This way of using `CALL` must be followed
+by other query clauses, such as `RETURN` or `YIELD` (see below for example usage). Note that the `CALL` clause
 defined here is different from the standalone [`CALL`](/cypher/configuration) **statement** used for changing
 the database configuration.
 
-The following tables lists the built-in schema functions you can use with the `CALL` clause:
+The following table lists the built-in schema functions you can use with the `CALL` clause:
 
 <div class="scroll-table">
 
@@ -363,7 +363,7 @@ call PROJECTED_GRAPH_INFO('student') RETURN *;
 
 ## YIELD
 
-The `YIELD` clause in Kuzu is used to rename the return columns of a `CALL` function to avoid naming conflicition and better readability.
+The `YIELD` clause in Kuzu is used to rename the return columns of a `CALL` function to avoid naming conflicts and improve readability.
 Usage:
 ```cypher
 CALL FUNC()
@@ -386,7 +386,7 @@ RETURN *;
 └─────────────┘
 ```
 
-Another useful scenario is to avoid naming conflicition when two call functions in the same query returns a column with the same name.
+Another useful scenario is to avoid naming conflicts when two call functions in the same query return a column with the same name.
 ```cypher
 CALL table_info('person')
 YIELD `property id` as person_id,  name as person_name, type as person_type, `default expression` as person_default, `primary key` as person_pk

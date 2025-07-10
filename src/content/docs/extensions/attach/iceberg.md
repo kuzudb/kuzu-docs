@@ -122,7 +122,7 @@ Kuzu also supports scanning and copying Iceberg tables hosted on S3.
 
 #### Configure the S3 connection
 
-Before reading and writing from S3, you have to configure the connection using a [CALL](https://kuzudb.com/docusaurus/cypher/configuration) statement.
+Before reading and writing from S3, you have to configure the connection using a [CALL](/cypher/configuration) statement.
 ```sql
 CALL <option_name>='<option_value>'
 ```

@@ -4,17 +4,15 @@ title: "Vector search extension"
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-The `VECTOR` extension provides a *native disk-based* [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world) vector index
+The `vector` extension provides a *native disk-based* [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world) vector index
 for accelerating similarity search over your vector embeddings (32-bit and 64-bit float arrays) that are stored as node properties in Kuzu.
 The HNSW index is structured with two hierarchical layers.
 The lower layer includes all vectors, while the upper layer contains a sampled subset of the lower layer.
 
-The vector extension provides the following functions:
-| Function | Description |
-| --- | --- |
-| `CREATE_VECTOR_INDEX` | Create the index |
-| `QUERY_VECTOR_INDEX` | Query the index |
-| `DROP_VECTOR_INDEX` | Drop the index |
+This extension provides the following functions:
+- `CREATE_VECTOR_INDEX`: Create a vector index
+- `QUERY_VECTOR_INDEX`: Query a vector index
+- `DROP_VECTOR_INDEX`: Drop a vector index
 
 
 ## Usage

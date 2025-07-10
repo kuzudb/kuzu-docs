@@ -19,7 +19,7 @@ unzip tutorial_data.zip
 
 ### `User`
 The User node represents users within the social network. Each user has their information attached, such as:
-- **user_id** (INT64): This is a unique id which is used to sort and find users.
+- **user_id** (INT64): This is a unique ID which is used to sort and find users.
 - **username** (STRING): This is the unique username which each user will have.
 - **account_creation_date** (DATE): This represents the date which the account was created.
 ```
@@ -32,11 +32,11 @@ userID,username,account_creation_date
 ```
 
 ### `Post`
-The Post node represents the posts which has been made on the social network. Each post has its information attached, such as:
-- **post_id** (INT64): This is a unique id which is used to sort and find posts.
-- **creation_date** (DATE): This represents the date which the account was created.
-- **like_count** (INT64): This represents the amount of likes the post has received.
-- **retweet_count** (INT64): This represents the amount of retweets the post has received.
+The Post node represents the posts which have been made on the social network. Each post has its information attached, such as:
+- **post_id** (INT64): This is a unique ID which is used to sort and find posts.
+- **creation_date** (DATE): This represents the date which the post was created.
+- **like_count** (INT64): This represents the number of likes the post has received.
+- **retweet_count** (INT64): This represents the number of retweets the post has received.
 ```
 postID,creation_date,like_count,retweet_count
 1,2021-12-08,427,29
@@ -71,7 +71,7 @@ userID,postID
 ```
 
 ### `LIKES`
-The relationship `Likes` goes from `User` node to `Post` node. This relation represents a user liking the post on the social network.
+The relationship `LIKES` goes from `User` node to `Post` node. This relation represents a user liking the post on the social network.
 ```
 userID,postID
 16,1

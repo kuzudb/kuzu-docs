@@ -28,7 +28,7 @@ Returns:
 -----
 ```
 
-Not all inputs can be cast to every data type. For example, `INT[]` can not be cast to `INT`. Even
+Not all inputs can be cast to every data type. For example, `INT[]` cannot be cast to `INT`. Even
 if a cast between the input's data type to the target type is well defined, the cast can still fail
 if the input's value is not suitable to cast. For example, casting the `STRING` data type to
 `INT` is well defined -- you cannot cast `"abc"` to `INT`, but you can cast `"12"` to `INT`.

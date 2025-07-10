@@ -38,7 +38,8 @@ RETURN ["Alice", "Bob"] AS l;
 
 :::danger[Note]
 If you try to create a `LIST` with elements that are of different types, an exception will be thrown.
-```
+
+```cypher
 kuzu> RETURN ["Alice", 1] AS l;
 Error: Binder exception: Cannot bind LIST_CREATION with parameter type STRING and INT64.
 ```
@@ -59,6 +60,8 @@ RETURN list_creation(1,2,3,4) AS l;
 ```
 
 #### `UNWIND` a `LIST`
+
+You can use the `UNWIND` clause to expand a list into individual rows:
 ```cypher
 UNWIND [[1,2], [3], [4, 5]] AS x 
 UNWIND x as y 
@@ -137,7 +140,7 @@ RETURN CAST([[5,2,1],[2,3],[15,64,74]], 'INT64[][3]');
 
 #### `UNWIND` an `ARRAY`
 
-`UNWIND`ing an `ARRAY` works exactly as shown [above](#unwind-a-list) for the `LIST` type.
+`UNWIND`ing an `ARRAY` works exactly as shown [above](#unwind-a-list) for the `LIST` type:
 
 ```cypher
 UNWIND CAST([[1,2,3],[3],[4,5]], 'INT64[][3]') AS x UNWIND x AS y RETURN y;

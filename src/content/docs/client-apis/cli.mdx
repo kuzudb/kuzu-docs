@@ -210,8 +210,8 @@ Time: 0.09ms (compiling), 11.75ms (executing)
 
 For queries that might take a significant amount of time to execute, a progress bar can be enabled that displays
 the number of pipelines that have been executed (each query is broken down into one or more pipelines), 
-as well as the percentage of the data processed in a pipeline. This gives an estimate for how much of a pipeline
-has executed.
+as well as the percentage of the data processed in a pipeline. This gives an estimate of how much of a pipeline
+has been executed.
 
 ![](/img/cli/progress-bar.gif)
 
@@ -258,7 +258,7 @@ The `:max_rows` and `:max_width` commands can be used to control the number of r
 of the `box`, `column`, `table`, and `markdown` output modes.
 
 ## Multi-line Cypher statements
-The CLI supports queries written in multiple lines. If a semicolon is omitted, hitting enter will allow users to continue the query in a newline instead of executing it.
+The CLI supports queries written in multiple lines. If a semicolon is omitted, hitting enter will allow you to continue the query in a newline instead of executing it.
 ```
 kuzu> MATCH (a:person)
     ‣ RETURN a.id;

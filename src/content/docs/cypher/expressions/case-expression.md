@@ -1,13 +1,13 @@
 ---
 title: Case Expression
-description: CASE is used for conditional expression. 
+description: CASE is used for conditional expressions. 
 ---
 
 The `CASE` expression is used to define conditional logic, similar to how `if` statements work in
 programming languages. There are two variants of conditional expressions in Cypher:
 
 1. Simple form which compares an expression against multiple expressions
-1. General form with multiple conditional statements.
+2. General form with multiple conditional statements.
 
 ## Simple form
 In the simple form, input is compared against each `WHEN` in order until a match is found. If no

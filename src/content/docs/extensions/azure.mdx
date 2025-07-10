@@ -1,14 +1,13 @@
 ---
 title: "Azure extension"
 ---
-The Azure extension adds support for scanning from [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview)
+The `azure` extension allows you to scan data from [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview)
 and [Azure Data Lake Storage (ADLS)](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction).
 
 ## Usage
 
-Unlike the [S3](/extensions/s3) and [GCS](/extensions/gcs) extensions, the Azure extension
-is not implemented as a feature of the `httpfs` extension, but rather, as its own extension.
-Install the `azure` extension as follows:
+Unlike the [S3](/extensions/s3) and [GCS](/extensions/gcs) extensions, the `azure` extension
+is implemented as a separate extension, rather than as a feature of the `httpfs` extension.
 
 ```sql
 INSTALL azure;
@@ -17,7 +16,7 @@ LOAD azure;
 
 ### Configure the connection
 
-Before reading and writing from Azure, you have to configure the connection using CALL statements.
+Before reading and writing from Azure, you have to configure the connection using [CALL](/cypher/configuration) statements.
 
 ```sql
 CALL <OPTION_NAME> = <OPTION_VALUE>;
@@ -60,5 +59,4 @@ RETURN *;
 ```
 
 Currently, we only support scanning from Azure Blob Storage. If you're looking for other specific features,
-open a an issue on [GitHub](https://github.com/kuzudb/kuzu/issues) (please check if there's already
-an existing issue related to "Azure" first).
+open an issue on [GitHub](https://github.com/kuzudb/kuzu/issues).

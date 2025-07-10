@@ -1,15 +1,15 @@
 ---
 title: Skip
-description: SKIP controls the number of tuples to skip from the start of the queryResult.
+description: SKIP controls the number of tuples to skip from the start of the query result.
 ---
 
-`SKIP` controls the number of tuples to skip from the start of the queryResult. It is often used within in an [ORDER BY](/cypher/query-clauses/order-by)
+`SKIP` controls the number of tuples to skip from the start of the query result. It is often used within an [ORDER BY](/cypher/query-clauses/order-by)
 clause to skip the top k tuples from the query result.
 Note: SKIP accepts any expression that can be evaluated to an integer.
 
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
 
-For example, the following query skips the youngest 2 users
+For example, the following query skips the 2 youngest users
 and returns the rest of the users' ages.
 Query:
 ```cypher
@@ -29,7 +29,7 @@ SKIP 2;
 ```
 
 If you omit the `ORDER BY`, you would skip some k tuples in a `SKIP` k query
-but you have no guarantee about which ones will be skipped.
+but there is no guarantee about which ones will be skipped.
 
 
 The number of rows to skip can either be:

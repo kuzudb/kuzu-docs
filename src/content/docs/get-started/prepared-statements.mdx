@@ -5,9 +5,9 @@ title: "Run prepared Cypher statements"
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 Similar to [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) in relational databases,
-it is possible to have Cypher injection in graph databases. This is when a user can manipulate
-dynamically generated Cypher queries to execute arbitrary code that can threaten the integrity of the data.
-As a best practice, it's generally a good idea to provide parameters to your Cypher queries instead of
+it is possible to have Cypher injection in graph databases. This is when a malicious input can manipulate
+dynamically generated Cypher queries to execute arbitrary code.
+To avoid such security issues, it is generally a good practice to provide parameters to your Cypher queries instead of
 using concatenated string queries.
 
 This section shows how to run *prepared* Cypher statements with parameters.
@@ -88,7 +88,7 @@ For example, to query the index with keywords `machine learning`:
 
 ```cpp
 auto result = conn->execute(
-    prepared.get,
+    prepared.get(),
     std::make_pair(std::string("query"), std::string("machine learning"))
 );
 ```
@@ -97,7 +97,7 @@ Similarly, to query the index with the keyword `dragons`:
 
 ```cpp
 auto result = conn->execute(
-    prepared.get,
+    prepared.get(),
     std::make_pair(std::string("query"), std::string("dragons"))
 );
 ```

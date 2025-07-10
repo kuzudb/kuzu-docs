@@ -10,7 +10,7 @@ cannot contain a `RETURN` clause. The supported subqueries in Kuzu's implementat
 
 The `EXISTS` subquery checks if given pattern has at least one match in the graph.
 
-The following query searches for all Users's who have at least one 3-hop Follows
+The following query searches for all Users who have at least one 3-hop Follows
 path starting from them.
 
 ```cypher

@@ -19,7 +19,7 @@ LOAD unity_catalog;
 
 #### Set up a Unity Catalog server
 
-First, set up the open source version of Unity Catalog:
+First, set up the open-source version of Unity Catalog:
 
 ```bash
 git clone https://github.com/unitycatalog/unitycatalog.git
@@ -37,7 +37,7 @@ ATTACH [CATALOG_NAME] AS [alias] (dbtype UC_CATALOG)
   When attaching multiple databases, it's recommended to use aliases.
 
 :::note[Note]
-Kuzu attaches to the `default` schema under the given catalog name. Specifying the schema to attach is not supported currently.
+Kuzu attaches to the `default` schema under the given catalog name. Specifying the schema to attach is not currently supported.
 :::
 
 ### Unity Catalog to Kuzu type mapping

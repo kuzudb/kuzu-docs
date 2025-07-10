@@ -16,7 +16,7 @@ but are broadly useful.
 | `constant_or_null(arg1, arg2)` | if `arg2` is null return null, otherwise return `arg1` | `constant_or_null(1, NULL)`| `NULL` |
 | `count_if(arg)`| if `arg` is true or non-zero number return 1, otherwise return 0 | `count_if(true)`| `1` |
 | `typeof(arg)` | return name of the data type of `arg` | `typeof(true)` | `BOOL` |
-| `error(arg)` | throw `arg` as a Runtime exception | `error('something is wrong.')` | |
+| `error(arg)` | throw `arg` as a runtime exception | `error('something is wrong.')` | |
 
 
 
