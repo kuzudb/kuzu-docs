@@ -34,7 +34,7 @@ The `CREATE_EMBEDDING` function allows you to create embeddings from text using 
 
 The general form of the
 function is shown below. The first three arguments are required, and the last two arguments are
-optional depending on the provider. It returns an embedding of type `LIST[FLOAT]`.
+only required if the provider supports region configuration (for e.g., `amazon-bedrock` or `google-vertex`. Kuzu does not assume a default region. It returns an embedding of type `LIST[FLOAT]`.
 
 ```cypher
 CREATE_EMBEDDING(
