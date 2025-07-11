@@ -19,10 +19,10 @@ data is persisted to disk after the CLI shell is closed. Note that if the databa
 directory does not exist, it will be created for you.
 
 ```bash
-$ kuzu ./test_db
+$ kuzu example.kuzu
 ```
 ```
-Opened the database at path: ./test_db in read-write mode.
+Opened the database example.kuzu in read-write mode.
 Enter ":help" for usage hints.
 kuzu> 
 ```
@@ -33,7 +33,7 @@ Alternatively, you can create an in-memory database by omitting the path entirel
 from your terminal:
 
 ```bash
-$ kuzu
+kuzu
 ```
 ```
 Opened the database under in-memory mode.
@@ -43,7 +43,7 @@ kuzu>
 ## Shell commands
 
 Once you start the shell, you can issue Cypher queries as shown in the [get started](/get-started)
-section. List all available shell commands by running `./kuzu -h`.
+section. List all available shell commands by running `kuzu -h`.
 
 ```bash
 $ kuzu -h
@@ -181,10 +181,10 @@ COPY Person FROM 'person.csv';
 Pipe the file content to the CLI as follows:
 
 ```bash
-./kuzu testdb < schema.cypher
+kuzu example.kuzu < schema.cypher
 ```
 ```
-Opened the database at path: ./test_db in read-write mode.
+Opened the database example.kuzu in read-write mode.
 Enter ":help" for usage hints.
 ┌────────────────────────────────┐
 │ result                         │

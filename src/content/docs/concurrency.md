@@ -13,31 +13,31 @@ best practices for concurrent connection handling.
 
 Kuzu supports both **on-disk** and **in-memory** modes of operation. 
 When operating under on-disk mode, your data and the underlying database files are stored in a
-local database directory, whereas under [in-memory](/get-started#in-memory-database) mode,
+local database, whereas under [in-memory](/get-started#in-memory-database) mode,
 no data is persisted to disk.
 
-Throughout this documentation, let's suppose you open a Kuzu database that's on-disk, and whose files
-are in a directory named `./kuzu-db-dir`.
+Throughout this documentation, let's suppose you open a Kuzu database file that's on-disk, named
+`example.kuzu`.
 
 ## Understand connections
 
 ### Database and connection objects
 Application processes must connect to a Kuzu database in two steps before they can start querying it:
 
-**Step 1.** Create an instance of a `Database` object `db` and pass it the database directory (`./kuzu-db-dir` in our example below), and
+**Step 1.** Create an instance of a `Database` object `db` and pass it the database filename (`example.kuzu` in our example below), and
 a read-write mode which can be either:
 1. `READ_WRITE` (default); or
 2. `READ_ONLY`
 
 **Step 2.** Create a `Connection` object `conn` from the Database object `db`.
 
-- A Connection object that was created using a `READ_WRITE` Database object can execute queries that
+- A Connection object that was created using a `READ_WRITE` `Database` object can execute queries that
 do both read (e.g., queries with `MATCH WHERE RETURN` statements) as well as write operations
 (e.g., queries with `CREATE` or `COPY FROM` statements).
-- In contrast, a Connection object that was created using a `READ_ONLY` Database can only execute
+- In contrast, a Connection object that was created using a `READ_ONLY` database can only execute
 queries that do read operations.
 
-Then, using `conn`, one can execute Cypher queries against the database stored under `./kuzu-db-dir`.
+Then, using `conn`, one can execute Cypher queries against the `example.kuzu` database.
 Here's a simple example application in Python that demonstrates these two steps for creating a `READ_WRITE`
 database and a connection. The same principles apply to other language APIs as well:
 
@@ -45,8 +45,8 @@ database and a connection. The same principles apply to other language APIs as w
 import kuzu
 
 # Open the database in `READ_WRITE` mode. The below code is equivalent to:
-# db = kuzu.Database("./kuzu-db-dir", read_only=False)  
-db = kuzu.Database("./kuzu-db-dir") 
+# db = kuzu.Database("example.kuzu", read_only=False)  
+db = kuzu.Database("example.kuzu") 
 conn = kuzu.Connection(db)
 conn.execute("CREATE (a:Person {name: 'Alice'});")
 ```
@@ -63,16 +63,16 @@ When working with in-memory databases, there are a few restrictions to keep in m
 ### Limitations of creating multiple Database objects
 Kuzu is an embedded database, i.e., it is a library you embed inside an application process and run as part
 of this application process, rather than as a separate process.
-You can think of the Database object as the Kuzu database software.
-Specifically, the Database object contains
+You can think of the `Database` object as the Kuzu database software.
+Specifically, the `Database` object contains
 different components of the Kuzu database software, such as its buffer manager, storage manager, transaction manager, etc. 
-Several of the components inside a Database object, such as the buffer manager,
-cache parts of the data that are stored on disk. This limits the number of Database objects that can be created
-pointing to the same database directory, either in the same process or across multiple processes.
+Several of the components inside a `Database` object, such as the buffer manager,
+cache parts of the data that are stored on disk. This limits the number of `Database` objects that can be created
+pointing to the same database, either in the same process or across multiple processes.
 
 The possible settings are:
-1. One `READ_WRITE` Database object; or
-2. Multiple `READ_ONLY` Database objects.
+1. One `READ_WRITE` database object; OR
+2. Multiple `READ_ONLY` database objects.
 
 :::caution[Note]
 The core idea related to concurrency is this: you cannot have a `READ_WRITE` Database object `db1`
@@ -94,15 +94,15 @@ creating multiple Database instances within the same process (you should instead
 in that process).
 
 However, there are common scenarios when you may want to launch
-multiple application processes that connect to the same database directory. One such scenario
+multiple application processes that connect to the same database. One such scenario
 is when developing your workflow in Python using a Jupyter notebook
-that connects to `./kuzu-db-dir`. Say you want to also run the Kuzu CLI alongside your Jupyter notebook,
-which also connects to the same `./kuzu-db-dir`. When you launch Kuzu CLI and point it to
-`./kuzu-db-dir`, Kuzu CLI embeds Kuzu and tries to create a `READ_WRITE` Database object. So if your notebook process already
+that connects to `example.kuzu`. Say you want to also run the Kuzu CLI alongside your Jupyter notebook,
+which also connects to the same `example.kuzu`. When you launch Kuzu CLI and point it to
+`example.kuzu`, Kuzu CLI embeds Kuzu and tries to create a `READ_WRITE` Database object. So if your notebook process already
 has created a Database object, this will fail with an error that looks like this:
 
 ```
-IO exception: Could not set lock on file : ./kuzu-db-dir/.lock
+RuntimeError: IO exception: Could not set lock on file : /path/to/database/example.kuzu.lock
 ```
 
 If this happens, you would have to shut down your notebook process (or simply restart your Jupyter server),
@@ -112,12 +112,12 @@ so that its Database object is destroyed, before the CLI can run.
 
 Note that the above limitation about creating multiple Database objects does not mean that you cannot create 
 multiple Connections from the same `READ_WRITE` Database object and issue concurrent queries. For example,
-you can write a program that creates a single `READ_WRITE` Database object `db` that points to `./kuzu-db-dir`. 
+you can write a program that creates a single `READ_WRITE` Database object `db` that points to `example.kuzu`. 
 Then, you can spawn multiple threads
 T<sub>1</sub>, ..., T<sub>k</sub>, and each T<sub>i</sub> obtains a connection from `db` and concurrently issues
 read or write queries. This is safe. Every read and write statement in Kuzu is wrapped around a transaction
 (either automatically or manually by you). Concurrent transactions that operate on the same database
-`./kuzu-db-dir` are safely executed by Kuzu's transaction manager (i.e., the transaction manager inside `db`),
+`example.kuzu` are safely executed by Kuzu's transaction manager (i.e., the transaction manager inside `db`),
 again as long as those transactions are issued by connections that were created from the same Database object. 
 See the documentation on [transactions](/cypher/transaction) for the transactional guarantees that Kuzu provides.
 
@@ -127,7 +127,7 @@ Below, we provide some examples and best practices for common scenarios you are 
 
 ### Scenario 1: One process that creates a `READ_WRITE` database
 In this scenario, you have a single application process that embeds Kuzu and creates a `READ_WRITE` Database object
-that opens the `./kuzu-db-dir` database. Within this process, you can create multiple concurrent connections, each of which
+that opens the `example.kuzu` database. Within this process, you can create multiple concurrent connections, each of which
 can execute queries that can read and write to the database, which will be handled safely
 by Kuzu's transaction manager. Pictorially, this scenario looks as follows:
 
@@ -138,7 +138,7 @@ from `conn1` and `conn2` are executed sequentially but they could be running con
 
 ### Scenario 2: Multiple processes that create `READ_ONLY` databases
 In this scenario, you have multiple application processes that embed
-Kuzu and create `READ_ONLY` Database objects that open the same database directory `./kuzu-db-dir`. 
+Kuzu and create `READ_ONLY` Database objects that open the same database `example.kuzu`.
 Each process can create multiple concurrent connections and issue queries.
 However, each connection can only execute read-only queries (because the database is opened in `READ_ONLY` mode).
 Since the connections and queries are read-only, none of the queries can change the actual database files on disk.
@@ -151,12 +151,12 @@ If you're interested in running multiple processes that can read and write to th
 
 ### Performing read-write operations from multiple processes
 In certain production settings, you may need to have multiple processes that read and write to the same Kuzu database,
-say again stored under `./kuzu-db-dir`.
+say again stored under `example.kuzu`.
 This is the case for example if you have an online application. Say you have a browser application and multiple users 
 use your application from different browsers and each user interaction leads to concurrent read-write queries
 on the same database. To support such scenarios, a common design pattern is this: 
 1. **One API server process** that embeds Kuzu
-   and creates a single `READ_WRITE` Database object pointing to `./kuzu-db-dir`.
+   and creates a single `READ_WRITE` Database object pointing to `example.kuzu`.
    The API server is responsible for handling incoming requests from clients, say through HTTP or gRPC. The
    requests' Cypher queries, which can read and write data to the database, are executed
    (possibly) concurrently. 
@@ -179,13 +179,13 @@ queries directly on the database by embedding Kuzu in your application.
 
 ## Known Issue: Kuzu Explorer not recognizing the `.lock` file permissions
 
-Kuzu ensures that multiple Database objects, where one of them is a `READ_WRITE` instance, are not 
-created by setting some permission flags in a `.lock` file under the database directory. This is a lightweight
+Kuzu ensures that multiple `Database` objects, where one of them is a `READ_WRITE` instance, are not 
+created by setting some permission flags in a `.lock` file in the local path of the database file. This is a lightweight
 locking mechanism. However, there is a known issue that Kuzu Explorer is not
 able to see the flags put by other processes. The core problem is that Explorer runs as a Docker container
 and the flags are not propagated between the host operating system and the Docker environment. We do not currently
 have a fix to this (do [contact us](mailto:contact@kuzudb.com) if you know of an easy solution). So if you have a process (or processes) that has 
-opened a Database directory and you concurrently start Kuzu Explorer, you should manually ensure that
+opened a database and you concurrently start Kuzu Explorer, you should manually ensure that
 either: (i) both Explorer and your other process are in `READ_ONLY` mode; or (ii) you shut down your other
 process first before opening Explorer in `READ_WRITE` mode.
 
@@ -206,17 +206,17 @@ application is to use design patterns as per one of the scenarios shown pictoria
 ##### I'm seeing an error related to lock files when running Kuzu in a Jupyter notebook. How can I resolve this?
 
 Sometimes, when you are working in a Jupyter notebook and building your Kuzu graph while also trying to
-open other processes that connect to the same database directory, you may come across this error:
+open other processes that connect to the same directory as the database file, you may come across this error:
 
 ```
-IO exception: Could not set lock on file : ./db_directory/.lock
+RuntimeError: IO exception: Could not set lock on file : /path/to/database/example.kuzu.lock
 ```
 
 The `.lock` file, as described in earlier sections on this page, is present to protect you from inadvertent
-data corruption due to multiple Database instances trying to access the same database directory concurrently.
+data corruption due to multiple `Database` instances trying to access the same database concurrently.
 To resolve this, simply click the `Restart server` button in your Jupyter notebook (or close the Jupyter
 notebook entirely). Restarting the Jupyter notebook server (or closing it) will release the `.lock` file
-present in the database directory, allowing you to safely connect to the database via another connection,
+present in the local file path, allowing you to safely connect to the database via another connection,
 for example, a CLI or Kuzu Explorer for graph visualization. In general, it's recommended to only
 open the CLI or Kuzu Explorer *after* you have finished any operations to the database (and closing or
 restarting the Jupyter notebook server).

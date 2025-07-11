@@ -28,7 +28,7 @@ const kuzu = require("kuzu");
 
 (async () => {
   // Create an empty on-disk database and connect to it
-  const db = new kuzu.Database("./demo_db");
+  const db = new kuzu.Database("example.kuzu");
   const conn = new kuzu.Connection(db);
 
   // Create the tables
@@ -67,7 +67,7 @@ where async operations are not desired.
 const kuzu = require("kuzu");
 
 // Create an empty on-disk database and connect to it
-const db = new kuzu.Database("./demo_db");
+const db = new kuzu.Database("example.kuzu");
 const conn = new kuzu.Connection(db);
 
 // Create the tables

@@ -67,7 +67,7 @@ Let's see this in action with an example.
 import kuzu
 import pandas as pd
 
-db = kuzu.Database('test_db')
+db = kuzu.Database('example.kuzu')
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({

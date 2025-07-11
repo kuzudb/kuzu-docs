@@ -18,7 +18,7 @@ at the time of creating the database, as explained below.
 
 ### On-disk database
 
-If you specify a database path when initializing a database, such as `./demo_db`, Kuzu
+If you specify a database path when initializing a database, such as `example.kuzu`, Kuzu
 will operate in the **on-disk** mode. In this mode, Kuzu persists all data to disk at the given
 path. All transactions are logged to a Write-Ahead Log (WAL) and updates are periodically merged into the
 database files during checkpoints.
@@ -65,7 +65,7 @@ import kuzu
 
 def main():
     # Create an empty on-disk database and connect to it
-    db = kuzu.Database("./demo_db")
+    db = kuzu.Database("example.kuzu")
     conn = kuzu.Connection(db)
 
     # Create schema 
@@ -220,7 +220,7 @@ const kuzu = require("kuzu");
 
 (async () => {
   // Create an empty on-disk database and connect to it
-  const db = new kuzu.Database("./demo_db");
+  const db = new kuzu.Database("example.kuzu");
   const conn = new kuzu.Connection(db);
 
   // Create the tables
@@ -376,7 +376,7 @@ use kuzu::{Connection, Database, Error, SystemConfig};
 
 fn main() -> Result<(), Error> {
     // Create an empty on-disk database and connect to it
-    let db = Database::new("./demo_db", SystemConfig::default())?;
+    let db = Database::new("example.kuzu", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
     // Create the tables
@@ -428,7 +428,7 @@ import (
 
 func main() {
     // Create an empty on-disk database and connect to it
-    dbPath := "demo_db"
+    dbPath := "example.kuzu"
     os.RemoveAll(dbPath)
 
     systemConfig := kuzu.DefaultSystemConfig()
@@ -632,7 +632,7 @@ using namespace std;
 int main() {
     // Create an empty on-disk database and connect to it
     SystemConfig systemConfig;
-    auto database = make_unique<Database>("test", systemConfig);
+    auto database = make_unique<Database>("example.kuzu", systemConfig);
 
     // Connect to the database.
     auto connection = make_unique<Connection>(database.get());
@@ -729,7 +729,7 @@ int main()
 {
     // Create an empty on-disk database and connect to it
     kuzu_database db;
-    kuzu_database_init("test", kuzu_default_system_config(), &db);
+    kuzu_database_init("example.kuzu", kuzu_default_system_config(), &db);
 
     // Connect to the database.
     kuzu_connection conn;
@@ -835,10 +835,10 @@ When using the Kuzu CLI's shell, you can create an on-disk database by specifyin
 the `kuzu` command in the terminal.
 
 ```bash
-kuzu ./demo_db
+kuzu example.kuzu
 ```
 ```
-Opened the database at path: ./demo_db in read-write mode.
+Opened the database example.kuzu in read-write mode.
 Enter ":help" for usage hints.
 kuzu> 
 ```
