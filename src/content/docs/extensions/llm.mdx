@@ -95,7 +95,15 @@ To allow API calls to the providers, you must set the appropriate environment va
 | `google-gemini` | `GOOGLE_GEMINI_API_KEY` |
 | `open-ai` | `OPENAI_API_KEY` |
 | `voyage-ai` | `VOYAGE_API_KEY` |
-| `ollama` | None |
+| `ollama` | Optional: `OLLAMA_URL` |
+
+:::note[Note]
+Ollama endpoint configuration works as follows. If an endpoint is passed as an
+argument it will be used. If an endpoint is not provided, and OLLAMA_URL
+is set, the OLLAMA_URL variable will be used to configure the
+endpoint. Otherwise, the default endpoint, `http://localhost:11434`, will be used.
+:::
+
 
 ### Examples
 
@@ -106,10 +114,10 @@ RETURN CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-tex
 RETURN CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07");
 
 // Required REGION
-RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", "us-east1");
+RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", "us-central1");
 
 // Optional DIMENSIONS and Required REGION.
-RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
+RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-central1");
 
 RETURN CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
 
