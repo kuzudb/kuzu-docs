@@ -25,7 +25,7 @@ in the `LOAD FROM` statement using the [`WITH HEADERS`](#bound-variable-names-an
 ### File format detection
 `LOAD FROM` determines the file format based on the file extension if the `file_format` option is not given. For instance, files with a `.csv` extension are automatically recognized as CSV format.
 
-If the file format cannot be inferred from the extension, or if you need to override the default sniffing behavior, the `file_format` option can be used.
+If the file format cannot be inferred from the extension or if you need to override the default sniffing behavior, the `file_format` option can be used.
 
 For example, to load a CSV file that has a `.tsv` extension (for tab-separated data), you must explicitly specify the file format using the `file_format` option, as shown below:
 ```cypher
@@ -48,18 +48,18 @@ The configurations documented in those pages can also be specified after the `LO
 CSV files. For example, you can indicate that the first line should
 be interpreted as a header line by setting `(headers = true)` or that the CSV delimiter is '|' by setting `(DELIM="|")`.
 Some of these configurations are also by default [automatically detected](/import/csv#csv-configurations) by Kuzu when scanning CSV files.
-These configurations determine the names and data types of the 
+These configurations determine the names and data types of the
 variables that bind to the fields scanned from CSV files.
-This page does not document those options in detail. We refer you to [CSV Configurations](/import/csv#csv-configurations) and 
+This page does not document those options in detail. We refer you to [CSV Configurations](/import/csv#csv-configurations) and
 [ignore erroneous rows](/import/csv#ignore-erroneous-rows) documentation pages for details.
 :::
 
 The syntax for using `LOAD FROM` to scan a CSV file is similar to the one used for using `COPY FROM` with CSV files.
 #### CSV header
 If (i) the CSV file has a header line, i.e., a first line that should not be interpreted
-as a tuple to be scanned; and (ii) `(header = true)` set, then the column names in the first line 
-provide the names of the columns. The data types are always automatically inferred from the CSV file (except of course 
-if `LOAD WITH HEADERS (...) FROM` is used, in which case the data types provided inside the `(...)` are used as 
+as a tuple to be scanned; and (ii) `(header = true)` set, then the column names in the first line
+provide the names of the columns. The data types are always automatically inferred from the CSV file (except of course
+if `LOAD WITH HEADERS (...) FROM` is used, in which case the data types provided inside the `(...)` are used as
 described [above](#bound-variable-names-and-data-types)).
 
 Suppose `user.csv` is a CSV file with the following contents:
@@ -110,7 +110,7 @@ LOAD FROM "user.csv" (header = false) RETURN *;
 
 Since Parquet files contain schema information in their metadata, Kuzu will always use the available
 schema information when loading from Parquet files (except again
-if `LOAD WITH HEADERS (...) FROM` is used). Suppose we have a Parquet file `user.parquet` with two columns `f0` and `f1` 
+if `LOAD WITH HEADERS (...) FROM` is used). Suppose we have a Parquet file `user.parquet` with two columns `f0` and `f1`
 and the same content as in the `user.csv` file above. Then the query below will scan the Parquet file and output the following:
 
 ```cypher
@@ -127,7 +127,7 @@ LOAD FROM "user.parquet" RETURN *;
 
 ### Pandas
 
-Kuzu allows zero-copy access to Pandas DataFrames. The variable names and data types of scanned columns 
+Kuzu allows zero-copy access to Pandas DataFrames. The variable names and data types of scanned columns
 within a Pandas DataFrame will be
 inferred from the schema information of the data frame. Here is an example:
 
@@ -136,7 +136,7 @@ inferred from the schema information of the data frame. Here is an example:
 import kuzu
 import pandas as pd
 
-db = kuzu.Database("persons")
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
@@ -162,14 +162,14 @@ Pandas can use either a NumPy or Arrow backend - Kuzu can natively scan from eit
 
 ### Polars
 
-Kuzu can also scan Polars DataFrames via the underlying PyArrow layer. The rules for determining the 
+Kuzu can also scan Polars DataFrames via the underlying PyArrow layer. The rules for determining the
 variable names and data types is identical to scanning Pandas data frames. Here is an example:
 
 ```python
 import kuzu
 import polars as pl
 
-db = kuzu.Database("tmp")
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 df = pl.DataFrame({
@@ -202,7 +202,7 @@ You can scan an existing PyArrow table as follows:
 import kuzu
 import pyarrow as pa
 
-db = kuzu.Database("tmp")
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 pa_table = pa.table({
@@ -349,7 +349,7 @@ RETURN *;
 
 ### Create nodes from input file
 
-You can pass the contents of `LOAD FROM` to a 
+You can pass the contents of `LOAD FROM` to a
 
 ```cypher
 // Create a node table
@@ -431,7 +431,7 @@ casting operation fails.
 :::
 
 ## Ignore erroneous rows
-Errors can happen when scanning different lines or elements of an input file with `LOAD FROM`. 
+Errors can happen when scanning different lines or elements of an input file with `LOAD FROM`.
 Error can happen for several reasons, such as a line in the scanned file is malformed (e.g., in CSV files)
 or a field in the scanned line cannot be cast into its expected data type (e.g., due to an integer overflow).
 You can  skip erroneous lines when scanning large files by setting [`IGNORE_ERRORS`](/import#ignore-erroneous-rows)
@@ -446,7 +446,7 @@ Bob,2147483650
 
 Suppose we write a `LOAD FROM` statement that tries to read the second column as an INT32.
 The second row `(Bob,2147483650)` would be malformed because 2147483650 does not fit into an INT32 and will cause an error.
-By setting `IGNORE_ERRORS` to true, instead of erroring, we can make `LOAD FROM` simply skip over this line: 
+By setting `IGNORE_ERRORS` to true, instead of erroring, we can make `LOAD FROM` simply skip over this line:
 ```cypher
 LOAD WITH HEADERS (name STRING, age INT32) FROM "user.csv" (ignore_errors = true)
 RETURN name, age;
@@ -459,5 +459,5 @@ RETURN name, age;
 │ Alice  │ 4     │
 └────────┴───────┘
 ```
-You can also see the details of any warnings generated by the skipped lines using the [SHOW_WARNINGS](/cypher/query-clauses/call#show_warnings) function. 
+You can also see the details of any warnings generated by the skipped lines using the [SHOW_WARNINGS](/cypher/query-clauses/call#show_warnings) function.
 See the "Ignore erroneous rows" [`section`](/import#ignore-erroneous-rows) of `COPY FROM` for more details.

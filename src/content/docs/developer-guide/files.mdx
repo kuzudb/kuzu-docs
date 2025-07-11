@@ -5,7 +5,7 @@ description: All the files that are created and managed by Kuzu on disk.
 
 ## Database files
 
-Kuzu uses a single-file format for persisting the data to disk, i.e., the database is stored in a single file rather than a directory of files.
+Kuzu uses a single-file format for persisting the data to disk. That is, the database is stored in a single file rather than a directory of files.
 The single-file format is also used by other popular embedded databases such as [DuckDB](https://duckdb.org/docs/stable/internals/storage) and [SQLite](https://sqlite.org/fileformat.html).
 
 When opening a Kuzu database in the "on-disk" read-write mode, Kuzu creates the database file at the specified
@@ -13,7 +13,7 @@ path if it doesn't already exist. It can also create other temporary files at ru
 automatically cleaned up when the database is closed.
 
 The following table lists the different types of files that are created and managed by Kuzu.
-The database file is the only necessary file to open a database. The rest of the files are created 
+The database file is the only necessary file to open a database. The rest of the files are created
 in the same directory as the database file.
 
 | File Type | Example |
