@@ -5,7 +5,7 @@ title: Transactions
 Kuzu implements a transaction management subsystem that is atomic, durable and supports serializability.
 Satisfying these properties makes Kuzu ACID-compliant, as per database terminology.
 
-Every query, data manipulation command, DDL (i.e., new node/rel table schema definitions), or `COPY FROM` command to Kuzu is part of a transaction. Therefore, they exhibit all-or-nothing behavior; after these commands (or a set of them) execute and are committed successfully, you are guaranteed that all changes will persist in their entirety. If the commands do not execute successfully or are rolled back, you are guaranteed that none of the changes will persist.
+Every query, data manipulation command, DDL (i.e., new node/rel table schema definitions), or `COPY FROM` command to Kuzu is part of a transaction. Therefore, they exhibit all-or-nothing behavior. After one or more of these commands are executed and committed successfully, you are guaranteed that all changes will persist in their entirety. If the commands do not execute successfully or are rolled back, you are guaranteed that none of the changes will persist.
 
 These conditions hold even if your system crashes at any point during a transaction. That is, once you commit a transaction successfully, all your changes will persist even if there is an error *after* committing. Similarly, if your system crashes before committing or rolling back, then none of your updates will persist.
 

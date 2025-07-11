@@ -10,7 +10,7 @@ Logical type refers to how data is conceptually organized. This type doesn't han
 actually stored. Different logical types may have the same physical type during storage/query
 processing, e.g. both `INT32` and `DATE` logical type will have `INT32` physical type.
 
-During query compilation (parsing, binding, and planning), the logical type should always be used.
+During query compilation, which includes parsing, binding, and planning, the logical type should always be used.
 
 ## PhysicalType
 
