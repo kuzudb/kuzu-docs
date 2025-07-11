@@ -95,7 +95,13 @@ To allow API calls to the providers, you must set the appropriate environment va
 | `google-gemini` | `GOOGLE_GEMINI_API_KEY` |
 | `open-ai` | `OPENAI_API_KEY` |
 | `voyage-ai` | `VOYAGE_API_KEY` |
-| `ollama` | None |
+| `ollama` | `OLLAMA_URL` |
+
+:::note[Note]
+`OLLAMA_URL` is optional for `ollama`. You can also choose to configure the endpoint
+as an argument to the `CREATE_EMBEDDING` function, as explained above.
+:::
+
 
 ### Examples
 
@@ -106,23 +112,19 @@ RETURN CREATE_EMBEDDING("Hello world", "amazon-bedrock", "amazon.titan-embed-tex
 RETURN CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03-07");
 
 // Required REGION
-RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", "us-east1");
-
-// Optional DIMENSIONS and Required REGION.
-RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-east1");
+RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", "us-central1");
+// Optional DIMENSIONS and required REGION.
+RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-central1");
 
 RETURN CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
-
 // Optional ENDPOINT
 RETURN CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text", "http://endpoint.example.com:8000");
 
 RETURN CREATE_EMBEDDING( "Hello world", "open-ai", "text-embedding-3-small");
-
 // Optional DIMENSIONS
 RETURN CREATE_EMBEDDING( "Hello world", "open-ai", "text-embedding-3-small", 512);
 
 RETURN CREATE_EMBEDDING( "Hello world", "voyage-ai", "voyage-3-large");
-
 // Optional DIMENSIONS
 RETURN CREATE_EMBEDDING( "Hello world", "voyage-ai", "voyage-3-large", 512);
 ```
