@@ -27,7 +27,7 @@ The following table lists the built-in schema functions you can use with the `CA
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
 | `SHOW_PROJECTED_GRAPHS` | returns all existing projected graphs in the system |
-| `PROJECTED_GRAPH_INFO` | returns the given projected graph information | 
+| `PROJECTED_GRAPH_INFO` | returns the given projected graph information |
 
 </div>
 
@@ -179,11 +179,11 @@ CALL show_attached_databases() RETURN *;
 
 `SHOW_WARNINGS` returns the contents of the
 [Warnings Table](/import#warnings-table-inspecting-skipped-rows). This is a feature
-related to [ignoring errors](/import#ignore-erroneous-rows) when running `COPY/LOAD FROM` statements to scan files. 
-They will only be reported if the [`IGNORE_ERRORS`](/import#ignore-erroneous-rows) setting is enabled. 
+related to [ignoring errors](/import#ignore-erroneous-rows) when running `COPY/LOAD FROM` statements to scan files.
+They will only be reported if the [`IGNORE_ERRORS`](/import#ignore-erroneous-rows) setting is enabled.
 Note that the number of warnings that are stored is limited by the `warning_limit` parameter.
 See [configuration](/cypher/configuration#configure-warning-limit) for more details on how to set the warning limit.
-After `warning_limit` many warnings are stored, any new warnings generated will not be stored. 
+After `warning_limit` many warnings are stored, any new warnings generated will not be stored.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
@@ -207,7 +207,7 @@ CALL show_warnings() RETURN *;
 ```
 
 ### CLEAR_WARNINGS
-If you would like to clear the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows), you can run the `CLEAR_WARNINGS` function. 
+If you would like to clear the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows), you can run the `CLEAR_WARNINGS` function.
 This function has no output.
 
 ```cypher
@@ -315,9 +315,9 @@ CALL SHOW_PROJECTED_GRAPHS() RETURN *;
 ```
 
 ### PROJECTED_GRAPH_INFO
-To show the detail information of the projected graph, you can utilize the `PROJECTED_GRAPH_INFO` function.
+To show detailed information of the projected graph, you can utilize the `PROJECTED_GRAPH_INFO` function.
 
-There are two types of the projected graph:
+There are two types of projected graphs:
 
 ### Native projected graph
 | Column | Description | Type |
@@ -363,7 +363,7 @@ call PROJECTED_GRAPH_INFO('student') RETURN *;
 
 ## YIELD
 
-The `YIELD` clause in Kuzu is used to rename the return columns of a `CALL` function to avoid naming conflicts and improve readability.
+The `YIELD` clause in Kuzu allows renaming the return columns of a `CALL` function to prevent naming conflicts and improve readability.
 Usage:
 ```cypher
 CALL FUNC()
@@ -391,7 +391,7 @@ Another useful scenario is to avoid naming conflicts when two call functions in 
 CALL table_info('person')
 YIELD `property id` as person_id,  name as person_name, type as person_type, `default expression` as person_default, `primary key` as person_pk
 CALL table_info('student')
-YIELD `property id` as student_id,  name as student_name, type as student_type, `default expression` as student_default, `primary key` as student_pk 
+YIELD `property id` as student_id,  name as student_name, type as student_type, `default expression` as student_default, `primary key` as student_pk
 RETURN *;
 ```
 ```

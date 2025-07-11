@@ -5,7 +5,12 @@ title: "Vector search extension"
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 The `vector` extension provides a *native disk-based* [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world) vector index
-for accelerating similarity search over your vector embeddings (32-bit and 64-bit float arrays) that are stored as node properties in Kuzu.
+for accelerating similarity search over vector embeddings (32-bit and 64-bit float arrays) stored in Kuzu.
+
+:::note[Note]
+Currently, indexing is only supported for vectors stored as node table properties.
+:::
+
 The HNSW index is structured with two hierarchical layers.
 The lower layer includes all vectors, while the upper layer contains a sampled subset of the lower layer.
 
@@ -24,29 +29,25 @@ LOAD VECTOR;
 
 ### Example dataset
 
-To create a vector index, you need a node table with a property of type `LIST[FLOAT]` storing text embeddings.
 Below is an example demonstrating two ways in which such a dataset can be created. The first is to use some external
 library, such as `sentence_transformers` in Python to create the embeddings. Alternatively, you can use Kuzu's [`llm`](/extensions/llm)
 extension to directly create the embeddings using Cypher.
 
+<Tabs>
+<TabItem value="sentence_transformers" label="sentence_transformers">
 ```python
 # create_embeddings.py
 # pip install sentence-transformers
 import kuzu
 import os
 
-use_llm_extension = True # Set to `False` to use sentence_transformers
-
 DB_NAME = "example.kuzu"
 
 db = kuzu.Database(DB_NAME)
 conn = kuzu.Connection(db)
 
-if use_llm_extension:
-    conn.execute("INSTALL llm; LOAD llm;")
-else:
-    from sentence_transformers import SentenceTransformer
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 conn.execute("INSTALL vector; LOAD vector;")
 
@@ -65,33 +66,16 @@ publishers = ["Harvard University Press", "Independent Publisher", "Pearson", "M
 published_years = [2004, 2022, 2019, 2010, 2015]
 
 for title, published_year in zip(titles, published_years):
-    if use_llm_extension:
-        os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
-        conn.execute(
-            """
-            CREATE (b:Book {
-                title: $title,
-                title_embedding: create_embedding(
-                    $title,
-                    'open-ai', 'text-embedding-3-small',
-                    384
-                ),
-                published_year: $year
-            });
-            """,
-            {"title": title, "year": published_year}
-        )
-    else:
-        embeddings = model.encode(title).tolist()
-        conn.execute(
-            """
-            CREATE (b:Book {
-                title: $title,
-                title_embedding: $embeddings,
-                published_year: $year
-            });""",
-            {"title": title, "year": published_year, "embeddings": embeddings}
-        )
+    embeddings = model.encode(title).tolist()
+    conn.execute(
+        """
+        CREATE (b:Book {
+            title: $title,
+            title_embedding: $embeddings,
+            published_year: $year
+        });""",
+        {"title": title, "year": published_year, "embeddings": embeddings}
+    )
 
     print(f"Inserted book: {title}")
 
@@ -112,6 +96,74 @@ for title, publisher in zip(titles, publishers):
     )
     print(f"Created relationship between {title} and {publisher}")
 ```
+</TabItem>
+<TabItem value="llm" label="LLM extension">
+```python
+# create_embeddings.py
+import kuzu
+import os
+
+DB_NAME = "example.kuzu"
+
+db = kuzu.Database(DB_NAME)
+conn = kuzu.Connection(db)
+
+conn.execute("INSTALL llm; LOAD llm;")
+os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
+
+conn.execute("INSTALL vector; LOAD vector;")
+
+conn.execute("CREATE NODE TABLE Book(id SERIAL PRIMARY KEY, title STRING, title_embedding FLOAT[384], published_year INT64);")
+conn.execute("CREATE NODE TABLE Publisher(name STRING PRIMARY KEY);")
+conn.execute("CREATE REL TABLE PublishedBy(FROM Book TO Publisher);")
+
+titles = [
+    "The Quantum World",
+    "Chronicles of the Universe",
+    "Learning Machines",
+    "Echoes of the Past",
+    "The Dragon's Call"
+]
+publishers = ["Harvard University Press", "Independent Publisher", "Pearson", "McGraw-Hill Ryerson", "O'Reilly"]
+published_years = [2004, 2022, 2019, 2010, 2015]
+
+for title, published_year in zip(titles, published_years):
+    conn.execute(
+        """
+        CREATE (b:Book {
+            title: $title,
+            title_embedding: create_embedding(
+                $title,
+                'open-ai', 'text-embedding-3-small',
+                384
+            ),
+            published_year: $year
+        });
+        """,
+        {"title": title, "year": published_year}
+    )
+
+    print(f"Inserted book: {title}")
+
+for publisher in publishers:
+    conn.execute(
+        """CREATE (p:Publisher {name: $publisher});""",
+        {"publisher": publisher}
+    )
+    print(f"Inserted publisher: {publisher}")
+
+for title, publisher in zip(titles, publishers):
+    conn.execute("""
+        MATCH (b:Book {title: $title})
+        MATCH (p:Publisher {name: $publisher})
+        CREATE (b)-[:PublishedBy]->(p);
+        """,
+        {"title": title, "publisher": publisher}
+    )
+    print(f"Created relationship between {title} and {publisher}")
+```
+</TabItem>
+</Tabs>
 
 The embeddings are generated on the title properties of each `Book` and
 ingested into the Kuzu database.
@@ -218,13 +270,12 @@ Returns:
 
 #### Example
 
-Let's run some example search queries on our newly created vector index. You can again either use the `llm` extension to create the embeddings
-or use a third party library.
+Let's run some example search queries on our newly created vector index.
 
+<Tabs>
+<TabItem value="sentence_transformers" label="sentence_transformers">
 ```python
 import kuzu
-
-use_llm_extension = True # Set to `False` to use sentence_transformers
 
 DB_NAME = "example.kuzu"
 
@@ -236,48 +287,66 @@ conn = kuzu.Connection(db)
 conn.execute("INSTALL VECTOR;")
 conn.execute("LOAD VECTOR;")
 
-if use_llm_extension:
-    conn.execute("INSTALL llm; LOAD llm;")
-else:
-    from sentence_transformers import SentenceTransformer
-    # Load a pre-trained embedding generation model
-    # https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+from sentence_transformers import SentenceTransformer
+# Load a pre-trained embedding generation model
+# https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
-if use_llm_extension:
-    os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
-    result = conn.execute(
-        """
-        CALL QUERY_VECTOR_INDEX(
-            'Book',
-            'book_title_index',
-            create_embedding(
-                'quantum machine learning',
-                'open-ai', 'text-embedding-3-small',
-                384
-            ),
-            2
-        )
-        RETURN node.title ORDER BY distance;
-        """)
-else:
-    query_vector = model.encode("quantum machine learning").tolist()
-    result = conn.execute(
-        """
-        CALL QUERY_VECTOR_INDEX(
-            'Book',
-            'book_title_index',
-            $query_vector,
-            $limit,
-            efs := 500
-        )
-        RETURN node.title
-        ORDER BY distance;
-        """,
-        {"query_vector": query_vector, "limit": 2})
+query_vector = model.encode("quantum machine learning").tolist()
+result = conn.execute(
+    """
+    CALL QUERY_VECTOR_INDEX(
+        'Book',
+        'book_title_index',
+        $query_vector,
+        $limit,
+        efs := 500
+    )
+    RETURN node.title
+    ORDER BY distance;
+    """,
+    {"query_vector": query_vector, "limit": 2})
 
 print(result.get_as_pl())
 ```
+</TabItem>
+<TabItem value="llm" label="LLM extension">
+```python
+import kuzu
+
+DB_NAME = "example.kuzu"
+
+# Initialize the database
+db = kuzu.Database(DB_NAME)
+conn = kuzu.Connection(db)
+
+# Install and load vector extension once again
+conn.execute("INSTALL VECTOR;")
+conn.execute("LOAD VECTOR;")
+
+conn.execute("INSTALL llm; LOAD llm;")
+os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
+
+result = conn.execute(
+    """
+    CALL QUERY_VECTOR_INDEX(
+        'Book',
+        'book_title_index',
+        create_embedding(
+            'quantum machine learning',
+            'open-ai', 'text-embedding-3-small',
+            384
+        ),
+        2
+    )
+    RETURN node.title ORDER BY distance;
+    """)
+
+print(result.get_as_pl())
+```
+</TabItem>
+</Tabs>
+
 The above query asks for the 2 nearest neighbors of the query vector "quantum machine learning".
 The result is a list of book titles that are most similar to this concept.
 
@@ -351,7 +420,7 @@ Example output:
 ```
 
 ## Filtered vector search
-Kuzu allows you to combine vector search with filter predicates, by using [projected graphs](/extensions/algo#projected-graphs).
+Kuzu allows you to combine vector search with filter predicates by using [projected graphs](/extensions/algo#projected-graphs).
 
 For example, we can search for books similar to "quantum world", but only those that were published after 2010.
 
@@ -373,41 +442,22 @@ conn.execute(
 )
 
 # Step 2: Perform vector similarity search on the filtered subset
-
-if use_llm_extension:
-    os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
-
-    result = conn.execute("""
+query_vector = model.encode("quantum world").tolist()
+result = conn.execute("""
     CALL QUERY_VECTOR_INDEX(
         'filtered_book',
         'book_title_index',
-        create_embedding("quantum_world", "open-ai", "text-embedding-3-small", 384),
+        $query_vector,
         2
     )
     WITH node AS n, distance as dist
     MATCH (n)-[:PublishedBy]->(p:Publisher)
     RETURN n.title AS book,
-           n.published_year AS year,
-           p.name AS publisher
+            n.published_year AS year,
+            p.name AS publisher
     ORDER BY dist;
-    """)
-else:
-    query_vector = model.encode("quantum world").tolist()
-    result = conn.execute("""
-        CALL QUERY_VECTOR_INDEX(
-            'filtered_book',
-            'book_title_index',
-            $query_vector,
-            2
-        )
-        WITH node AS n, distance as dist
-        MATCH (n)-[:PublishedBy]->(p:Publisher)
-        RETURN n.title AS book,
-               n.published_year AS year,
-               p.name AS publisher
-        ORDER BY dist;
-        """,
-        {"query_vector": query_vector})
+    """,
+    {"query_vector": query_vector})
 print(result.get_as_pl())
 ```
 </TabItem>
@@ -461,7 +511,7 @@ shape: (2, 3)
 └────────────────────────────┴──────┴───────────────────────┘
 ```
 
-### Filtered vector search with arbitrary cypher query
+### Filtered vector search with arbitrary cypher queries
 
 To run filtered search with arbitrary cypher queries, you can create a projected graph using `project_graph_cypher`.
 
@@ -479,7 +529,7 @@ CALL PROJECT_GRAPH_CYPHER(
 The cypher statement can contain arbitrary pattern matching, but the return clause must contain a single node variable whose label equals to the table on which a vector index is built.
 
 :::note[Note]
-A projected graph generated by `PROJECT_GRAPH_CYPHER` can currently be used for filtered vector index search only and cannot be used with the `algo` extension.
+Currently, a projected graph generated by `PROJECT_GRAPH_CYPHER` can only used for filtered vector index search and cannot be used with the `algo` extension.
 :::
 
 The following example creates a projected graph `pearson_book` that contains books published by `Pearson` publisher.

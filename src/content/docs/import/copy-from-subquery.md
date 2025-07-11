@@ -45,7 +45,7 @@ command. This can be combined with predicate filters as follows:
 import kuzu
 import pandas as pd
 
-db = kuzu.Database("tmp")
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({

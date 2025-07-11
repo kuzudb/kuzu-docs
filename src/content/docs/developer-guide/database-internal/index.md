@@ -12,7 +12,7 @@ The parser transforms an input string statement into Kuzu's internal AST, called
 
 ### Binder
 
-The binder binds a `Statement` into another AST called `BoundStatement`. It also validates the semantic correctness of the input statement and binds the string representation into an internal representation (mostly integer). For example, a table name will be bound to an internal table ID.
+The binder binds a `Statement` into another AST called `BoundStatement`. It also validates the semantic correctness of the input statement and binds the string representation into an internal representation (typically an integer). For example, a table name will be bound to an internal table ID.
 
 In addition, the binder also performs a semantic rewrite of `BoundStatement`. Semantic rewrites don't change the semantics of a `BoundStatement` but will rewrite it in a way for performant evaluation. Example: `MATCH (a) WITH a RETURN a.name` will be rewritten as `MATCH (a) RETURN a.name`
 
@@ -76,7 +76,7 @@ LogicalPlan
     |            Planner
 BoundStatement
     |            Binder
-Statement  
+Statement
     |            Parser
 String Input
 ```
