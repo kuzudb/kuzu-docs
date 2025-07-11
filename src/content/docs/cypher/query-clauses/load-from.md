@@ -349,7 +349,7 @@ RETURN *;
 
 ### Create nodes from input file
 
-You can pass the contents of `LOAD FROM` to a
+You can pass the contents of `LOAD FROM` to a `CREATE` statement.
 
 ```cypher
 // Create a node table

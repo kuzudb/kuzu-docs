@@ -363,7 +363,7 @@ call PROJECTED_GRAPH_INFO('student') RETURN *;
 
 ## YIELD
 
-The `YIELD` clause in Kuzu allows renaming the return columns of a `CALL` function to prevent naming conflicts and enhance readability.
+The `YIELD` clause in Kuzu allows renaming the return columns of a `CALL` function to prevent naming conflicts and improve readability.
 Usage:
 ```cypher
 CALL FUNC()

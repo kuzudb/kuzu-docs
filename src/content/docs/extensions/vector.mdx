@@ -378,41 +378,22 @@ conn.execute(
 )
 
 # Step 2: Perform vector similarity search on the filtered subset
-
-if use_llm_extension:
-    os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
-
-    result = conn.execute("""
+query_vector = model.encode("quantum world").tolist()
+result = conn.execute("""
     CALL QUERY_VECTOR_INDEX(
         'filtered_book',
         'book_title_index',
-        create_embedding("quantum_world", "open-ai", "text-embedding-3-small", 384),
+        $query_vector,
         2
     )
     WITH node AS n, distance as dist
     MATCH (n)-[:PublishedBy]->(p:Publisher)
     RETURN n.title AS book,
-           n.published_year AS year,
-           p.name AS publisher
+            n.published_year AS year,
+            p.name AS publisher
     ORDER BY dist;
-    """)
-else:
-    query_vector = model.encode("quantum world").tolist()
-    result = conn.execute("""
-        CALL QUERY_VECTOR_INDEX(
-            'filtered_book',
-            'book_title_index',
-            $query_vector,
-            2
-        )
-        WITH node AS n, distance as dist
-        MATCH (n)-[:PublishedBy]->(p:Publisher)
-        RETURN n.title AS book,
-               n.published_year AS year,
-               p.name AS publisher
-        ORDER BY dist;
-        """,
-        {"query_vector": query_vector})
+    """,
+    {"query_vector": query_vector})
 print(result.get_as_pl())
 ```
 </TabItem>
