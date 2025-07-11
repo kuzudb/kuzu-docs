@@ -33,7 +33,6 @@ It is only created when the database is opened in the read-write on-disk mode.
 
 This is a **temporary file** created by a Kuzu process to ensure that a second Kuzu process cannot open
 the same database file simultaneously in the read-write mode.
-It is removed when the Kuzu process exits.
 
 For more details, see [the documentation on concurrency](/concurrency/#limitations-of-creating-multiple-database-objects).
 
