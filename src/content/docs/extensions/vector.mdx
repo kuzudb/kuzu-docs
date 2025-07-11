@@ -41,9 +41,7 @@ extension to directly create the embeddings using Cypher.
 import kuzu
 import os
 
-DB_NAME = "example.kuzu"
-
-db = kuzu.Database(DB_NAME)
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 from sentence_transformers import SentenceTransformer
@@ -103,9 +101,7 @@ for title, publisher in zip(titles, publishers):
 import kuzu
 import os
 
-DB_NAME = "example.kuzu"
-
-db = kuzu.Database(DB_NAME)
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 conn.execute("INSTALL llm; LOAD llm;")
@@ -277,10 +273,8 @@ Let's run some example search queries on our newly created vector index.
 ```python
 import kuzu
 
-DB_NAME = "example.kuzu"
-
 # Initialize the database
-db = kuzu.Database(DB_NAME)
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 # Install and load vector extension once again
@@ -314,10 +308,8 @@ print(result.get_as_pl())
 ```python
 import kuzu
 
-DB_NAME = "example.kuzu"
-
 # Initialize the database
-db = kuzu.Database(DB_NAME)
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 # Install and load vector extension once again

@@ -136,7 +136,7 @@ inferred from the schema information of the data frame. Here is an example:
 import kuzu
 import pandas as pd
 
-db = kuzu.Database("example.kuzu")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
@@ -169,7 +169,7 @@ variable names and data types is identical to scanning Pandas data frames. Here 
 import kuzu
 import polars as pl
 
-db = kuzu.Database("example.kuzu")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 df = pl.DataFrame({
@@ -202,14 +202,13 @@ You can scan an existing PyArrow table as follows:
 import kuzu
 import pyarrow as pa
 
-db = kuzu.Database("example.kuzu")
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 
 pa_table = pa.table({
     "name": ["Adam", "Karissa", "Zhang"],
     "age": [30, 40, 50]
 })
-print(pa_table)
 
 res = conn.execute("LOAD FROM pa_table RETURN *")
 print(res.get_as_arrow())

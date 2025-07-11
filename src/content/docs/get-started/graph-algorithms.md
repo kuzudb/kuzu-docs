@@ -46,7 +46,6 @@ Import the data into a Kuzu database using the Python API:
 
 ```python
 import kuzu
-db_name = 'ml_small.kuzu'
 
 def copy_data(connection):
     connection.execute('CREATE NODE TABLE Movie (movieId INT64 PRIMARY KEY, year INT64, title STRING, genres STRING);')
@@ -59,7 +58,7 @@ def copy_data(connection):
     connection.execute('COPY Rating FROM "./ratings.csv" (HEADER=TRUE);')
     connection.execute('COPY Tags FROM "./tags.csv" (HEADER=TRUE);')
 
-db = kuzu.Database(db_name)
+db = kuzu.Database("ml_small.kuzu")
 conn = kuzu.Connection(db)
 copy_data(conn)
 ```
