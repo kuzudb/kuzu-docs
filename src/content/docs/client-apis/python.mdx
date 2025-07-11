@@ -154,7 +154,11 @@ return a list of `QueryResult` objects.
 
 You can loop through each result of a `QueryResult` object and get its contents.
 ```python
-responses = conn.execute("RETURN 42; RETURN 'Alice', 'Bob', 'Charlie'; RETURN [true, false], 3.14;")
+responses = conn.execute("""
+    RETURN 42;
+    RETURN 'Alice', 'Bob', 'Charlie';
+    RETURN [true, false], 3.14;
+""")
 for response in responses:
     for row in response:
         print(row)
