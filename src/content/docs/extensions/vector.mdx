@@ -5,7 +5,9 @@ title: "Vector search extension"
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 The `vector` extension provides a *native disk-based* [HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world) vector index
-for accelerating similarity search over vector embeddings (32-bit and 64-bit float arrays) stored in Kuzu. Currently, indexing is only supported for vectors stored as node table properties.
+for accelerating similarity search over vector embeddings (32-bit and 64-bit float arrays) stored in Kuzu.
+
+Currently, indexing is only supported for vectors stored as node table properties.
 The HNSW index is structured with two hierarchical layers.
 The lower layer includes all vectors, while the upper layer contains a sampled subset of the lower layer.
 
@@ -25,9 +27,7 @@ LOAD VECTOR;
 ### Example dataset
 
 To create a vector index, you need a node table with a property of type `LIST[FLOAT]` storing text embeddings.
-Below is an example demonstrating two ways in which such a dataset can be created. The first is to use some external
-library, such as `sentence_transformers` in Python to create the embeddings. Alternatively, you can use Kuzu's [`llm`](/extensions/llm)
-extension to directly create the embeddings using Cypher.
+Below is an example demonstrating how such a dataset can be created using the `sentence_transformers` library in Python to create the embeddings.
 
 ```python
 # create_embeddings.py
@@ -35,18 +35,13 @@ extension to directly create the embeddings using Cypher.
 import kuzu
 import os
 
-use_llm_extension = True # Set to `False` to use sentence_transformers
-
 DB_NAME = "example.kuzu"
 
 db = kuzu.Database(DB_NAME)
 conn = kuzu.Connection(db)
 
-if use_llm_extension:
-    conn.execute("INSTALL llm; LOAD llm;")
-else:
-    from sentence_transformers import SentenceTransformer
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 conn.execute("INSTALL vector; LOAD vector;")
 
@@ -65,33 +60,16 @@ publishers = ["Harvard University Press", "Independent Publisher", "Pearson", "M
 published_years = [2004, 2022, 2019, 2010, 2015]
 
 for title, published_year in zip(titles, published_years):
-    if use_llm_extension:
-        os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
-        conn.execute(
-            """
-            CREATE (b:Book {
-                title: $title,
-                title_embedding: create_embedding(
-                    $title,
-                    'open-ai', 'text-embedding-3-small',
-                    384
-                ),
-                published_year: $year
-            });
-            """,
-            {"title": title, "year": published_year}
-        )
-    else:
-        embeddings = model.encode(title).tolist()
-        conn.execute(
-            """
-            CREATE (b:Book {
-                title: $title,
-                title_embedding: $embeddings,
-                published_year: $year
-            });""",
-            {"title": title, "year": published_year, "embeddings": embeddings}
-        )
+    embeddings = model.encode(title).tolist()
+    conn.execute(
+        """
+        CREATE (b:Book {
+            title: $title,
+            title_embedding: $embeddings,
+            published_year: $year
+        });""",
+        {"title": title, "year": published_year, "embeddings": embeddings}
+    )
 
     print(f"Inserted book: {title}")
 
@@ -218,13 +196,10 @@ Returns:
 
 #### Example
 
-Let's run some example search queries on our newly created vector index. You can again either use the `llm` extension to create the embeddings
-or use a third party library.
+Let's run some example search queries on our newly created vector index.
 
 ```python
 import kuzu
-
-use_llm_extension = True # Set to `False` to use sentence_transformers
 
 DB_NAME = "example.kuzu"
 
@@ -236,45 +211,25 @@ conn = kuzu.Connection(db)
 conn.execute("INSTALL VECTOR;")
 conn.execute("LOAD VECTOR;")
 
-if use_llm_extension:
-    conn.execute("INSTALL llm; LOAD llm;")
-else:
-    from sentence_transformers import SentenceTransformer
-    # Load a pre-trained embedding generation model
-    # https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+from sentence_transformers import SentenceTransformer
+# Load a pre-trained embedding generation model
+# https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
-if use_llm_extension:
-    os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
-    result = conn.execute(
-        """
-        CALL QUERY_VECTOR_INDEX(
-            'Book',
-            'book_title_index',
-            create_embedding(
-                'quantum machine learning',
-                'open-ai', 'text-embedding-3-small',
-                384
-            ),
-            2
-        )
-        RETURN node.title ORDER BY distance;
-        """)
-else:
-    query_vector = model.encode("quantum machine learning").tolist()
-    result = conn.execute(
-        """
-        CALL QUERY_VECTOR_INDEX(
-            'Book',
-            'book_title_index',
-            $query_vector,
-            $limit,
-            efs := 500
-        )
-        RETURN node.title
-        ORDER BY distance;
-        """,
-        {"query_vector": query_vector, "limit": 2})
+query_vector = model.encode("quantum machine learning").tolist()
+result = conn.execute(
+    """
+    CALL QUERY_VECTOR_INDEX(
+        'Book',
+        'book_title_index',
+        $query_vector,
+        $limit,
+        efs := 500
+    )
+    RETURN node.title
+    ORDER BY distance;
+    """,
+    {"query_vector": query_vector, "limit": 2})
 
 print(result.get_as_pl())
 ```
@@ -324,6 +279,56 @@ Then, it uses the `node` and `distance` variables to further query the graph and
 
 Using vector search in combination with graph traversal in this manner can be a powerful technique to
 find semantically related entities in a graph.
+
+### Using the LLM extension
+
+Instead of using `sentence_transformers`, you can use Kuzu's [`llm`](/extensions/llm) extension to directly create embeddings using Cypher.
+
+To do so, you must load the extension at the beginning of the script:
+
+```python
+conn.execute("INSTALL llm; LOAD llm;")
+os.environ["OPENAI_API_KEY"] = "sk-proj-key" # Replace with your own OpenAI API key
+```
+
+To create the entries in the embedding table you can do the following:
+
+```python
+for title, published_year in zip(titles, published_years):
+    conn.execute(
+        """
+        CREATE (b:Book {
+            title: $title,
+            title_embedding: create_embedding(
+                $title,
+                'open-ai', 'text-embedding-3-small',
+                384
+            ),
+            published_year: $year
+        });
+        """,
+        {"title": title, "year": published_year}
+    )
+```
+
+You can also use the extension to generate the query embedding:
+
+```python
+result = conn.execute(
+    """
+    CALL QUERY_VECTOR_INDEX(
+        'Book',
+        'book_title_index',
+        create_embedding(
+            'quantum machine learning',
+            'open-ai', 'text-embedding-3-small',
+            384
+        ),
+        2
+    )
+    RETURN node.title ORDER BY distance;
+    """)
+```
 
 ### Index management
 
