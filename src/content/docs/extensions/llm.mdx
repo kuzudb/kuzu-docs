@@ -114,22 +114,18 @@ RETURN CREATE_EMBEDDING("Hello world", "google-gemini", "gemini-embedding-exp-03
 
 // Required REGION
 RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", "us-central1");
-
 // Optional DIMENSIONS and Required REGION.
 RETURN CREATE_EMBEDDING("Hello world", "google-vertex", "gemini-embedding-001", 256, "us-central1");
 
 RETURN CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text");
-
 // Optional ENDPOINT
 RETURN CREATE_EMBEDDING("Hello world", "ollama", "nomic-embed-text", "http://endpoint.example.com:8000");
 
 RETURN CREATE_EMBEDDING( "Hello world", "open-ai", "text-embedding-3-small");
-
 // Optional DIMENSIONS
 RETURN CREATE_EMBEDDING( "Hello world", "open-ai", "text-embedding-3-small", 512);
 
 RETURN CREATE_EMBEDDING( "Hello world", "voyage-ai", "voyage-3-large");
-
 // Optional DIMENSIONS
 RETURN CREATE_EMBEDDING( "Hello world", "voyage-ai", "voyage-3-large", 512);
 ```
