@@ -98,9 +98,8 @@ To allow API calls to the providers, you must set the appropriate environment va
 | `ollama` | `OLLAMA_URL` |
 
 :::note[Note]
-Ollama endpoint configuration works as follows. If an endpoint argument is provided it will be used to configure the endpoint. 
-If an endpoint is not provided, and OLLAMA_URL is set, the OLLAMA_URL variable will be used. Otherwise, the default endpoint, 
-`http://localhost:11434`, will be used.
+`OLLAMA_URL` is optional for `ollama`. You can also choose to configure the endpoint
+as an argument to the `CREATE_EMBEDDING` function, as explained above.
 :::
 
 
