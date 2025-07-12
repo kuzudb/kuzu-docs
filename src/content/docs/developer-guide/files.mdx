@@ -49,7 +49,7 @@ It is only created when write transactions are committed in the database and is 
 
 #### Shadow file
 
-This is a **temporary file** that is created to help run checkpoint operations.
+This is a **temporary file** that is created to help run checkpoint operations. It is only created during a checkpoint, and is removed when the checkpoint succeeds.
 
 #### Temporary file
 
