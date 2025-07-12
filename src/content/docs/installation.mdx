@@ -5,7 +5,8 @@ title: Install Kuzu
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 Kuzu is an embedded graph database that can be used from the command line and from
-a variety of programming languages. This page shows all the ways you can install and use Kuzu.
+a variety of programming languages. This page shows all the ways you can install Kuzu.
+After installation, you can learn how to run Kuzu by [creating your first graph](/get-started).
 
 ## Command Line (Shell)
 
@@ -29,7 +30,7 @@ tar xzf kuzu_cli-*.tar.gz
 Now you can run Kuzu from the command line.
 
 ```bash
-kuzu
+./kuzu
 ```
 
 </TabItem>
@@ -76,7 +77,7 @@ From within the terminal, you can then run `./kuzu.exe`.
 
 <TabItem label="Nix">
 
-On Linux, macOS, and WSL2, you can also use [`Nix`](https://nix.dev) to run the Kuzu CLI.
+On Linux, macOS, and WSL2, you can also use [`Nix`](https://nixos.org/learn) to run the Kuzu CLI.
 
 Run Kuzu in a temporary shell:
 
@@ -85,7 +86,7 @@ nix-shell -p kuzu
 kuzu
 ```
 
-Alternatively, you can install Kuzu declaratively using Home Manager or NixOS configuration:
+Alternatively, you can install Kuzu declaratively using [NixOS](https://nixos.org/manual/nixos/stable/#sec-package-management) or [Home Manager](https://github.com/nix-community/home-manager) configuration:
 
 ```nix
 {
@@ -155,8 +156,7 @@ The latest stable version is available on [Maven Central](https://central.sonaty
 ## Rust
 
 Use Cargo to install the Kuzu Rust client library. This will by default build and statically link Kuzu's C++
-library from source. You can also link against the dynamic release libraries (see the Rust
-[crate docs](https://docs.rs/kuzu/latest/kuzu/) for details).
+library from source. You can also link against the dynamic release libraries, as described in the [crate docs](https://docs.rs/kuzu/latest/kuzu/#building).
 
 ```bash
 cargo add kuzu
@@ -165,7 +165,7 @@ cargo add kuzu
 ## Go
 
 Kuzu's Go API is a wrapper around the C API of Kuzu. The installation step below assumes that you have
-initialized a Go project that has a `go.mod` file. If you need to create a new Go module, follow [the official tutorial](https://go.dev/doc/tutorial/create-module).
+initialized a Go project that has a `go.mod` file, as described in [the official tutorial](https://go.dev/doc/tutorial/create-module).
 
 ```bash
 go get github.com/kuzudb/go-kuzu
