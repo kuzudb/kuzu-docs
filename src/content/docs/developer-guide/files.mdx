@@ -25,10 +25,10 @@ in the same directory as the database file.
 | File Type | Example |
 | --- | --- |
 | Database file | `example.kuzu` |
-| Lock file | `example.lock` |
-| Write-ahead log file | `example.wal`  |
-| Shadow file | `example.shadow` |
-| Spillover file | `example.tmp` |
+| Lock file | `example.kuzu.lock` |
+| Write-ahead log file | `example.kuzu.wal`  |
+| Shadow file | `example.kuzu.shadow` |
+| Temporary file | `example.kuzu.tmp` |
 
 #### Database file
 
@@ -51,9 +51,9 @@ It is only created when write transactions are committed in the database and is 
 
 This is a **temporary file** that is created to help run checkpoint operations.
 
-#### Spillover file
+#### Temporary file
 
-This is a **temporary file** used to spill intermediate memory data during query execution.
+This is a general-purpose **temporary file** used to spill intermediate memory data during query execution.
 It is only created under high memory pressure, i.e., when the size of the data being processed is
 larger than the available memory. In such a scenario, intermediate data is spilled to disk.
 The file is automatically removed when a query finishes its execution.
