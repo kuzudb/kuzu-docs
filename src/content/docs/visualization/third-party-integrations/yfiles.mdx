@@ -49,7 +49,7 @@ Each person has a `name` and an `alias`, which is the name they are best known b
 import kuzu
 from yfiles_jupyter_graphs_for_kuzu import KuzuGraphWidget
 # Open a new in-memory database
-db = kuzu.Database()
+db = kuzu.Database(":memory:")
 conn = kuzu.Connection(db)
 # Create tables
 conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, alias STRING)")

@@ -40,7 +40,7 @@ and analysis on small datasets, without persisting the data to disk.
 ## Quick start
 
 Ensure that you have [installed](/installation) Kuzu using the CLI or your preferred client API.
-Also download the example dataset in CSV format [from our GitHub repo](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
+Also download the example CSV files [from our GitHub repo](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
 
 ```bash
 mkdir ./data/
@@ -321,8 +321,8 @@ import com.kuzudb.*;
 
 public class Main {
     public static void main(String[] args) throws ObjectRefDestroyedException {
-        // Create an in-memory database and connect to it
-        Database db = new Database(":memory:");
+        // Create an empty on-disk database and connect to it
+        Database db = new Database("example.kuzu");
         Connection conn = new Connection(db);
         // Create tables.
         conn.query("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)");
@@ -421,19 +421,15 @@ package main
 
 import (
     "fmt"
-    "os"
 
     "github.com/kuzudb/go-kuzu"
 )
 
 func main() {
     // Create an empty on-disk database and connect to it
-    dbPath := "example.kuzu"
-    os.RemoveAll(dbPath)
-
     systemConfig := kuzu.DefaultSystemConfig()
     systemConfig.BufferPoolSize = 1024 * 1024 * 1024
-    db, err := kuzu.OpenDatabase(dbPath, systemConfig)
+    db, err := kuzu.OpenDatabase("example.kuzu", systemConfig)
     if err != nil {
         panic(err)
     }
@@ -539,7 +535,8 @@ Next, replace the contents of `Sources/main.swift`:
 ```swift
 import Kuzu
 
-let db = try! Database()
+// Create an empty on-disk database and connect to it
+let db = try! Database("example.kuzu")
 let conn = try! Connection(db)
 
 // Create schema and load data
