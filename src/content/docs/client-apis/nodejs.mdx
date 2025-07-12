@@ -15,7 +15,7 @@ See the following link for the full documentation of the Node.js API.
 ## Sync and Async APIs
 
 Kuzu provides both a sync and an async Node.js API. The async API is the default
-and more commonly used when building Kuzu applications in Node.js.
+and is more commonly used when building Kuzu applications in Node.js.
 
 <Tabs>
 
@@ -28,12 +28,12 @@ const kuzu = require("kuzu");
 
 (async () => {
   // Create an empty on-disk database and connect to it
-  const db = new kuzu.Database("./demo_db");
+  const db = new kuzu.Database("example.kuzu");
   const conn = new kuzu.Connection(db);
 
   // Create the tables
-  await conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
-  await conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+  await conn.query("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)");
+  await conn.query("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)");
   await conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
   await conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
 
@@ -67,12 +67,12 @@ where async operations are not desired.
 const kuzu = require("kuzu");
 
 // Create an empty on-disk database and connect to it
-const db = new kuzu.Database("./demo_db");
+const db = new kuzu.Database("example.kuzu");
 const conn = new kuzu.Connection(db);
 
 // Create the tables
-conn.querySync("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
-conn.querySync("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+conn.querySync("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)");
+conn.querySync("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)");
 conn.querySync("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
 conn.querySync("CREATE REL TABLE LivesIn(FROM User TO City)");
 

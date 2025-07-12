@@ -2,7 +2,7 @@
 title: Export CSV
 ---
 
-The `COPY TO` clause can export query results to a CSV file, and is used as follows:
+The `COPY TO` clause can export query results to a CSV file and is used as follows:
 
 ```cypher
 COPY (MATCH (u:User) RETURN u.*) TO 'user.csv' (header=true);
@@ -18,7 +18,7 @@ Zhang,50
 Noura,25
 ```
 
-Nested data types like lists and structs will be represented as strings within their respective columns.
+Nested data types such as lists and structs will be represented as strings within their respective columns.
 
 Available options are:
 
@@ -29,7 +29,7 @@ Available options are:
 | `ESCAPE`                 | `\`                     | Character used to escape special characters in CSV                        |
 | `DELIM` or `DELIMITER`   | `,`                     | Character that separates fields in the CSV                                |
 | `QUOTE`                  | `"`                     | Character used to enclose fields containing special characters or spaces  |
-| `Header`                 | `false`                 | Indicates whether to output a header row                                  |
+| `HEADER`                 | `false`                 | Indicates whether to output a header row                                  |
 
 </div>
 

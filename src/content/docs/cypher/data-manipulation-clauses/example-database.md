@@ -15,7 +15,7 @@ are shown below.
 ### User nodes
 Schema:
 ```cypher
-CREATE NODE TABLE User(name STRING, age INT64 DEFAULT 0, PRIMARY KEY (name))
+CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64 DEFAULT 0)
 ```
 
 user.csv:
@@ -34,7 +34,7 @@ COPY User FROM "${PATH-TO-DIR}/user.csv"
 
 Schema:
 ```cypher
-CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))
+CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)
 ```
 city.csv
 ```

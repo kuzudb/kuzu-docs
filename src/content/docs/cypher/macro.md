@@ -4,13 +4,13 @@ title: Create macros
 
 Kuzu allows you to define macros via custom C++ code in the catalog using the `create macro` statement.
 The process of creating macros involves using the `CREATE MACRO` keyword followed by the macro's name.
-Users can optionally include parameters with optional default value within parentheses after the name.
+You can optionally include parameters with optional default value within parentheses after the name.
 The `AS` keyword comes next, followed by the actual Cypher expression of the macro. It's important to
 note that a scalar macro is limited to returning only a single value.
 
 ## Default parameters
 
-Users can assign default values to parameters. If a query does not specify a value for a parameter,
+You can assign default values to parameters. If a query does not specify a value for a parameter,
 the predefined default value (if it exists) will be applied instead.
 
 :::caution[Note]
@@ -28,7 +28,7 @@ return addWithDefault(4, 7);  // returns 11 (4 + 7)
 
 ## Supported macro expression types
 
-The belows expression types are supported by macros.
+The following expression types are supported by macros.
 
 ### Case expression macro
 

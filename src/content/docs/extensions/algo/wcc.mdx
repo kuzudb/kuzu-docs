@@ -2,47 +2,53 @@
 title: Weakly Connected Components
 ---
 
-A weakly connected component (WCC) in a directed graph is a maximal subgraph where any two vertices
-are connected to each other by some path, regardless of edge direction.
+Weak connectivity is a notion defined on undirected graphs. The weakly connected components (WCC) of an
+undirected graph is the maximal subgraph where any two vertices are connected to each other by some
+path. In Kuzu, both base and projected graphs are directed. Weak connectivity of directed graphs is
+defined as the WCC of the corresponding undirected version, i.e., each edge is treated as undirected.
 
-Kuzu implements a parallelized version of the WCC algorithm based on [Ligra](https://jshun.csail.mit.edu/ligra.shtml).
+Kuzu implements a parallelized version of the WCC algorithm based on [Ligra](https://jshun.github.io/ligra/docs/examples.html).
 
 ## Syntax
 
 ```cypher
 CALL weakly_connected_components(
-    graph_name,
+    <GRAPH_NAME>,
     maxIterations := 100
 )
-RETURN node, group_id
+RETURN node, group_id;
 ```
 
 **Alias**: `wcc`
 
-#### Parameters
+Required arguments:
 
-| Parameter | Type | Optional | Default | Description |
-|-----------|------|----------|---------|-------------|
-| graph_name | STRING | No | - | Name of the projected graph to run the algorithm on |
-| maxIterations | INT64 | Yes | 100 | Maximum number of iterations to run |
+- `GRAPH_NAME`: Name of the projected graph to run the algorithm on
+    - Type: `STRING`
 
+Optional arguments:
 
-#### Return
+- `maxIterations`: Maximum number of iterations to run
+    - Type: `INT64`
+    - Default: `100`
 
-| Column | Type | Description |
-|--------|------|-------------|
-| node | NODE | Node object |
-| group_id | INT64 | The ID of the WCC that the node belongs to |
+Returns:
 
+- `node`: A node object
+- `group_id`: The ID of the WCC that the node belongs to
+
+:::note[Note]
+`group_id` is assigned based on Kuzu's internal node offsets. Currently there is no way to assign `group_id` based on node properties.
+:::
 
 ## Example
 
-Define schema
+Create the node and relationship tables:
 ```cypher
 CREATE NODE TABLE Person(name STRING PRIMARY KEY);
 CREATE REL TABLE KNOWS(FROM Person to Person);
 ```
-Insert nodes and edges
+Insert nodes and edges:
 ```cypher
 CREATE (u0:Person {name: 'Alice'}),
         (u1:Person {name: 'Bob'}),
@@ -62,11 +68,11 @@ CREATE (u0:Person {name: 'Alice'}),
         (u7)-[:KNOWS]->(u4),
         (u6)-[:KNOWS]->(u5);
 ```
-We first create a projected graph from the node and edge tables.
+Create a projected graph from the node and relationship tables:
 ```cypher
 CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
-Then, you can run WCC as follows:
+Run WCC on the projected graph:
 ```cypher
 CALL weakly_connected_components('Graph')
 RETURN group_id, collect(node.name)
@@ -83,9 +89,3 @@ ORDER BY group_id;
 │ 5        │ [George,Frank,Hina,Eve] │
 └──────────┴─────────────────────────┘
 ```
-
-## Frequently asked questions
-
-#### How is `group_id` assigned?
-
-`group_id` is assigned based on Kuzu's internal node offsets. Currently there is no way to assign `group_id` based on node properties.

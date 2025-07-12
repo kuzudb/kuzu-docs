@@ -24,7 +24,7 @@ Returns the internal ID of node/rel.
 ```cypher
 MATCH (a:User) RETURN ID(a) AS ID LIMIT 1;
 ```
-Output:
+
 ```
 ┌─────────────┐
 │ ID          │
@@ -36,7 +36,7 @@ Output:
 
 ## LABEL
 
-Returns the label name of node/rel.
+Returns the label name of node/rel. The alias `LABELS` can also be used.
 
 | Input type | Output type |
 | --- | --- |
@@ -46,7 +46,7 @@ Returns the label name of node/rel.
 ```cypher
 MATCH (a) RETURN LABEL(a) AS LABEL LIMIT 1;
 ```
-Output:
+
 ```
 ┌────────┐
 │ LABEL  │
@@ -55,15 +55,6 @@ Output:
 │ User   │
 └────────┘
 ```
-
-:::note[Alias `LABELS` is available]
-As of version 0.9.0, the `LABELS` function can also be used as an alias for the `LABEL` function.
-For example:
-
-```cypher
-MATCH (a) RETURN LABELS(a) AS LABELS LIMIT 1;
-```
-:::
 
 ## OFFSET
 
@@ -77,7 +68,7 @@ Returns the offset of the internal ID.
 ```cypher
 MATCH (a) RETURN OFFSET(ID(a)) AS OFFSET LIMIT 1;
 ```
-Output:
+
 ```
 ┌────────┐
 │ OFFSET │

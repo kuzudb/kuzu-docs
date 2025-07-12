@@ -24,7 +24,7 @@ on how to skip erroneous CSV rows during the import.
 Create a node table `User` as follows:
 
 ```cypher
-CREATE NODE TABLE User(name STRING, age INT64, reg_date DATE, PRIMARY KEY (name))
+CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64, reg_date DATE)
 ```
 
 The CSV file `user.csv` contains the following fields:
@@ -77,16 +77,6 @@ To skip the first 3 lines of the CSV file, you can use the `SKIP` parameter as f
 COPY Follows FROM "follows.csv" (SKIP=3);
 ```
 
-### Relationship table with multiple `FROM-TO` pairs
-
-If a relationship table has multiple `FROM-TO` pairs, you need to specify which pair to insert by specifying `from` and `to` parameters. For example:
-
-```sql
-COPY Knows FROM 'knows_user_user.csv' (from='User', to='User');
-```
-
-More information can be found [here](/cypher/data-definition/create-table)
-
 ## Import multiple files to a single table
 
 It is common practice to divide a large CSV file into several smaller files for cleaner data management.
@@ -124,7 +114,7 @@ between the columns of the CSV is. See below for the list of all supported confi
 configurations can be manually set by specifying parameters inside `( )` at the
 end of the `COPY FROM` clause. Several of the supported configurations, such as the header and delimiter characters,
 are automatically detected if they are not manually specified at the end of  `COPY FROM` clause.
-See the subsections below for more details onhow Kuzu automatically detects these configurations.
+See the subsections below for more details on how Kuzu automatically detects these configurations.
 
 The following configuration parameters are supported:
 
@@ -174,14 +164,14 @@ If instead the query was:
 ```cypher
 COPY User FROM "user.csv" (HEADER=true, DELIM="|", auto_detect=false);
 ```
-Then, Kuzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `"` respectively (and use
+Then, Kuzu will use the default values of `QUOTE` and `ESCAPE`, which are `"` and `\` respectively (and use
 the manually specified configurations for `HEADER` and `DELIM`).
 
 ### Sample size parameter
 By default, Kuzu will use the first 256 lines of the CSV file to auto-detect unspecified configurations.
 If you want to use a different number of lines, you can specify the `sample_size` parameter.
 
-For interested users, below are more details of how Kuzu automatically tries to detect these configurations.
+You can find more information on how Kuzu automatically tries to detect these configurations below.
 
 ### Header auto detection
 Kuzu parses the first line of the CSV into columns and checks if each column can be cast to the data type of the target column in the node or rel table that is being copied into.
@@ -196,9 +186,9 @@ The possible configurations for different configurations are:
 - ESCAPE: `"`, `'`, `\` and (no escape character)
 
 ### Null strings handling
-By default, Kuzu treats only empty strings (`""`) as `NULL` values. However, in certain scenarios the default behavior may not be sufficient. For example, if you're working with a CSV file exported by a tool that uses the string `"NULL"` to represent nulls. In such cases, you can modify Kuzu's behavior by setting the `NULL_STRINGS` parameter to include both the empty string and the string `"NULL"`.
-For example:
-```
+By default, Kuzu treats only empty strings (`""`) as `NULL` values. However, in certain scenarios, the default behaviour may not be sufficient. For example, if you're working with a CSV file exported by a tool that uses the string `"NULL"` to represent nulls, you can modify Kuzu's behaviour by setting the `NULL_STRINGS` parameter to include both the empty string and the string `"NULL"`:
+
+```cypher
 LOAD FROM 'xxx.csv'(null_strings=[null_str1, null_str2, null_str3]) RETURN *;
 ```
  
@@ -215,8 +205,6 @@ Then, you can use the `LOAD FROM` clause to scan the compressed file directly.
 ```cypher
 LOAD FROM 'user.csv.gz' RETURN *;
 ```
-
-Result:
 ```
 ┌─────────┬───────┬────────────┐
 │ name    │ age   │ reg_date   │

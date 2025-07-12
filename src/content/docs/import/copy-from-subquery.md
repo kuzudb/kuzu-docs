@@ -7,7 +7,7 @@ that query as a subquery of a `COPY FROM` statement. Because the `COPY FROM` com
 the Data Definition Language (DDL) in Kuzu, it follows SQL's semantics and hence, a subquery
 is passed within parentheses `()` that contains a `RETURN` clause.
 
-Copy using a subquery is useful when you need to transform data
+Copying using a subquery is useful when you need to transform data
 before inserting it into the database, or if you want to copy data from a `LOAD FROM` scan operation
 on a data structure that's already in memory, such as a DataFrame.
 
@@ -17,8 +17,8 @@ Consider that we have a database of `Person`, `Product` and `HasReward` relation
 person is eligible for a product reward if they have made a certain number of purchases).
 
 ```cypher
-CREATE NODE TABLE Person(name STRING, num_purchases INT64, PRIMARY KEY (name));
-CREATE NODE TABLE Product(name STRING, price DOUBLE, PRIMARY KEY (name));
+CREATE NODE TABLE Person(name STRING PRIMARY KEY, num_purchases INT64)
+CREATE NODE TABLE Product(name STRING PRIMARY KEY, price DOUBLE)
 CREATE REL TABLE HasReward(FROM Person TO Product);
 ```
 
@@ -45,7 +45,7 @@ command. This can be combined with predicate filters as follows:
 import kuzu
 import pandas as pd
 
-db = kuzu.Database("tmp")
+db = kuzu.Database("example.kuzu")
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
@@ -53,7 +53,7 @@ df = pd.DataFrame({
     "age": [30, 40, 50, 25]
 })
 
-conn.execute("CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person(name STRING PRIMARY KEY, age INT64)")
 
 # Apply a predicate filter while scanning the DataFrame
 # Pass the results of the scan to the COPY FROM command

@@ -1,82 +1,41 @@
 ---
-title: Graph algorithms
+title: Algo extension
+description: Extension for running native graph algorithms in Kuzu
 ---
 
-The graph algorithms extension package allows you to directly run popular graph algorithms
-like PageRank, connected components and Louvain on your graph data stored in Kuzu. Using this extension,
-you do not need to export your data to specialized graph analytics tools like NetworkX (at
-least for the algorithms that are supported by the extension). The algorithms run natively
-in Kuzu, which also allows you to scale to very large graphs!
+The `algo` extension allows you to run common graph algorithms such as PageRank,
+Connected Components, and Louvain on the graph stored in Kuzu. The algorithms are exposed as
+Cypher functions and execute directly inside Kuzu.
 
-Graph algorithms are useful tools for extracting meaningful insights from connected data.
-Whether you're detecting fraud patterns in financial transactions, optimizing supply chain networks,
-or analyzing social media interactions, these algorithms help you understand complex relationships and
-make data-driven decisions. The following sections describe how to use the graph algorithms extension
-in Kuzu.
+Currently, the `algo` extension provides the following algorithms:
+- [K-Core Decomposition](/extensions/algo/kcore)
+- [Louvain](/extensions/algo/louvain)
+- [PageRank](/extensions/algo/pagerank)
+- [Strongly Connected Components](/extensions/algo/scc)
+- [Weakly Connected Components](/extensions/algo/wcc)
 
 ## Usage
 
-The graph algorithms functionality is not available by default, so you would first need to install the `ALGO`
-extension by running the following commands:
-
-```sql
-INSTALL ALGO;
-LOAD ALGO;
-```
-
-## Project graph
-
-The first step to run a graph algorithm on a Kuzu database table is to project a graph.
-A projected graph or subgraph contains _only_ the nodes and relationships that are relevant for
-the algorithm you want to run, and is created by matching on a given table name and predicates.
-
-
-**Life cycle**
-
-A projected graph is kept alive until:
-- It is dropped explicitly; or
-- The connection is closed.
-
-:::note[Evaluation of projected graphs]
-A projected graph is evaluated _only_ when the algorithm is executed. Kuzu does not materialize
-projected graph in memory and all data are scanned from disk on the fly.
-:::
-
-### Simple projection
-
-#### Syntax
-To create a projected graph with selected node and relationship tables, you can use the following syntax:
-
 ```cypher
-CALL project_graph(
-    graph_name,
-    [
-        node_table_0, node_table_1, ...
-    ],
-    [
-        rel_table_0, rel_table_1, ...
-    ]
-)
+INSTALL algo;
+LOAD algo;
 ```
 
-#### Parameters
+## Projected graphs
 
-| Parameter | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `graph_name` | String | Yes | - | Name of the projected graph |
-| `node_table_x` | STRING | Yes | - | Name of node table to project |
-| `rel_table_x` | STRING | Yes | - | Name of relationship table to project |
+The graph algorithms run on _projected graphs_ instead of operating directly on Kuzu database tables.
 
-This is better illustrated with an example.
+A projected graph contains only the nodes and relationships that are relevant for
+the algorithm you want to run, and is created by matching on a given table name and predicates. 
 
-#### Example
+### Example dataset
 
-Let's create a simple graph projection on a node and a relationship table.
+Let's first create the node and relationship tables we will use for creating projected graphs.
 
 ```cypher
 CREATE NODE TABLE Person(name STRING PRIMARY KEY);
 CREATE REL TABLE KNOWS(FROM Person to Person, id INT64);
-CREATE (u0:Person {name: 'Alice'}),
+CREATE  (u0:Person {name: 'Alice'}),
         (u1:Person {name: 'Bob'}),
         (u2:Person {name: 'Charlie'}),
         (u3:Person {name: 'Derek'}),
@@ -93,73 +52,76 @@ CREATE (u0:Person {name: 'Alice'}),
         (u6)-[:KNOWS {id: 5}]->(u7),
         (u7)-[:KNOWS {id: 6}]->(u4),
         (u6)-[:KNOWS {id: 7}]->(u5);
-
-CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
-This creates a projected graph named `Graph` with the node table `Person` and the relationship table `KNOWS`.
 
-Now, we can run a graph algorithm on this projected graph.
+### Simple projection
+
+You can create a projected graph on a specific set of node and relationship tables:
+
 ```cypher
-CALL weakly_connected_components('Graph')
-RETURN group_id, collect(node.name)
-ORDER BY group_id;
+CALL PROJECT_GRAPH(
+    <GRAPH_NAME>,
+    [<NODE_TABLE_0>, <NODE_TABLE_1>, ...], // node tables
+    [<REL_TABLE_0>, <REL_TABLE_1>, ...]    // relationship tables
+);
 ```
-```
-┌──────────┬─────────────────────────┐
-│ group_id │ COLLECT(node.name)      │
-│ INT64    │ STRING[]                │
-├──────────┼─────────────────────────┤
-│ 0        │ [Derek]                 │
-│ 1        │ [Ira]                   │
-│ 2        │ [Bob,Charlie,Alice]     │
-│ 5        │ [George,Frank,Hina,Eve] │
-└──────────┴─────────────────────────┘
+- `GRAPH_NAME`: Name of the projected graph
+    - Type: `STRING`
+- `NODE_TABLE_x`: A node table to project
+    - Type: `STRING`
+- `REL_TABLE_x`: A relationship table to project
+    - Type: `STRING`
+
+#### Example
+
+For example, to create a projected graph named `Graph` with the node table `Person` and the relationship table `KNOWS`, use:
+
+```cypher
+CALL PROJECT_GRAPH('Graph', ['Person'], ['KNOWS']);
 ```
 
 ### Filtered projection
 
-#### Syntax
+You can also create a projected graph with filters on the node or relationship tables:
 
 ```cypher
-CALL project_graph(
-    graph_name,
+CALL PROJECT_GRAPH(
+    <GRAPH_NAME>,
     {
-        node_table_0 :  node_predicate_0,
-        node_table_1 :  node_predicate_1,
+        <NODE_TABLE_0> :  <NODE_PREDICATE_0>,
+        <NODE_TABLE_1> :  <NODE_PREDICATE_1>,
         ...
     },
     {
-        rel_table_0 :  rel_predicate_0,
-        rel_table_1 :  rel_predicate_1,
+        <REL_TABLE_0> :  <REL_PREDICATE_0>,
+        <REL_TABLE_1> :  <REL_PREDICATE_1>,
         ...
     }
-)
+);
 ```
 
-#### Parameters
-
-| Parameter | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `graph_name` | String | Yes | - | Name of the projected graph |
-| `node_table_x` | STRING | Yes | - | Name of node table to project |
-| `rel_table_x` | STRING | Yes | - | Name of relationship table to project |
-| `node_predicate_0` | STRING | Yes | - | Predicate to execute on node table |
-| `rel_predicate_0` | STRING | Yes | - | Predicate to execute on relationship table |
+- `GRAPH_NAME`: Name of the projected graph
+    - Type: `STRING`
+- `NODE_TABLE_x`: A node table to project
+    - Type: `STRING`
+- `REL_TABLE_x`: A relationship table to project
+    - Type: `STRING`
+- `NODE_PREDICATE_x`: Predicate used to filter the node table
+    - Type: `STRING`
+- `REL_PREDICATE_x`: Predicate used to filter the relationship table
+    - Type: `STRING`
 
 :::caution[Note]
-- The predicate must depend only on its node/relationship table, i.e. predicates involving multiple tables are not supported.
-- Since we don't assign a variable to the node/relationship table, we use `n` to reference the node and
-`r` to reference the relationship table. So properties need to be in the form of `n.property_name` or `r.property_name`.
+- Predicates must depend only on their corresponding node/relationship tables. Predicates involving multiple tables are not supported.
+- Use `n` to refer to the nodes and `r` to refer to the relationships. Properties can be accessed as `n.property_name` or `r.property_name`.
 :::
 
 #### Example
 
-Let's use the same database as in the simple projection example above. This time, we want to project
-only the nodes with `name` not equal to `Ira` and the relationships with `id` less than `3` to obtain
-a filtered projected graph named `filtered_graph`.
+For example, to create a projected graph named `filtered_graph` with the node table `Person` and the relationship table `KNOWS`, and filter the nodes with `name` not equal to `Ira` and the relationships with `id` less than `3`, use:
 
 ```cypher
-CALL project_graph(
+CALL PROJECT_GRAPH(
     'filtered_graph',
     {
         'Person': 'n.name <> "Ira"'
@@ -170,61 +132,58 @@ CALL project_graph(
 );
 ```
 
-Now, we can run a graph algorithm on this filtered projected graph.
-```cypher
-CALL weakly_connected_components('filtered_graph')
-RETURN group_id, collect(node.name)
-ORDER BY group_id;
-```
-```
-┌──────────┬─────────────────────┐
-│ group_id │ COLLECT(node.name)  │
-│ INT64    │ STRING[]            │
-├──────────┼─────────────────────┤
-│ 0        │ [Derek]             │
-│ 2        │ [Bob,Charlie,Alice] │
-│ 5        │ [George]            │
-│ 6        │ [Frank,Eve]         │
-│ 7        │ [Hina]              │
-└──────────┴─────────────────────┘
-```
+### List projected graphs
 
-## List available projected graphs
-
-You can list all available projected graphs using the following syntax:
+To list all available projected graphs, use:
 
 ```cypher
-CALL SHOW_PROJECTED_GRAPHS() RETURN *;
+CALL SHOW_PROJECTED_GRAPHS();
 ```
 
-See the [CALL](/cypher/query-clauses/call#show_projected_graphs) function docs for more details
-on what parameters are supported.
+### Drop a projected graph
 
-## Drop projected graph
-
-As mentioned, the projected graph is kept alive until it is explicitly dropped, or the connection
-is closed. You can explicitly drop a projected graph using the following syntax:
-
-#### Syntax
+You can explicitly drop a projected graph using:
 
 ```cypher
-CALL drop_projected_graph(
-    'graph_name'
-)
+CALL DROP_PROJECTED_GRAPH(<GRAPH_NAME>);
 ```
 
-#### Parameters
-
-| Parameter | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `graph_name` | STRING | Yes | - | Name of the projected graph to drop |
+- `GRAPH_NAME`: Name of the projected graph to drop
+    - Type: `STRING`
 
 #### Example
 
-Let's drop the projected graph `filtered_graph` that we created in the filtered projection example above.
+For example, to drop the projected graph `filtered_graph`, use:
 
 ```cypher
-CALL drop_projected_graph('filtered_graph');
+CALL DROP_PROJECTED_GRAPH('filtered_graph');
 ```
 
-The projected graph `filtered_graph` is now dropped.
+### Lifecycle of projected graphs
+
+A projected graph is kept alive until:
+- It is dropped explicitly, or
+- The connection is closed.
+
+A projected graph is evaluated _only_ when an algorithm is executed.
+Kuzu does not materialize projected graphs in memory, and the corresponding data
+is scanned from disk on the fly.
+
+:::caution[Note]
+When creating projected graphs with the Python async API, you may encounter the following error:
+
+```
+Binder exception: Cannot find graph filtered_graph.
+```
+
+This error is because projected graphs are bound to a specific `Connection` instance, as mentioned above.
+The async API, however, executes queries using a connection pool. Depending on which connection is used
+to execute a query, the projected graph may not be available.
+This is a known limitation and will be addressed in a future release.
+:::
+
+## Edge direction
+
+In Kuzu, both the base graph and projected graphs are directed. For algorithms that are only
+well-defined on undirected graphs, such as Weakly Connected Components,
+the graph is treated as undirected by ignoring the edge direction.

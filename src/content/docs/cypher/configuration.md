@@ -4,7 +4,7 @@ description: "Connection and database configuration"
 ---
 
 The configuration of a Kuzu database or a connection to the database can be changed through a standalone `CALL`
-statement, described in this section. Different from [the `CALL` clause](/cypher/query-clauses/call), this statement of changing
+statement, described in this section. Different from [the `CALL` clause](/cypher/query-clauses/call), this statement for changing
 configuration **cannot** be used with other query clauses, such as `RETURN`.
 
 ### Connection configuration
@@ -19,7 +19,7 @@ configuration **cannot** be used with other query clauses, such as `RETURN`.
 | `PROGRESS_BAR` | enable progress bar in CLI                                                                                                      | false                  |
 | `CHECKPOINT_THRESHOLD` | the WAL size threshold in bytes at which to automatically trigger a checkpoint                                                  | 16777216 (16MB)        |
 | `WARNING_LIMIT` | maximum number of [warnings](/import#warnings-table-inspecting-skipped-rows) that can be stored in a single connection.            | 8192        |
-| `SPILL_TO_DISK` | spill data disk if there is not enough memory when running `COPY FROM (cannot be set to TRUE under in-memory or read-only mode) | true |
+| `SPILL_TO_DISK` | spill data to disk if there is not enough memory when running `COPY FROM` (cannot be set to TRUE under in-memory or read-only mode) | true |
 
 ### Database configuration
 | Option | Description | Default |

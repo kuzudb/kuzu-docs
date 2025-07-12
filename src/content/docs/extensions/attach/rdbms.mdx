@@ -1,48 +1,18 @@
 ---
-title: Attaching to external RDBMSs
+title: Attaching external RDBMS systems
 ---
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 Kuzu supports directly scanning from a variety of relational databases using the `LOAD FROM` statement.
-Because RDBMSs are a common source of structured data in enterprises, the purpose behind this set of Kuzu
-extensions is currently twofold: (1) to allow users to scan data from external RDBMSs without having to copy it
-to a graph database; and (2) if data will be copied over from an RDBMS, this feature also simplifies the pipeline
-for copying data from an external RDBMS into Kuzu tables.
+Because RDBMSs are a common source of structured data, Kuzu provides a set of 
+extensions to allow users to both scan data from external RDBMSs without having to copy it
+into Kuzu and also to simplify copying data from an external RDBMS into Kuzu.
 
-The currently available relational database extensions, as well as their minimum required versions,
-are shown below:
+The currently available relational database extensions are shown below:
 
 Extension Name | Description | Minimum Version
 :---:|:---:|:---:
-`duckdb` | Scan from an attached DuckDB database | 0.10.0
-`postgres` | Scan from an attached PostgreSQL database | 14.0
-`sqlite` | Scan from an attached SQLite database | 3.3.0
-
-## PostgreSQL
-
-Click on the card below to learn more about attaching to PostgreSQL databases.
-
-<LinkCard 
-  title="Attaching to PostgreSQL databases"
-  href="/extensions/attach/postgres"
-/>
-
-
-## DuckDB
-
-Click on the card below to learn more about attaching to DuckDB databases.
-
-<LinkCard 
-  title="Attaching to DuckDB databases"
-  href="/extensions/attach/duckdb"
-/>
-
-## SQLite
-
-Click on the card below to learn more about attaching to SQLite databases.
-
-<LinkCard 
-  title="Attaching to SQLite databases"
-  href="/extensions/attach/sqlite"
-/>
+[`duckdb`](/extensions/attach/duckdb) | Scan from an attached DuckDB database | 0.10.0
+[`postgres`](/extensions/attach/postgres) | Scan from an attached PostgreSQL database | 14.0
+[`sqlite`](/extensions/attach/sqlite) | Scan from an attached SQLite database | 3.3.0

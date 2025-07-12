@@ -5,7 +5,7 @@ title: Transactions
 Kuzu implements a transaction management subsystem that is atomic, durable and supports serializability.
 Satisfying these properties makes Kuzu ACID-compliant, as per database terminology.
 
-Every query, data manipulation command, DDL (i.e., new node/rel table schema definitions), or `COPY FROM` command to Kuzu is part of a transaction. Therefore, they depict all-or-nothing behaviour, and after these commands or a set of them execute and are committed successfully, you are guaranteed that all changes will persist in entirety. If the commands do not execute successfully or are rolled back, you are guaranteed that none of the changes will persist.
+Every query, data manipulation command, DDL (i.e., new node/rel table schema definitions), or `COPY FROM` command to Kuzu is part of a transaction. Therefore, they exhibit all-or-nothing behavior. After one or more of these commands are executed and committed successfully, you are guaranteed that all changes will persist in their entirety. If the commands do not execute successfully or are rolled back, you are guaranteed that none of the changes will persist.
 
 These conditions hold even if your system crashes at any point during a transaction. That is, once you commit a transaction successfully, all your changes will persist even if there is an error *after* committing. Similarly, if your system crashes before committing or rolling back, then none of your updates will persist.
 
@@ -24,8 +24,8 @@ Kuzu supports the following transaction statements.
 
 - `BEGIN TRANSACTION`: starts a read-write transaction.
 - `BEGIN TRANSACTION READ ONLY`: starts a read-only transaction.
-- `COMMIT`: commit change in current transaction.
-- `ROLLBACK`: rollback change in current transaction.
+- `COMMIT`: commit changes in current transaction.
+- `ROLLBACK`: rollback changes in current transaction.
 
 ### Manual transaction
 ```cypher
@@ -34,9 +34,9 @@ CREATE (a:User {name: 'Alice', age: 72});
 MATCH (a:User) RETURN *;
 COMMIT;
 ```
-The above statements start a manual read-write transaction, add a new node, and within the same transaction also read all of the tuples in User table. Finally, the transaction is committed.
+The above statements start a manual read-write transaction, add a new node, and within the same transaction also read all of the tuples in the User table. Finally, the transaction is committed.
 
-You can also start a read-only transaction with `BEGIN TRANSACTION READ ONLY`. Read only transactions are not allowed to write to the database. You would typically start a read-only transaction for two main reasons: (i) if you want to run multiple read queries ensuring that the database does not change in-between those transactions; and/or (ii) you don't want to block a write transaction from writing to the database in parallel (recall that at any point in time Kuzu allows one write transaction in the system).
+You can also start a read-only transaction with `BEGIN TRANSACTION READ ONLY`. Read-only transactions are not allowed to write to the database. You would typically start a read-only transaction for two main reasons: (i) if you want to run multiple read queries ensuring that the database does not change between those transactions; and/or (ii) you don't want to block a write transaction from writing to the database in parallel (recall that at any point in time Kuzu allows one write transaction in the system).
 
 If you replace `COMMIT` with `ROLLBACK`, the added `('Alice', 72)` node record will not persist in the database.
 
@@ -54,7 +54,7 @@ The `CHECKPOINT` statement merges data in the write-ahead-log (WAL) to database 
 CHECKPOINT;
 ```
 
-By default, checkpoint happens automatically at the end of a write transaction when WAL file size goes beyond the `CHECKPOINT_THRESHOLD` (see [Configuration](/cypher/configuration)) and there is no active transactions in the system.
+By default, checkpoint happens automatically at the end of a write transaction when the WAL file size goes beyond the `CHECKPOINT_THRESHOLD` (see [Configuration](/cypher/configuration)) and there are no active transactions in the system.
 
 This statement is used to manually trigger checkpoint actions in the system.
-Note that checkpoint can only happen when there is no active transactions in the system, and we don't allow forcing checkpointing yet. Thus when there are still active transactions around in the system, calling this statement will result in errors.
+Note that checkpoint can only happen when there are no active transactions in the system, and we don't allow forcing checkpointing yet. Thus when there are still active transactions in the system, calling this statement will result in errors.

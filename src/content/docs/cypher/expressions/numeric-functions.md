@@ -36,7 +36,7 @@ implemented so far are listed below.
 | `radians(x)` | converts the degree to radians | `radians(89)` | `1.553343` |
 | `round(x, s)` | rounds x to s decimal places | `round(42.651, 1)` | `42.700000` |
 | `sin(x)` | returns the sin of x | `sin(413.31)` | `-0.981897` |
-| `sign(x)` | returns the sign of x | `sign(-451`) | `-1` |
+| `sign(x)` | returns the sign of x | `sign(-451)` | `-1` |
 | `sqrt(x)` | returns the square root of x | `sqrt(4.25)` | `2.061553` |
 | `tan(x)` | returns the tangent of x | `tan(75)` | `-0.420701` |
 

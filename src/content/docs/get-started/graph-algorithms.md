@@ -3,98 +3,107 @@ title: "Run graph algorithms"
 ---
 
 One of the overarching goals of Kuzu is to function as the go-to graph database for data science
-use cases. NetworkX is a popular library in Python for graph algorithms and data science. In this
+use cases.
+
+## Using the `algo` extension
+
+The official `algo` Kuzu extension allows you to run graph algorithms directly
+inside Kuzu using Cypher queries. We currently support some common graph algorithms, including
+PageRank, Connected Components, and Louvain, and plan to grow the set of supported algorithms in
+the future.
+
+Refer to the [documentation](/extensions/algo) for more details on how to install and use the
+extension.
+
+## Using NetworkX
+
+NetworkX is a popular library in Python for graph algorithms and data science. In this
 section, we demonstrate Kuzu's ease of use in exporting subgraphs to the NetworkX format using the
-`get_as_networkx()` function in the Python API. In addition, the following two capabilities are
-demonstrated.
+`get_as_networkx()` function in the Python API. We also demonstrate the following capabilities:
 
-- Graph Visualization: We visualize subgraphs of interest via Kuzu explorer
+- Graph Visualization: We visualize subgraphs of interest via Kuzu Explorer.
 - PageRank: We compute PageRank on an extracted subgraph, store these values back in Kuzu's node
-tables and query them.
+tables, and query them using Cypher.
 
-The dataset we will use for this exercise is the MovieLens dataset, available [here](https://github.com/kuzudb/kuzudb.github.io/tree/main/data/movielens-sm).
-The small version of the dataset is used, which contains 610 user nodes, 9724 movie nodes, 100863
- rates edges, and 3684 tags edges. The schema of the dataset is shown below.
+We will use the [MovieLens dataset](https://github.com/kuzudb/kuzudb.github.io/tree/main/static/data/movielens-sm).
+The linked dataset represents a smaller subset extracted from the original source and contains
+610 `User` nodes, 9724 `Movie` nodes, 100,863 `Rating` edges, and 3684 `Tags` edges. The schema of the
+dataset is shown below.
 
 ![](/img/graph-algorithms/movie-schema.png)
 
-You can download the dataset locally via wget.
-
 ```bash
-wget https://kuzudb.com/data/movie-lens/movies.csv
-wget https://kuzudb.com/data/movie-lens/users.csv
-wget https://kuzudb.com/data/movie-lens/ratings.csv
-wget https://kuzudb.com/data/movie-lens/tags.csv
+mkdir ./movie_data/
+curl -L -o ./movie_data/movies.csv https://kuzudb.com/data/movie-lens/movies.csv
+curl -L -o ./movie_data/users.csv https://kuzudb.com/data/movie-lens/users.csv
+curl -L -o ./movie_data/ratings.csv https://kuzudb.com/data/movie-lens/ratings.csv
+curl -L -o ./movie_data/tags.csv https://kuzudb.com/data/movie-lens/tags.csv
 ```
 
-Place the CSV files in a directory named `movie_data` in the same directory in which you want the
-database to be stored.
+### Import data into Kuzu
 
-## Insert data to Kuzu
+Import the data into a Kuzu database using the Python API:
 
-The data is copied to a Kuzu database via the Python API as follows:
-
-```py
-import shutil
+```python
 import kuzu
-db_path = './ml-small_db'
-shutil.rmtree(db_path, ignore_errors=True)
 
-def load_data(connection):
-    connection.execute('CREATE NODE TABLE Movie (movieId INT64, year INT64, title STRING, genres STRING, PRIMARY KEY (movieId))')
-    connection.execute('CREATE NODE TABLE User (userId INT64, PRIMARY KEY (userId))')
-    connection.execute('CREATE REL TABLE Rating (FROM User TO Movie, rating DOUBLE, timestamp INT64)')
-    connection.execute('CREATE REL TABLE Tags (FROM User TO Movie, tag STRING, timestamp INT64)')
+def copy_data(connection):
+    connection.execute('CREATE NODE TABLE Movie (movieId INT64 PRIMARY KEY, year INT64, title STRING, genres STRING);')
+    connection.execute('CREATE NODE TABLE User (userId INT64 PRIMARY KEY);')
+    connection.execute('CREATE REL TABLE Rating (FROM User TO Movie, rating DOUBLE, timestamp INT64);')
+    connection.execute('CREATE REL TABLE Tags (FROM User TO Movie, tag STRING, timestamp INT64);')
 
-    connection.execute('COPY Movie FROM "./movies.csv" (HEADER=TRUE)')
-    connection.execute('COPY User FROM "./users.csv" (HEADER=TRUE)')
-    connection.execute('COPY Rating FROM "./ratings.csv" (HEADER=TRUE)')
-    connection.execute('COPY Tags FROM "./tags.csv" (HEADER=TRUE)')
+    connection.execute('COPY Movie FROM "./movies.csv" (HEADER=TRUE);')
+    connection.execute('COPY User FROM "./users.csv" (HEADER=TRUE);')
+    connection.execute('COPY Rating FROM "./ratings.csv" (HEADER=TRUE);')
+    connection.execute('COPY Tags FROM "./tags.csv" (HEADER=TRUE);')
 
-db = kuzu.Database(db_path)
+db = kuzu.Database("ml_small.kuzu")
 conn = kuzu.Connection(db)
-load_data(conn)
+copy_data(conn)
 ```
 
-## Visualize subgraphs in Kuzu Explorer
+### Visualize subgraphs in Kuzu Explorer
 
-You can visualize the data in Kuzu Explorer as shown in the [previous section](/get-started/cypher-intro).
-An example is shown below.
+You can visualize the imported data in Kuzu Explorer as shown in the [previous section](/get-started/cypher-intro):
 
 ```cypher
-// Return the first two users, their movies and their ratings
+// Return the first two users, their movies, and their ratings
 MATCH (u:User)-[r:Rating]->(m:Movie)
 WHERE u.userId IN [1, 2]
-RETURN u, r, m LIMIT 100;
+RETURN u, r, m
+LIMIT 100;
 ```
 
 ![](/img/graph-algorithms/movie-subgraph.png)
 
-## Export subgraph to NetworkX
+### Export subgraph to NetworkX
 
-You can extract only the subgraph between users and movies (ignoring tags) and convert it to a
-NetworkX graph `G`. This assumes that the `network` package is installed via pip.
+You can extract a subgraph of the edges between `User` and `Movie` nodes (ignoring `Tags` edges)
+and convert it to a NetworkX graph `G`.
 
-```py
+```python
 # pip install networkx
-res = conn.execute('MATCH (u:User)-[r:Rating]->(m:Movie) RETURN u, r, m')
+res = conn.execute('MATCH (u:User)-[r:Rating]->(m:Movie) RETURN u, r, m;')
 G = res.get_as_networkx(directed=False)
 ```
-We output an undirected graph as the direction doesn't matter for the PageRank algorithm.
 
-## Compute PageRank
+We store the extracted subgraph as an undirected graph in NetworkX because the direction doesn't matter
+for the PageRank algorithm.
 
-We can compute the PageRank of the subgraph `G` using NetworkX's `pagerank` function.
+### Compute PageRank
 
-```py
+Compute the PageRank of the subgraph `G` using NetworkX's `pagerank` function.
+
+```python
 import networkx as nx
 
 pageranks = nx.pagerank(G)
 ```
 
-The movie nodes' PageRanks along with their IDs can then be put into a Pandas DataFrame as follows:
+The PageRank values for the `Movie` nodes can then be exported into a Pandas DataFrame:
 
-```py
+```python
 import pandas as pd
 
 pagerank_df = pd.DataFrame.from_dict(pageranks, orient="index", columns=["pagerank"])
@@ -116,46 +125,45 @@ Calculated pageranks for 9724 nodes
 34  593  0.000987
 ```
 
-Similarly, we can store the PageRanks for the user nodes in a Pandas DataFrame the same way:
+Similarly, we can store the PageRank values for the `User` nodes in a Pandas DataFrame:
 
-```py
+```python
 user_df = pagerank_df[pagerank_df.index.str.contains("User")]
 user_df.index = user_df.index.str.replace("User_", "").astype(int)
 user_df = user_df.reset_index(names=["id"])
 user_df.sort_values(by="pagerank", ascending=False).head()
 ```
 
-## Write PageRank values back to Kuzu
+### Write PageRank values back to Kuzu
 
 To write the values back to Kuzu, first update the node table schemas to include a new property
 `pagerank`.
 
 ```py
 try:
-  # Alter original node table schemas to add pageranks
-  conn.execute("ALTER TABLE Movie ADD pagerank DOUBLE DEFAULT 0.0;")
-  conn.execute("ALTER TABLE User ADD pagerank DOUBLE DEFAULT 0.0;")
+    # Alter original node table schemas to add pageranks
+    conn.execute("ALTER TABLE Movie ADD pagerank DOUBLE DEFAULT 0.0;")
+    conn.execute("ALTER TABLE User ADD pagerank DOUBLE DEFAULT 0.0;")
 except RuntimeError:
-  # If the column already exists, do nothing
-  pass
+    # If the column already exists, do nothing
+    pass
 ```
 
-An important feature of Kuzu is its ability to natively scan Pandas DataFrames in a zero-copy
-manner. This allows for efficient data transfer between your data in Python and Kuzu. The following
-code snippet shows how this is done for the movie nodes.
+Kuzu is able to natively scan Pandas DataFrames in a zero-copy manner, allowing efficient data
+transfer between the data in Python and Kuzu. The following code snippet shows how this is done for
+the `Movie` nodes:
 
-```py
+```python
 # Copy pagerank values to movie nodes
 x = conn.execute(
-  """
-  LOAD FROM movie_df
-  MERGE (m:Movie {movieId: id})
-  ON MATCH SET m.pagerank = pagerank
-  RETURN m.movieId AS movieId, m.pagerank AS pagerank;
-  """
+    """
+    LOAD FROM movie_df
+    MERGE (m:Movie {movieId: id})
+    ON MATCH SET m.pagerank = pagerank
+    RETURN m.movieId AS movieId, m.pagerank AS pagerank;
+    """
 )
 ```
-
 ```sh
    movieId  pagerank
 0  1        0.000776
@@ -165,20 +173,19 @@ x = conn.execute(
 4  50       0.000724
 ```
 
-The same can be done for the user nodes.
+The same can be done for user nodes.
 
-```py
+```python
 # Copy user pagerank values to user nodes
 y = conn.execute(
-  """
-  LOAD FROM user_df
-  MERGE (u:User {userId: id})
-  ON MATCH SET u.pagerank = pagerank
-  RETURN u.userId As userId, u.pagerank AS pagerank;
-  """
+    """
+    LOAD FROM user_df
+    MERGE (u:User {userId: id})
+    ON MATCH SET u.pagerank = pagerank
+    RETURN u.userId AS userId, u.pagerank AS pagerank;
+    """
 )
 ```
-
 ```sh
    userId  pagerank
 0  1      0.000867
@@ -188,23 +195,20 @@ y = conn.execute(
 4  5      0.000151
 ```
 
-## Query PageRank values in Kuzu
+### Query PageRank values in Kuzu
 
-You can run a query to print the top 20 pagerank movies to test that the upload worked:
+You can now run a query to print the top 5 `Movie` nodes ordered by their PageRank values:
 
-```py
+```python
 res1 = conn.execute(
     """
     MATCH (m:Movie)
     RETURN m.title, m.pagerank
-    ORDER BY m.pagerank DESC LIMIT 5
+    ORDER BY m.pagerank DESC
+    LIMIT 5;
     """
 )
 print(res1.get_as_df())
-```
-
-```sh
-   m.title                           m.pagerank
 ```
 
 ```sh
@@ -216,14 +220,15 @@ print(res1.get_as_df())
 4    Silence of the Lambs, The (1991)  0.000987
 ```
 
-And similarly, for the user nodes:
+And similarly, for the `User` nodes:
 
-```py
+```python
 res2 = conn.execute(
     """
     MATCH (u:User)
     RETURN u.userId, u.pagerank
-    ORDER BY u.pagerank DESC LIMIT 5
+    ORDER BY u.pagerank DESC
+    LIMIT 5;
     """
 )
 print(res2.get_as_df())
@@ -238,9 +243,9 @@ print(res2.get_as_df())
 4    610       0.008492
 ```
 
-## Further work
+### Further work
 
-You've now seen how to use NetworkX to run algorithms on a Kuzu graph, and move data back and
+You've now seen how to use NetworkX to run algorithms on a Kuzu graph and move data back and
 forth between Kuzu and Python.
 
 There are numerous additional computations you can perform in NetworkX and store these results

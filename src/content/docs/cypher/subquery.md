@@ -10,7 +10,7 @@ cannot contain a `RETURN` clause. The supported subqueries in Kuzu's implementat
 
 The `EXISTS` subquery checks if given pattern has at least one match in the graph.
 
-The following query searches for all Users's who have at least one 3-hop Follows
+The following query searches for all Users who have at least one 3-hop Follows
 path starting from them.
 
 ```cypher
@@ -18,7 +18,7 @@ MATCH (a:User)
 WHERE a.age < 100 AND EXISTS { MATCH (a)-[:Follows*3..3]->(b:User)} 
 RETURN a.name, a.age;
 ```
-Output:
+
 ```
 ┌────────┬───────┐
 │ a.name │ a.age │
@@ -38,7 +38,7 @@ MATCH (a:User)
 WHERE a.age < 100 AND EXISTS { MATCH (a)-[:Follows*3..3]->(b:User) WHERE EXISTS {MATCH (b)-[:Follows]->(c:User)} } 
 RETURN a.name, a.age;
 ```
-Output:
+
 ```
 ┌────────┬───────┐
 │ a.name │ a.age │
@@ -60,7 +60,7 @@ MATCH (a:User)
 WHERE a.age < 100 AND EXISTS { MATCH (a)-[:Follows*3..3]->(b:User) WHERE EXISTS {MATCH (b)<-[:Follows]-(c:User)} } 
 RETURN a.name, a.age;
 ```
-Output:
+
 ```
 ┌────────┬───────┐
 │ a.name │ a.age │
@@ -82,7 +82,6 @@ MATCH (a:User)
 RETURN a.name, COUNT { MATCH (a)<-[:Follows]-(b:User) } AS num_follower ORDER BY num_follower;
 ```
 
-Output:
 ```
 ┌─────────┬──────────────┐
 │ a.name  │ num_follower │
@@ -102,7 +101,6 @@ WHERE COUNT { MATCH (a)<-[:Follows]-(b:User) } = 1
 RETURN a.name;
 ```
 
-Output:
 ```
 ┌─────────┐
 │ a.name  │
@@ -125,7 +123,6 @@ WHERE a.name = 'Karissa'
 RETURN COUNT(DISTINCT b) AS num_unique_followers;
 ```
 
-Output:
 ```
 ┌──────────────────────┐
 │ num_unique_followers │

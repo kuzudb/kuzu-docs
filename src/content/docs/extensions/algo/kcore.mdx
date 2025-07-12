@@ -2,49 +2,45 @@
 title: K-Core Decomposition
 ---
 
-The k-core decomposition identifies subgraphs where every node has a degree of at least `k` within the subgraph. 
-In other words, a k-core is a maximal subgraph where each node is connected to at least `k` other nodes in the same subgraph. 
-The k-core decomposition process involves iteratively removing nodes with degree less than `k` until no more
-nodes can be removed, with the remaining nodes forming the k-core. 
+K-Core Decomposition identifies subgraphs where every node has a degree of at least `k`.
+In other words, a K-Core is a maximal subgraph where each node is connected to at least `k` other nodes in the same subgraph.
+The K-Core Decomposition algorithm iteratively removes nodes with degree less than `k` until no more nodes can be removed,
+with the remaining nodes forming the K-Core.
 
-K-Core decomposition is useful in domains like social network analysis, where it can help identify
-cohesive groups, and in network resilience analysis, where it can help understand the robustness of a network to node removal.
+K-Core Decomposition is useful in domains such as social network analysis, where it can help identify
+cohesive groups, and in network resilience analysis, where it can help understand a network's robustness to node removal.
 
-Kuzu implements a parallelized version of K-Core decomposition based on [Ligra](https://jshun.csail.mit.edu/ligra.shtml).
+Kuzu implements a parallelized version of K-Core Decomposition based on [Ligra](https://jshun.github.io/ligra/docs/examples.html).
 
 ## Syntax
 
-```
+```cypher
 CALL k_core_decomposition(
-    graph_name
+    <GRAPH_NAME>
 )
 RETURN node, k_degree
 ```
 
 **Alias**: `kcore`
 
-#### Parameters
+Required arguments:
 
-| Parameter | Type | Optional | Default | Description |
-|-----------|------|----------|---------|-------------|
-| graph_name | STRING | No | - | Name of the projected graph to run the algorithm on |
+- `GRAPH_NAME`: Name of the projected graph to run the algorithm on
+    - Type: `STRING`
 
+Returns:
 
-#### Return
-
-| Column | Type | Description |
-|--------|------|-------------|
-| node | NODE | Node object |
-| k_degree | INT64 | The k-core degree of the node |
+- `node`: A node object
+- `k_degree`: The k-core degree of the node
 
 ## Example
 
-Define schema
+Create the node and relationship tables:
 ```cypher
 CREATE NODE TABLE Person(name STRING PRIMARY KEY);
-CREATE REL TABLE KNOWS(FROM Person to Person);
+CREATE REL TABLE KNOWS(FROM Person TO Person);
 ```
-Insert nodes and edges
+Insert nodes and edges:
 ```cypher
 CREATE (u0:Person {name: 'Alice'}),
         (u1:Person {name: 'Bob'}),
@@ -63,10 +59,11 @@ CREATE (u0:Person {name: 'Alice'}),
         (u4)-[:KNOWS]->(u6),
         (u5)-[:KNOWS]->(u6);
 ```
-Project graph
+Create a projected graph from the node and relationship tables:
 ```cypher
 CALL project_graph('Graph', ['Person'], ['KNOWS']);
 ```
+Run the K-Core Decomposition algorithm on the projected graph:
 ```cypher
 CALL k_core_decomposition('Graph')
 RETURN node.name, k_degree

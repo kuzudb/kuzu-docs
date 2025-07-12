@@ -2,7 +2,7 @@
 title: Merge
 ---
 
-For small graphs (a few thousand nodes), the `MERGE` [Cypher clauses](/cypher/data-manipulation-clauses)
+For small graphs (a few thousand nodes), the `MERGE` [Cypher clause](/cypher/data-manipulation-clauses)
 can be used to insert nodes and
 relationships to existing tables in Kuzu. These are similar to SQL's `INSERT` statements, but bear in
 mind that they are slower than `COPY FROM`, which is optimized for bulk inserts. It's generally
@@ -67,7 +67,7 @@ Let's see this in action with an example.
 import kuzu
 import pandas as pd
 
-db = kuzu.Database('test_db')
+db = kuzu.Database('example.kuzu')
 conn = kuzu.Connection(db)
 
 df = pd.DataFrame({
@@ -77,8 +77,8 @@ df = pd.DataFrame({
 })
 
 # Create tables
-conn.execute("CREATE NODE TABLE Person (name STRING, current_city STRING, PRIMARY KEY (name))")
-conn.execute("CREATE NODE TABLE Item (name STRING, PRIMARY KEY (name))")
+conn.execute("CREATE NODE TABLE Person (name STRING PRIMARY KEY, current_city STRING)")
+conn.execute("CREATE NODE TABLE Item (name STRING PRIMARY KEY)")
 conn.execute("CREATE REL TABLE Purchased (FROM Person TO Item)")
 # Copy data into tables
 conn.execute("COPY Person FROM (LOAD FROM df RETURN name, current_city)")
@@ -97,8 +97,8 @@ Initially, there are 3 rows in the `Person` and `Item` tables:
 2    James  San Francisco  headphones
 ```
 
-Now, say you obtain updated information about the users Karissa and Rhea who purchased new items.
-Also, say the user Karissa has moved to a new city, so her `current_city` is now `Boston`.
+Now, say you obtain updated information about Karissa and Rhea who purchased new items.
+Also, say Karissa has moved to a new city, so her `current_city` is now `Boston`.
 
 ```py
 df = pd.DataFrame({
@@ -132,8 +132,8 @@ The following steps are performed:
 1. The `LOAD FROM` clause loads the data from the DataFrame into the database.
 2. The first two `MERGE` clauses merge the data into the `Person` and `Item` tables.
 3. The third `MERGE` clause merges the data into the `Purchased` relationship table.
-4. The `ON MATCH SET` clause updates the `current_city` property for the user Karissa if she is already in the database.
-5. The `ON CREATE SET` clause sets the `current_city` property for the user Karissa if she is created
+4. The `ON MATCH SET` clause updates the `current_city` property for Karissa if she is already in the database.
+5. The `ON CREATE SET` clause sets the `current_city` property for Karissa if she is created
 (i.e., if she is not already in the database).
 
 The resulting data looks like this:

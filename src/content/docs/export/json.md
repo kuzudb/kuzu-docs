@@ -7,7 +7,7 @@ JSON extension using the instructions shown [here](/extensions/json).
 
 To demonstrate this, we will create a node table and insert some data into it.
 ```sql
-CREATE NODE TABLE Person (id SERIAL, name STRING, info STRUCT(height DOUBLE, age INT64, previous_usernames STRING[]), PRIMARY KEY(id));
+CREATE NODE TABLE Person (id SERIAL PRIMARY KEY, name STRING, info STRUCT(height DOUBLE, age INT64, previous_usernames STRING[]));
 ```
 ```cypher
 CREATE (:Person {name: "Alice", info: {height: 1.68, age: 45, previous_usernames: ["alice123", "alice_34425"]}});
@@ -19,8 +19,6 @@ The following query will export the data from the `Person` node table to a JSON 
 ```sql
 COPY (MATCH (p:Person) RETURN p.*) TO 'people-output.json';
 ```
-Result:
-
 ```json
 [
 {"p.id":0,"p.name":"Alice","p.info":{"height":1.68,"age":45,"previous_usernames":["alice123","alice_34425"]}},

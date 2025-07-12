@@ -3,19 +3,20 @@ title: Delete
 description: Delete node records from your tables.
 ---
 
-# DELETE
-`DELETE` clause deletes node or relationship records from the table.
+The `DELETE` clause deletes node or relationship records from the table.
 
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/data-manipulation-clauses/example-database).
 
-## Delete Nodes
+## Delete nodes
 
-### Delete Single Label Nodes
-The following statements first create a User (Alice, 35) node record, without inserting any relationships to that node record, and then deletes the record
+### Delete single label nodes
+The following statements first create a `User (Alice, 35)` node record, without inserting any relationships to that node record, and then delete the record.
 
 ```cypher
 CREATE (u:User {name: 'Alice', age: 35});
-MATCH (u:User) WHERE u.name = 'Alice' DELETE u RETURN u.*;
+MATCH (u:User) WHERE u.name = 'Alice'
+DELETE u
+RETURN u.*;
 ```
 ```
 ┌────────┬───────┐
@@ -26,11 +27,15 @@ MATCH (u:User) WHERE u.name = 'Alice' DELETE u RETURN u.*;
 └────────┴───────┘
 ```
 
-### Delete Multi Label Nodes
-The following statements first create a user node and a city node both with name "A" and then delete them. 
+### Delete multi label nodes
+The following statements first create a user node and a city node both with the name "A" and then delete them. 
 ```cypher
 CREATE (:User {name: 'A'}), (:City {name: 'A'});
-MATCH (u) WHERE u.name = 'A' DELETE u RETURN u.*;
+
+MATCH (u)
+WHERE u.name = 'A'
+DELETE u
+RETURN u.*;
 ```
 ```
 ┌────────┬───────┬──────────────┐
@@ -42,7 +47,7 @@ MATCH (u) WHERE u.name = 'A' DELETE u RETURN u.*;
 └────────┴───────┴──────────────┘
 ```
 
-## Detach Delete
+### Detach delete
 `DELETE` can only delete nodes that do not have any relationships. To delete a node and all of its relationships with
 a single clause, use `DETACH DELETE`.
 
@@ -75,9 +80,9 @@ For example, to delete every record in the database, you can do the following:
 MATCH (n) DETACH DELETE n;
 ```
 
-## Delete Relationships
+## Delete relationships
 
-### Delete Single Label Relationships
+### Delete single label relationships
 The following query deletes the `Follows` relationship between `Adam` and `Karissa`:
 ```
 MATCH (u:User)-[f:Follows]->(u1:User)
@@ -86,7 +91,7 @@ DELETE f;
 ```
 
 
-### Delete Multi Label Relationships
+### Delete multi label relationships
 
 The following query deletes all out-going edges from "Karissa".
 ```cypher
@@ -107,6 +112,7 @@ RETURN u.name, u1.name;
 MATCH (u:User)-[f]->(u1)
 WHERE u.name = 'Karissa' 
 DELETE f;
+
 MATCH (u:User)-[f]->(u1)
 WHERE u.name = 'Karissa' 
 RETURN u.name, u1.name;

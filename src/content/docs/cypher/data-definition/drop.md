@@ -8,15 +8,15 @@ description: Drop DDL statement
 Dropping a table removes the table and all its data from the database.
 
 :::caution[Note]
-- To drop a node table, you need to first drop all of the relationship tables that refer to X in
-  its `FROM` or `TO` first.
+- To drop a node table, you need to first drop all of the relationship tables that refer to it in
+  their `FROM` or `TO` clauses.
 - You can drop any relationship table without affecting its underlying nodes.
 :::
 
 For example, consider the following database:
 
 ```sql
-CREATE NODE TABLE User(name STRING, age INT64, reg_date DATE, PRIMARY KEY (name));
+CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64, reg_date DATE);
 CREATE REL TABLE Follows(FROM User TO User, since DATE);
 ```
 
@@ -30,7 +30,7 @@ This will raise the following exception:
 Binder exception: Cannot delete a node table with edges. It is on the edges of rel: Follows.
 ```
 
-You can first delete the `Follows` rel table, and subsequently the `User` table as follows:
+You can first drop the `Follows` relationship table, and subsequently the `User` table as follows:
 
 ```sql
 DROP TABLE Follows
