@@ -22,7 +22,7 @@ Alternatively, here is an example configuration for integrating the pre-built li
 cmake_minimum_required(VERSION 3.11)
 project(example LANGUAGES C)
 ExternalProject_Add(kuzu-prebuilt
-    URL https://github.com/kuzudb/kuzu/releases/download/v0.10.0/libkuzu-linux-x86_64.tar.gz
+    URL https://github.com/kuzudb/kuzu/releases/download/v0.11.0/libkuzu-linux-x86_64.tar.gz
     URL_HASH SHA256=452599a03c4e6accb797d11bd780a2a88629bddf6635b1703993967d31a0467e
 )
 ExternalProject_Get_Property(kuzu-prebuilt SOURCE_DIR)
