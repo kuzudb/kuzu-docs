@@ -30,7 +30,7 @@ name: [["Adam","Karissa","Zhang","Noura"]]
 age: [[30,40,50,25]]
 ```
 
-To load this Parquet file into a `User` table, simply run:
+To load this Parquet file into a `User` table, run:
 
 ```cypher
 COPY User FROM "user.Parquet";
@@ -54,21 +54,11 @@ to: [["Karissa","Zhang","Zhang","Noura"]]
 since: [[2020,2020,2021,2022]]
 ```
 
-To load this Parquet file into a `Follows` table, simply run:
+To load this Parquet file into a `Follows` table, run:
 
 ```cypher
 COPY Follows FROM "follows.Parquet";
 ```
-
-### Relationship table with multiple `FROM-TO` pairs
-
-If a relationship table has multiple `FROM-TO` pairs, you need to specify which pair to insert by specifying `from` and `to` parameters. For example:
-
-```sql
-COPY Knows FROM 'knows_user_user.parquet' (from='User', to='User');
-```
-
-More information can be found [here](/cypher/data-definition/create-table).
 
 ## Import multiple files to a single table
 

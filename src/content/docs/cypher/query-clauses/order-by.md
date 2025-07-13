@@ -11,14 +11,14 @@ rows in ascending order and NULLs are placed first.
 We will use the example database for demonstration, whose schema and data import commands are given [here](/cypher/query-clauses/example-database).
 
 ## Basic example
-The following query returns the user's name and age ordered by user's age using the default ordering(asc order):
+The following query returns users' names and ages, ordered by `age` using the default ordering (i.e., ascending order):
 
 ```cypher
 MATCH (u:User)
 RETURN u.name, u.age
 ORDER BY u.age;
 ```
-Output:
+
 ```
 -------------------
 | u.name  | u.age |
@@ -33,8 +33,7 @@ Output:
 -------------------
 ```
 
-Similarly, the following returns the users' names who lives in Waterloo ordered by user's age,
-but in descending order.
+Similarly, the following returns the names of users who live in `Waterloo`, ordered by `age` in descending order.
 
 Query:
 ```cypher
@@ -43,7 +42,7 @@ WHERE c.name = 'Waterloo'
 RETURN u.name, u.age
 ORDER BY u.age DESC;
 ```
-Output:
+
 ```
 -------------------
 | u.name  | u.age |
@@ -67,7 +66,7 @@ MATCH (a:User)-[:Follows]->(b:User)
 RETURN b.age, a.name 
 ORDER BY b.age DESC, a.name DESC;
 ```
-Output:
+
 ```
 -------------------
 | b.age | a.name  |
@@ -82,8 +81,8 @@ Output:
 -------------------
 ```
 
-Noe that there is tie for b.age in first two rows and the order is 
-decided based on a.name (in descending order). If you removed the
+Note that there is a tie for `b.age` in the first two rows and the order is 
+decided based on `a.name` (in descending order). If you removed the
 last `DESC` in the above query, the first two tuples in the result
 would be swapped.
 

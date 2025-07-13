@@ -19,10 +19,10 @@ data is persisted to disk after the CLI shell is closed. Note that if the databa
 directory does not exist, it will be created for you.
 
 ```bash
-$ kuzu ./test_db
+$ kuzu example.kuzu
 ```
 ```
-Opened the database at path: ./test_db in read-write mode.
+Opened the database example.kuzu in read-write mode.
 Enter ":help" for usage hints.
 kuzu> 
 ```
@@ -33,7 +33,7 @@ Alternatively, you can create an in-memory database by omitting the path entirel
 from your terminal:
 
 ```bash
-$ kuzu
+kuzu
 ```
 ```
 Opened the database under in-memory mode.
@@ -43,7 +43,7 @@ kuzu>
 ## Shell commands
 
 Once you start the shell, you can issue Cypher queries as shown in the [get started](/get-started)
-section. List all available shell commands by running `./kuzu -h`.
+section. List all available shell commands by running `kuzu -h`.
 
 ```bash
 $ kuzu -h
@@ -174,17 +174,17 @@ Consider that you have the following DDL file:
 
 ```cypher
 // schema.cypher
-CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name));
+CREATE NODE TABLE Person (name STRING PRIMARY KEY, age INT64);
 COPY Person FROM 'person.csv';
 ```
 
 Pipe the file content to the CLI as follows:
 
 ```bash
-./kuzu testdb < schema.cypher
+kuzu example.kuzu < schema.cypher
 ```
 ```
-Opened the database at path: ./test_db in read-write mode.
+Opened the database example.kuzu in read-write mode.
 Enter ":help" for usage hints.
 ┌────────────────────────────────┐
 │ result                         │
@@ -210,8 +210,8 @@ Time: 0.09ms (compiling), 11.75ms (executing)
 
 For queries that might take a significant amount of time to execute, a progress bar can be enabled that displays
 the number of pipelines that have been executed (each query is broken down into one or more pipelines), 
-as well as the percentage of the data processed in a pipeline. This gives an estimate for how much of a pipeline
-has executed.
+as well as the percentage of the data processed in a pipeline. This gives an estimate of how much of a pipeline
+has been executed.
 
 ![](/img/cli/progress-bar.gif)
 
@@ -250,7 +250,7 @@ To change the output mode, use the `:mode` command followed by the desired mode:
 ```cypher
 kuzu> :mode json
 mode set as json
-kuzu> CREATE NODE TABLE Person (name STRING, age INT64, PRIMARY KEY(name));
+kuzu> CREATE NODE TABLE Person (name STRING PRIMARY KEY, age INT64);
 [{"result":"Table Person has been created."}]
 ```
 
@@ -258,7 +258,7 @@ The `:max_rows` and `:max_width` commands can be used to control the number of r
 of the `box`, `column`, `table`, and `markdown` output modes.
 
 ## Multi-line Cypher statements
-The CLI supports queries written in multiple lines. If a semicolon is omitted, hitting enter will allow users to continue the query in a newline instead of executing it.
+The CLI supports queries written in multiple lines. If a semicolon is omitted, hitting enter will allow you to continue the query in a newline instead of executing it.
 ```
 kuzu> MATCH (a:person)
     ‣ RETURN a.id;

@@ -2,35 +2,38 @@
 title: "Run prepared Cypher statements"
 ---
 
-Just like we have [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) in relational databases,
-we can also have Cypher injection in graph databases. This is when a user can manipulate the query
-to execute arbitrary code that can threaten the integrity of the data. As a best practice, it's
-generally a good idea to provide parameters to your Cypher queries instead of using string literals in your code.
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-This section shows to run *prepared* Cypher statements with parameters while working with a client
-API in Kuzu.
+Similar to [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) in relational databases,
+it is possible to have Cypher injection in graph databases. This is when a malicious input can manipulate
+dynamically generated Cypher queries to execute arbitrary code.
+To avoid such security issues, it is generally a good practice to provide parameters to your Cypher queries instead of
+using concatenated string queries.
+
+This section shows how to run *prepared* Cypher statements with parameters.
 
 ## Why use parameters?
 
 Consider a scenario where you want to retrieve all persons in a database who are older than a certain age.
-Instead of hardcoding the age value into a Cypher query, it would make more sense to pass it as a parameter
-to the query, so that the same query can be reused for other values.
-
-Another situation where parameters are useful is when you want to loop through a list of records and
-write each record to the database. Because records may have different values for a given property, it's
-a good idea to use parameters to provide the values dynamically.
+Instead of recreating the Cypher query with a hardcoded age value, it is more efficient to pass the age as a parameter
+to the query, so that the same query can be reused for different values.
 
 ## Syntax
 
-Parameterized variables in Cypher are marked using the `$` symbol. The below query asks for only
-persons who are between a minimum and maximum age in the database. In the Python API, the example shows
-how to specify the parameters as a dictionary in the `parameters` argument of the `execute` method
-of the connection object.
+Parameterized variables in Cypher are marked using the `$` symbol.
+
+<Tabs>
+
+<TabItem label="Python">
+
+The query below searches for persons who are between a minimum and maximum age.
+The example Python code shows how to specify the parameters as a dictionary in the `parameters`
+argument of the `execute` method.
 
 #### ✅ Recommended
 
 The `$min_age` and `$max_age` variables in the Cypher query are mapped to the `min_age` and `max_age`
-keys in the `parameters` dictionary, which then retrieve the values from the declared Python variables.
+keys in the `parameters` dictionary.
 
 ```py
 min_age = 18
@@ -39,19 +42,17 @@ max_age = 30
 conn.execute(
     """
     MATCH (p:Person)
-    WHERE p.age > $min_age and p.age < $max_age
-    RETURN p.name
+    WHERE p.age > $min_age AND p.age < $max_age
+    RETURN p.name;
     """,
     parameters={"min_age": min_age, "max_age": max_age}
 )
 ```
 
-If you're working with other client APIs, similar principles apply.
-
 #### ❌ Not recommended
 
-Although it's possible to pass the `min_age` and `max_age` variables directly into the query as
-string literals, this is **strongly** discouraged in practice.
+Although it is possible to pass the `min_age` and `max_age` variables directly into the query as
+string literals, this is **strongly** discouraged.
 
 ```py
 min_age = 18
@@ -60,14 +61,46 @@ max_age = 30
 conn.execute(
     f"""
     MATCH (p:Person)
-    WHERE p.age > {min_age} and p.age < {max_age}
-    RETURN p.name
+    WHERE p.age > {min_age} AND p.age < {max_age}
+    RETURN p.name;
     """
 )
 ```
-:::caution[Note]
-You can also use provide parameters to `CALL QUERY_FTS_INDEX(...)` function calls.
-See the documentation on [FTS Index](/extensions/full-text-search#prepared-statement) for more details.
-:::
+</TabItem>
 
+<TabItem label="C++">
 
+We show how to create prepared statements in the C++ API using the `fts` extension.
+
+Let's parameterize the `CALL QUERY_FTS_INDEX` calls to search for books on different topics. 
+
+We first prepare a Cypher statement with a `query` parameter.
+
+```cpp
+auto preparedStatement = conn->prepare(
+    "CALL QUERY_FTS_INDEX('Book', 'book_index', $query) RETURN node.ID, score;"
+);
+```
+
+Now, we can find books on multiple topics using the prepared statement.
+
+For example, to query the index with keywords `machine learning`:
+
+```cpp
+auto result = conn->execute(
+    prepared.get(),
+    std::make_pair(std::string("query"), std::string("machine learning"))
+);
+```
+
+Similarly, to query the index with the keyword `dragons`:
+
+```cpp
+auto result = conn->execute(
+    prepared.get(),
+    std::make_pair(std::string("query"), std::string("dragons"))
+);
+```
+</TabItem>
+
+</Tabs>

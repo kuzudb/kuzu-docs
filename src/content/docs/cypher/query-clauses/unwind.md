@@ -17,7 +17,6 @@ UNWIND ["Amy", "Bob", "Carol"] AS x
 RETURN x;
 ```
 
-Output:
 ```
 ┌────────┐
 │ x      │
@@ -37,7 +36,7 @@ list of strings, after unwinding, you'd get a table of list of strings. For exam
 UNWIND [["Amy"], ["Bob", "Carol"]] AS x
 RETURN x;
 ```
-Output:
+
 ```
 ┌─────────────┐
 │ x           │
@@ -67,7 +66,7 @@ Error: Parser exception: Query must conclude with RETURN clause (line: 1, offset
  ^^^^^^
 ```
 
-The use of `WHERE`predicates directly after `UNWIND` is not allowed. You can attach a `WITH` clause
+The use of `WHERE` predicates directly after `UNWIND` is not allowed. You can attach a `WITH` clause
 immediately after `UNWIND` to achieve the result.
 
 ```cypher
@@ -77,7 +76,6 @@ WHERE x > 2
 RETURN x;
 ```
 
-Output:
 ```
 ┌───────┐
 │ x     │

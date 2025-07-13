@@ -6,54 +6,55 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 Kuzu implements a **structured property graph model** and requires a pre-defined schema.
 
-- Schema definition involves declaring node and relationship tables and their associated properties.
-- Each property key is strongly typed (types must be explicitly declared)
-- For node tables, a primary key **must** be defined
-- For relationship tables, no primary key is required
+- Schema definition involves node and relationship tables and their associated properties.
+- Each property key is strongly typed and these types must be explicitly declared.
+- For node tables, a primary key **must** be defined.
+- For relationship tables, no primary key is required.
 
 ## Persistence
 
 Kuzu supports both **on-disk** and **in-memory** modes of operation. The mode is determined
-at the time of creating the database, explained below.
+at the time of creating the database, as explained below.
 
 ### On-disk database
 
-At the time of creating your database, if you specify a database path, for example, `./demo_db`, Kuzu
-will be opened under **on-disk** mode. In this mode, Kuzu will persist all data to disk at the specified
-path. All transactions are logged in the Write-Ahead Log (WAL), in which any changes will be merged into the
+If you specify a database path when initializing a database, such as `example.kuzu`, Kuzu
+will operate in the **on-disk** mode. In this mode, Kuzu persists all data to disk at the given
+path. All transactions are logged to a Write-Ahead Log (WAL) and updates are periodically merged into the
 database files during checkpoints.
 
 :::tip[When do I need an on-disk database?]
-On-disk databases allow you to process larger-than-memory workloads in a scalable manner,
-while also providing transactional guarantees and persistence.
+On-disk databases allow you to process larger-than-memory workloads, provide transactional guarantees, and persist data to disk.
 :::
 
 ### In-memory database
 
-At the time of creating your database, if you omit the database path, specify it as an empty string
-`""`, or explicitly specify the path as `:memory:`, Kuzu will be opened under **in-memory** mode.
-In this mode, there are **no writes to the WAL**, and no data is persisted to
-disk. All data is lost when the process finishes.
+If you omit the database path, by specifying it as `""` or `:memory:`, Kuzu will operate in the **in-memory** mode.
+In this mode, there are **no writes** to the WAL, and no data is persisted to disk. All data is lost when the process finishes.
 
 :::note[When do I need an in-memory database?]
-In-memory databases are temporary, and can be useful in scenarios that require you to perform
-quick graph querying and analysis on subsets of records, without the need to persist the data.
+In-memory databases are temporary and can be useful when you want to perform quick graph querying
+and analysis on small datasets, without persisting the data to disk.
 :::
 
 ## Quick start
 
-To create your first graph, ensure that you have installed the Kuzu CLI or your preferred client API installed
-as per the instructions in the [Installation](/installation) section.
-The example below uses a graph schema with two node types, `User` and `City`, and two relationship types, `Follows` and `LivesIn`.
-The dataset in CSV format can be found [here](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
+Ensure that you have [installed](/installation) Kuzu using the CLI or your preferred client API.
+Also download the example CSV files [from our GitHub repo](https://github.com/kuzudb/kuzu/tree/master/dataset/demo-db/csv).
 
-Because Kuzu is an embedded database, there are no servers to set up -- you can simply import
-the `kuzu` module in your preferred client library and begin interacting with the database in your
-client API of choice. The examples below demonstrate how to create a graph schema and insert data
-into an on-disk database.
+```bash
+mkdir ./data/
+curl -L -o ./data/city.csv https://raw.githubusercontent.com/kuzudb/kuzu/refs/heads/master/dataset/demo-db/csv/city.csv
+curl -L -o ./data/user.csv https://raw.githubusercontent.com/kuzudb/kuzu/refs/heads/master/dataset/demo-db/csv/user.csv
+curl -L -o ./data/follows.csv https://raw.githubusercontent.com/kuzudb/kuzu/refs/heads/master/dataset/demo-db/csv/follows.csv
+curl -L -o ./data/lives-in.csv https://raw.githubusercontent.com/kuzudb/kuzu/refs/heads/master/dataset/demo-db/csv/lives-in.csv
+```
 
-You can do the same using an in-memory database by omitting the database path, specifying
-an empty string `""`, or specifying `:memory:` in your client API of choice.
+In this example, we will create a graph with two node types, `User` and `City`, and two relationship types, `Follows` and `LivesIn`.
+
+Because Kuzu is an embedded database, there are no servers to set up. You can simply import the 
+`kuzu` module in your code and run queries on the database. The examples for different client APIs
+below demonstrate how to create a graph schema and import data into an on-disk Kuzu database.
 
 <Tabs>
 <TabItem label="Python">
@@ -62,14 +63,14 @@ an empty string `""`, or specifying `:memory:` in your client API of choice.
 # main.py
 import kuzu
 
-def main() -> None:
+def main():
     # Create an empty on-disk database and connect to it
-    db = kuzu.Database("./demo_db")
+    db = kuzu.Database("example.kuzu")
     conn = kuzu.Connection(db)
 
     # Create schema 
-    conn.execute("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))")
-    conn.execute("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))")
+    conn.execute("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)")
+    conn.execute("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)")
     conn.execute("CREATE REL TABLE Follows(FROM User TO User, since INT64)")
     conn.execute("CREATE REL TABLE LivesIn(FROM User TO City)")
 
@@ -86,11 +87,12 @@ def main() -> None:
         RETURN a.name, b.name, f.since;
         """
     )
-    while response.has_next():
-        print(response.get_next())
-```
+    for row in response:
+        print(row)
 
-Result:
+if __name__ == "__main__":
+    main()
+```
 
 ```bash
 ['Adam', 'Karissa', 2020]
@@ -101,6 +103,28 @@ Result:
 
 The approach shown above returned a list of lists containing query results. See below for more
 output options for Python.
+
+**Output as a dictionary**
+
+You can also get the results of a Cypher query as a dictionary.
+
+```py
+response = conn.execute(
+    """
+    MATCH (a:User)-[f:Follows]->(b:User)
+    RETURN a.name, b.name, f.since;
+    """
+)
+for row in response.rows_as_dict():
+    print(row)
+```
+
+```bash
+{'a.name': 'Adam', 'b.name': 'Karissa', 'f.since': 2020}
+{'a.name': 'Adam', 'b.name': 'Zhang', 'f.since': 2020}
+{'a.name': 'Karissa', 'b.name': 'Zhang', 'f.since': 2021}
+{'a.name': 'Zhang', 'b.name': 'Noura', 'f.since': 2022}
+```
 
 **Pandas**
 
@@ -128,7 +152,7 @@ print(response.get_as_df())
 
 **Polars**
 
-[Polars](https://pola.rs/) is another popular DataFrames library for Python users, and you
+[Polars](https://pola.rs/) is another popular DataFrames library for Python, and you
 can process the results of a Cypher query in much the same way you did with Pandas. This assumes
 that `polars` is installed in your environment.
 
@@ -196,12 +220,12 @@ const kuzu = require("kuzu");
 
 (async () => {
   // Create an empty on-disk database and connect to it
-  const db = new kuzu.Database("./demo_db");
+  const db = new kuzu.Database("example.kuzu");
   const conn = new kuzu.Connection(db);
 
   // Create the tables
-  await conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
-  await conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+  await conn.query("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)");
+  await conn.query("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)");
   await conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
   await conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
 
@@ -222,8 +246,6 @@ const kuzu = require("kuzu");
   }
 })();
 ```
-
-Result:
 
 ```json
 { "a.name": "Adam", "f.since": 2020, "b.name": "Karissa" }
@@ -299,12 +321,12 @@ import com.kuzudb.*;
 
 public class Main {
     public static void main(String[] args) throws ObjectRefDestroyedException {
-        // Create an in-memory database and connect to it
-        Database db = new Database(":memory:");
+        // Create an empty on-disk database and connect to it
+        Database db = new Database("example.kuzu");
         Connection conn = new Connection(db);
         // Create tables.
-        conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
-        conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+        conn.query("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)");
+        conn.query("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)");
         conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
         conn.query("CREATE REL TABLE LivesIn(FROM User TO City)");
         // Load data.
@@ -330,8 +352,6 @@ To execute the example, navigate to the project root directory and run the follo
 gradle run
 ```
 
-Result:
-
 ```
 Adam|2020|Karissa
 Adam|2020|Zhang
@@ -346,7 +366,7 @@ Zhang|2022|Noura
 
 When installing the `kuzu` crate via Cargo, it will by default build and statically link Kuzu's C++
 library from source. You can also link against the dynamic release libraries (see the Rust
-[crate docs](https://docs.rs/kuzu/0.1.1-pre.31/kuzu/) for details).
+[crate docs](https://docs.rs/kuzu/latest/kuzu/) for details).
 
 The `main.rs` file contains the following code:
 
@@ -356,12 +376,12 @@ use kuzu::{Connection, Database, Error, SystemConfig};
 
 fn main() -> Result<(), Error> {
     // Create an empty on-disk database and connect to it
-    let db = Database::new("./demo_db", SystemConfig::default())?;
+    let db = Database::new("example.kuzu", SystemConfig::default())?;
     let conn = Connection::new(&db)?;
 
     // Create the tables
-    conn.query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))")?;
-    conn.query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))")?;
+    conn.query("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)")?;
+    conn.query("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)")?;
     conn.query("CREATE REL TABLE Follows(FROM User TO User, since INT64)")?;
     conn.query("CREATE REL TABLE LivesIn(FROM User TO City)")?;
 
@@ -382,8 +402,6 @@ fn main() -> Result<(), Error> {
 }
 ```
 
-Result:
-
 ```bash
 Adam, 2020, Karissa
 Adam, 2020, Zhang
@@ -403,19 +421,15 @@ package main
 
 import (
     "fmt"
-    "os"
 
     "github.com/kuzudb/go-kuzu"
 )
 
 func main() {
     // Create an empty on-disk database and connect to it
-    dbPath := "demo_db"
-    os.RemoveAll(dbPath)
-
     systemConfig := kuzu.DefaultSystemConfig()
     systemConfig.BufferPoolSize = 1024 * 1024 * 1024
-    db, err := kuzu.OpenDatabase(dbPath, systemConfig)
+    db, err := kuzu.OpenDatabase("example.kuzu", systemConfig)
     if err != nil {
         panic(err)
     }
@@ -429,14 +443,14 @@ func main() {
 
     // Create schema
     queries := []string{
-        "CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))",
-        "CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))",
+        "CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)",
+        "CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)",
         "CREATE REL TABLE Follows(FROM User TO User, since INT64)",
         "CREATE REL TABLE LivesIn(FROM User TO City)",
-        "COPY User FROM \"../dataset/demo-db/user.csv\"",
-        "COPY City FROM \"../dataset/demo-db/city.csv\"",
-        "COPY Follows FROM \"../dataset/demo-db/follows.csv\"",
-        "COPY LivesIn FROM \"../dataset/demo-db/lives-in.csv\"",
+        "COPY User FROM \"./data/user.csv\"",
+        "COPY City FROM \"./data/city.csv\"",
+        "COPY Follows FROM \"./data/follows.csv\"",
+        "COPY LivesIn FROM \"./data/lives-in.csv\"",
     }
     for _, query := range queries {
         queryResult, err := conn.Query(query)
@@ -467,13 +481,115 @@ func main() {
         fmt.Println(slice)
     }
 ```
-Result:
 
 ```
 [Adam 2020 Karissa]
 [Adam 2020 Zhang]
 [Karissa 2021 Zhang]
 [Zhang 2022 Noura]
+```
+
+</TabItem>
+
+<TabItem label="Swift">
+
+Initialize a new project using the Swift package manager:
+
+```bash
+mkdir kuzu-swift-example
+cd kuzu-swift-example
+swift package init --type=executable
+```
+
+Update the `Package.swift` file:
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "kuzu-swift-example",
+    platforms: [
+        .macOS(.v11),
+        .iOS(.v14),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "main"),
+    ],
+    targets: [
+        // Targets are the basic building blocks of a package, defining a module or a test suite.
+        // Targets can depend on other targets in this package and products from dependencies.
+        .executableTarget(
+            name: "kuzu-swift-example",
+            dependencies: [
+                .product(name: "Kuzu", package: "kuzu-swift"),
+            ]
+        ),
+    ]
+)
+```
+
+This configuration sets the minimum deployment target and adds the `kuzu-swift` client as a dependency.
+
+Next, replace the contents of `Sources/main.swift`:
+
+```swift
+import Kuzu
+
+// Create an empty on-disk database and connect to it
+let db = try! Database("example.kuzu")
+let conn = try! Connection(db)
+
+// Create schema and load data
+let queries = [
+    "CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)",
+    "CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)",
+    "CREATE REL TABLE Follows(FROM User TO User, since INT64)",
+    "CREATE REL TABLE LivesIn(FROM User TO City)",
+    "COPY User FROM 'data/user.csv'",
+    "COPY City FROM 'data/city.csv'",
+    "COPY Follows FROM 'data/follows.csv'",
+    "COPY LivesIn FROM 'data/lives-in.csv'",
+]
+
+for query in queries {
+    _ = try! conn.query(query)
+}
+
+// Execute Cypher query
+let res = try! conn.query("MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.since, b.name")
+for tuple in res {
+    let dict = try! tuple.getAsDictionary()
+    print(dict)
+}
+```
+
+Build the project:
+
+```bash
+swift build -c release
+```
+
+Copy the output executable so that it can access the `data` directory:
+
+```bash
+cp ./.build/arm64-apple-macosx/release/kuzu-swift-example . 
+```
+
+If you are using an Intel Mac or Linux, replace `arm64-apple-macosx` with your specific architecture.
+
+Finally, run the executable.
+
+```bash
+./kuzu-swift-example
+```
+
+You should see the following output:
+
+```bash
+["b.name": Optional("Karissa"), "e.since": Optional(2020), "a.name": Optional("Adam")]
+["e.since": Optional(2020), "a.name": Optional("Adam"), "b.name": Optional("Zhang")]
+["b.name": Optional("Zhang"), "e.since": Optional(2021), "a.name": Optional("Karissa")]
+["e.since": Optional(2022), "a.name": Optional("Zhang"), "b.name": Optional("Noura")]
 ```
 
 </TabItem>
@@ -513,14 +629,14 @@ using namespace std;
 int main() {
     // Create an empty on-disk database and connect to it
     SystemConfig systemConfig;
-    auto database = make_unique<Database>("test", systemConfig);
+    auto database = make_unique<Database>("example.kuzu", systemConfig);
 
     // Connect to the database.
     auto connection = make_unique<Connection>(database.get());
 
     // Create the schema.
-    connection->query("CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))");
-    connection->query("CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))");
+    connection->query("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)");
+    connection->query("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)");
     connection->query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
     connection->query("CREATE REL TABLE LivesIn(FROM User TO City)");
 
@@ -569,8 +685,6 @@ cl /std:c++20 /EHsc main.cpp kuzu_shared.lib
 ./main.exe
 ```
 
-Result:
-
 ```bash
 Adam 2020 Karissa
 Adam 2020 Zhang
@@ -612,7 +726,7 @@ int main()
 {
     // Create an empty on-disk database and connect to it
     kuzu_database db;
-    kuzu_database_init("test", kuzu_default_system_config(), &db);
+    kuzu_database_init("example.kuzu", kuzu_default_system_config(), &db);
 
     // Connect to the database.
     kuzu_connection conn;
@@ -620,9 +734,9 @@ int main()
 
     // Create the schema.
     kuzu_query_result result;
-    kuzu_connection_query(&conn, "CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name))", &result);
+    kuzu_connection_query(&conn, "CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)", &result);
     kuzu_query_result_destroy(&result);
-    kuzu_connection_query(&conn, "CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name))", &result);
+    kuzu_connection_query(&conn, "CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)", &result);
     kuzu_query_result_destroy(&result);
     kuzu_connection_query(&conn, "CREATE REL TABLE Follows(FROM User TO User, since INT64)", &result);
     kuzu_query_result_destroy(&result);
@@ -703,8 +817,6 @@ cl main.c kuzu_shared.lib
 ./main.exe
 ```
 
-Result:
-
 ```bash
 Adam follows Karissa since 2020
 Adam follows Zhang since 2020
@@ -720,10 +832,10 @@ When using the Kuzu CLI's shell, you can create an on-disk database by specifyin
 the `kuzu` command in the terminal.
 
 ```bash
-kuzu ./demo_db
+kuzu example.kuzu
 ```
 ```
-Opened the database at path: ./demo_db in read-write mode.
+Opened the database example.kuzu in read-write mode.
 Enter ":help" for usage hints.
 kuzu> 
 ```
@@ -744,8 +856,8 @@ correctly and fail to execute.
 
 ```cypher
 // Create schema
-CREATE NODE TABLE User(name STRING, age INT64, PRIMARY KEY (name));
-CREATE NODE TABLE City(name STRING, population INT64, PRIMARY KEY (name));
+CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64);
+CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64);
 CREATE REL TABLE Follows(FROM User TO User, since INT64);
 CREATE REL TABLE LivesIn(FROM User TO City);
 

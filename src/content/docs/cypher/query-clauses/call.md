@@ -3,12 +3,12 @@ title: Call
 description: CALL clause is a reading clause used for executing schema functions.
 ---
 
-The `CALL` clause is used for executing schema functions. This way of using `CALL` needs to be followed
-with other query clauses, such as `RETURN` or `YIELD` (see below for example usage). Note that the `CALL` clause
+The `CALL` clause is used for executing schema functions. This way of using `CALL` must be followed
+by other query clauses, such as `RETURN` or `YIELD` (see below for example usage). Note that the `CALL` clause
 defined here is different from the standalone [`CALL`](/cypher/configuration) **statement** used for changing
 the database configuration.
 
-The following tables lists the built-in schema functions you can use with the `CALL` clause:
+The following table lists the built-in schema functions you can use with the `CALL` clause:
 
 <div class="scroll-table">
 
@@ -27,6 +27,7 @@ The following tables lists the built-in schema functions you can use with the `C
 | `SHOW_LOADED_EXTENSIONS` | returns all loaded extensions |
 | `SHOW_INDEXES` | returns all indexes built in the system |
 | `SHOW_PROJECTED_GRAPHS` | returns all existing projected graphs in the system |
+| `PROJECTED_GRAPH_INFO` | returns the given projected graph information |
 
 </div>
 
@@ -49,7 +50,7 @@ This section describes the schema functions that you can use with the `CALL` cla
 ```cypher
 CALL TABLE_INFO('User') RETURN *;
 ```
-Output:
+
 ```
 ┌─────────────┬──────────────┬────────┬──────────────────────┬──────────────┐
 │ property id │ name         │ type   │ default expression   │ primary key  │
@@ -67,7 +68,7 @@ Output:
 ```cypher
 CALL current_setting('threads') RETURN *;
 ```
-Output:
+
 ```
 ┌─────────┐
 │ threads │
@@ -89,7 +90,7 @@ Output:
 ```cypher
 CALL db_version() RETURN *;
 ```
-Output:
+
 ```
 ┌─────────┐
 │ version │
@@ -113,7 +114,7 @@ Output:
 ```cypher
 CALL show_tables() RETURN *;
 ```
-Output:
+
 ```
 ┌────────┬─────────┬────────┬───────────────┬─────────┐
 │ id     │ name    │ type   │ database name │ comment │
@@ -141,7 +142,7 @@ Show connection on a relationship table:
 ```cypher
 CALL show_connection('LivesIn') RETURN *;
 ```
-Output:
+
 ```
 ┌───────────────────┬────────────────────────┬──────────────────────────┬───────────────────────────────┐
 │ source table name │ destination table name │ source table primary key │ destination table primary key │
@@ -163,7 +164,7 @@ Output:
 ```cypher
 CALL show_attached_databases() RETURN *;
 ```
-Output:
+
 ```
 ┌─────────────┬────────────────┐
 │ name        │ database type  │
@@ -178,11 +179,11 @@ Output:
 
 `SHOW_WARNINGS` returns the contents of the
 [Warnings Table](/import#warnings-table-inspecting-skipped-rows). This is a feature
-related to [ignoring errors](/import#ignore-erroneous-rows) when running `COPY/LOAD FROM` statements to scan files. 
-They will only be reported if the [`IGNORE_ERRORS`](/import#ignore-erroneous-rows) setting is enabled. 
+related to [ignoring errors](/import#ignore-erroneous-rows) when running `COPY/LOAD FROM` statements to scan files.
+They will only be reported if the [`IGNORE_ERRORS`](/import#ignore-erroneous-rows) setting is enabled.
 Note that the number of warnings that are stored is limited by the `warning_limit` parameter.
 See [configuration](/cypher/configuration#configure-warning-limit) for more details on how to set the warning limit.
-After `warning_limit` many warnings are stored, any new warnings generated will not be stored. 
+After `warning_limit` many warnings are stored, any new warnings generated will not be stored.
 
 | Column | Description | Type |
 | ------ | ----------- | ---- |
@@ -195,7 +196,7 @@ After `warning_limit` many warnings are stored, any new warnings generated will 
 ```cypher
 CALL show_warnings() RETURN *;
 ```
-Output:
+
 ```
 ┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
 │ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
@@ -206,7 +207,7 @@ Output:
 ```
 
 ### CLEAR_WARNINGS
-If you would like to clear the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows), you can run the `CLEAR_WARNINGS` function. 
+If you would like to clear the contents of the [Warnings Table](/import#warnings-table-inspecting-skipped-rows), you can run the `CLEAR_WARNINGS` function.
 This function has no output.
 
 ```cypher
@@ -225,7 +226,6 @@ If you would like to know all official [extensions](/extensions) available in Ku
 CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
 ```
 
-Output:
 ```
 ┌──────────┬─────────────────────────────────────────────────────────────────────────┐
 │ name     │ description                                                             │
@@ -298,25 +298,72 @@ To list all existing projected graphs in a Kuzu database, you can use the `SHOW_
 | Column | Description | Type |
 | ------ | ----------- | ---- |
 | name | the name of the projected graph | STRING |
-| nodes | the nodes with predicates in the projected graph | STRING |
-| rels | the rels with predicates in the projected graph | STRING |
+| type | the type of the projected graph | STRING |
 
 ```cypher
 CALL SHOW_PROJECTED_GRAPHS() RETURN *;
 ```
 
 ```
-┌────────────────┬───────────────────────┬──────────────────────┐
-│ name           │ nodes                 │ rels                 │
-│ STRING         │ STRING                │ STRING               │
-├────────────────┼───────────────────────┼──────────────────────┤
-│ social_network │ [{'table': 'person'}] │ [{'table': 'knows'}] │
-└────────────────┴───────────────────────┴──────────────────────┘
+┌────────────────┬────────┐
+│ name           │ type   │
+│ STRING         │ STRING │
+├────────────────┼────────┤
+│ student        │ CYPHER │
+│ social-network │ NATIVE │
+└────────────────┴────────┘
+```
+
+### PROJECTED_GRAPH_INFO
+To show detailed information of the projected graph, you can utilize the `PROJECTED_GRAPH_INFO` function.
+
+There are two types of projected graphs:
+
+### Native projected graph
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| table type | the type of the table (NODE/REL) | STRING |
+| table name | the name of the table | STRING |
+| predicate | the predicates defined on the table | STRING |
+
+
+### Cypher projected graph
+| Column | Description | Type |
+| ------ | ----------- | ---- |
+| cypher statement | the cypher statement used to create the projected graph | STRING |
+
+### Cypher
+
+```cypher
+call PROJECTED_GRAPH_INFO('student-social-network') RETURN *;
+```
+
+```
+┌────────────┬────────────┬────────────────┐
+│ table type │ table name │ predicate      │
+│ STRING     │ STRING     │ STRING         │
+├────────────┼────────────┼────────────────┤
+│ NODE       │ person     │ n.age < 18     │
+│ REL        │ knows      │ r.since > 1997 │
+└────────────┴────────────┴────────────────┘
+```
+
+```cypher
+call PROJECTED_GRAPH_INFO('student') RETURN *;
+```
+
+```
+┌─────────────────────────────────────┐
+│ cypher statement                    │
+│ STRING                              │
+├─────────────────────────────────────┤
+│ MATCH (n) WHERE n.age < 18 RETURN n │
+└─────────────────────────────────────┘
 ```
 
 ## YIELD
 
-The `YIELD` clause in Kuzu is used to rename the return columns of a `CALL` function to avoid naming conflicition and better readability.
+The `YIELD` clause in Kuzu allows renaming the return columns of a `CALL` function to prevent naming conflicts and improve readability.
 Usage:
 ```cypher
 CALL FUNC()
@@ -330,8 +377,6 @@ CALL current_setting('threads')
 YIELD threads as threads_num
 RETURN *;
 ```
-
-Result:
 ```
 ┌─────────────┐
 │ threads_num │
@@ -341,16 +386,14 @@ Result:
 └─────────────┘
 ```
 
-Another useful scenario is to avoid naming conflicition when two call functions in the same query returns a column with the same name.
+Another useful scenario is to avoid naming conflicts when two call functions in the same query return a column with the same name.
 ```cypher
 CALL table_info('person')
 YIELD `property id` as person_id,  name as person_name, type as person_type, `default expression` as person_default, `primary key` as person_pk
 CALL table_info('student')
-YIELD `property id` as student_id,  name as student_name, type as student_type, `default expression` as student_default, `primary key` as student_pk 
+YIELD `property id` as student_id,  name as student_name, type as student_type, `default expression` as student_default, `primary key` as student_pk
 RETURN *;
 ```
-
-Result:
 ```
 ┌───────────┬─────────────┬─────────────┬────────────────┬───────────┬────────────┬──────────────┬──────────────┬─────────────────┬────────────┐
 │ person_id │ person_name │ person_type │ person_default │ person_pk │ student_id │ student_name │ student_type │ student_default │ student_pk │

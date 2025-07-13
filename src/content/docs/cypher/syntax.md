@@ -11,15 +11,17 @@ based on [openCypher](https://opencypher.org/resources/).
 
 ### Encoding
 
-The Cypher query parser looks for an input `STRING` that consists of ASCII or unicode characters from non-English
-languages. An example is shown below for creating and querying from a node table of German books.
+The Cypher query parser looks for an input `STRING` that consists of ASCII or unicode characters.
+An example is shown below for creating and querying from a node table of German books.
 
 ```cypher
 // Create a node table of books in German
-CREATE NODE TABLE Bücher (title STRING, price INT64, PRIMARY KEY (title))
-CREATE (n:Bücher {title: 'Der Thron der Sieben Königreiche'}) SET n.price = 20
+CREATE NODE TABLE Bücher (title STRING PRIMARY KEY, price INT64);
+CREATE (n:Bücher {title: 'Der Thron der Sieben Königreiche'});
+SET n.price = 20;
 // Query using the unicode representation of the table name
-MATCH (n:Bücher) RETURN label(n)
+MATCH (n:Bücher)
+RETURN label(n);
 ```
 ```
 ┌─────────┐
@@ -32,23 +34,25 @@ MATCH (n:Bücher) RETURN label(n)
 
 ### Escaping
 
-To use special characters in identifiers, you can escape them by encapsulating the identifier in backticks \`.
-An example is shown below for creating a node table of house names that contain special characters.
+To use reserved keywords in identifiers, you can escape them by encapsulating the identifier in backticks `` ` ``.
+For example, using the label `Return` for a node table requires escaping.
 
 ```cypher
-// Create a node table of house names that contain special characters
-CREATE NODE TABLE `HouseΨ` (id INT64, member STRING, PRIMARY KEY (id))
-CREATE (n:`HouseΨ` {id: 1}) SET n.member = 'Alice'
-// Query on the unicode table name
-MATCH (n:`HouseΨ`) RETURN n.*
+// Create a node table using a label that is also a reserved keyword
+CREATE NODE TABLE `Return` (id INT64 PRIMARY KEY, date TIMESTAMP);
+CREATE (n:`Return` {id: 1})
+SET n.date = TIMESTAMP('2025-01-01');
+// Query the node table
+MATCH (n:`Return`)
+RETURN n.*;
 ```
 ```
-┌───────┬──────────┐
-│ n.id  │ n.member │
-│ INT64 │ STRING   │
-├───────┼──────────┤
-│ 1     │ Alice    │
-└───────┴──────────┘
+┌───────┬─────────────────────┐
+│ n.id  │ n.date              │
+│ INT64 │ TIMESTAMP           │
+├───────┼─────────────────────┤
+│ 1     │ 2025-01-01 00:00:00 │
+└───────┴─────────────────────┘
 ```
 
 ### Multiline statements and termination
@@ -83,10 +87,10 @@ Examples of subclauses (that must reside under a clause) include:
 
 Comments are for humans to read and document their code, and are ignored by the
 query parser.
-- Single line comments begin with a double slash (`//`) and continue up until the end of the
+- Single line comments begin with `//` and continue up to the end of the
 line. They can be placed at the beginning, in the middle, or at the end of a query.
-- Multi-line comments begins with a slash and asterisk (`/*`) and continues until it ends with an
-asterisk and a slash (`*/`). They can be useful for comments that are too long for one line.
+- Multi-line comments begin with `/*` and continue until they encounter `*/`.
+They can be used for comments that are too long to fit on one line.
 
 Some examples are below.
 
@@ -128,15 +132,15 @@ the column name in the source is `mycolumn`.
 
 The following naming rules and guidelines apply to node and relationship table names:
 
-- Should begin with an valid alphabetic character of type unicode string -- `Person`, `CarOwner` 
-- Should **not** begin with a number -- `1Person` is invalid, but `Person1` is valid
-- Should **not** contain whitespaces or special characters other than underscores -- `CarOwner` is valid, but `Car Owner` is invalid
+- Should begin with a valid alphabetic character of type unicode string: `Person`, `CarOwner` 
+- Should **not** begin with a number: `1Person` is invalid, but `Person1` is valid
+- Should **not** contain whitespaces or special characters other than underscores: `CarOwner` is valid, but `Car Owner` is invalid
 
 The following naming conventions are recommended for node and relationship tables:
 
 | Type | Naming convention | Do | Don't |
 |---|---|---|---|
-| Node tables | CamelCase (begin with upper case letter) | `CarOwner` | `car_owner` |
+| Node tables | CamelCase | `CarOwner` | `car_owner` |
 | Relationship tables | CamelCase or UPPERCASE separated by underscores | `IsPartOf`/`IS_PART_OF` | `isPartOf` or `is_part_of` |
 
 ## Parameters
@@ -156,8 +160,7 @@ in the following contexts:
 - Function names
 - Parameters
 
-To use a reserved keyword as an identifier in the above contexts, you can escape it by
-encapsulating the keyword in backticks \`, such as \``DEFAULT`\`, and this makes it a valid identifier.
+To use a reserved keyword as an identifier, you can [escape it](#escaping).
 
 The following list shows the reserved keywords in Cypher, organized by category:
 

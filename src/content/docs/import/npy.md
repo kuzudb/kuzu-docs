@@ -13,7 +13,7 @@ to import a set of `*.npy` files into a node table.
 This feature is an experimental feature and will evolve. Currently, this feature has the following constraints:
 - **Import to node table only**: For now, Kuzu supports loading `.npy` files into **node tables** only.
 - **NPY file mapped to column**: Each `.npy` file will be loaded as a node table column. So, in the `COPY FROM` statement, the
-number of `.npy` files must be equal to the number of columns defined in DDL.
+number of `.npy` files must be equal to the number of columns defined in the DDL.
 - **Numerical types only**: A `.npy` file can only contain numerical values.
 :::
 
@@ -22,7 +22,7 @@ Consider a `Paper` table with an `id` column, a feature column that is an embedd
 a `year` column and a `label` column as ground truth. We first define the schema with the following statement:
 
 ```cypher
-CREATE NODE TABLE Paper(id INT64, feat FLOAT[768], year INT64, label DOUBLE, PRIMARY KEY(id));
+CREATE NODE TABLE Paper(id INT64 PRIMARY KEY, feat FLOAT[768], year INT64, label DOUBLE);
 ```
 
 The raw data is stored in `.npy` format where each column is represented as a NumPy array on disk. The files are

@@ -3,7 +3,7 @@ title: Import Panel
 ---
 
 The Import Panel allows you to import data into your database from CSV or Parquet files via the UI.
-You can create new node/relationship or import data into existing tables via the imported
+You can create new node/relationship tables or import data into existing tables via the imported
 files. To get started, click on the "Import" tab on the top right.
 
 ## File sniffing
@@ -16,10 +16,10 @@ The supported formats for import are CSV and Parquet.
 
 <img src="/img/visualization/import-panel-intro.png" />
 
-Either drag-drop your desired files into the drop zone, or click "Browse Files" to
+Either drag and drop your desired files into the drop zone, or click "Browse Files" to
 multi-select files from your local file system. When you load the files, they will
-be "sniffed" (i.e., their headers parsed and the their overall structure validated).
-Once file sniffing is successful, you will be taken to the file setup page, that looks like the
+be "sniffed" (i.e., their headers parsed and their overall structure validated).
+Once file sniffing is successful, you will be taken to the file setup page, which looks like the
 following:
 
 <img src="/img/visualization/import-panel-file-setup.png" />
@@ -44,7 +44,7 @@ as `name` and `age`, and the primary key column as `name`.
 
 ### CSV import options
 
-CSV import options can be specified, such as custom quote character, escape characters, delimiters, etc.
+CSV import options can be specified, such as custom quote characters, escape characters, delimiters, etc.
 To do this, expand the table's options and click on "Configure CSV format". The options are identical
 to those available in the [CSV import](/import/csv/) section of the documentation.
 
@@ -82,8 +82,8 @@ setting the tables names as follows:
 - `LivesIn`: Table name of the lives-in relationship between `User` and `City` nodes
 
 The naming convention for node tables is generally to capitalize the first letter, e.g., `City`. For relationship tables,
-it's recommended to use capitalized words separated by underscores (e.g., `LIVES_IN`) or use PascalCase, for e.g., `LivesIn`.
-This clearly separates words in a readable fashion. The naming convention you follow is totally up to
+it's recommended to use capitalized words separated by underscores (e.g., `LIVES_IN`) or use PascalCase, e.g., `LivesIn`.
+This clearly separates words in a readable fashion. The naming convention you follow is entirely up to
 you, but it's recommended to be consistent in your naming across all database tables.
 
 ## Data import

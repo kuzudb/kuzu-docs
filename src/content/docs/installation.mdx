@@ -4,9 +4,9 @@ title: Install Kuzu
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Kuzu is an embedded graph database that can be used from the command line as well as
-a variety of programming languages. This page shows how to install Kuzu for the various client
-libraries available in various languages.
+Kuzu is an embedded graph database that can be used from the command line and from
+a variety of programming languages. This page shows all the ways you can install Kuzu.
+After installation, you can learn how to run Kuzu by [creating your first graph](/get-started).
 
 ## Command Line (Shell)
 
@@ -16,23 +16,21 @@ executable with no dependencies that can be used to interact with a Kuzu databas
 <Tabs>
 <TabItem label="Linux">
 
-Use a tool like cURL to download the latest version of the Kuzu CLI to your local machine.
-
-**x86-64**
+Use a tool like `curl` to download the latest version of the Kuzu CLI to your local machine.
 
 ```bash
+# x86-64
 curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/kuzu_cli-linux-x86_64.tar.gz
-```
-
-**aarch64**
-
-```bash
+# aarch64
 curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/kuzu_cli-linux-aarch64.tar.gz
+
+tar xzf kuzu_cli-*.tar.gz
 ```
 
-Extract the `kuzu_cli-linux-*.tar.gz` archive to obtain a file named `kuzu`:
+Now you can run Kuzu from the command line.
+
 ```bash
-tar xzf kuzu_cli-linux-*.tar.gz
+./kuzu
 ```
 
 </TabItem>
@@ -45,13 +43,27 @@ You can install the Kuzu CLI using Homebrew.
 brew install kuzu
 ```
 
+You can now run Kuzu from the command line.
+
+```bash
+kuzu
+```
+
+Alternatively, you can download the Kuzu CLI directly.
+
+```bash
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/kuzu_cli-osx-universal.tar.gz
+tar xzf kuzu_cli-*.tar.gz
+./kuzu
+```
+
 </TabItem>
 
 <TabItem label="Windows">
 
-Use a tool like cURL to download the latest version of the Kuzu CLI to your local machine. Alternatively,
-simply copy-paste [this URL](https://github.com/kuzudb/kuzu/releases/download/v0.10.0/kuzu_cli-windows-x86_64.zip)
-into your browser.
+Use a tool like `curl` to download the latest version of the Kuzu CLI to your local machine. Alternatively,
+simply open [this URL](https://github.com/kuzudb/kuzu/releases/download/v0.10.0/kuzu_cli-windows-x86_64.zip)
+in your browser.
 
 ```bash
 curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/kuzu_cli-windows-x86_64.zip
@@ -65,23 +77,24 @@ From within the terminal, you can then run `./kuzu.exe`.
 
 <TabItem label="Nix">
 
-On Linux, macOS, and WSL2, you can also use [`Nix`](https://nix.dev) to run the Kuzu CLI.
+On Linux, macOS, and WSL2, you can also use [`Nix`](https://nixos.org/learn) to run the Kuzu CLI.
 
 Run Kuzu in a temporary shell:
 
 ```bash
 nix-shell -p kuzu
 kuzu
-``````
+```
 
-Alternatively, you can install Kuzu declaratively using Home Manager or NixOS configuration:
+Alternatively, you can install Kuzu declaratively using [NixOS](https://nixos.org/manual/nixos/stable/#sec-package-management) or [Home Manager](https://github.com/nix-community/home-manager) configuration:
 
 ```nix
 {
-  environment.systemPackages = [ pkgs.nix ]; // NixOS
-  home.packages = [ pkgs.nix ];              // Home Manager
+  environment.systemPackages = [ pkgs.kuzu ]; // NixOS
+  home.packages = [ pkgs.kuzu ];              // Home Manager
 }
 ```
+
 </TabItem>
 
 </Tabs>
@@ -143,8 +156,7 @@ The latest stable version is available on [Maven Central](https://central.sonaty
 ## Rust
 
 Use Cargo to install the Kuzu Rust client library. This will by default build and statically link Kuzu's C++
-library from source. You can also link against the dynamic release libraries (see the Rust
-[crate docs](https://docs.rs/kuzu/latest/kuzu/) for details).
+library from source. You can also link against the dynamic release libraries, as described in the [crate docs](https://docs.rs/kuzu/latest/kuzu/#building).
 
 ```bash
 cargo add kuzu
@@ -152,61 +164,46 @@ cargo add kuzu
 
 ## Go
 
-Kuzu's Go API is a wrapper around the C API of Kuzu. The installation step below assumes that you have Go
-installed and available on your machine, and that there's an initialized Go project that has a `go.mod`
-in the directory. If you need to create a new Go module, follow [this tutorial](https://go.dev/doc/tutorial/create-module).
-
-<Tabs>
-
-<TabItem label="Linux">
+Kuzu's Go API is a wrapper around the C API of Kuzu. The installation step below assumes that you have
+initialized a Go project that has a `go.mod` file, as described in [the official tutorial](https://go.dev/doc/tutorial/create-module).
 
 ```bash
 go get github.com/kuzudb/go-kuzu
 ```
 
-</TabItem>
+## Swift
 
-<TabItem label="macOS">
+To add `kuzu-swift` to your Swift project, you can use the Swift package manager.
 
-```bash
-go get github.com/kuzudb/go-kuzu
-```
+Add `.package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "main")` to your `Package.swift` dependencies.
+You can also use a specific version tag, e.g., `branch: "v0.11.0"`.
 
-</TabItem>
+Alternatively, you can add the package through Xcode:
+1. Open your Xcode project.
+2. Go to `File` > `Add Packages Dependencies...`.
+3. Enter the URL of the kuzu-swift repository: `https://github.com/kuzudb/kuzu-swift`.
+4. Select the version you want to use (e.g., `main` branch or a specific tag).
 
-<TabItem label="Windows">
-
-We do not yet provide a pre-compiled Go package for Windows. If you need to use the Go API on Windows,
-please upvote this [issue](https://github.com/kuzudb/go-kuzu/issues/12) on GitHub and leave a comment
-to notify the Kuzu team.
-
-</TabItem>
-
-</Tabs>
 
 ## C/C++
 
-Use a tool like cURL to download the latest version of the Kuzu C/C++ binaries to your local machine
-(or, simply copy-paste the below HTTPS URL into your browser).
+Use a tool like `curl` to download the latest version of the Kuzu C/C++ binaries to your local machine.
 
-The Kuzu C++ client is distributed as so/dylib/dll+lib library files along with a header file (`kuzu.hpp`).
-Once you've downloaded and extracted the C++ files into a directory, it's ready to use without
-any additional installation. You just need to specify the library search path for the linker.
+The Kuzu C++ client is distributed as a so/dylib/dll+lib library file along with a header file (`kuzu.hpp`).
+Once you've downloaded and extracted the C++ files into a directory, you can link it to your C++
+program by adding the directory to your build system's search paths.
 
 <Tabs>
 
 <TabItem label="Linux">
 
-**x86-64**
-
 ```bash
+# x86-64
 curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/libkuzu-linux-x86_64.tar.gz
-```
-
-**aarch64**
-
-```bash
+# aarch64
 curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/libkuzu-linux-aarch64.tar.gz
+
+tar xzf libkuzu-*.tar.gz
 ```
 
 </TabItem>
@@ -215,6 +212,8 @@ curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/libkuzu-linu
 
 ```bash
 curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/libkuzu-osx-universal.tar.gz
+
+tar xzf libkuzu-*.tar.gz
 ```
 
 </TabItem>
@@ -229,13 +228,24 @@ curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.10.0/libkuzu-wind
 
 </Tabs>
 
+## Kuzu Explorer
+
+Kuzu Explorer is a web-based GUI for Kuzu. It allows you to explore and query your Kuzu database
+using a web browser. Refer to the Kuzu Explorer [GitHub repo](https://github.com/kuzudb/kuzu-explorer)
+for more details.
+
+## Kuzu MCP Server
+
+Our [Model Context Protocol](https://modelcontextprotocol.io/introduction) server allows you to expose
+your Kuzu database as a tool that can be used by LLMs and agents.
+Refer to the Kuzu-MCP [GitHub repo](https://github.com/kuzudb/kuzu-mcp-server) for more details.
 
 ## Nightly Builds
 
-If you want access to the bleeding edge feature set in Kuzu, install from our nightly build pipeline.
+If you want access to the latest features in development, you can use our nightly builds.
 
-- Python: `uv pip install --pre kuzu` or `pip install --pre kuzu`
+- Python: `uv pip install --pre kuzu`
 - Node.js: `npm i kuzu@next`
 - Java: The latest snapshot version is available on [GitHub Packages](https://github.com/kuzudb/kuzu/packages/2258307)
-- For the CLI, C/C++ shared libraries, and Rust, the latest nightly versions for each can be
-downloaded from the latest run of [this GitHub Actions pipeline](https://github.com/kuzudb/kuzu/actions/workflows/build-and-deploy.yml).
+- For the CLI, C/C++ shared libraries, and Rust crate, the latest nightly versions for each can be
+downloaded from the latest run of [this GitHub Actions workflow](https://github.com/kuzudb/kuzu/actions/workflows/build-and-deploy.yml).

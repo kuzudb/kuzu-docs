@@ -3,7 +3,7 @@ title: Cypher manual
 ---
 
 Cypher is a high-level query language for the property graph data model.
-If you're coming from a SQL background, it's syntax may seem familiar. Some common analogues between
+If you're coming from a SQL background, its syntax may seem familiar. Some common analogues between
 SQL and Cypher are listed below:
 
 | Type | SQL | Cypher
@@ -23,7 +23,7 @@ query languages, most of its semantics can be understood as mappings to relation
 for selections, joins, projections and aggregations.
 
 Kuzu implements openCypher's[^1] standard predicates and expressions. The following sections in this
-chapter covers all Cypher statements, clauses, expressions and functions implemented in Kuzu.
+chapter cover all Cypher statements, clauses, expressions and functions implemented in Kuzu.
 
 ## Statements vs. clauses
 

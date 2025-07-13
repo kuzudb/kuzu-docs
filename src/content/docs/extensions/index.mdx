@@ -2,73 +2,120 @@
 title: Extensions
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { CardGrid, LinkCard } from '@astrojs/starlight/components';
-
-Kuzu has an extension framework designed to extend its capabilities. Our goal is to implement
-more and more extensions over time, such as supporting new data types, functions and
-indices, or to better integrate with external systems.
-
-Extensions expose several internal interfaces of Kuzu, for example, the FileSystem, and can have
-multiple implementations. Extensions are implementations of these interfaces that can be
-dynamically loaded at runtime.
-
+Kuzu has an extension API that is designed to dynamically extend its capabilities. Extensions allow
+you to dynamically load the functionality you need at runtime, while helping limit the size of
+the core Kuzu library.
 
 # Official Extensions
 
 The available extensions for each OS are listed [here](https://extension.kuzudb.com/).
 
 :::caution[Note]
-Third-party developers are also welcome to develop their own extensions for custom functionality.
-However, it's important to note that the extension API is still in development and may change in the future.
-When it becomes more stable, we will document in more detail how users can implement their own extensions
+Third-party developers are welcome to develop their own extensions.
+However, note that the extension API is still in development and may change in the future.
+
+We plan to stabilize the extension API and document how you can implement your own extensions.
 For now, please reach out to us on Discord or GitHub if you need a custom extension for your use case.
 :::
 
 ## Available extensions
 
-The following extensions are implemented, with more to come:
+The following extensions are currently implemented:
 
 | Extension | Description |
 |----------|----------|
 | [algo](/extensions/algo) | Graph algorithms |
+| [azure](/extensions/azure) | Scan from Azure Blob Storage and Azure Data Lake Storage (ADLS) |
 | [delta](/extensions/attach/delta) | Scan data from Delta Lake tables |
 | [duckdb](/extensions/attach/duckdb) | Scan data from an attached DuckDB database |
 | [fts](/extensions/full-text-search) | Perform full-text search using BM25 |
-| [httpfs](/extensions/httpfs) | Read and write files over HTTP(s) protocol. Also used for [attaching to a remote Kuzu database](/extensions/attach/kuzu). |
+| [httpfs](/extensions/httpfs) | Read and write files over HTTP(S) protocol. Also used for [attaching a remote Kuzu database](/extensions/attach/kuzu). |
 | [iceberg](/extensions/attach/iceberg) | Scan data from Iceberg tables |
 | [json](/extensions/json) | Scan and manipulate JSON data |
+| [llm](/extensions/llm) | Generate text embeddings using external provider APIs |
 | [neo4j](/extensions/neo4j) | Migrate data from Neo4j into Kuzu |
 | [postgres](/extensions/attach/postgres) | Scan data from an attached PostgreSQL database |
 | [sqlite](/extensions/attach/sqlite) | Scan data from an attached SQLite database |
 | [unity](/extensions/attach/unity) | Scan data from Unity Catalog tables |
 | [vector](/extensions/vector) | Perform vector similarity search |
 
-## Using Extensions in Kuzu
+## Using extensions in Kuzu
 
 This section describes how to use officially supported extensions in Kuzu.
 
-### Installing an official extension
+### List available extensions
 
-Kuzu requires the user to install the extension before loading and using it.
-Official extensions can be simply installed by running the install command:
+You can list all available official extensions by running:
 
 ```sql
-INSTALL <extension_name>
+CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
 ```
 
-Where `extension_name` is the name of the extension to be installed.
+### Install an extension
 
-### Loading an official extension
-After installation, a load command is required to ask Kuzu to dynamically load the shared library.
-Extensions installed using the `INSTALL` command can be loaded directly as follows:
+Kuzu requires you to install the extension before loading and using it.
+
+Official extensions can be installed by running the `INSTALL` command:
 
 ```sql
-LOAD <extension_name>
+INSTALL <EXTENSION_NAME>;
+```
+You only need to install an extension once. 
+
+### Update an extension
+
+If you run the `INSTALL` command for an extension that is already installed,
+the second install command will not perform any action.
+
+If you want to re-download an extension for any reason, for example if the extension is not working
+properly, you can use the `UPDATE` command:
+
+```sql
+UPDATE <EXTENSION_NAME>;
+```
+
+### Load an extension
+
+You must load extensions before you can use them:
+
+```sql
+LOAD <EXTENSION_NAME>;
+```
+
+Official extensions can be loaded by simply specifying the extension name.
+For example, to load the `json` extension:
+
+```sql
+load json;
+```
+If you want to load an extension you have compiled yourself, you can specify the path to the compiled library.
+For example, to load a self-compiled `json` extension:
+
+```sql
+LOAD EXTENSION 'extension/custom_json/build/libjson.kuzu_extension';
+```
+
+### List loaded extensions
+
+You can view all your loaded extensions by running:
+
+```sql
+CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 ```
 
 :::note[Note]
-A new Database object at the C++ level is instantiated every time a new CLI session is started, or
-when a client script that embeds Kuzu is run. For this reason, the `LOAD` command must be
-run every time a new CLI session is started or a client script is run.
+Extensions are scoped to the session within which they are loaded. Thus, the `LOAD` command must be
+executed for every new CLI session or client script invocation.
+:::
+
+
+### Uninstall an extension
+
+You can uninstall extensions if you don't need them anymore by using the `UNINSTALL` command:
+
+```sql
+UNINSTALL <EXTENSION_NAME>;
+```
+:::note[Note]
+Uninstalling a currently loaded extension won't affect the running database instance, but you won't be able to load it again in a new Kuzu instance until it's reinstalled.
 :::
