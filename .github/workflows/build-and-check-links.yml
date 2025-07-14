@@ -2,6 +2,12 @@ name: Build Astro docs and check links
 on:
   workflow_call:
   workflow_dispatch:
+    inputs:
+      skipVersionUpdate:
+        description: 'Skip updating the version in package.json'
+        type: boolean
+        required: false
+        default: false
   pull_request:
     branches: ["main", "dev"]
 
@@ -18,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: npm i
       - name: Update version
+        if: ${{ github.event.inputs.skipVersionUpdate != 'true' }}
         run: npm run update-version
       - name: Build with Astro
         if: github.event_name != 'pull_request'

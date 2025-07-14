@@ -3,7 +3,6 @@ COPY package.json package-lock.json /home/node/app/
 WORKDIR /home/node/app
 RUN npm i
 COPY . .
-RUN npm run update-version
 RUN npx astro build
 
 FROM httpd:2.4-alpine AS deploy
