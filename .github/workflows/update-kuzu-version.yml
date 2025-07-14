@@ -2,6 +2,12 @@ name: Update Kuzu version to latest release
 on:
   workflow_dispatch:
     inputs:
+      target_branch:
+        description: 'PR target branch'
+        type: choice
+        options:
+          - dev
+          - main
       version:
         description: 'Optional override version'
         type: string
@@ -26,4 +32,5 @@ jobs:
         run: bash ./scripts/release.sh
         env:
             KUZU_NEW_VERSION: ${{ inputs.version }}
+            PR_BRANCH: ${{ inputs.target_branch }}
             GH_TOKEN: ${{ github.token }}

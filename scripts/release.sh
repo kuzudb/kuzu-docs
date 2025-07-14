@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-if [[ -n "$KUZU_NEW_VERSION" ]];then
+set -euo pipefail
+
+if [[ -n "${KUZU_NEW_VERSION:-}" ]];then
     echo "Using user specified version..."
     version="$KUZU_NEW_VERSION"
 else
@@ -11,6 +13,14 @@ fi
 if ! echo "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' ;then
     echo "Error: version is not a valid SEMVER: $version"
     exit 1
+fi
+
+if [[ -n "${PR_BRANCH:-}" ]];then
+    echo "Using user specified branch..."
+    branch="$PR_BRANCH"
+else
+    echo "Using default branch..."
+    branch="main"
 fi
 
 echo "Updating to version: $version"
@@ -30,6 +40,8 @@ sed --in-place --regexp-extended \
     -e "s;(kuzu/releases/download/v)[0-9\.]+;\1$KUZU_VERSION;" \
     -e "s;(<version>)[0-9\.]+(</version>);\1$KUZU_VERSION\2;" \
     -e "s;(com.kuzudb:kuzu:)[0-9\.]+;\1$KUZU_VERSION;" \
+    -e "s;(branch: \"v)[0-9\.]+;\1$KUZU_VERSION;" \
+    -e "s;(kuzudb/explorer:)[0-9\.]+;\1$KUZU_VERSION;" \
     $(find ./src/ -type f -name '*.mdx' -o -name '*.md')
 
 if git diff-index --quiet HEAD -- ;then
@@ -47,7 +59,7 @@ git push origin "$UPDATE_BRANCH"
 
 echo "Creating PR..."
 gh pr create \
-    --base main \
+    --base "$branch" \
     --head "$UPDATE_BRANCH" \
     --title "release: version $KUZU_VERSION" \
     --body ""
