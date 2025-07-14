@@ -3,6 +3,57 @@ title: "Create your first graph"
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
+import {version} from '../../../version.json';
+import { Code } from 'astro-expressive-code/components';
+
+export const CODE_BLOCKS = {
+    java: {
+        maven: `<dependency>
+    <groupId>com.kuzudb</groupId>
+    <artifactId>kuzu</artifactId>
+    <version>${version}</version>
+</dependency>`,
+        groovy: `implementation 'com.kuzudb:kuzu:${version}'`,
+        kotlin: `implementation("com.kuzudb:kuzu:${version}")`,
+        gradle: `plugins {
+    id 'java'
+    id 'application'
+}
+application {
+    mainClassName = "Main"
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation 'com.kuzudb:kuzu:${version}'
+}`,
+},
+swift:`import PackageDescription
+
+let package = Package(
+    name: "kuzu-swift-example",
+    platforms: [
+        .macOS(.v11),
+        .iOS(.v14),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "v${version}"),
+    ],
+    targets: [
+        // Targets are the basic building blocks of a package, defining a module or a test suite.
+        // Targets can depend on other targets in this package and products from dependencies.
+        .executableTarget(
+            name: "kuzu-swift-example",
+            dependencies: [
+                .product(name: "Kuzu", package: "kuzu-swift"),
+            ]
+        ),
+    ]
+)`
+
+}
+
 
 Kuzu implements a **structured property graph model** and requires a pre-defined schema.
 
@@ -260,26 +311,15 @@ const kuzu = require("kuzu");
 
 Kuzu's Java client library is available on [Maven Central](https://central.sonatype.com/artifact/com.kuzudb/kuzu). You can add the following snippet to your `pom.xml` to get it installed:
 
-```xml
-<dependency>
-    <groupId>com.kuzudb</groupId>
-    <artifactId>kuzu</artifactId>
-    <version>0.11.0</version>
-</dependency>
-```
+<Code code={CODE_BLOCKS.java.maven} lang="xml"/>
 
 Alternatively, if you are using Gradle, you can add the following snippet to your build.gradle file to include Kuzu's Java client library:
 
 For Groovy DSL:
-```groovy
-implementation 'com.kuzudb:kuzu:0.11.0'
-```
+<Code code={CODE_BLOCKS.java.groovy} lang="groovy"/>
 
 For Kotlin DSL:
-
-```kotlin
-implementation("com.kuzudb:kuzu:0.11.0")
-```
+<Code code={CODE_BLOCKS.java.kotlin} lang="kotlin"/>
 
 Below is an example Gradle project structure for a simple Java application that creates a graph schema and inserts
 data into the database for the given example.
@@ -297,21 +337,7 @@ data into the database for the given example.
 ```
 
 The minimal `build.gradle` contains the following configurations:
-```
-plugins {
-    id 'java'
-    id 'application'
-}
-application {
-    mainClassName = "Main"
-}
-repositories {
-    mavenCentral()
-}
-dependencies {
-    implementation 'com.kuzudb:kuzu:0.11.0'
-}
-```
+<Code code={CODE_BLOCKS.java.gradle} lang="groovy"/>
 
 The `Main.java` contains the following code:
 
@@ -503,30 +529,7 @@ swift package init --type=executable
 
 Update the `Package.swift` file:
 
-```swift
-import PackageDescription
-
-let package = Package(
-    name: "kuzu-swift-example",
-    platforms: [
-        .macOS(.v11),
-        .iOS(.v14),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "v0.11.0"),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .executableTarget(
-            name: "kuzu-swift-example",
-            dependencies: [
-                .product(name: "Kuzu", package: "kuzu-swift"),
-            ]
-        ),
-    ]
-)
-```
+<Code code={CODE_BLOCKS.swift} lang="swift"/>
 
 This configuration sets the minimum deployment target and adds the `kuzu-swift` client as a dependency.
 

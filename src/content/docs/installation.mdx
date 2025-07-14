@@ -3,6 +3,46 @@ title: Install Kuzu
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { version } from '../../version.json';
+import { Code } from 'astro-expressive-code/components';
+
+export const DOWNLOAD_LINKS = {
+  cli:{
+    linux: `# x86-64
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v${version}/kuzu_cli-linux-x86_64.tar.gz
+# aarch64
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v${version}/kuzu_cli-linux-aarch64.tar.gz
+
+tar xzf kuzu_cli-*.tar.gz`,
+macos: `curl -L -O https://github.com/kuzudb/kuzu/releases/download/v${version}/kuzu_cli-osx-universal.tar.gz
+tar xzf kuzu_cli-*.tar.gz
+./kuzu`,
+win: `curl -L -O https://github.com/kuzudb/kuzu/releases/download/v${version}/kuzu_cli-windows-x86_64.zip`,
+winUrl: `https://github.com/kuzudb/kuzu/releases/download/v${version}/kuzu_cli-windows-x86_64.zip`,
+  },
+java: `<dependency>
+  <groupId>com.kuzudb</groupId>
+  <artifactId>kuzu</artifactId>
+  <version>${version}</version>
+</dependency>
+`,
+cxx: {
+    linux: `# x86-64
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v${version}/libkuzu-linux-x86_64.tar.gz
+# aarch64
+curl -L -O https://github.com/kuzudb/kuzu/releases/download/v${version}/libkuzu-linux-aarch64.tar.gz
+
+tar xzf libkuzu-*.tar.gz`,
+    macos: `curl -L -O https://github.com/kuzudb/kuzu/releases/download/v${version}/libkuzu-osx-universal.tar.gz
+
+tar xzf libkuzu-*.tar.gz`,
+    win: `curl -L -O https://github.com/kuzudb/kuzu/releases/download/v${version}/libkuzu-windows-x86_64.zip`
+},
+go: `go get github.com/kuzudb/go-kuzu@v${version}`,
+swift: `dependencies: [
+  .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "main"),
+],`
+}
 
 Kuzu is an embedded graph database that can be used from the command line and from
 a variety of programming languages. This page shows all the ways you can install Kuzu.
@@ -17,15 +57,7 @@ executable with no dependencies that can be used to interact with a Kuzu databas
 <TabItem label="Linux">
 
 Use a tool like `curl` to download the latest version of the Kuzu CLI to your local machine.
-
-```bash
-# x86-64
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.11.0/kuzu_cli-linux-x86_64.tar.gz
-# aarch64
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.11.0/kuzu_cli-linux-aarch64.tar.gz
-
-tar xzf kuzu_cli-*.tar.gz
-```
+<Code code={DOWNLOAD_LINKS.cli.linux} lang="bash" frame="terminal"/>
 
 Now you can run Kuzu from the command line.
 
@@ -51,23 +83,17 @@ kuzu
 
 Alternatively, you can download the Kuzu CLI directly.
 
-```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.11.0/kuzu_cli-osx-universal.tar.gz
-tar xzf kuzu_cli-*.tar.gz
-./kuzu
-```
+<Code code={DOWNLOAD_LINKS.cli.macos} lang="bash" frame="terminal"/>
 
 </TabItem>
 
 <TabItem label="Windows">
 
 Use a tool like `curl` to download the latest version of the Kuzu CLI to your local machine. Alternatively,
-simply open [this URL](https://github.com/kuzudb/kuzu/releases/download/v0.11.0/kuzu_cli-windows-x86_64.zip)
-in your browser.
+simply open 
+<a href={DOWNLOAD_LINKS.cli.winUrl} target="_blank">this URL</a> in your browser.
 
-```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.11.0/kuzu_cli-windows-x86_64.zip
-```
+<Code code={DOWNLOAD_LINKS.cli.win} lang="bash" frame="terminal"/>
 
 Right-click on the `kuzu_cli-xxx.zip` file and click on **Extract All**. This will create a directory
 containing a file named `kuzu.exe`. Then, right-click on the directory and click "Open in terminal".
@@ -145,13 +171,7 @@ npm install kuzu
 
 The latest stable version is available on [Maven Central](https://central.sonatype.com/artifact/com.kuzudb/kuzu).
 
-```xml
-<dependency>
-    <groupId>com.kuzudb</groupId>
-    <artifactId>kuzu</artifactId>
-    <version>0.11.0</version>
-</dependency>
-```
+<Code code={DOWNLOAD_LINKS.java} lang="xml" frame="terminal"/>
 
 ## Rust
 
@@ -167,21 +187,33 @@ cargo add kuzu
 Kuzu's Go API is a wrapper around the C API of Kuzu. The installation step below assumes that you have
 initialized a Go project that has a `go.mod` file, as described in [the official tutorial](https://go.dev/doc/tutorial/create-module).
 
-```bash
-go get github.com/kuzudb/go-kuzu
-```
+<Code code={DOWNLOAD_LINKS.go} lang="bash" frame="terminal"/>
 
 ## Swift
 
 To add `kuzu-swift` to your Swift project, you can use the Swift package manager.
+1. Add the package to your Package.swift dependencies.
+    <Code code={DOWNLOAD_LINKS.swift} lang="swift" frame="terminal"/>
 
-Add `.package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "v0.11.0")` to your `Package.swift` dependencies.
+    You can change the branch to a tag to use a specific version (e.g., v{version} for the latest stable release or `main` for the latest development version).
+
+2. Add `Kuzu` to your target dependencies.
+    ```swift
+    targets: [
+      .target(
+        name: "YourTargetName",
+        dependencies: [
+          .product(name: "Kuzu", package: "kuzu-swift"),
+        ]
+      )
+    ]
+    ```
 
 Alternatively, you can add the package through Xcode:
 1. Open your Xcode project.
 2. Go to `File` > `Add Packages Dependencies...`.
 3. Enter the URL of the kuzu-swift repository: `https://github.com/kuzudb/kuzu-swift`.
-4. Select the version you want to use (e.g., `main` branch or a specific tag).
+4. Select the version you want to use (e.g., v{version} for the latest stable release or `main` for the latest development version).
 
 
 ## C/C++
@@ -196,32 +228,20 @@ program by adding the directory to your build system's search paths.
 
 <TabItem label="Linux">
 
-```bash
-# x86-64
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.11.0/libkuzu-linux-x86_64.tar.gz
-# aarch64
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.11.0/libkuzu-linux-aarch64.tar.gz
+<Code code={DOWNLOAD_LINKS.cxx.linux} lang="bash" frame="terminal"/>
 
-tar xzf libkuzu-*.tar.gz
-```
 
 </TabItem>
 
 <TabItem label="macOS">
 
-```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.11.0/libkuzu-osx-universal.tar.gz
-
-tar xzf libkuzu-*.tar.gz
-```
+<Code code={DOWNLOAD_LINKS.cxx.macos} lang="bash" frame="terminal"/>
 
 </TabItem>
 
 <TabItem label="Windows">
 
-```bash
-curl -L -O https://github.com/kuzudb/kuzu/releases/download/v0.11.0/libkuzu-windows-x86_64.zip
-```
+<Code code={DOWNLOAD_LINKS.cxx.win} lang="bash" frame="terminal"/>
 
 </TabItem>
 
