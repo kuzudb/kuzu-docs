@@ -2,8 +2,8 @@ FROM node:20-bookworm AS build
 COPY package.json package-lock.json /home/node/app/
 WORKDIR /home/node/app
 RUN npm i
-RUN npm run update-version
 COPY . .
+RUN npm run update-version
 RUN npx astro build
 
 FROM httpd:2.4-alpine AS deploy
