@@ -40,7 +40,7 @@ tar xzf libkuzu-*.tar.gz`,
 },
 go: `go get github.com/kuzudb/go-kuzu@v${version}`,
 swift: `dependencies: [
-  .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "v${version}"),
+  .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "${version}"),
 ],`
 }
 
@@ -195,7 +195,7 @@ To add `kuzu-swift` to your Swift project, you can use the Swift package manager
 1. Add the package to your Package.swift dependencies.
     <Code code={DOWNLOAD_LINKS.swift} lang="swift" frame="terminal"/>
 
-    You can change the branch to a tag to use a specific version (e.g., v{version} for the latest stable release or `main` for the latest development version).
+    You can change the branch to a tag to use a specific version (e.g., {version} for the latest stable release or `main` for the latest development version).
 
 2. Add `Kuzu` to your target dependencies.
     ```swift
@@ -213,7 +213,7 @@ Alternatively, you can add the package through Xcode:
 1. Open your Xcode project.
 2. Go to `File` > `Add Packages Dependencies...`.
 3. Enter the URL of the kuzu-swift repository: `https://github.com/kuzudb/kuzu-swift`.
-4. Select the version you want to use (e.g., v{version} for the latest stable release or `main` for the latest development version).
+4. Select the version you want to use (e.g., {version} for the latest stable release or `main` for the latest development version).
 
 
 ## C/C++
