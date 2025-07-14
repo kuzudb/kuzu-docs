@@ -17,6 +17,8 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm i
+      - name: Update version
+        run: npm run update-version
       - name: Build with Astro
         if: github.event_name != 'pull_request'
         run: npm run build
