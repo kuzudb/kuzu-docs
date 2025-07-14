@@ -264,7 +264,7 @@ Kuzu's Java client library is available on [Maven Central](https://central.sonat
 <dependency>
     <groupId>com.kuzudb</groupId>
     <artifactId>kuzu</artifactId>
-    <version>0.11.0</version>
+    <version>0.12.0</version>
 </dependency>
 ```
 
@@ -272,13 +272,13 @@ Alternatively, if you are using Gradle, you can add the following snippet to you
 
 For Groovy DSL:
 ```groovy
-implementation 'com.kuzudb:kuzu:0.11.0'
+implementation 'com.kuzudb:kuzu:0.12.0'
 ```
 
 For Kotlin DSL:
 
 ```kotlin
-implementation("com.kuzudb:kuzu:0.11.0")
+implementation("com.kuzudb:kuzu:0.12.0")
 ```
 
 Below is an example Gradle project structure for a simple Java application that creates a graph schema and inserts
@@ -309,7 +309,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation 'com.kuzudb:kuzu:0.11.0'
+    implementation 'com.kuzudb:kuzu:0.12.0'
 }
 ```
 
@@ -513,7 +513,7 @@ let package = Package(
         .iOS(.v14),
     ],
     dependencies: [
-        .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "v0.11.0"),
+        .package(url: "https://github.com/kuzudb/kuzu-swift/", branch: "v0.12.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
