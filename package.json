@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check-links": "CHECK_LINKS=true astro build",
-    "generate-llms": "node scripts/generate-llms.cjs"
+    "generate-llms": "node scripts/generate-llms.cjs",
+    "update-version": "node scripts/update-version.cjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^6.3.1",

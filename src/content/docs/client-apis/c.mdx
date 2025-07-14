@@ -3,6 +3,21 @@ title: C API
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
+import {version} from '../../../version.json';
+import { Code } from 'astro-expressive-code/components';
+
+export const CMAKE_CONTENT =`cmake_minimum_required(VERSION 3.11)
+project(example LANGUAGES C)
+ExternalProject_Add(kuzu-prebuilt
+    URL https://github.com/kuzudb/kuzu/releases/download/v${version}/libkuzu-linux-x86_64.tar.gz
+)
+ExternalProject_Get_Property(kuzu-prebuilt SOURCE_DIR)
+add_library(kuzu SHARED IMPORTED)
+add_dependencies(kuzu kuzu-prebuilt)
+set_target_properties(kuzu PROPERTIES IMPORTED_LOCATION ${"${SOURCE_DIR}"}/libkuzu.so)
+target_include_directories(kuzu INTERFACE ${"${SOURCE_DIR}"})
+add_executable(example main.c)
+target_link_libraries(example kuzu)`
 
 See the following link for the full documentation of the C library API.
 
@@ -18,21 +33,7 @@ See the following link for the full documentation of the C library API.
 See [Installation](/installation) and [Get Started](/get-started) for simple manual instructions for building with the C library.
 
 Alternatively, here is an example configuration for integrating the pre-built library into a CMake project (substitute `URL` and `URL_HASH` and `libkuzu.so` as appropriate for your platform).
-```cmake
-cmake_minimum_required(VERSION 3.11)
-project(example LANGUAGES C)
-ExternalProject_Add(kuzu-prebuilt
-    URL https://github.com/kuzudb/kuzu/releases/download/v0.11.0/libkuzu-linux-x86_64.tar.gz
-    URL_HASH SHA256=452599a03c4e6accb797d11bd780a2a88629bddf6635b1703993967d31a0467e
-)
-ExternalProject_Get_Property(kuzu-prebuilt SOURCE_DIR)
-add_library(kuzu SHARED IMPORTED)
-add_dependencies(kuzu kuzu-prebuilt)
-set_target_properties(kuzu PROPERTIES IMPORTED_LOCATION ${SOURCE_DIR}/libkuzu.so)
-target_include_directories(kuzu INTERFACE ${SOURCE_DIR})
-add_executable(example main.c)
-target_link_libraries(example kuzu)
-```
+<Code code={CMAKE_CONTENT} lang="cmake"/>
 
 ### Linking against Kuzu when built from source
 
