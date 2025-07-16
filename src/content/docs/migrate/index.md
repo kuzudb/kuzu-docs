@@ -33,7 +33,7 @@ EXPORT DATABASE '/path/to/export' (format="csv", header=true);
 
 :::note[Note]
 1. The `EXPORT DATABASE` command only exports indexes whose dependent extensions have been loaded.
-2. Use the option `PARALLEL=FALSE` to indicate that the corresponding `IMPORT DATABASE` should not run in parallel. This does **not** affect how the export itself is performed.
+2. Use the option `PARALLEL=FALSE` to indicate that the corresponding `IMPORT DATABASE` should not run in parallel. This does **not** affect how the export itself is performed. By default `PARALLEL=TRUE`.
 :::
 
 ## Import database
