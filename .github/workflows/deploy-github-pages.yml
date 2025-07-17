@@ -3,6 +3,12 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+    inputs:
+      skipVersionUpdate:
+        description: 'Skip updating the version in package.json'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -16,6 +22,8 @@ concurrency:
 jobs:
   build:
     uses: ./.github/workflows/build-and-check-links.yml
+    with:
+      skipVersionUpdate: ${{ github.event.inputs.skipVersionUpdate == 'true' }}
   deploy:
     environment:
       name: github-pages
