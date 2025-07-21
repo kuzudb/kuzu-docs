@@ -74,6 +74,6 @@ The cached files are always removed when the transaction commits or rolls back.
 ## History file
 
 The Kuzu CLI records the history of executed Cypher queries in a persistent `history.txt` file.
-By default, the file is stored in the current working directory from where the CLI is started.
-You can configure a different location for the history file using the `--path_history` or `-p` flags.
-See `kuzu --help` for more details.
+By default, this file is stored in the user's home directory.
+You can configure a different path to store the history file using either the `--path_history` or `-p` flag.
+For more information, see `kuzu --help`.
