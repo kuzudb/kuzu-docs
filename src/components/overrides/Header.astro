@@ -5,9 +5,10 @@ import Search from "@astrojs/starlight/components/Search.astro";
 import SocialIcons from "@astrojs/starlight/components/SocialIcons.astro";
 import ThemeSelect from "@astrojs/starlight/components/ThemeSelect.astro";
 import { Icon } from "@astrojs/starlight/components";
+import Banner from './Banner.astro';
 ---
-
 <div class="header sl-flex">
+ 
   <div class="sl-flex">
     <SiteTitle {...Astro.props} />
   </div>
@@ -15,19 +16,6 @@ import { Icon } from "@astrojs/starlight/components";
     <Search {...Astro.props} />
   </div>
   <div class="sl-hidden md:sl-flex right-group">
-    <div class="mt-8 w-full ">
-      <a
-        href="https://kuzudb.com/product"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="enterprise-waitlist-link"
-      >
-        <i class="fa fa-star" aria-hidden="true"></i>
-        <span class="enterprise-waitlist-text">
-          ⭐ Join our Enterprise Edition Waitlist →
-        </span>
-      </a>
-    </div>
     <a
       href="https://blog.kuzudb.com"
       target="_blank"
