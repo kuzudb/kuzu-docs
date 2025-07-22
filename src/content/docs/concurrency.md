@@ -102,7 +102,7 @@ which also connects to the same `example.kuzu`. When you launch Kuzu CLI and poi
 has created a Database object, this will fail with an error that looks like this:
 
 ```
-RuntimeError: IO exception: Could not set lock on file : /path/to/database/example.kuzu.lock
+RuntimeError: IO exception: Could not set lock on file : /path/to/database/example.kuzu
 ```
 
 If this happens, you would have to shut down your notebook process (or simply restart your Jupyter server),
@@ -177,10 +177,10 @@ protocol involves passing query results as JSON over the network. In general, it
 queries directly on the database by embedding Kuzu in your application.
 :::
 
-## Known Issue: Kuzu Explorer not recognizing the `.lock` file permissions
+## Known Issue: Kuzu Explorer not recognizing the file lock permissions
 
 Kuzu ensures that multiple `Database` objects, where one of them is a `READ_WRITE` instance, are not 
-created by setting some permission flags in a `.lock` file in the local path of the database file. This is a lightweight
+created by setting some permission flags when opening the database file. This is a lightweight
 locking mechanism. However, there is a known issue that Kuzu Explorer is not
 able to see the flags put by other processes. The core problem is that Explorer runs as a Docker container
 and the flags are not propagated between the host operating system and the Docker environment. We do not currently
@@ -203,20 +203,20 @@ to the disk layout, which may or may not be reflected in the buffer manager of o
 can lead to inconsistencies or data corruption. To avoid this issue, the best practice when embedding Kuzu in your
 application is to use design patterns as per one of the scenarios shown pictorially in the sections above.
 
-##### I'm seeing an error related to lock files when running Kuzu in a Jupyter notebook. How can I resolve this?
+##### I'm seeing an error related to locks when running Kuzu in a Jupyter notebook. How can I resolve this?
 
 Sometimes, when you are working in a Jupyter notebook and building your Kuzu graph while also trying to
 open other processes that connect to the same directory as the database file, you may come across this error:
 
 ```
-RuntimeError: IO exception: Could not set lock on file : /path/to/database/example.kuzu.lock
+RuntimeError: IO exception: Could not set lock on file : /path/to/database/example.kuzu
 ```
 
-The `.lock` file, as described in earlier sections on this page, is present to protect you from inadvertent
+The lock, as described in earlier sections on this page, is present to protect you from inadvertent
 data corruption due to multiple `Database` instances trying to access the same database concurrently.
 To resolve this, simply click the `Restart server` button in your Jupyter notebook (or close the Jupyter
-notebook entirely). Restarting the Jupyter notebook server (or closing it) will release the `.lock` file
-present in the local file path, allowing you to safely connect to the database via another connection,
+notebook entirely). Restarting the Jupyter notebook server (or closing it) will release the lock on the 
+database file, allowing you to safely connect to the database via another connection,
 for example, a CLI or Kuzu Explorer for graph visualization. In general, it's recommended to only
 open the CLI or Kuzu Explorer *after* you have finished any operations to the database (and closing or
 restarting the Jupyter notebook server).
