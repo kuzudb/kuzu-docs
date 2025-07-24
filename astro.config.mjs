@@ -89,6 +89,8 @@ export default defineConfig({
             ],
             components: {
                 Header: './src/components/overrides/Header.astro',
+                Banner: './src/components/overrides/Banner.astro',
+                ThemeSelect: './src/components/overrides/ThemeSelect.astro',
             },
             sidebar: [
                 {

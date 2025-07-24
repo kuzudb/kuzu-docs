@@ -3,7 +3,7 @@ import type { Props } from "@astrojs/starlight/props";
 import SiteTitle from "@astrojs/starlight/components/SiteTitle.astro";
 import Search from "@astrojs/starlight/components/Search.astro";
 import SocialIcons from "@astrojs/starlight/components/SocialIcons.astro";
-import ThemeSelect from "@astrojs/starlight/components/ThemeSelect.astro";
+import ThemeSelect from "./ThemeSelect.astro";
 import { Icon } from "@astrojs/starlight/components";
 ---
 
@@ -29,7 +29,9 @@ import { Icon } from "@astrojs/starlight/components";
     <div class="sl-flex social-icons">
       <SocialIcons {...Astro.props} />
     </div>
+    <div class="sl-flex toggle-wrapper">
     <ThemeSelect {...Astro.props} />
+    </div>
   </div>
 </div>
 
@@ -125,4 +127,11 @@ import { Icon } from "@astrojs/starlight/components";
   .release-link {
     gap: 1rem;
   }
+  .toggle-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
 </style>
+

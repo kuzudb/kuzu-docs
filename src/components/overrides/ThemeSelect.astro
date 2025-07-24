@@ -1,0 +1,123 @@
+---
+import Select from '@astrojs/starlight/components/Select.astro';
+---
+
+<starlight-theme-select class="toggle-container">
+  <label class="toggle">
+    <input type="checkbox" id="theme-toggle" />
+    <span class="track">
+      <i class="fas fa-moon"></i>
+      <i class="fas fa-sun"></i>
+      <span class="ball"></span>
+    </span>
+  </label>
+</starlight-theme-select>
+
+<script is:inline>
+  StarlightThemeProvider.updatePickers();
+</script>
+
+<script>
+  type Theme = 'dark' | 'light';
+
+  const storageKey = 'starlight-theme';
+
+  const parseTheme = (theme) =>
+    theme === 'dark' || theme === 'light' ? theme : 'dark';
+
+  const loadTheme = () =>
+    parseTheme(typeof localStorage !== 'undefined' && localStorage.getItem(storageKey));
+
+  function storeTheme(theme) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(storageKey, theme);
+    }
+  }
+
+  function onThemeChange(theme) {
+    StarlightThemeProvider.updatePickers(theme);
+    document.documentElement.dataset.theme = theme;
+    storeTheme(theme);
+  }
+
+  class StarlightThemeSelect extends HTMLElement {
+    constructor() {
+      super();
+
+      const checkbox = this.querySelector('input[type="checkbox"]');
+      if (!checkbox) return;
+
+      // Set checkbox based on current theme
+      const initialTheme = loadTheme();
+      checkbox.checked = initialTheme === 'dark';
+      onThemeChange(initialTheme);
+
+      // Listen to toggle change
+      checkbox.addEventListener('change', () => {
+        const newTheme = checkbox.checked ? 'dark' : 'light';
+        onThemeChange(newTheme);
+      });
+    }
+  }
+
+  customElements.define('starlight-theme-select', StarlightThemeSelect);
+</script>
+
+
+
+<style>
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.track {
+  width: 50px;
+  height: 20px;
+  background: var(--sl-color-gray-6);
+  border-radius: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  box-sizing: border-box;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.track .ball {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: var(--sl-color-accent);
+  border-radius: 50%;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, background 0.3s;
+}
+
+.toggle input:checked + .track {
+  background: var(--sl-color-gray-5);
+}
+
+.toggle input:checked + .track .ball {
+  transform: translateX(30px);
+  background: var(--sl-color-accent-low);
+}
+
+
+</style>
