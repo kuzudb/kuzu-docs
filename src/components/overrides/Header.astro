@@ -5,9 +5,10 @@ import Search from "@astrojs/starlight/components/Search.astro";
 import SocialIcons from "@astrojs/starlight/components/SocialIcons.astro";
 import ThemeSelect from "./ThemeSelect.astro";
 import { Icon } from "@astrojs/starlight/components";
+import Banner from './Banner.astro';
 ---
-
 <div class="header sl-flex">
+ 
   <div class="sl-flex">
     <SiteTitle {...Astro.props} />
   </div>
@@ -43,7 +44,8 @@ import { Icon } from "@astrojs/starlight/components";
     height: 100%;
   }
   .external-link-header {
-    font-weight: 600;
+    font-weight: 400;
+    font-size: 0.875rem;
   }
   .right-group,
   .social-icons {
@@ -127,6 +129,7 @@ import { Icon } from "@astrojs/starlight/components";
   .release-link {
     gap: 1rem;
   }
+
   .toggle-wrapper {
     display: flex;
     align-items: center;
