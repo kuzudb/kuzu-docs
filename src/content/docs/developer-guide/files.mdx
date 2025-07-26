@@ -25,7 +25,6 @@ in the same directory as the database file.
 | File Type | Example |
 | --- | --- |
 | Database file | `example.kuzu` |
-| Lock file | `example.kuzu.lock` |
 | Write-ahead log file | `example.kuzu.wal`  |
 | Shadow file | `example.kuzu.shadow` |
 | Temporary file | `example.kuzu.tmp` |
@@ -34,13 +33,6 @@ in the same directory as the database file.
 
 This is a **persistent file** that stores all data valid as of the last checkpoint.
 It is only created when the database is opened in the read-write on-disk mode.
-
-#### Lock file
-
-This is a **temporary file** created by a Kuzu process to ensure that a second Kuzu process cannot open
-the same database file simultaneously in the read-write mode.
-
-For more details, see [the documentation on concurrency](/concurrency/#limitations-of-creating-multiple-database-objects).
 
 #### Write-ahead log (WAL) file
 
@@ -74,6 +66,6 @@ The cached files are always removed when the transaction commits or rolls back.
 ## History file
 
 The Kuzu CLI records the history of executed Cypher queries in a persistent `history.txt` file.
-By default, the file is stored in the current working directory from where the CLI is started.
-You can configure a different location for the history file using the `--path_history` or `-p` flags.
-See `kuzu --help` for more details.
+By default, this file is stored in the `~/.kuzu` directory.
+You can configure a different directory for storing the history file using the `--path_history`/`-p` option.
+For more information, see `kuzu --help`.
