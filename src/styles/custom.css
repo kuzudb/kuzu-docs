@@ -1,6 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
 /**
 See all the properties that can be customized for the Astro Starlight theme here:
 https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.css
@@ -73,7 +70,7 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-line-height: 1.8;
   --sl-line-height-headings: 1.2;
 
-  --sl-font-system: 'Overpass', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  --sl-font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
   --sl-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
@@ -86,9 +83,9 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-nav-pad-x: 1rem;
   --sl-nav-pad-y: 0.75rem;
   --sl-mobile-toc-height: 3rem;
-  --sl-sidebar-width: 25vw;
-  /* --sl-sidebar-pad-x: 8rem; */
-  --sl-content-width: 50vw;
+  --sl-sidebar-width: 18.75rem;
+  --sl-sidebar-pad-x: 1rem;
+  --sl-content-width: 45rem;
   --sl-content-pad-x: 1rem;
   --sl-menu-button-size: 2rem;
   --sl-nav-gap: var(--sl-content-pad-x);
@@ -100,23 +97,6 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-z-index-menu: 5;
   --sl-z-index-navbar: 10;
   --sl-z-index-skiplink: 20;
-}
-
-body {
-  font-family: 'Overpass', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-}
-
-.font-nunito {
-  font-family: 'Nunito', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-}
-
-.font-overpass {
-  font-family: 'Overpass', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-}
-.padauk-regular {
-  font-family: "Padauk", sans-serif;
-  font-weight: 400;
-  font-style: normal;
 }
 
 :root[data-theme='light'],
@@ -231,14 +211,3 @@ body {
     text-decoration: none;
     color: var(--sl-color-text) !important;
 }
-
-.content-panel {
-  padding-left: 5rem;
-  padding-right: 5rem;
-}
-
-.sidebar-content {
-   float: right;
-   padding-right: 1.5rem;
-}
-
