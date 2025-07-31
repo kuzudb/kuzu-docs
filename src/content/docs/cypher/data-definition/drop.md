@@ -15,14 +15,14 @@ Dropping a table removes the table and all its data from the database.
 
 For example, consider the following database:
 
-```sql
+```cypher
 CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64, reg_date DATE);
 CREATE REL TABLE Follows(FROM User TO User, since DATE);
 ```
 
 Consider that you try to directly drop the `User` node table without first dropping the associated
 relationship tables.
-```sql
+```cypher
 DROP TABLE User
 ```
 This will raise the following exception:
@@ -32,7 +32,7 @@ Binder exception: Cannot delete a node table with edges. It is on the edges of r
 
 You can first drop the `Follows` relationship table, and subsequently the `User` table as follows:
 
-```sql
+```cypher
 DROP TABLE Follows
 ---------------------------------------
 | RelTable: Follows has been dropped. |
@@ -49,7 +49,7 @@ To avoid the exception being raised, use the `IF EXISTS` clause. This instructs 
 the given table name does not exist in the database.
 
 Example:
-```sql
+```cypher
 DROP TABLE IF EXISTS UW
 ```
 This query tells Kuzu to drop the `UW` table only if it exists.

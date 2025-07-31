@@ -8,7 +8,7 @@ Using this extension, you can interact with Delta tables directly within Kuzu us
 
 ## Usage
 
-```sql
+```cypher
 INSTALL DELTA;
 LOAD DELTA;
 ```
@@ -79,7 +79,7 @@ Kuzu also supports scanning and copying Delta tables hosted on S3.
 #### Configure the S3 connection
 
 Before reading and writing from S3, you have to configure the connection using a [CALL](/cypher/configuration) statement.
-```sql
+```cypher
 CALL <option_name>='<option_value>'
 ```
 
@@ -100,7 +100,7 @@ The following options are supported:
 | Private file reads | Secret key authentication |
 
 #### Scan Delta tables from S3
-```sql
+```cypher
 LOAD FROM 's3://kuzu-sample/sample-delta' (file_format='delta')
 RETURN *;
 ```
