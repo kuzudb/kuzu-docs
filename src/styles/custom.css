@@ -214,3 +214,21 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
     text-decoration: none;
     color: var(--sl-color-text) !important;
 }
+
+/* Remove box shadow from expressiveCode blocks */
+.expressive-code {
+    box-shadow: none !important;
+}
+
+.expressive-code .frame {
+    box-shadow: none !important;
+}
+
+.expressive-code .frame.not-content {
+    box-shadow: none !important;
+}
+
+/* Also remove any border radius if you want completely flat blocks */
+.expressive-code .frame {
+    border-radius: 0 !important;
+}
