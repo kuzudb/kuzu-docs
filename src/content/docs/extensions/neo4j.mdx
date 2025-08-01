@@ -17,7 +17,7 @@ It provides the following function:
 
 ## Usage
 
-```sql
+```cypher
 INSTALL neo4j;
 LOAD neo4j;
 ```
@@ -56,7 +56,7 @@ The Neo4j migration functionality relies on the [APOC](https://neo4j.com/labs/ap
 You can find details on how to install `APOC` in Neo4j [here](https://neo4j.com/labs/apoc/5/installation/).
 
 Also add the following config lines to the `apoc.conf` file:
-```sql
+```cypher
 apoc.export.file.enabled=true
 apoc.import.file.use_neo4j_config=false
 ```

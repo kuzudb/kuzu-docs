@@ -6,6 +6,7 @@ import SocialIcons from "@astrojs/starlight/components/SocialIcons.astro";
 import ThemeSelect from "@astrojs/starlight/components/ThemeSelect.astro";
 import { Icon } from "@astrojs/starlight/components";
 import Banner from './Banner.astro';
+import ThemeSelect from './ThemeSelect.astro';
 ---
 <div class="header sl-flex">
  
@@ -30,7 +31,7 @@ import Banner from './Banner.astro';
     <div class="sl-flex social-icons">
       <SocialIcons {...Astro.props} />
     </div>
-    <ThemeSelect {...Astro.props} />
+    <ThemeSelect />
   </div>
 </div>
 
