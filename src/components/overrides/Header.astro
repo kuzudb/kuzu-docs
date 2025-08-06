@@ -9,10 +9,13 @@ import Banner from './Banner.astro';
 import ThemeSelect from './ThemeSelect.astro';
 ---
 <div class="header sl-flex">
- 
-  <div class="sl-flex">
-    <SiteTitle {...Astro.props} />
+  <!-- Site Title - shows when sidebars collapse -->
+  <div class="header-site-title">
+    <a href="/" class="site-title">
+      <img src="/src/assets/logo/kuzu-logo-inverse.png" alt="Kuzu" class="site-logo" />
+    </a>
   </div>
+ 
   <div class="sl-flex">
     <Search {...Astro.props} />
   </div>
@@ -42,6 +45,37 @@ import ThemeSelect from './ThemeSelect.astro';
     align-items: center;
     height: 100%;
   }
+
+  /* Header Site Title Styles */
+  .header-site-title {
+    display: none; /* Hidden by default */
+  }
+
+  .site-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--sl-color-white);
+    font-weight: 600;
+    font-size: 1.25rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .site-title:hover {
+    opacity: 0.8;
+  }
+
+  .site-logo {
+    height: 2rem;
+    width: auto;
+  }
+
+  .site-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
   .external-link-header {
     font-weight: 400;
     font-size: 0.875rem;
@@ -79,7 +113,7 @@ import ThemeSelect from './ThemeSelect.astro';
       );
       display: grid;
       grid-template-columns:
-        /* 1 (site title): runs up until the main content column’s left edge or the width of the title, whichever is the largest  */
+        /* 1 (site title): runs up until the main content column's left edge or the width of the title, whichever is the largest  */
         minmax(
           calc(
             var(--__sidebar-width) +
@@ -92,6 +126,31 @@ import ThemeSelect from './ThemeSelect.astro';
         /* 3 (right items): use the space that these need. */
         auto;
       align-content: center;
+    }
+  }
+
+  /* Show header site title when sidebars are collapsed */
+  @media (max-width: 71.99rem) {
+    .header-site-title {
+      display: block;
+    }
+  }
+
+  /* Show header site title when only one sidebar is present */
+  @media (min-width: 72rem) {
+    /* Show when no left sidebar */
+    :global(:root:not([data-has-sidebar])) .header-site-title {
+      display: block;
+    }
+    
+    /* Show when no right sidebar (TOC) */
+    :global(:root:not([data-has-toc])) .header-site-title {
+      display: block;
+    }
+    
+    /* Hide when both sidebars are present */
+    :global(:root[data-has-sidebar][data-has-toc]) .header-site-title {
+      display: none;
     }
   }
 

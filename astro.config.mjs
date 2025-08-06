@@ -95,6 +95,8 @@ export default defineConfig({
                 Header: './src/components/overrides/Header.astro',
                 Banner: './src/components/overrides/Banner.astro',
                 ThemeSelect: './src/components/overrides/ThemeSelect.astro',
+                PageFrame: './src/components/overrides/PageFrame.astro',
+                TwoColumnContent: './src/components/overrides/TwoColumnContent.astro',
             },
             sidebar: [
                 {
