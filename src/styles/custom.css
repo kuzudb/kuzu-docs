@@ -166,9 +166,6 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   white-space: nowrap;
 }
 
-li {
-  margin-bottom: 1rem;
-}
 
 .sl-markdown-content {
   img {
@@ -234,4 +231,9 @@ li {
 /* Also remove any border radius if you want completely flat blocks */
 .expressive-code .frame {
     border-radius: 0 !important;
+}
+
+/* Apply li margins only to main content area */
+.sl-markdown-content li {
+  margin-bottom: 1rem;
 }
