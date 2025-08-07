@@ -20,9 +20,7 @@
 		.right-sidebar-container {
 			order: 2;
 			position: relative;
-			width: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) / 2
-			);
+			width: 15%; /* Right sidebar takes 15% of screen width */
 		}
 
 		.right-sidebar {
@@ -37,16 +35,11 @@
 		}
 
 		.main-pane {
-			width: 100%;
+			width: 75%; /* Main content takes 60% of screen width */
 		}
 
 		:global([data-has-sidebar][data-has-toc]) .main-pane {
-			--sl-content-margin-inline: auto 0;
-
 			order: 1;
-			width: calc(
-				var(--sl-content-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) / 2
-			);
 		}
 	}
 </style> 

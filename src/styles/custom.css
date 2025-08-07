@@ -89,7 +89,7 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-mobile-toc-height: 3rem;
   --sl-sidebar-width: 18.75rem;
   --sl-sidebar-pad-x: 1rem;
-  /* --sl-content-width: 45rem; */
+  --sl-content-width: 100rem;
   --sl-content-pad-x: 1rem;
   --sl-menu-button-size: 2rem;
   --sl-nav-gap: var(--sl-content-pad-x);
@@ -174,8 +174,6 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
     justify-content: center;
     border-radius: 4px;
     margin-bottom: 1em;
-    margin-left: auto;
-    margin-right: auto;
     background-color: #fff;
   }
 }

@@ -1,5 +1,6 @@
 ---
 import MobileMenuToggle from 'virtual:starlight/components/MobileMenuToggle';
+import SiteTitle from 'virtual:starlight/components/SiteTitle';
 
 const { hasSidebar } = Astro.locals.starlightRoute;
 ---
@@ -15,9 +16,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
 						<div class="sidebar-content-wrapper">
 							<!-- Site Title in Left Sidebar - only shows when both sidebars are present -->
 							<div class="sidebar-title">
-								<a href="/" class="site-title">
-									<img src="/src/assets/logo/kuzu-logo-inverse.png" alt="Kuzu" class="site-logo" />
-								</a>
+								<SiteTitle />
 							</div>
 							<slot name="sidebar" />
 						</div>
@@ -199,10 +198,8 @@ const { hasSidebar } = Astro.locals.starlightRoute;
 	/* Make left sidebar thinner and main content wider */
 	@media (min-width: 72rem) {
 		.sidebar-pane {
-			/* Thinner sidebar - reduced from 50% to 30% of extra space */
-			width: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
+			/* Left sidebar takes 20% of screen width */
+			width: 20%;
 			background-color: var(--sl-color-bg-sidebar);
 			border-inline-end: 1px solid var(--sl-color-hairline-shade);
 			/* Extend sidebar to top of page */
@@ -211,36 +208,28 @@ const { hasSidebar } = Astro.locals.starlightRoute;
 
 		/* Header starts where main content begins - always after left sidebar */
 		.header {
-			inset-inline-start: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
+			inset-inline-start: 20%;
 			/* Header spans from left sidebar to right edge */
-			width: calc(100% - (
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			));
+			width: 80%;
 		}
 
 		/* Ensure main content stays centered when both sidebars are present */
 		:global([data-has-sidebar][data-has-toc]) .main-frame {
-			margin-left: auto;
-			margin-right: auto;
-			/* Allow main content to expand more */
-			max-width: calc(var(--sl-content-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.7);
+			
+			margin-left: 20%;
 		}
 
 		/* When TOC is not present, main content can expand more */
 		:global([data-has-sidebar]:not([data-has-toc])) .main-frame {
-			margin-left: auto;
-			margin-right: auto;
-			max-width: calc(var(--sl-content-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.85);
+			
+			margin-left: 20%;
 		}
 
 		/* When left sidebar is not present, main content fills the space */
 		:global(:not([data-has-sidebar])) .main-frame {
-			margin-left: 0;
-			margin-right: auto;
+			margin-left: 0;	
 			max-width: calc(100% - var(--sl-content-pad-x) * 2);
-			padding-inline-start: var(--sl-content-pad-x);
+			padding-inline-start: 0;
 		}
 
 		/* Show sidebar title only when both sidebars are present */
@@ -275,89 +264,60 @@ const { hasSidebar } = Astro.locals.starlightRoute;
 		}
 	}
 
-	/* Responsive width adjustments - thinner sidebar, wider content */
+	/* Responsive width adjustments */
 	@media (min-width: 90rem) {
 		.sidebar-pane {
-			width: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
+			width: 20%;
 		}
 
 		.header {
-			inset-inline-start: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
-			width: calc(100% - (
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			));
+			inset-inline-start: 20%;
+			width: 80%;
 		}
 	}
 
 	@media (min-width: 120rem) {
 		.sidebar-pane {
-			width: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
+			width: 20%;
 		}
 
 		.header {
-			inset-inline-start: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
-			width: calc(100% - (
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			));
+			inset-inline-start: 20%;
+			width: 80%;
 		}
 	}
 
 	@media (min-width: 160rem) {
 		.sidebar-pane {
-			width: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
+			width: 20%;
 		}
 
 		.header {
-			inset-inline-start: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
-			width: calc(100% - (
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			));
+			inset-inline-start: 20%;
+			width: 80%;
 		}
 	}
 
 	@media (min-width: 200rem) {
 		.sidebar-pane {
-			width: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
+			width: 20%;
 		}
 
 		.header {
-			inset-inline-start: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
-			width: calc(100% - (
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			));
+			inset-inline-start: 20%;
+			width: 80%;
 		}
 	}
 
 	@media (min-width: 240rem) {
 		.sidebar-pane {
-			width: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
+			width: 20%;
 		}
 
 		.header {
-			inset-inline-start: calc(
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			);
-			width: calc(100% - (
-				var(--sl-sidebar-width) + (100% - var(--sl-content-width) - var(--sl-sidebar-width)) * 0.3
-			));
+			inset-inline-start: 20%;
+			width: 80%;
 		}
 	}
+
 </style> 
