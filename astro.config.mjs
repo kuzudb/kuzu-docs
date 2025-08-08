@@ -3,7 +3,12 @@ import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
 import fs from "fs";
+import path from 'path'
 import { kuzuDark, kuzuLight } from './src/themes/kuzu-theme.js';
+
+const cypherGrammar = JSON.parse(
+    fs.readFileSync(path.resolve('./src/styles/cypher.tmLanguage.json'), 'utf8')
+  )
 
 const site = "https://docs.kuzudb.com";
 
@@ -36,7 +41,12 @@ export default defineConfig({
             expressiveCode: {
                 themes: [kuzuDark, kuzuLight],
                 removeUnusedThemes: false,
-            },
+                shiki: {
+                  langs: [
+                    { name: 'cypher', ...cypherGrammar }
+                  ],
+                }
+              },
             head: [
                 // Basic OG tags
                 {
