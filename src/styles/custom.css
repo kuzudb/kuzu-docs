@@ -253,3 +253,11 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
 .sl-markdown-content li {
   margin-bottom: 1rem;
 }
+
+/* Disable user selection of the leading "$" prompt in code blocks */
+pre[data-language] code > div.ec-line > div.code > span:first-child {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
