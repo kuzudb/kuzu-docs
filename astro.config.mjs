@@ -3,6 +3,12 @@ import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
 import fs from "fs";
+import path from 'path'
+import { kuzuDark, kuzuLight } from './src/themes/kuzu-theme.js';
+
+const cypherGrammar = JSON.parse(
+    fs.readFileSync(path.resolve('./src/styles/cypher.tmLanguage.json'), 'utf8')
+  )
 
 const site = "https://docs.kuzudb.com";
 
@@ -32,7 +38,15 @@ export default defineConfig({
                 baseUrl: 'https://github.com/kuzudb/kuzu-docs/edit/main',
             },
             customCss: ['./src/styles/custom.css'],
-            expressiveCode: true,
+            expressiveCode: {
+                themes: [kuzuDark, kuzuLight],
+                removeUnusedThemes: false,
+                shiki: {
+                  langs: [
+                    { name: 'cypher', ...cypherGrammar }
+                  ],
+                }
+              },
             head: [
                 // Basic OG tags
                 {
@@ -85,6 +99,9 @@ export default defineConfig({
             components: {
                 Header: './src/components/overrides/Header.astro',
                 Banner: './src/components/overrides/Banner.astro',
+                ThemeSelect: './src/components/overrides/ThemeSelect.astro',
+                PageFrame: './src/components/overrides/PageFrame.astro',
+                TwoColumnContent: './src/components/overrides/TwoColumnContent.astro',
             },
             sidebar: [
                 {

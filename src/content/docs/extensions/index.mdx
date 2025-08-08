@@ -47,7 +47,7 @@ This section describes how to use officially supported extensions in Kuzu.
 
 You can list all available official extensions by running:
 
-```sql
+```cypher
 CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
 ```
 
@@ -57,7 +57,7 @@ Kuzu requires you to install the extension before loading and using it.
 
 Official extensions can be installed by running the `INSTALL` command:
 
-```sql
+```cypher
 INSTALL <EXTENSION_NAME>;
 ```
 You only need to install an extension once. 
@@ -70,7 +70,7 @@ the second install command will not perform any action.
 If you want to re-download an extension for any reason, for example if the extension is not working
 properly, you can use the `UPDATE` command:
 
-```sql
+```cypher
 UPDATE <EXTENSION_NAME>;
 ```
 
@@ -78,20 +78,20 @@ UPDATE <EXTENSION_NAME>;
 
 You must load extensions before you can use them:
 
-```sql
+```cypher
 LOAD <EXTENSION_NAME>;
 ```
 
 Official extensions can be loaded by simply specifying the extension name.
 For example, to load the `json` extension:
 
-```sql
+```cypher
 load json;
 ```
 If you want to load an extension you have compiled yourself, you can specify the path to the compiled library.
 For example, to load a self-compiled `json` extension:
 
-```sql
+```cypher
 LOAD EXTENSION 'extension/custom_json/build/libjson.kuzu_extension';
 ```
 
@@ -99,7 +99,7 @@ LOAD EXTENSION 'extension/custom_json/build/libjson.kuzu_extension';
 
 You can view all your loaded extensions by running:
 
-```sql
+```cypher
 CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 ```
 
@@ -113,7 +113,7 @@ executed for every new CLI session or client script invocation.
 
 You can uninstall extensions if you don't need them anymore by using the `UNINSTALL` command:
 
-```sql
+```cypher
 UNINSTALL <EXTENSION_NAME>;
 ```
 :::note[Note]

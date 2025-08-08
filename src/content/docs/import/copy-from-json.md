@@ -55,7 +55,7 @@ Consider the following JSON file:
 
 The following example creates a node table `Person` and copies data from a JSON file `people.json` into it:
 
-```sql
+```cypher
 CREATE NODE TABLE Person (
     p_id STRING,
     name STRING,
@@ -116,7 +116,7 @@ are not `"from"` or `"to"` are treated as relationship properties.
 
 First, let's create a node table called `Condition`:
 
-```sql
+```cypher
 CREATE NODE TABLE Condition (
     c_id STRING,
     name STRING,
@@ -126,7 +126,7 @@ CREATE NODE TABLE Condition (
 
 Next, let's create a relationship table `HAS_CONDITION`:
 
-```sql
+```cypher
 CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
     FROM Patient TO Condition,
     since UINT16
@@ -134,7 +134,7 @@ CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
 ```
 
 The `has_condition.json` file can then directly be copied into the relationship table that was just created. 
-```sql
+```cypher
 COPY HAS_CONDITION FROM 'has_condition.json'
 ```
 

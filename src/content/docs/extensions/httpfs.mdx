@@ -21,7 +21,7 @@ The S3 and GCS extensions are implemented as _features_ of the `httpfs` extensio
 
 ## Usage
 
-```sql
+```cypher
 INSTALL httpfs;
 LOAD httpfs;
 ```
@@ -31,7 +31,7 @@ LOAD httpfs;
 Using the `httpfs` extension, you can read from a file hosted on an HTTP(S) server in the same way as you would
 from a local file. The example below shows how to scan data from a CSV file hosted on an HTTP(S) server.
 
-```sql
+```cypher
 LOAD FROM "https://extension.kuzudb.com/dataset/test/city.csv"
 RETURN *;
 ```
@@ -52,7 +52,7 @@ Subsequent remote file operations will be translated as local file operation on 
 
 The example below shows how to enable the local cache for remote files.
 
-```sql
+```cypher
 CALL HTTP_CACHE_FILE=TRUE;
 ```
 
@@ -67,7 +67,7 @@ file has changed since the last time Kuzu downloaded it.
 If you need to scan the same remote file multiple times and benefit from caching across multiple scans, you
 can run all the `LOAD FROM` statements in the same transaction. The example below shows how to do this.
 
-```sql
+```cypher
 BEGIN TRANSACTION;
 LOAD FROM "https://example.com/city.csv" RETURN *;
 LOAD FROM "https://example.com/city.csv" RETURN *;

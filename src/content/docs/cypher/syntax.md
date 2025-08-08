@@ -110,7 +110,7 @@ WHERE a.age < 30
 RETURN a.*
 ```
 
-```sql
+```cypher
 /*
 This is a comment
 spanning multiple lines
