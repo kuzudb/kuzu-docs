@@ -9,7 +9,7 @@ attaching to a local vs. remote Kuzu database works the same way. Therefore, we 
 
 ## Usage
 
-```sql
+```cypher
 INSTALL httpfs;
 LOAD httpfs;
 ```
@@ -18,7 +18,7 @@ LOAD httpfs;
 
 Use the `ATTACH` statement to attach to a remote Kuzu database:
 
-```sql
+```cypher
 ATTACH <DB_PATH> AS <alias> (dbtype kuzu)
 ```
 
@@ -32,7 +32,7 @@ Instead, you will use the alias to `DETACH` from the external Kuzu database.
 
 Suppose you are connected to a local database `example.kuzu`. After configuring a [S3 connection](/extensions/s3#configure-the-connection), you can attach a Kuzu database hosted on S3 as:
 
-```sql
+```cypher
 ATTACH 's3://kuzu-example/university.kuzu.kuzu' AS uw (dbtype kuzu);
 ```
 After attaching a remote Kuzu database, you no longer have access to the original local Kuzu database `example.kuzu`.
@@ -62,7 +62,7 @@ RETURN p.name AS name, p.age AS age;
 ### List attached databases
 
 You can list all the databases you have attached to by running the following command:
-```sql
+```cypher
 CALL SHOW_ATTACHED_DATABASES() RETURN *;
 ```
 
@@ -70,7 +70,7 @@ CALL SHOW_ATTACHED_DATABASES() RETURN *;
 
 To detach from an external Kuzu database, use `DETACH [ALIAS]`:
 
-```sql
+```cypher
 DETACH uw;
 ```
 

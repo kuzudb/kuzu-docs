@@ -74,7 +74,7 @@ i.e., the address they live in, initially populated as nulls but to be filled in
 values at a later time.
 
 The DDL for the `Person` node table is as follows:
-```sql
+```cypher
 CREATE NODE TABLE Person(id INT64 PRIMARY KEY, name STRING, age INT64, address STRING);
 ```
 
@@ -84,7 +84,7 @@ obtained from another source.
 In such a case, you can explicitly tell the `COPY` pipeline to partially fill the node table and
 only map the named columns from the CSV file as follows:
 
-```sql
+```cypher
 COPY Person(id, name, age) FROM 'person.csv'
 ```
 
@@ -112,13 +112,13 @@ Knows_User_City
 ```
 
 When bulk inserting into a relationship table with multiple from-to pairs, you need to specify which child table to insert through `from, to` options, e.g.
-```sql
+```cypher
 COPY Knows FROM 'knows_user_user.csv' (from='User', to='User');
 COPY Knows FROM 'knows_user_city.csv' (from='User', to='City');
 ```
 
 Alternatively, you can also directly copy into a child table. This approach is **deprecated** since v0.11.
-```sql
+```cypher
 COPY Knows_User_User FROM 'knows_user_user.csv';
 COPY Knows_User_City FROM 'knows_user_city.csv';
 ```

@@ -7,7 +7,7 @@ Iceberg is an open-source table format originally developed at Netflix for large
 
 ## Usage
 
-```sql
+```cypher
 INSTALL iceberg;
 LOAD iceberg;
 ```
@@ -123,7 +123,7 @@ Kuzu also supports scanning and copying Iceberg tables hosted on S3.
 #### Configure the S3 connection
 
 Before reading and writing from S3, you have to configure the connection using a [CALL](/cypher/configuration) statement.
-```sql
+```cypher
 CALL <option_name>='<option_value>'
 ```
 

@@ -1,6 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
+
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap');
+
 /**
 See all the properties that can be customized for the Astro Starlight theme here:
 https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.css
@@ -17,10 +18,6 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-color-gray-6: #23262f;
   --sl-color-black: #17181c;
 
-  /* Asides box colors for tips */
-  --sl-color-green-low: hsl(var(--sl-hue-green), 15%, 15%);
-  --sl-color-green: hsl(var(--sl-hue-green), 65%, 55%);
-  --sl-color-green-high: hsl(var(--sl-hue-green), 82%, 75%);
 
   --sl-color-accent-low: #ca5921;
   --sl-color-accent: #dc6428;
@@ -73,11 +70,12 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-line-height: 1.8;
   --sl-line-height-headings: 1.2;
 
-  --sl-font-system: 'Overpass', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+
+  --sl-font-system: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
-  --sl-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
+    --sl-font-system-mono: 'SF Mono', SFMono-Regular, 'Fira Code', 'Fira Mono', 'DejaVu Sans Mono', 
+    Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --__sl-font: var(--sl-font, var(--sl-font-system)), var(--sl-font-system);
   --__sl-font-mono: var(--sl-font-mono, var(--sl-font-system-mono)), var(--sl-font-system-mono);
 
@@ -86,9 +84,9 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-nav-pad-x: 1rem;
   --sl-nav-pad-y: 0.75rem;
   --sl-mobile-toc-height: 3rem;
-  --sl-sidebar-width: 25vw;
-  /* --sl-sidebar-pad-x: 8rem; */
-  --sl-content-width: 50vw;
+  --sl-sidebar-width: 18.75rem;
+  --sl-sidebar-pad-x: 1rem;
+  --sl-content-width: 100rem;
   --sl-content-pad-x: 1rem;
   --sl-menu-button-size: 2rem;
   --sl-nav-gap: var(--sl-content-pad-x);
@@ -169,7 +167,7 @@ body {
 
 @media (min-width: 72rem) {
   :root {
-    --sl-content-pad-x: 1.5rem;
+    --sl-content-pad-x: 4rem;
     --sl-mobile-toc-height: 0rem;
   }
 }
@@ -190,8 +188,6 @@ body {
     justify-content: center;
     border-radius: 4px;
     margin-bottom: 1em;
-    margin-left: auto;
-    margin-right: auto;
     background-color: #fff;
   }
 }
@@ -215,6 +211,23 @@ body {
     height: 100%;
 }
 
+.expressive-code pre,
+.expressive-code code,
+.sl-markdown-content pre,
+.sl-markdown-content code {
+    font-family: var(--__sl-font-mono) !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0 !important;
+    font-variant-ligatures: none !important;
+}
+
+/* Ensure proper rendering of Unicode box-drawing characters */
+.expressive-code,
+.sl-markdown-content pre {
+    font-feature-settings: "liga" 0, "calt" 0 !important;
+    text-rendering: optimizeSpeed !important;
+}
+
 /* Heading link styling */
 .heading-link::after {
     content: '#';
@@ -232,13 +245,28 @@ body {
     color: var(--sl-color-text) !important;
 }
 
-.content-panel {
-  padding-left: 5rem;
-  padding-right: 5rem;
+/* Remove box shadow from expressiveCode blocks */
+.expressive-code {
+    box-shadow: none !important;
 }
 
-.sidebar-content {
-   float: right;
-   padding-right: 1.5rem;
+.expressive-code .frame {
+    box-shadow: none !important;
+}
+
+.expressive-code .frame.not-content {
+    box-shadow: none !important;
+}
+
+/* Also remove any border radius if you want completely flat blocks */
+.expressive-code .frame {
+    border-radius: 0 !important;
+}
+/* global.css or your starlight override */
+pre[data-language] code > div.ec-line > div.code > span:first-child {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 

@@ -24,7 +24,7 @@ See our YouTube video for a walkthrough on how to use the JSON extension:
 
 ## Usage
 
-```sql
+```cypher
 INSTALL json;
 LOAD json;
 ```
@@ -36,7 +36,7 @@ We have 3 JSON files that contain information about patients and their medical c
 files are organized into two node files (`patient.json` and `condition.json`) and one relationship
 file (`has_condition.json`).
 
-<Tabs>
+<Tabs syncKey="json-files">
 <TabItem label="patient.json">
 
 ```json
@@ -255,7 +255,7 @@ First, start by defining a node table schema that conforms to the JSON structure
 we declare a `STRUCT` where necessary.
 
 Example:
-```sql
+```cypher
 CREATE NODE TABLE IF NOT EXISTS Patient(
     p_id STRING,
     name STRING,
@@ -283,7 +283,7 @@ COPY Patient FROM 'patient.json';
 
 Similarly, we can define the node table for the patients' medical conditions.
 
-```sql
+```cypher
 CREATE NODE TABLE IF NOT EXISTS Condition(
     c_id STRING,
     name STRING,
@@ -292,7 +292,7 @@ CREATE NODE TABLE IF NOT EXISTS Condition(
 );
 ```
 And copy the contents of `condition.json` to the node table as follows:
-```sql
+```cypher
 COPY Condition FROM 'condition.json';
 ```
 
@@ -320,7 +320,7 @@ In the example dataset for `has_condition.json`, we have these keys defined:
 Any other keys that are not `"from"` or `"to"` are treated as relationship properties.
 
 Let's create a relationship table schema:
-```sql
+```cypher
 CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
     FROM Patient TO Condition,
     since UINT16
@@ -371,7 +371,7 @@ to capture the relationships between patients and their insurance providers.
 
 Let's model this using a new node table, `InsuranceProvider`, and a new relationship table `HAS_PROVIDER`.
 
-```sql
+```cypher
 CREATE NODE TABLE IF NOT EXISTS InsuranceProvider(
     name STRING,
     type STRING,
@@ -436,7 +436,7 @@ Once you have the data in a graph, you can begin querying it in Cypher. You can 
 statement to write the results of a query to a JSON file. Any query results of the type `STRUCT`
 will be written as nested JSON. Two examples are shown below.
 
-<Tabs>
+<Tabs syncKey="json-examples">
 <TabItem label="Example 1">
 
 Say you want to write health insurance provider information and patient names for patients with the

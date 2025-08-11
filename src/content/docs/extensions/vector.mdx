@@ -22,7 +22,7 @@ This extension provides the following functions:
 
 ## Usage
 
-```sql
+```cypher
 INSTALL VECTOR;
 LOAD VECTOR;
 ```
@@ -33,7 +33,7 @@ Below is an example demonstrating two ways in which such a dataset can be create
 library, such as `sentence_transformers` in Python to create the embeddings. Alternatively, you can use Kuzu's [`llm`](/extensions/llm)
 extension to directly create the embeddings using Cypher.
 
-<Tabs>
+<Tabs syncKey="vector">
 <TabItem value="sentence_transformers" label="sentence_transformers">
 ```python
 # create_embeddings.py
@@ -268,7 +268,7 @@ Returns:
 
 Let's run some example search queries on our newly created vector index.
 
-<Tabs>
+<Tabs syncKey="vector">
 <TabItem value="sentence_transformers" label="sentence_transformers">
 ```python
 import kuzu
@@ -416,7 +416,7 @@ Kuzu allows you to combine vector search with filter predicates by using [projec
 
 For example, we can search for books similar to "quantum world", but only those that were published after 2010.
 
-<Tabs>
+<Tabs syncKey="vector">
 <TabItem value="python" label="Python">
 ```python
 # Pass in an existing connection
