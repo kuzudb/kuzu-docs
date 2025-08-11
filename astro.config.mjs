@@ -4,7 +4,6 @@ import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
 import fs from "fs";
 import path from 'path'
-import { kuzuDark, kuzuLight } from './src/themes/kuzu-theme.js';
 
 const cypherGrammar = JSON.parse(
     fs.readFileSync(path.resolve('./src/styles/cypher.tmLanguage.json'), 'utf8')
@@ -39,8 +38,6 @@ export default defineConfig({
             },
             customCss: ['./src/styles/custom.css'],
             expressiveCode: {
-                themes: [kuzuDark, kuzuLight],
-                removeUnusedThemes: false,
                 shiki: {
                   langs: [
                     { name: 'cypher', ...cypherGrammar }
