@@ -259,7 +259,6 @@ code[data-language="table"],
     text-decoration: none;
     color: var(--sl-color-text) !important;
 }
-
 /* global.css or your starlight override */
 /* This rule applies user-select: none to the first span in code blocks */
 /* To make it only apply when the first character is $, you would need to add a class or data attribute */
