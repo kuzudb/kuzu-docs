@@ -20,17 +20,14 @@ ORDER BY u.age;
 ```
 
 ```table
--------------------
-| u.name  | u.age |
--------------------
-| Noura   | 25    |
--------------------
-| Adam    | 30    |
--------------------
-| Karissa | 40    |
--------------------
-| Zhang   | 50    |
--------------------
+┌─────────┬───────┐
+│ u.name  │ u.age │
+├─────────┼───────┤
+│ Noura   │ 25    │
+│ Adam    │ 30    │
+│ Karissa │ 40    │
+│ Zhang   │ 50    │
+└─────────┴───────┘
 ```
 
 Similarly, the following returns the names of users who live in `Waterloo`, ordered by `age` in descending order.
@@ -44,13 +41,12 @@ ORDER BY u.age DESC;
 ```
 
 ```table
--------------------
-| u.name  | u.age |
--------------------
-| Karissa | 40    |
--------------------
-| Adam    | 30    |
--------------------
+┌─────────┬───────┐
+│ u.name  │ u.age │
+├─────────┼───────┤
+│ Karissa │ 40    │
+│ Adam    │ 30    │
+└─────────┴───────┘
 ```
 
 ## Ordering using multiple properties or expressions
@@ -68,17 +64,14 @@ ORDER BY b.age DESC, a.name DESC;
 ```
 
 ```table
--------------------
-| b.age | a.name  |
--------------------
-| 50    | Karissa |
--------------------
-| 50    | Adam    |
--------------------
-| 40    | Adam    |
--------------------
-| 25    | Zhang   |
--------------------
+┌───────┬─────────┐
+│ b.age │ a.name  │
+├───────┼─────────┤
+│ 50    │ Karissa │
+│ 50    │ Adam    │
+│ 40    │ Adam    │
+│ 25    │ Zhang   │
+└───────┴─────────┘
 ```
 
 Note that there is a tie for `b.age` in the first two rows and the order is 

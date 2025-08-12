@@ -36,15 +36,16 @@ RETURN *;
 ```
 ```table
 ┌────────────┬──────┬──────────┐
-| University | Rank | Funding  |
+│ University │ Rank │ Funding  │
 ├────────────┼──────┼──────────┤
-| Stanford   | 2    | 250.300  |
-| Yale       | 6    | 190.700  |
-| Harvard    | 1    | 210.500  |
-| Cambridge  | 5    | 280.200  |
-| MIT        | 3    | 170.000  |
-| Oxford     | 4    | 300.000  |
+│ Stanford   │ 2    │ 250.300  │
+│ Yale       │ 6    │ 190.700  │
+│ Harvard    │ 1    │ 210.500  │
+│ Cambridge  │ 5    │ 280.200  │
+│ MIT        │ 3    │ 170.000  │
+│ Oxford     │ 4    │ 300.000  │
 └────────────┴──────┴──────────┘
+
 ```
 
 :::note[Notes]

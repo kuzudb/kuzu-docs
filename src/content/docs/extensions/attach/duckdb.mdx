@@ -117,17 +117,14 @@ LOAD FROM uw.person
 RETURN *;
 ```
 ```table
----------------
-| name  | age |
----------------
-| Alice | 30  |
----------------
-| Bob   | 27  |
----------------
-| Carol | 19  |
----------------
-| Dan   | 25  |
----------------
+┌─────────┬───────┐
+│ name    │ age   │
+├─────────┼───────┤
+│ Alice   │ 30    │
+│ Bob     │ 27    │
+│ Carol   │ 19    │
+│ Dan     │ 25    │
+└─────────┴───────┘
 ```
 
 ### Use a default database name
@@ -171,17 +168,14 @@ You can verify that the data was successfully imported:
 MATCH (p:Person) RETURN p.*;
 ```
 ```table
-------------------
-| p.name | p.age |
-------------------
-| Alice  | 30    |
-------------------
-| Bob    | 27    |
-------------------
-| Carol  | 19    |
-------------------
-| Dan    | 25    |
-------------------
+┌─────────┬───────┐
+│ p.name  │ p.age │
+├─────────┼───────┤
+│ Alice   │ 30    │
+│ Bob     │ 27    │
+│ Carol   │ 19    │
+│ Dan     │ 25    │
+└─────────┴───────┘
 ```
 
 ### Clear the schema cache

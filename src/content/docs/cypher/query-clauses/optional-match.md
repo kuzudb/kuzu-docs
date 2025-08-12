@@ -21,17 +21,13 @@ OPTIONAL MATCH (u)-[:Follows]->(u1:User)
 RETURN u.name, u1.name;
 ```
 ```table
----------------------
-| u.name  | u1.name |
----------------------
-| Adam    | Karissa |
----------------------
-| Adam    | Zhang   |
----------------------
-| Karissa | Zhang   |
----------------------
-| Zhang   | Noura   |
----------------------
-| Noura   |         |
----------------------
+┌─────────┬─────────┐
+│ u.name  │ u1.name │
+├─────────┼─────────┤
+│ Adam    │ Karissa │
+│ Adam    │ Zhang   │
+│ Karissa │ Zhang   │
+│ Zhang   │ Noura   │
+│ Noura   │         │
+└─────────┴─────────┘
 ```

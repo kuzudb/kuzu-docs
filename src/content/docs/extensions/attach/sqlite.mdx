@@ -75,17 +75,14 @@ LOAD FROM uw.person
 RETURN *;
 ```
 ```table
----------------
-| name  | age |
----------------
-| Alice | 30  |
----------------
-| Bob   | 27  |
----------------
-| Carol | 19  |
----------------
-| Dan   | 25  |
----------------
+┌─────────┬───────┐
+│ name    │ age   │
+├─────────┼───────┤
+│ Alice   │ 30    │
+│ Bob     │ 27    │
+│ Carol   │ 19    │
+│ Dan     │ 25    │
+└─────────┴───────┘
 ```
 
 Note: SQLite uses a [dynamic type system](https://www.sqlite.org/datatype3.html),
@@ -140,17 +137,14 @@ MATCH (p:Person) RETURN p.*;
 ```
 
 ```table
-------------------
-| p.name | p.age |
-------------------
-| Alice  | 30    |
-------------------
-| Bob    | 27    |
-------------------
-| Carol  | 19    |
-------------------
-| Dan    | 25    |
-------------------
+┌─────────┬───────┐
+│ p.name  │ p.age │
+├─────────┼───────┤
+│ Alice   │ 30    │
+│ Bob     │ 27    │
+│ Carol   │ 19    │
+│ Dan     │ 25    │
+└─────────┴───────┘
 ```
 
 ### Clear the schema cache

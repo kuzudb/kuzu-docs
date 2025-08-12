@@ -39,7 +39,8 @@ are placed in the `public/` directory.
 
 ## Customizations
 
-Table Syntax Highlighting
+### Table Syntax Highlighting
+
 Add tag "table" after the three backticks to indicate the table custom css style to code block
 
 **Usage:**
@@ -52,13 +53,12 @@ Add tag "table" after the three backticks to indicate the table custom css style
 ```
 
 
-Tab Synchronization
+### Tab Synchronization
 
 Include "syncKey=<syncKey_name>" to Tabs tag. To have tabs synchronize, ensure <syncKey_name> are the same across different tabs. 
 The tabitems do not need to be the same. Identical tabitems will have synchronization applied to them when clicked.
 
 **Usage:**
-
 <Tabs syncKey="langs">
   <TabItem label="Python" />
   <TabItem label="Rust" />

@@ -21,11 +21,11 @@ RETURN CAST(2.3 AS INT8) AS l;
 ```
 Returns:
 ```table
------
-| l |
------
-| 2 |
------
+┌─────┐
+│ l   │
+├─────┤
+│ 2   │
+└─────┘
 ```
 
 Not all inputs can be cast to every data type. For example, `INT[]` cannot be cast to `INT`. Even
@@ -38,10 +38,11 @@ RETURN CAST("12" AS INT) AS l;
 ```
 Returns:
 ```table
------
-| l |
------
-| 12 |
+┌─────┐
+│ l   │
+├─────┤
+│ 12  │
+└─────┘
 ```
 
 A string array can be cast to an integer array as follows:
@@ -51,9 +52,9 @@ RETURN CAST("[1,2,3]" AS INT[]) AS l;
 ```
 Returns:
 ```table
------------
-| l       |
------------
-| [1,2,3] |
------------
+┌─────────┐
+│ l       │
+├─────────┤
+│ [1,2,3] │
+└─────────┘
 ```

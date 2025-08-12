@@ -132,12 +132,13 @@ COMMENT ON TABLE User IS 'User information';
 Comments can be extracted through the `SHOW_TABLES()` function. See [CALL](/cypher/query-clauses/call) for more information.
 ```cypher
 CALL SHOW_TABLES() RETURN *;
---------------------------------------------
-| TableName | TableType | TableComment     |
---------------------------------------------
-| User      | NODE      | User information |
---------------------------------------------
-| City      | NODE      |                  |
---------------------------------------------
+```
+```table
+┌───────────┬───────────┬──────────────────┐
+│ TableName │ TableType │ TableComment     │
+├───────────┼───────────┼──────────────────┤
+│ User      │ NODE      │ User information │
+│ City      │ NODE      │                  │
+└───────────┴───────────┴──────────────────┘
 ```
 

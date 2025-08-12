@@ -34,13 +34,19 @@ You can first drop the `Follows` relationship table, and subsequently the `User`
 
 ```cypher
 DROP TABLE Follows
----------------------------------------
-| RelTable: Follows has been dropped. |
----------------------------------------
+```
+```table
+┌─────────────────────────────────────┐
+│ RelTable: Follows has been dropped. │
+└─────────────────────────────────────┘
+```
+```cypher
 DROP TABLE User
--------------------------------------
-| NodeTable: User has been dropped. |
--------------------------------------
+```
+```table
+┌───────────────────────────────────┐
+│ NodeTable: User has been dropped. │
+└───────────────────────────────────┘
 ```
 
 ## Drop if exists

@@ -26,24 +26,21 @@ RETURN u3.age;
 ```
 
 ```table
-----------
-| u1.age |
-----------
-| 30     |
-----------
-| 40     |
-----------
-| 30     |
-----------
+┌─────────┐
+│ u1.age  │
+├─────────┤
+│ 30      │
+│ 40      │
+│ 30      │
+└─────────┘
 ```
 
 If you changed `UNION ALL` to `UNION` in the above query, one of the 30's in the output
 would be removed. So the result would be:
 
 ```table
-------
-| 30 |
-------
-| 40 |
-------
+┌─────┐
+│ 30  │
+│ 40  │
+└─────┘
 ```
