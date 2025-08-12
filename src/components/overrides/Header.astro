@@ -3,7 +3,6 @@ import type { Props } from "@astrojs/starlight/props";
 import SiteTitle from "@astrojs/starlight/components/SiteTitle.astro";
 import Search from "@astrojs/starlight/components/Search.astro";
 import SocialIcons from "@astrojs/starlight/components/SocialIcons.astro";
-import ThemeSelect from "@astrojs/starlight/components/ThemeSelect.astro";
 import { Icon } from "@astrojs/starlight/components";
 import Banner from './Banner.astro';
 import ThemeSelect from './ThemeSelect.astro';
@@ -12,7 +11,7 @@ import ThemeSelect from './ThemeSelect.astro';
   <!-- Site Title - shows when sidebars collapse -->
   <div class="header-site-title">
     <a href="/" class="site-title">
-      <img src="/src/assets/logo/kuzu-logo-inverse.png" alt="Kuzu" class="site-logo" />
+      <SiteTitle />
     </a>
   </div>
  
