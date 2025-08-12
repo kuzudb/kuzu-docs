@@ -73,7 +73,7 @@ By default, `NULL`s are put at the beginning of the list when sorting in descend
 RETURN list_sort([3,10, NULL, 4], 'DESC') AS result;
 ```
 
-```
+```table
 ┌───────────┐
 │ result    │
 │ INT64[]   │
@@ -91,7 +91,7 @@ specifying `NULLS LAST` as the third argument.
 RETURN list_sort([3,10, NULL, 4], 'DESC', 'NULLS LAST') AS result;
 ```
 
-```
+```table
 ┌───────────┐
 │ result    │
 │ INT64[]   │
@@ -103,9 +103,10 @@ RETURN list_sort([3,10, NULL, 4], 'DESC', 'NULLS LAST') AS result;
 ## RANGE
 
 `range(start, stop)` returns a list of values from start to stop. Both ends are inclusive.
-
-```cypher
+```cypher  
 RETURN range(1,3);
+```
+```table
 ┌────────────┐
 │ RANGE(1,3) │
 │ INT64[]    │
@@ -116,9 +117,10 @@ RETURN range(1,3);
 
 `range(start, stop, step)` returns a list of values from start to stop with the given step.
 Both ends are inclusive.
-
-```cypher
-RETURN range(1,10,2);
+```cypher  
+RETURN range(1,10,2); 
+```
+```table
 ┌───────────────┐
 │ RANGE(1,10,2) │
 │ INT64[]       │
@@ -136,7 +138,7 @@ The only difference is that `COALESCE` can take more than two arguments.
 RETURN coalesce(NULL, 'a', NULL) AS result;
 ```
 
-```
+```table
 ┌────────┐
 │ result │
 │ STRING │
@@ -149,7 +151,7 @@ RETURN coalesce(NULL, 'a', NULL) AS result;
 RETURN ifnull(NULL, 'a') AS result;
 ```
 
-```
+```table
 ┌────────┐
 │ result │
 │ STRING │

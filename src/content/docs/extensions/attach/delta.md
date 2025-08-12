@@ -42,7 +42,7 @@ To scan the Delta table created above, you can do the following:
 ```cypher
 LOAD FROM '/tmp/student' (file_format='delta') RETURN *;
 ```
-```
+```table
 ┌────────┬───────┐
 │ name   │ ID    │
 │ STRING │ INT64 │
@@ -64,7 +64,7 @@ You can use a `COPY FROM` statement to copy the contents of a Delta table into K
 CREATE NODE TABLE student (ID INT64 PRIMARY KEY, name STRING);
 COPY student FROM '/tmp/student' (file_format='delta');
 ```
-```
+```table
 ┌─────────────────────────────────────────────────┐
 │ result                                          │
 │ STRING                                          │

@@ -18,7 +18,7 @@ WHERE u.name = 'Adam'
 SET u.age = 50
 RETURN u.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ u.name │ u.age │
 │ STRING │ INT64 │
@@ -34,7 +34,7 @@ WHERE u.name = 'Adam'
 SET u.age = NULL
 RETURN u.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ u.name │ u.age │
 │ STRING │ INT64 │
@@ -50,7 +50,7 @@ MATCH (u)
 SET u.population = 0
 RETURN label(u), u.name, u.population;
 ```
-```
+```table
 ┌──────────────────────────┬───────────┬──────────────┐
 │ LABEL(u._ID,[User,City]) │ u.name    │ u.population │
 │ STRING                   │ STRING    │ INT64        │
@@ -81,7 +81,7 @@ WHERE u0.name = 'Adam' AND u1.name = 'Karissa'
 SET f.since = 2012
 RETURN f;
 ```
-```
+```table
 ┌───────────────────────────────────────────────────────┐
 │ f                                                     │
 │ REL                                                   │
@@ -97,7 +97,7 @@ WHERE u0.name = 'Adam'
 SET f.since = 1999
 RETURN f;
 ```
-```
+```table
 ┌───────────────────────────────────────────────────────┐
 │ f                                                     │
 │ REL                                                   │

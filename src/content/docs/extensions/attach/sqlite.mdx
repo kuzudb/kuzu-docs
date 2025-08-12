@@ -74,18 +74,15 @@ Use the `LOAD FROM` statement to scan the `person` table.
 LOAD FROM uw.person
 RETURN *;
 ```
-```
----------------
-| name  | age |
----------------
-| Alice | 30  |
----------------
-| Bob   | 27  |
----------------
-| Carol | 19  |
----------------
-| Dan   | 25  |
----------------
+```table
+┌─────────┬───────┐
+│ name    │ age   │
+├─────────┼───────┤
+│ Alice   │ 30    │
+│ Bob     │ 27    │
+│ Carol   │ 19    │
+│ Dan     │ 25    │
+└─────────┴───────┘
 ```
 
 Note: SQLite uses a [dynamic type system](https://www.sqlite.org/datatype3.html),
@@ -139,18 +136,15 @@ You can verify that the data was successfully imported:
 MATCH (p:Person) RETURN p.*;
 ```
 
-```
-------------------
-| p.name | p.age |
-------------------
-| Alice  | 30    |
-------------------
-| Bob    | 27    |
-------------------
-| Carol  | 19    |
-------------------
-| Dan    | 25    |
-------------------
+```table
+┌─────────┬───────┐
+│ p.name  │ p.age │
+├─────────┼───────┤
+│ Alice   │ 30    │
+│ Bob     │ 27    │
+│ Carol   │ 19    │
+│ Dan     │ 25    │
+└─────────┴───────┘
 ```
 
 ### Clear the schema cache

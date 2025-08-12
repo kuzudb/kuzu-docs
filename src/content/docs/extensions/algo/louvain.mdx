@@ -21,7 +21,7 @@ an undirected version of the projected graph, i.e., each edge is treated as undi
 
 ## Syntax
 
-```
+```cypher
 CALL louvain(
     <GRAPH_NAME>,
     maxPhases := 20,
@@ -97,7 +97,7 @@ CALL louvain('Graph')
 RETURN louvain_id, collect(node.name)
 ORDER BY louvain_id;
 ```
-```
+```table
 ┌────────────┬───────────────────────────┐
 │ louvain_id │ COLLECT(node.name)        │
 │ INT64      │ STRING[]                  │

@@ -239,7 +239,7 @@ conn.execute("CREATE (a:Person {name: 'Zhang', age: 50})")
 result = conn.execute("MATCH (p:Person) RETURN p.*")
 print(result.get_as_pl())
 ```
-```
+```table
 shape: (3, 2)
 ┌─────────┬───────┐
 │ p.name  ┆ p.age │
@@ -256,7 +256,7 @@ Return specific columns by name and optionally alias them as follows:
 result = conn.execute("MATCH (p:Person) RETURN p.name AS name")
 print(result.get_as_pl())
 ```
-```
+```table
 shape: (3, 1)
 ┌─────────┐
 │ name    │
@@ -352,7 +352,7 @@ df = pl.DataFrame({
 result = conn.execute("LOAD FROM df RETURN *")
 print(result.get_as_pl())
 ```
-```
+```table
 shape: (3, 2)
 ┌─────────┬─────┐
 │ name    ┆ age │
@@ -453,7 +453,7 @@ conn.execute("COPY Person FROM df")
 result = conn.execute("MATCH (p:Person) RETURN p.*")
 print(result.get_as_pl())
 ```
-```
+```table
 shape: (3, 2)
 ┌─────────┬───────┐
 │ p.name  ┆ p.age │

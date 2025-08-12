@@ -16,7 +16,7 @@ RETURN u.name
 ORDER BY u.age DESC
 LIMIT 3;
 ```
-```
+```table
 ┌─────────┐
 │ u.name  │
 │ STRING  │
@@ -43,7 +43,7 @@ The number of rows to limit can be given at the time of execution.
 ```c++
 conn->execute(prepared.get(), std::make_pair(std::string{"lt"}, 1))
 ```
-```
+```table
 ┌────────┐
 │ u.name │
 │ STRING │
@@ -58,7 +58,7 @@ RETURN u.name
 LIMIT 1+2
 ```
 
-```
+```table
 ┌─────────┐
 │ u.name  │
 │ STRING  │

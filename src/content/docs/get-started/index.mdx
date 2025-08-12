@@ -220,7 +220,7 @@ response = conn.execute(
 print(response.get_as_pl())
 ```
 
-```bash
+```table
 shape: (4, 3)
 ┌─────────┬─────────┬─────────┐
 │ a.name  ┆ b.name  ┆ f.since │
@@ -879,7 +879,7 @@ RETURN a.name, b.name, f.since;
 
 The following result is obtained:
 
-```bash
+```table
 ┌─────────┬─────────┬─────────┐
 │ a.name  │ b.name  │ f.since │
 │ STRING  │ STRING  │ INT64   │

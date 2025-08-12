@@ -70,7 +70,7 @@ LOAD FROM unity.numbers
 RETURN *
 ```
 
-```
+```table
 ┌────────┬────────────┐
 │ as_int │ as_double  │
 │ INT32  │ DOUBLE     │
@@ -137,7 +137,7 @@ You can verify that the data has been copied successfully:
 MATCH (n:numbers) RETURN n.*;
 ```
 
-```
+```table
 ┌───────┬────────────┐
 │ n.id  │ n.score    │
 │ INT32 │ DOUBLE     │

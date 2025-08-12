@@ -30,7 +30,7 @@ LOAD FROM "user.csv" (header = true)
 RETURN COUNT(*);
 ```
 This counts the number of rows in the file.
-```
+```table
 ┌──────────────┐
 │ COUNT_STAR() │
 │ INT64        │
@@ -46,7 +46,7 @@ WHERE age > 25
 RETURN COUNT(*);
 ```
 The above query counts only the rows where the `age` column is greater than 25.
-```
+```table
 ┌──────────────┐
 │ COUNT_STAR() │
 │ INT64        │
@@ -66,7 +66,7 @@ LOAD FROM "user.csv" (header = true)
 RETURN age, name
 LIMIT 2;
 ```
-```
+```table
 ┌───────┬─────────┐
 │ age   │ name    │
 │ INT64 │ STRING  │

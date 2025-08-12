@@ -94,7 +94,7 @@ The following example replaces multiple spaces with an empty string globally acr
 RETURN regexp_replace('20 main   street', '\\s+', '', 'g') AS global_replace;
 ```
 
-```
+```table
 ┌────────────────┐
 │ global_replace │
 │ STRING         │

@@ -92,11 +92,6 @@ export default defineConfig({
                     tag: 'meta',
                     attrs: { name: 'twitter:image', content: site + '/img/og.png' },
                 },
-                // Script
-                {
-                    tag: "script",
-                    attrs: { src: "/reb2b.js", type: "text/javascript", async: true }
-                },
                 {
                     tag: "script",
                     attrs: { src: "/remove-prompt.js", type: "text/javascript" }

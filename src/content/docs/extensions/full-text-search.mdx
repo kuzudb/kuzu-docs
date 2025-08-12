@@ -159,7 +159,7 @@ RETURN
   score
 ORDER BY score DESC;
 ```
-```
+```table
 ┌───────────────────┬─────────────────────────────────────────────────┬──────────┐
 │ title             │ abstract                                        │ score    │
 │ STRING            │ STRING                                          │ DOUBLE   │
@@ -179,7 +179,7 @@ RETURN
   score
 ORDER BY score DESC;
 ```
-```
+```table
 ┌───────────────────┬──────────────────────────────────────┬──────────┐
 │ title             │ abstract                             │ score    │
 │ STRING            │ STRING                               │ DOUBLE   │
@@ -197,7 +197,7 @@ RETURN
   node.title as title,
   score;
 ```
-```
+```table
 ┌───────────────────┬──────────┐
 │ title             │ score    │
 │ STRING            │ DOUBLE   │
@@ -233,7 +233,7 @@ to show all the available indexes in Kuzu, including FTS indexes.
 ```cypher
 CALL SHOW_INDEXES() RETURN *;
 ```
-```
+```table
 ┌────────────┬────────────┬────────────┬──────────────────┬──────────────────┬──────────────────────────────────────────────────────────────────────────────────────────┐
 │ table name │ index name │ index type │ property names   │ extension loaded │ index definition                                                                         │
 │ STRING     │ STRING     │ STRING     │ STRING[]         │ BOOL             │ STRING                                                                                   │

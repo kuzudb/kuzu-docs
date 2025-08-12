@@ -101,7 +101,7 @@ which also connects to the same `example.kuzu`. When you launch Kuzu CLI and poi
 `example.kuzu`, Kuzu CLI embeds Kuzu and tries to create a `READ_WRITE` Database object. So if your notebook process already
 has created a Database object, this will fail with an error that looks like this:
 
-```
+```console
 RuntimeError: IO exception: Could not set lock on file : /path/to/database/example.kuzu
 ```
 
@@ -208,7 +208,7 @@ application is to use design patterns as per one of the scenarios shown pictoria
 Sometimes, when you are working in a Jupyter notebook and building your Kuzu graph while also trying to
 open other processes that connect to the same directory as the database file, you may come across this error:
 
-```
+```console
 RuntimeError: IO exception: Could not set lock on file : /path/to/database/example.kuzu
 ```
 

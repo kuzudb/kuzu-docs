@@ -13,19 +13,16 @@ operator in the plan, which will be shown inside the operators.
 
 Below is a very simple example run from the CLI.
 
-```cypher
+```table
 kuzu> PROFILE MATCH (a:User) RETURN a.name
------------
-| a.name  |
------------
-| Adam    |
------------
-| Karissa |
------------
-| Zhang   |
------------
-| Noura   |
------------
+┌─────────┐
+│ a.name  │
+├─────────┤
+│ Adam    │
+│ Karissa │
+│ Zhang   │
+│ Noura   │
+└─────────┘
 (4 tuples)
 Time: 0.32ms (compiling), 0.15ms (executing)
 ==============================================

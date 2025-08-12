@@ -47,7 +47,7 @@ MATCH (p:Person)
 RETURN p.name AS name, p.age AS age;
 ```
 
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT64 │
