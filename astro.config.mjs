@@ -92,19 +92,11 @@ export default defineConfig({
                     tag: 'meta',
                     attrs: { name: 'twitter:image', content: site + '/img/og.png' },
                 },
-                // Script
-                {
-                    tag: "script",
-                    attrs: { src: "/reb2b.js", type: "text/javascript", async: true }
-                },
                 {
                     tag: "script",
                     attrs: { src: "/remove-prompt.js", type: "text/javascript" }
                 },
-                {
-                    tag: "script",
-                    attrs: { src: "/apply-dollar-select.js", type: "text/javascript" }
-                },
+
             ],
             components: {
                 Header: './src/components/overrides/Header.astro',

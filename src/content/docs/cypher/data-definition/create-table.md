@@ -118,7 +118,7 @@ CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
 
 For any relationship label `E`, by default there can be multiple relationships from any node `v` both in the forward and backward direction. In database terminology, relationships are by default many-to-many. In the first `Follows` example above: (i) `v` can follow multiple other user nodes; and (ii) `v` can be followed by multiple other user nodes.
 
-You can optionally constrain the multiplicity to _at most 1_ in either direction, using the `MANY_ONE`, `ONE_MANY`, `MANY_ONE`, or `ONE_ONE` clauses.
+You can optionally constrain the multiplicity to _at most 1_ in either direction, using the `MANY_ONE`, `ONE_MANY`, `MANY_MANY` or `ONE_ONE` clauses.
 
 :::note[Note]
 We don't yet support "exactly 1" semantics as you may be used to via foreign key constraints in relational systems. This is planned for a future release.
