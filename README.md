@@ -37,6 +37,42 @@ Images are added to `src/assets/` and embedded in Markdown with a relative link.
 Any additional static assets (like fonts, favicon, PDFs, etc.) that will not be processed by Astro
 are placed in the `public/` directory.
 
+## Customizations
+
+Table Syntax Highlighting
+Add tag "table" after the three backticks to indicate the table custom css style to code block
+
+**Usage:**
+```table
+┌─────────┬─────────┬─────────┐
+│ column1 │ column2 │ column3 │
+├─────────┼─────────┼─────────┤
+│ value1  │ value2  │ value3  │
+└─────────┴─────────┴─────────┘ 
+```
+
+
+Tab Synchronization
+
+Include "syncKey=<syncKey_name>" to Tabs tag. To have tabs synchronize, ensure <syncKey_name> are the same across different tabs. 
+The tabitems do not need to be the same. Identical tabitems will have synchronization applied to them when clicked.
+
+**Usage:**
+
+<Tabs syncKey="langs">
+  <TabItem label="Python" />
+  <TabItem label="Rust" />
+</Tabs>
+
+<Tabs syncKey="langs">
+  <TabItem label="C++" />
+  <TabItem label="Rust" />
+  <TabItem label="Java" />
+</Tabs>
+
+Pressing on "Rust" will result in both tabs switching onto Rust.
+
+
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:

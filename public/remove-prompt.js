@@ -92,4 +92,39 @@
   }
 })();
 
+// Add user-select: none to spans that start with $
+(function () {
+  function addDollarClass() {
+    const codeBlocks = document.querySelectorAll('pre[data-language] code > div.ec-line > div.code > span:first-child');
+    
+    codeBlocks.forEach(span => {
+      const text = span.textContent || span.innerText;
+      if (text && text.trim().startsWith('$')) {
+        span.classList.add('starts-with-dollar');
+      }
+    });
+  }
+  
+  // Process on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addDollarClass);
+  } else {
+    addDollarClass();
+  }
+  
+  // Process when content changes (for dynamic content)
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList') {
+        addDollarClass();
+      }
+    });
+  });
+  
+  // Observe the entire document for changes
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+})();
 
