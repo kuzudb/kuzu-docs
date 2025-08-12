@@ -19,7 +19,7 @@ RETURN u.name, u.age
 ORDER BY u.age;
 ```
 
-```
+```table
 -------------------
 | u.name  | u.age |
 -------------------
@@ -43,7 +43,7 @@ RETURN u.name, u.age
 ORDER BY u.age DESC;
 ```
 
-```
+```table
 -------------------
 | u.name  | u.age |
 -------------------
@@ -67,7 +67,7 @@ RETURN b.age, a.name
 ORDER BY b.age DESC, a.name DESC;
 ```
 
-```
+```table
 -------------------
 | b.age | a.name  |
 -------------------

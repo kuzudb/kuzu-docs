@@ -52,7 +52,7 @@ COPY POSTED FROM 'tutorial_data/relation/POSTS.csv';
 You should see messages in your terminal indicating how many tuples were copied into each table. An
 example is shown below.
 
-```
+```table
 ┌───────────────────────────────────────────────┐
 │ result                                        │
 │ STRING                                        │
@@ -79,7 +79,7 @@ MATCH (a:User) RETURN a.* LIMIT 3;
 Note the `a.*` in the `RETURN` clause. This is a wildcard that returns all properties of the `User`
 node, regardless of how many properties there are.
 
-```
+```table
 ┌──────────┬────────────────┬─────────────────────────┐
 │ a.userID │ a.username     │ a.account_creation_date │
 │ INT64    │ STRING         │ DATE                    │
@@ -105,7 +105,7 @@ In the below example, we match the `LIKES` relationship between a `User` node an
 ```cypher
 MATCH (a:User)-[r:LIKES]->(b:Post) RETURN a.username, b.* LIMIT 3;
 ```
-```
+```table
 ┌─────────────┬──────────┬─────────────────┬──────────────┬─────────────────┐
 │ a.username  │ b.postID │ b.creation_date │ b.like_count │ b.retweet_count │
 │ STRING      │ INT64    │ DATE            │ INT64        │ INT64           │
@@ -126,7 +126,7 @@ in the pattern.
 // Ask for all nodes and relationships in the database
 MATCH (a)-[b]->(c) RETURN * LIMIT 3;
 ```
-```
+```table
 ┌──────────────────────────────────┬──────────────────────────────────┬──────────────────────────────────┐
 │ a                                │ c                                │ b                                │
 │ NODE                             │ NODE                             │ REL                              │
@@ -173,7 +173,7 @@ RETURN a.username, b.username, c.username LIMIT 3;
 Instead of repeating the match clause, you can comma-separate the clauses as shown above.
 The following result is returned.
 
-```
+```table
 ┌────────────────┬───────────────┬───────────────┐
 │ user1          │ user2         │ user3         │
 │ STRING         │ STRING        │ STRING        │
@@ -195,7 +195,7 @@ MATCH (a:User)-[:Follows*1..2]->(b:User)
 RETURN a.username, b.username
 LIMIT 5;
 ```
-```
+```table
 ┌─────────────┬─────────────┐
 │ a.username  │ b.username  │
 │ STRING      │ STRING      │
@@ -219,7 +219,7 @@ MATCH (a:User)-[:Follows*2]->(b:User)
 RETURN a.username, b.username
 LIMIT 5;
 ```
-```
+```table
 ┌────────────────┬───────────────┐
 │ a.username     │ b.username    │
 │ STRING         │ STRING        │
@@ -240,7 +240,7 @@ MATCH (a:User)-[:Follows]->(x:User)-[:Follows]->(b:User)
 WHERE a.username = 'epicwolf202'
 RETURN a.username, b.username;
 ```
-```
+```table
 ┌─────────────┬─────────────┐
 │ a.username  │ b.username  │
 │ STRING      │ STRING      │
@@ -262,7 +262,7 @@ MATCH (u:User)-[:LIKES]->(p:Post)
 RETURN DISTINCT u.username
 LIMIT 3;
 ```
-```
+```table
 ┌────────────────┐
 │ u.username     │
 │ STRING         │
@@ -288,7 +288,7 @@ RETURN u1.username, u2.username
 LIMIT 3;
 ```
 
-```
+```table
 ┌─────────────┬───────────────┐
 │ u1.username │ u2.username   │
 │ STRING      │ STRING        │
@@ -315,7 +315,7 @@ The date format in the `WHERE` predicate is specified in the format `YYYY-MM-DD`
 transformed into a date object that can be compared with the `account_creation_date` property of the
 `User` node.
 
-```
+```table
 ┌────────────────┬─────────────────────────┐
 │ a.username     │ a.account_creation_date │
 │ STRING         │ DATE                    │
@@ -340,7 +340,7 @@ RETURN u.username
 LIMIT 3;
 ```
 
-```
+```table
 ┌────────────────┐
 │ u.username     │
 │ STRING         │
@@ -362,7 +362,7 @@ MATCH (p:Post)
 RETURN COUNT(p) AS num_posts;
 ```
 
-```
+```table
 ┌───────────┐
 │ num_posts │
 │ INT64     │
@@ -378,7 +378,7 @@ RETURN u.userID, COUNT(p) AS num_posts
 LIMIT 3;
 ```
 
-```
+```table
 ┌──────────┬───────────┐
 │ u.userID │ num_posts │
 │ INT64    │ INT64     │
@@ -400,7 +400,7 @@ RETURN u.username, COUNT(p) AS num_posts
 ORDER BY num_posts DESC
 LIMIT 3;
 ```
-```
+```table
 ┌───────────────┬───────────┐
 │ u.username    │ num_posts │
 │ STRING        │ INT64     │
@@ -427,7 +427,7 @@ RETURN u.username AS most_prolific_user, u2.username AS follower
 LIMIT 8;
 ```
 Note the use of the `AS` keyword to rename the columns in the result.
-```
+```table
 ┌────────────────────┬───────────────┐
 │ most_prolific_user │ follower      │
 │ STRING             │ STRING        │
@@ -454,7 +454,7 @@ MATCH (u:User {username: user})
 RETURN u.username, u.account_creation_date;
 ```
 
-```
+```table
 ┌───────────────┬─────────────────────────┐
 │ u.username    │ u.account_creation_date │
 │ STRING        │ DATE                    │
@@ -476,7 +476,7 @@ RETURN u.username,
        COUNT(CASE WHEN p.creation_date > DATE('2023-04-01') THEN p ELSE NULL END) AS num_posts
 ORDER BY num_posts DESC LIMIT 3;
 ```
-```
+```table
 ┌────────────────┬───────────┐
 │ u.username     │ num_posts │
 │ STRING         │ INT64     │

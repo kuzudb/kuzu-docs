@@ -78,7 +78,7 @@ CALL weakly_connected_components('Graph')
 RETURN group_id, collect(node.name)
 ORDER BY group_id;
 ```
-```
+```table
 ┌──────────┬─────────────────────────┐
 │ group_id │ COLLECT(node.name)      │
 │ INT64    │ STRING[]                │

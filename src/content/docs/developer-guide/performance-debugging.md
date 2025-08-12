@@ -13,7 +13,7 @@ operator in the plan, which will be shown inside the operators.
 
 Below is a very simple example run from the CLI.
 
-```cypher
+```table
 kuzu> PROFILE MATCH (a:User) RETURN a.name
 -----------
 | a.name  |

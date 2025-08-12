@@ -119,7 +119,7 @@ You can use `SHOW_TABLES()` to verify that the tables have been imported into Ku
 ```cypher
 CALL SHOW_TABLES() RETURN *;
 ```
-```
+```table
 ┌────────┬─────────┬────────┬───────────────┬─────────┐
 │ id     │ name    │ type   │ database name │ comment │
 │ UINT64 │ STRING  │ STRING │ STRING        │ STRING  │
@@ -140,7 +140,7 @@ RETURN u.name
 ORDER BY f.since
 DESC LIMIT 1;
 ```
-```
+```table
 ┌────────┬─────────┐
 │ u.name │ f.since │
 │ STRING │ INT64   │

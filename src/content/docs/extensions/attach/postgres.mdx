@@ -150,7 +150,7 @@ LOAD FROM uw.person
 RETURN *
 ```
 
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT64 │
@@ -174,7 +174,7 @@ CALL SQL_QUERY('uw', 'SELECT * FROM person WHERE age >= 20')
 RETURN *;
 ```
 
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT64 │
@@ -231,7 +231,7 @@ You can verify that the data was successfully imported:
 ```cypher
 MATCH (p:Person) RETURN p.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT64 │

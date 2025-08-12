@@ -34,7 +34,7 @@ LOAD FROM
     (file_format='iceberg', allow_moved_paths=true)
 RETURN *;
 ```
-```
+```table
 ┌────────────┬──────┬──────────┐
 | University | Rank | Funding  |
 ├────────────┼──────┼──────────┤
@@ -63,7 +63,7 @@ COPY university FROM
     '/tmp/iceberg_tables/person_table'
     (file_format='iceberg', allow_moved_paths=true);
 ```
-```
+```table
 ┌─────────────────────────────────────────────────────┐
 │ result                                              │
 │ STRING                                              │
@@ -86,7 +86,7 @@ CALL ICEBERG_METADATA(
 RETURN *;
 ```
 
-```
+```table
 ┌──────────────────────────┬──────────────────────────┬──────────────────┬─────────┬──────────┬──────────────────────────┬─────────────┬──────────────┐
 │ manifest_path            │ manifest_sequence_number │ manifest_content │ status  │ content  │ file_path                │ file_format │ record_count │
 │ STRING                   │ INT64                    │ STRING           │ STRING  │ STRING   │ STRING                   │ STRING      │ INT64        │
@@ -106,7 +106,7 @@ Note that for snapshots, you do not need to specify the `allow_moved_paths` opti
 ```cypher
 CALL ICEBERG_SNAPSHOTS('/tmp/iceberg_tables/lineitem_iceberg') RETURN *;
 ```
-```
+```table
 ┌─────────────────┬─────────────────────┬─────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ sequence_number │ snapshot_id         │ timestamp_ms            │ manifest_list                                                                                  │
 │ UINT64          │ UINT64              │ TIMESTAMP               │ STRING                                                                                         │

@@ -97,7 +97,7 @@ CALL louvain('Graph')
 RETURN louvain_id, collect(node.name)
 ORDER BY louvain_id;
 ```
-```
+```table
 ┌────────────┬───────────────────────────┐
 │ louvain_id │ COLLECT(node.name)        │
 │ INT64      │ STRING[]                  │

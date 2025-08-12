@@ -101,6 +101,10 @@ export default defineConfig({
                     tag: "script",
                     attrs: { src: "/remove-prompt.js", type: "text/javascript" }
                 },
+                {
+                    tag: "script",
+                    attrs: { src: "/apply-dollar-select.js", type: "text/javascript" }
+                },
             ],
             components: {
                 Header: './src/components/overrides/Header.astro',

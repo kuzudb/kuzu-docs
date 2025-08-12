@@ -194,12 +194,27 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
 
 .expressive-code pre,
 .expressive-code code,
-.sl-markdown-content pre,
-.sl-markdown-content code {
+.sl-markdown-content pre {
     font-family: var(--__sl-font-mono) !important;
-    line-height: 1.2 !important;
+    line-height: 1.6 !important;
     letter-spacing: 0 !important;
     font-variant-ligatures: none !important;
+}
+
+/* Table code blocks - tighter line height */
+.expressive-code pre.table,
+.expressive-code pre.table code,
+.sl-markdown-content pre.table,
+.expressive-code pre[data-language="table"],
+.expressive-code pre[data-language="table"] code,
+.sl-markdown-content pre[data-language="table"],
+/* Additional selectors for different rendering scenarios */
+pre[data-language="table"],
+pre[data-language="table"] code,
+code[data-language="table"],
+.language-table,
+.language-table code {
+    line-height: 1.2 !important;
 }
 
 /* Ensure proper rendering of Unicode box-drawing characters */
@@ -226,25 +241,11 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
     color: var(--sl-color-text) !important;
 }
 
-/* Remove box shadow from expressiveCode blocks */
-.expressive-code {
-    box-shadow: none !important;
-}
-
-.expressive-code .frame {
-    box-shadow: none !important;
-}
-
-.expressive-code .frame.not-content {
-    box-shadow: none !important;
-}
-
-/* Also remove any border radius if you want completely flat blocks */
-.expressive-code .frame {
-    border-radius: 0 !important;
-}
 /* global.css or your starlight override */
-pre[data-language] code > div.ec-line > div.code > span:first-child {
+/* This rule applies user-select: none to the first span in code blocks */
+/* To make it only apply when the first character is $, you would need to add a class or data attribute */
+/* For example: <span class="starts-with-dollar">$command</span> */
+pre[data-language] code > div.ec-line > div.code > span:first-child.starts-with-dollar {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;

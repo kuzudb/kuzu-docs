@@ -342,7 +342,7 @@ print(result.get_as_pl())
 The above query asks for the 2 nearest neighbors of the query vector "quantum machine learning".
 The result is a list of book titles that are most similar to this concept.
 
-```
+```table
 ┌───────────────────┐
 │ node.title        │
 │ ---               │
@@ -372,7 +372,7 @@ print(result.get_as_pl())
 The above query asks for the 2 nearest neighbors of the query vector "quantum machine learning".
 Then, it uses the `node` and `distance` variables to further query the graph and return rows sorted by `distance`.
 
-```
+```table
 ┌──────────────────────────┬───────────────────┬──────────┐
 │ publisher                ┆ book              ┆ distance │
 │ ---                      ┆ ---               ┆ ---      │
@@ -403,7 +403,7 @@ CALL SHOW_INDEXES() RETURN *;
 ```
 
 Example output:
-```
+```table
 ┌────────────┬──────────────────┬────────────┬───────────────────┬──────────────────┬───────────────────────────────┐
 │ table name │ index name       │ index type │ property names    │ extension loaded │ index definition              │
 ├────────────┼──────────────────┼────────────┼───────────────────┼──────────────────┼───────────────────────────────┤
@@ -491,7 +491,7 @@ ORDER BY dist;
 The result shows the two most similar books to the query "quantum world". Although we have a book named
 "The Quantum World" in the original dataset, it does not appear in the results because it was published before 2010.
 
-```
+```table
 shape: (2, 3)
 ┌────────────────────────────┬──────┬───────────────────────┐
 │ book                       ┆ year ┆ publisher             │

@@ -63,7 +63,7 @@ SET S3_URL_STYLE='VHOST';
 ATTACH 's3://duckdb-blobs/databases/stations.duckdb' AS station (dbtype duckdb);
 LOAD FROM station.stations RETURN count(*);
 ```
-```
+```table
 ┌──────────────┐
 │ COUNT_STAR() │
 │ INT64        │
@@ -116,7 +116,7 @@ You can use the `LOAD FROM` statement to scan the `person` table from the attach
 LOAD FROM uw.person
 RETURN *;
 ```
-```
+```table
 ---------------
 | name  | age |
 ---------------
@@ -170,7 +170,7 @@ You can verify that the data was successfully imported:
 ```cypher
 MATCH (p:Person) RETURN p.*;
 ```
-```
+```table
 ------------------
 | p.name | p.age |
 ------------------

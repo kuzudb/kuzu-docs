@@ -23,7 +23,7 @@ SET n.price = 20;
 MATCH (n:Bücher)
 RETURN label(n);
 ```
-```
+```table
 ┌─────────┐
 │ Bücher  │
 │ STRING  │
@@ -46,7 +46,7 @@ SET n.date = TIMESTAMP('2025-01-01');
 MATCH (n:`Return`)
 RETURN n.*;
 ```
-```
+```table
 ┌───────┬─────────────────────┐
 │ n.id  │ n.date              │
 │ INT64 │ TIMESTAMP           │

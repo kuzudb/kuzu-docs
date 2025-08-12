@@ -18,7 +18,7 @@ The following query tries to merge a user with the name "Adam". Since "Adam" exi
 ```cypher
 MERGE (n:User {name : 'Adam'}) RETURN n.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ n.name │ n.age │
 │ STRING │ INT64 │
@@ -30,7 +30,7 @@ MERGE (n:User {name : 'Adam'}) RETURN n.*;
 ```cypher
 MATCH (:User) RETURN COUNT(*);
 ```
-```
+```table
 ┌──────────────┐
 │ COUNT_STAR() │
 │ INT64        │
@@ -44,7 +44,7 @@ The following query tries to merge a user with the name "Bob". Since "Bob" does 
 ```cypher
 MERGE (n:User {name : 'Bob', age: 45}) RETURN n.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ n.name │ n.age │
 │ STRING │ INT64 │
@@ -56,7 +56,7 @@ MERGE (n:User {name : 'Bob', age: 45}) RETURN n.*;
 ```cypher
 MATCH (:User) RETURN COUNT(*);
 ```
-```
+```table
 ┌──────────────┐
 │ COUNT_STAR() │
 │ INT64        │
@@ -70,7 +70,7 @@ MATCH (:User) RETURN COUNT(*);
 ```cypher
 MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ n.name │ n.age │
 │ STRING │ INT64 │
@@ -84,7 +84,7 @@ MERGE (n:User {name : 'Adam'}) ON MATCH SET n.age = 35 RETURN n.*;
 ```cypher
 MERGE (n:User {name : 'Bob'}) ON CREATE SET n.age = 60 RETURN n.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ n.name │ n.age │
 │ STRING │ INT64 │
@@ -102,7 +102,7 @@ MATCH (a:User), (b:User)
 WHERE a.name = 'Adam' AND b.name = 'Zhang' 
 MERGE (a)-[e:Follows {since:2020}]->(b) RETURN e;
 ```
-```
+```table
 ┌───────────────────────────────────────────────────────┐
 │ e                                                     │
 │ REL                                                   │
@@ -115,7 +115,7 @@ MATCH (a:User)-[e:Follows]->(b:User)
 WHERE a.name = 'Adam' AND b.name = 'Zhang' 
 RETURN e;
 ```
-```
+```table
 ┌───────────────────────────────────────────────────────┐
 │ e                                                     │
 │ REL                                                   │
@@ -131,7 +131,7 @@ MATCH (a:User), (b:User)
 WHERE a.name = 'Adam' AND b.name = 'Zhang' 
 MERGE (a)-[e:Follows {since:2022}]->(b) RETURN e;
 ```
-```
+```table
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
@@ -144,7 +144,7 @@ MATCH (a:User)-[e:Follows]->(b:User)
 WHERE a.name = 'Adam' AND b.name = 'Zhang' 
 RETURN e;
 ```
-```
+```table
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
@@ -163,7 +163,7 @@ MERGE (a)-[e:Follows {since:2020}]->(b)
 ON MATCH SET e.since = 2021
 RETURN e;
 ```
-```
+```table
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
@@ -180,7 +180,7 @@ MERGE (a)-[e:Follows {since:2022}]->(b)
 ON CREATE SET e.since = 1999
 RETURN e;
 ```
-```
+```table
 ---------------------------------------------------------
 | e                                                     |
 ---------------------------------------------------------
@@ -197,7 +197,7 @@ MERGE (:User {name:'A'})-[:Follows]->(:User {name:'B'})-[:LivesIn]->(:City {name
 MATCH (a:User)-[:Follows]->(b:User)-[:LivesIn]->(c:City)
 RETURN a.name, b.name, c.name;
 ```
-```
+```table
 ---------------------------------
 | a.name  | b.name  | c.name    |
 ---------------------------------

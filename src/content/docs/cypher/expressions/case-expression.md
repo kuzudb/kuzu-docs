@@ -30,7 +30,7 @@ MATCH (a:User) RETURN
     END AS x;
 ```
 
-```
+```table
 ---------
 | x     |
 ---------
@@ -66,7 +66,7 @@ MATCH (a:User) RETURN
     END AS x;
 ```
 
-```
+```table
 -----------
 | x       |
 -----------

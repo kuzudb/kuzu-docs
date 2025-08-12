@@ -51,7 +51,7 @@ This section describes the schema functions that you can use with the `CALL` cla
 CALL TABLE_INFO('User') RETURN *;
 ```
 
-```
+```table
 ┌─────────────┬──────────────┬────────┬──────────────────────┬──────────────┐
 │ property id │ name         │ type   │ default expression   │ primary key  │
 │ INT32       │ STRING       │ STRING │ STRING               │ BOOL         │
@@ -69,7 +69,7 @@ CALL TABLE_INFO('User') RETURN *;
 CALL current_setting('threads') RETURN *;
 ```
 
-```
+```table
 ┌─────────┐
 │ threads │
 │ STRING  │
@@ -91,7 +91,7 @@ CALL current_setting('threads') RETURN *;
 CALL db_version() RETURN *;
 ```
 
-```
+```table
 ┌─────────┐
 │ version │
 │ STRING  │
@@ -115,7 +115,7 @@ CALL db_version() RETURN *;
 CALL show_tables() RETURN *;
 ```
 
-```
+```table
 ┌────────┬─────────┬────────┬───────────────┬─────────┐
 │ id     │ name    │ type   │ database name │ comment │
 │ UINT64 │ STRING  │ STRING │ STRING        │ STRING  │
@@ -143,7 +143,7 @@ Show connection on a relationship table:
 CALL show_connection('LivesIn') RETURN *;
 ```
 
-```
+```table
 ┌───────────────────┬────────────────────────┬──────────────────────────┬───────────────────────────────┐
 │ source table name │ destination table name │ source table primary key │ destination table primary key │
 │ STRING            │ STRING                 │ STRING                   │ STRING                        │
@@ -165,7 +165,7 @@ CALL show_connection('LivesIn') RETURN *;
 CALL show_attached_databases() RETURN *;
 ```
 
-```
+```table
 ┌─────────────┬────────────────┐
 │ name        │ database type  │
 │ STRING      │ STRING         │
@@ -197,7 +197,7 @@ After `warning_limit` many warnings are stored, any new warnings generated will 
 CALL show_warnings() RETURN *;
 ```
 
-```
+```table
 ┌──────────┬─────────────────────────────────────────────────────────────────────────────┬─────────────┬─────────────┬────────────────────────┐
 │ query_id │ message                                                                     │ file_path   │ line_number │ skipped_line_or_record │
 │ UINT64   │ STRING                                                                      │ STRING      │ UINT64      │ STRING                 │
@@ -226,7 +226,7 @@ If you would like to know all official [extensions](/extensions) available in Ku
 CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
 ```
 
-```
+```table
 ┌──────────┬─────────────────────────────────────────────────────────────────────────┐
 │ name     │ description                                                             │
 │ STRING   │ STRING                                                                  │
@@ -255,7 +255,7 @@ If you would like to know information about loaded extensions in Kuzu, you can r
 CALL SHOW_LOADED_EXTENSIONS() RETURN *;
 ```
 
-```
+```table
 ┌────────────────┬──────────────────┬─────────────────────────────────────────────────────────────────────────────┐
 │ extension name │ extension source │ extension path                                                              │
 │ STRING         │ STRING           │ STRING                                                                      │
@@ -283,7 +283,7 @@ Some indexes are implemented within extensions. If a required extension is not l
 CALL SHOW_INDEXES() RETURN *;
 ```
 
-```
+```table
 ┌────────────┬────────────┬────────────┬─────────────────────────┬──────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ table name │ index name │ index type │ property names          │ extension loaded │ index definition                                                                                 │
 │ STRING     │ STRING     │ STRING     │ STRING[]                │ BOOL             │ STRING                                                                                           │
@@ -304,7 +304,7 @@ To list all existing projected graphs in a Kuzu database, you can use the `SHOW_
 CALL SHOW_PROJECTED_GRAPHS() RETURN *;
 ```
 
-```
+```table
 ┌────────────────┬────────┐
 │ name           │ type   │
 │ STRING         │ STRING │
@@ -338,7 +338,7 @@ There are two types of projected graphs:
 call PROJECTED_GRAPH_INFO('student-social-network') RETURN *;
 ```
 
-```
+```table
 ┌────────────┬────────────┬────────────────┐
 │ table type │ table name │ predicate      │
 │ STRING     │ STRING     │ STRING         │
@@ -352,7 +352,7 @@ call PROJECTED_GRAPH_INFO('student-social-network') RETURN *;
 call PROJECTED_GRAPH_INFO('student') RETURN *;
 ```
 
-```
+```table
 ┌─────────────────────────────────────┐
 │ cypher statement                    │
 │ STRING                              │
@@ -377,7 +377,7 @@ CALL current_setting('threads')
 YIELD threads as threads_num
 RETURN *;
 ```
-```
+```table
 ┌─────────────┐
 │ threads_num │
 │ STRING      │
@@ -394,7 +394,7 @@ CALL table_info('student')
 YIELD `property id` as student_id,  name as student_name, type as student_type, `default expression` as student_default, `primary key` as student_pk
 RETURN *;
 ```
-```
+```table
 ┌───────────┬─────────────┬─────────────┬────────────────┬───────────┬────────────┬──────────────┬──────────────┬─────────────────┬────────────┐
 │ person_id │ person_name │ person_type │ person_default │ person_pk │ student_id │ student_name │ student_type │ student_default │ student_pk │
 │ INT32     │ STRING      │ STRING      │ STRING         │ BOOL      │ INT32      │ STRING       │ STRING       │ STRING          │ BOOL       │

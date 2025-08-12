@@ -28,7 +28,7 @@ of the elements is inferred by the query parser during the binding stage.
 RETURN ["Alice", "Bob"] AS l;
 ```
 
-```
+```table
 ---------------
 | l           |
 ---------------
@@ -51,7 +51,7 @@ You can also create a `LIST` by explicitly calling the creation function as foll
 RETURN list_creation(1,2,3,4) AS l;
 ```
 
-```
+```table
 -------------
 | l         |
 -------------
@@ -68,7 +68,7 @@ UNWIND x as y
 RETURN y;
 ```
 
-```
+```table
 -----
 | y |
 -----
@@ -113,7 +113,7 @@ This is an example of creating an array with elements that are primitive types (
 RETURN CAST([3,4,12,11], 'INT64[4]');
 ```
 
-```
+```table
 --------------------------------------------
 | CAST(LIST_CREATION(3,4,12,11), INT64[4]) |
 --------------------------------------------
@@ -130,7 +130,7 @@ containing elements of a primitive type (integers).
 RETURN CAST([[5,2,1],[2,3],[15,64,74]], 'INT64[][3]');
 ```
 
-```
+```table
 ----------------------------------------------------------------------------------------------------
 | CAST(LIST_CREATION(LIST_CREATION(5,2,1),LIST_CREATION(2,3),LIST_CREATION(15,64,74)), INT64[][3]) |
 ----------------------------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ RETURN CAST([[5,2,1],[2,3],[15,64,74]], 'INT64[][3]');
 UNWIND CAST([[1,2,3],[3],[4,5]], 'INT64[][3]') AS x UNWIND x AS y RETURN y;
 ```
 
-```
+```table
 -----
 | y |
 -----

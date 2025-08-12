@@ -28,7 +28,7 @@ WHERE a.name = 'Adam'
 RETURN nodes(p);
 ```
 
-```
+```table
 ------------------------------------------------------------------------------------
 | NODES(p)                                                                         |
 ------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ WHERE a.name = 'Adam'
 RETURN rels(p);
 ```
 
-```
+```table
 ------------------------------------------------------------------------------------
 | RELS(p)                                                                          |
 ------------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ WHERE a.name = 'Adam'
 RETURN properties(nodes(p), 'name') AS name, properties(rels(p), 'since') AS since;
 ```
 
-```
+```table
 --------------------------------------
 | name                 | since       |
 --------------------------------------
@@ -111,7 +111,7 @@ WHERE a.name='Adam'
 RETURN properties(rels(p), '_id'), is_trail(p);
 ```
 Output
-```
+```table
 -----------------------------------------
 | PROPERTIES(RELS(p),_id) | IS_TRAIL(p) |
 -----------------------------------------
@@ -141,7 +141,7 @@ WHERE a.name='Adam'
 RETURN properties(nodes(p), 'name'), is_acyclic(p);
 ```
 
-```
+```table
 ---------------------------------------------
 | PROPERTIES(NODES(p),name) | IS_ACYCLIC(p) |
 ---------------------------------------------
@@ -165,7 +165,7 @@ Return the number of relationships (path length) in a path.
 MATCH p = (a:User)-[f:Follows*1..2]->(b:User) 
 RETURN LENGTH(p);
 ```
-```
+```table
 ----------------
 | LENGTH(p)    |
 ----------------
@@ -191,7 +191,7 @@ Return the cost of a weighted path. This function only works for `WSHORTEST` and
 | `RECURSIVE_REL` | `DOUBLE` |
 
 **Example**
-```
+```table
 MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
 ┌─────────┬─────────┬───────────┬─────────┐
 │ a.name  │ e.since │ e.score   │ b.name  │

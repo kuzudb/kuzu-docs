@@ -20,7 +20,7 @@ MATCH (a:User)-[e:Follows]->(b:User)
 RETURN a, e;
 ```
 
-```
+```table
 ---------------------------------------------------------------------------------------------------
 | a                                         | e                                                   |
 ---------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ MATCH (a:User)-[:Follows]->(b:User)
 RETURN *;
 ```
 
-```
+```table
 -----------------------------------------------------------------------------------------
 | b                                         | a                                         |
 -----------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ MATCH (a:User)-[e:Follows]->(b:User)
 RETURN a.name, a.age, e.since;
 ```
 
-```
+```table
 -----------------------------
 | a.name  | a.age | e.since |
 -----------------------------
@@ -82,7 +82,7 @@ As syntactic sugar, Kuzu supports returning all properties of node or rel with `
 MATCH (a:User) RETURN a.*;
 ```
 
-```
+```table
 -------------------
 | a.name  | a.age |
 -------------------
@@ -100,7 +100,7 @@ MATCH (a:User) RETURN a.*;
 MATCH (a:User)-[e:Follows]->(b:User) WHERE a.name='Adam' RETURN e.*;
 ```
 
-```
+```table
 -----------
 | e.since |
 -----------
@@ -119,7 +119,7 @@ MATCH (a:User)-[e:Follows]->(b:User)
 RETURN DISTINCT a.name, a.age, e.since;
 ```
 
-```
+```table
 -----------------------------
 | a.name  | a.age | e.since |
 -----------------------------
@@ -139,7 +139,7 @@ MATCH (a:User)-[:Follows]->(b:User)
 RETURN a, avg(b.age) as avgFriendAge;
 ```
 
-```
+```table
 ------------------------------------------------------------
 | a                                         | avgFriendAge |
 ------------------------------------------------------------

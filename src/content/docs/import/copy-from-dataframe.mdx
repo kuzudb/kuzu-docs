@@ -314,7 +314,7 @@ with open("people.json", "r") as f:
 df = pl.DataFrame(data)
 print(df)
 ```
-```
+```table
 shape: (3, 3)
 ┌──────┬─────────┬─────────────────────────────────┐
 │ p_id ┆ name    ┆ info                            │
@@ -489,7 +489,7 @@ res = conn.execute(
 )
 print(res.get_as_pl())
 ```
-```
+```table
 shape: (2, 8)
 ┌────────┬─────────┬──────────┬──────────┬───────┬────────┬────────────────────────┬─────────────────┐
 │ p.p_id ┆ p.name  ┆ p.height ┆ p.weight ┆ p.age ┆ i.type ┆ i.name                 ┆ i.policy_number │

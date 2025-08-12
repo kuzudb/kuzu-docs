@@ -20,7 +20,7 @@ RETURN CAST(2.3, "INT8") AS l;
 RETURN CAST(2.3 AS INT8) AS l;
 ```
 Returns:
-```
+```table
 -----
 | l |
 -----
@@ -37,7 +37,7 @@ if the input's value is not suitable to cast. For example, casting the `STRING` 
 RETURN CAST("12" AS INT) AS l;
 ```
 Returns:
-```
+```table
 -----
 | l |
 -----
@@ -50,7 +50,7 @@ A string array can be cast to an integer array as follows:
 RETURN CAST("[1,2,3]" AS INT[]) AS l;
 ```
 Returns:
-```
+```table
 -----------
 | l       |
 -----------

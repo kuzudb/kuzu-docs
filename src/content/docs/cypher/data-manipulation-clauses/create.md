@@ -23,7 +23,7 @@ MATCH (a:User)
 WHERE a.name = 'Alice' 
 RETURN a.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ a.name │ a.age │
 │ STRING │ INT64 │
@@ -49,7 +49,7 @@ MATCH (a:User)
 WHERE a.name = 'Dimitri'
 RETURN a.*;
 ```
-```
+```table
 ┌─────────┬───────┐
 │ a.name  │ a.age │
 │ STRING  │ INT64 │

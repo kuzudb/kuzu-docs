@@ -74,7 +74,7 @@ Use the `LOAD FROM` statement to scan the `person` table.
 LOAD FROM uw.person
 RETURN *;
 ```
-```
+```table
 ---------------
 | name  | age |
 ---------------
@@ -139,7 +139,7 @@ You can verify that the data was successfully imported:
 MATCH (p:Person) RETURN p.*;
 ```
 
-```
+```table
 ------------------
 | p.name | p.age |
 ------------------
