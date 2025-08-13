@@ -19,7 +19,7 @@ MATCH (a:User) RETURN a
 ```
 Initially, there is just one user in the database:
 
-```
+```table
 ┌────────┬───────┐
 │ a.name │ a.age │
 │ STRING │ INT64 │
@@ -37,7 +37,7 @@ MERGE (u:User {name: 'Bob', age: 30})
 
 The result will be:
 
-```
+```table
 ┌────────┬───────┐
 │ a.name │ a.age │
 │ STRING │ INT64 │

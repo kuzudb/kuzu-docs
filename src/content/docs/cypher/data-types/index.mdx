@@ -99,7 +99,7 @@ You can explicitly cast a number (either integer or float) to a `DECIMAL` as fol
 RETURN CAST(127.3, "DECIMAL(5, 2)") AS result;
 ```
 
-```
+```table
 ┌───────────────┐
 │ result        │
 │ DECIMAL(5, 2) │
@@ -139,7 +139,7 @@ Example:
 RETURN UUID('A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11') as result;
 ```
 
-```
+```table
 ┌──────────────────────────────────────┐
 │ result                               │
 │ UUID                                 │
@@ -163,7 +163,7 @@ RETURN 'Зарегистрируйтесь, σπαθιοῦ, Yen [jɛn], kΩ' AS
 ```
 
 
-```
+```table
 ┌───────────────────────────────────────────┐
 │ str                                       │
 │ STRING                                    │
@@ -190,7 +190,7 @@ Compare a value with `NULL`:
 RETURN 3 = null;
 ```
 
-```
+```table
 ┌────────────┐
 │ EQUALS(3,) │
 │ BOOL       │
@@ -204,7 +204,7 @@ Compare `NULL` with `NULL`:
 RETURN null = null;
 ```
 
-```
+```table
 ┌───────────┐
 │ EQUALS(,) │
 │ BOOL      │
@@ -227,7 +227,7 @@ Example:
 RETURN date('2022-06-06') as x;
 ```
 
-```
+```table
 ┌────────────┐
 │ x          │
 │ DATE       │
@@ -253,24 +253,33 @@ Example:
 ```cypher
 // Midnight in UTC-10
 kuzu> RETURN timestamp("1970-01-01 00:00:00-10") as x;
+```
+```table
 ┌─────────────────────┐
 │ x                   │
 │ TIMESTAMP           │
 ├─────────────────────┤
 │ 1970-01-01 10:00:00 │
 └─────────────────────┘
-
+```
+```cypher
 // Midnight in UTC+10
 kuzu> RETURN timestamp("1970-01-01 00:00:00+10") as x;
+```
+```table
 ┌─────────────────────┐
 │ x                   │
 │ TIMESTAMP           │
 ├─────────────────────┤
 │ 1969-12-31 14:00:00 │
 └─────────────────────┘
+```
+```cypher
 
 // 4.666ms after midnight in UTC
 kuzu> RETURN timestamp("1970-01-01 00:00:00.004666") as x;
+```
+```table
 ┌────────────────────────────┐
 │ x                          │
 │ TIMESTAMP                  │
@@ -294,7 +303,7 @@ Example:
 RETURN interval("1 year 2 days") as x;
 ```
 
-```
+```table
 ┌───────────────┐
 │ x             │
 │ INTERVAL      │
@@ -319,7 +328,7 @@ To construct a `STRUCT`, provide a mapping of keys to values as follows:
 RETURN {first: 'Adam', last: 'Smith'};
 ```
 
-```
+```table
 ┌───────────────────────────────────┐
 │ STRUCT_PACK(first,last)           │
 │ STRUCT(first STRING, last STRING) │
@@ -340,7 +349,7 @@ WITH {first: 'Adam', last: 'Smith'} AS full_name
 RETURN full_name.first AS first_name;
 ```
 
-```
+```table
 ┌────────────┐
 │ first_name │
 │ STRING     │
@@ -379,7 +388,7 @@ Example:
 RETURN map([1, 2], ['a', 'b']) AS m;
 ```
 
-```
+```table
 ┌────────────────────┐
 │ m                  │
 │ MAP(INT64, STRING) │
@@ -418,7 +427,7 @@ COPY demo from "demo.csv";
 ```cypher
 MATCH (d:demo) RETURN d.b;
 ```
-```
+```table
 ┌──────────────────────────────┐
 │ d.b                          │
 │ UNION(num INT64, str STRING) │
@@ -445,7 +454,7 @@ Below is an example of how to create a blob object with 3 bytes (188, 189, 186, 
 RETURN BLOB('\\xBC\\xBD\\xBA\\xAA') as result;
 ```
 
-```
+```table
 ┌──────────────────┐
 │ result           │
 │ BLOB             │
@@ -476,7 +485,7 @@ COPY Person FROM 'person.csv';
 MATCH (a:Person) RETURN a.*;
 ```
 
-```
+```table
 ┌────────┬────────┐
 │ a.id   │ a.name │
 │ SERIAL │ STRING │
@@ -507,16 +516,13 @@ CREATE REL TABLE Transfer (from User to User, trx_id SERIAL);
 an internal ID field with key `_ID` and a label field with key `_LABEL`. The rest fields are node properties.
 
 Here's how to return `NODE` column for a file `person.csv`:
-```
-
-```
 ```cypher
 CREATE NODE TABLE Person(id SERIAL PRIMARY KEY, name STRING, age INT64);
 COPY Person FROM 'person.csv';
 MATCH (a:Person) RETURN a;
 ```
 
-```
+```table
 ┌─────────────────────────────────────────────────────────┐
 │ a                                                       │
 │ NODE                                                    │
@@ -544,7 +550,7 @@ MATCH (a:Person)-[r:Follows]->(b:Person)
 RETURN r;
 ```
 
-```
+```table
 ┌───────────────────────────────────────────────┐
 │ r                                             │
 │ REL                                           │
@@ -580,7 +586,7 @@ WHERE a.name = 'Alice' AND b.name = 'Bob'
 RETURN nodes(p);
 ```
 
-```
+```table
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ NODES(p)                                                                        │
 │ NODE[]                                                                          │
@@ -596,7 +602,7 @@ WHERE a.name = 'Alice' AND b.name = 'Bob'
 RETURN rels(p);
 ```
 
-```
+```table
 ┌─────────────────────────────────────────────────────────┐
 │ RELS(p)                                                 │
 │ REL[]                                                   │

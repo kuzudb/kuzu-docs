@@ -19,18 +19,15 @@ RETURN u.name, u.age
 ORDER BY u.age;
 ```
 
-```
--------------------
-| u.name  | u.age |
--------------------
-| Noura   | 25    |
--------------------
-| Adam    | 30    |
--------------------
-| Karissa | 40    |
--------------------
-| Zhang   | 50    |
--------------------
+```table
+┌─────────┬───────┐
+│ u.name  │ u.age │
+├─────────┼───────┤
+│ Noura   │ 25    │
+│ Adam    │ 30    │
+│ Karissa │ 40    │
+│ Zhang   │ 50    │
+└─────────┴───────┘
 ```
 
 Similarly, the following returns the names of users who live in `Waterloo`, ordered by `age` in descending order.
@@ -43,14 +40,13 @@ RETURN u.name, u.age
 ORDER BY u.age DESC;
 ```
 
-```
--------------------
-| u.name  | u.age |
--------------------
-| Karissa | 40    |
--------------------
-| Adam    | 30    |
--------------------
+```table
+┌─────────┬───────┐
+│ u.name  │ u.age │
+├─────────┼───────┤
+│ Karissa │ 40    │
+│ Adam    │ 30    │
+└─────────┴───────┘
 ```
 
 ## Ordering using multiple properties or expressions
@@ -67,18 +63,15 @@ RETURN b.age, a.name
 ORDER BY b.age DESC, a.name DESC;
 ```
 
-```
--------------------
-| b.age | a.name  |
--------------------
-| 50    | Karissa |
--------------------
-| 50    | Adam    |
--------------------
-| 40    | Adam    |
--------------------
-| 25    | Zhang   |
--------------------
+```table
+┌───────┬─────────┐
+│ b.age │ a.name  │
+├───────┼─────────┤
+│ 50    │ Karissa │
+│ 50    │ Adam    │
+│ 40    │ Adam    │
+│ 25    │ Zhang   │
+└───────┴─────────┘
 ```
 
 Note that there is a tie for `b.age` in the first two rows and the order is 

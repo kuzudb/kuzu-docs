@@ -19,7 +19,7 @@ WHERE a.age < 100 AND EXISTS { MATCH (a)-[:Follows*3..3]->(b:User)}
 RETURN a.name, a.age;
 ```
 
-```
+```table
 ┌────────┬───────┐
 │ a.name │ a.age │
 │ STRING │ INT64 │
@@ -39,7 +39,7 @@ WHERE a.age < 100 AND EXISTS { MATCH (a)-[:Follows*3..3]->(b:User) WHERE EXISTS 
 RETURN a.name, a.age;
 ```
 
-```
+```table
 ┌────────┬───────┐
 │ a.name │ a.age │
 │ STRING │ INT64 │
@@ -61,7 +61,7 @@ WHERE a.age < 100 AND EXISTS { MATCH (a)-[:Follows*3..3]->(b:User) WHERE EXISTS 
 RETURN a.name, a.age;
 ```
 
-```
+```table
 ┌────────┬───────┐
 │ a.name │ a.age │
 │ STRING │ INT64 │
@@ -82,7 +82,7 @@ MATCH (a:User)
 RETURN a.name, COUNT { MATCH (a)<-[:Follows]-(b:User) } AS num_follower ORDER BY num_follower;
 ```
 
-```
+```table
 ┌─────────┬──────────────┐
 │ a.name  │ num_follower │
 │ STRING  │ INT64        │
@@ -101,7 +101,7 @@ WHERE COUNT { MATCH (a)<-[:Follows]-(b:User) } = 1
 RETURN a.name;
 ```
 
-```
+```table
 ┌─────────┐
 │ a.name  │
 │ STRING  │
@@ -123,7 +123,7 @@ WHERE a.name = 'Karissa'
 RETURN COUNT(DISTINCT b) AS num_unique_followers;
 ```
 
-```
+```table
 ┌──────────────────────┐
 │ num_unique_followers │
 │ INT64                │

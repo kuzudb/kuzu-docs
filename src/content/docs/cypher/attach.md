@@ -7,7 +7,7 @@ example. Suppose you are in the Kuzu CLI and have opened a database under local 
 session, you want to query another local Kuzu database, say `/work`, which supposedly has some `Manager` node table.
 You can attach to the `/work` database and query the `Manager` nodes in it and then detach as follows:
 
-```
+```cypher
 ATTACH '/work' AS work (dbtype kuzu);
 MATCH (a:Manager) RETURN *;
 DETACH work;

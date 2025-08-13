@@ -205,7 +205,7 @@ Then, you can use the `LOAD FROM` clause to scan the compressed file directly.
 ```cypher
 LOAD FROM 'user.csv.gz' RETURN *;
 ```
-```
+```table
 ┌─────────┬───────┬────────────┐
 │ name    │ age   │ reg_date   │
 │ STRING  │ INT64 │ DATE       │

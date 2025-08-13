@@ -6,7 +6,7 @@ The `postgres` extension allows you to [attach](/extensions/attach/rdbms) Postgr
 
 ## Usage
 
-```sql
+```cypher
 INSTALL postgres;
 LOAD postgres;
 ```
@@ -63,7 +63,7 @@ asyncio.run(main())
 
 ### Attach a database
 
-```sql
+```cypher
 ATTACH
     <PG_CONNECTION_STRING> AS <alias>
     (dbtype postgres, skip_unsupported_table = <OPTION>, schema = <SCHEMA_NAME>)
@@ -85,7 +85,7 @@ ATTACH
 
 For example, the `university` PostgreSQL database can be attached to Kuzu as:
 
-```sql
+```cypher
 ATTACH
     'dbname=university user=postgres host=localhost password=testpassword port=5432' AS uw
     (dbtype postgres);
@@ -145,12 +145,12 @@ The following table shows the mapping from PostgreSQL's data types to Kuzu's dat
 
 You can use the `LOAD FROM` statement to scan the `person` table from the attached `uw` database.
 
-```sql
+```cypher
 LOAD FROM uw.person
 RETURN *
 ```
 
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT64 │
@@ -169,12 +169,12 @@ and retrieve its results in Kuzu.
 
 For example, the following query filters out all people who are younger than 20:
 
-```sql
+```cypher
 CALL SQL_QUERY('uw', 'SELECT * FROM person WHERE age >= 20') 
 RETURN *;
 ```
 
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT64 │
@@ -190,7 +190,7 @@ You can set a default database name to avoid having to specify the full database
 
 The above example can be simplified as:
 
-```sql
+```cypher
 ATTACH 'university' AS uw (dbtype postgres);
 USE uw;
 LOAD FROM person
@@ -209,20 +209,20 @@ CREATE NODE TABLE Person (name STRING PRIMARY KEY, age INT32);
 
 When the schemas are the same, you can copy the data from the external DBMS table to the Kuzu table as:
 
-```sql
+```cypher
 COPY Person FROM uw.person;
 ```
 
 If the schemas are not the same, e.g., `Person` contains only `name` property while the external `uw.person` contains
 `name` and `age`, you can still use `COPY FROM` but with a subquery as:
 
-```sql
+```cypher
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
 Alternatively, you can use the `SQL_QUERY` function:
 
-```sql
+```cypher
 COPY Person FROM SQL_QUERY('uw', 'SELECT name FROM person');
 ```
 
@@ -231,7 +231,7 @@ You can verify that the data was successfully imported:
 ```cypher
 MATCH (p:Person) RETURN p.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT64 │
@@ -251,7 +251,7 @@ via an alternate connection to attached RDBMSs, such as creation or deletion of 
 schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh the cached
 schema information in such cases.
 
-```sql
+```cypher
 CALL clear_attached_db_cache();
 ```
 :::note[Note]
@@ -262,6 +262,6 @@ If you have attached to databases from different RDBMSs, say PostgreSQL, DuckDB,
 
 To detach a database, use `DETACH [ALIAS]` as follows:
 
-```sql
+```cypher
 DETACH uw;
 ```

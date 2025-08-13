@@ -72,7 +72,7 @@ You can match on a particular node label using its table name as shown below:
 MATCH (a:User)
 RETURN a.name AS name, a.age AS age;
 ```
-```
+```table
 ┌─────────┬───────┐
 │ name    │ age   │
 │ STRING  │ INT64 │
@@ -94,7 +94,7 @@ Similarly, you can match on a particular relationship label using its table name
 MATCH (a)-[e:Follows]->(b)
 RETURN a.name AS user1, b.name AS user2, e.since AS follows_since;
 ```
-```
+```table
 ┌─────────┬─────────┬───────────────┐
 │ user1   │ user2   │ follows_since │
 │ STRING  │ STRING  │ INT64         │
@@ -112,7 +112,7 @@ RETURN a.name AS user1, b.name AS user2, e.since AS follows_since;
 MATCH (a:User)-[e:Follows {since: 2020}]->(b:User {name: "Karissa"})
 RETURN b.name AS user, a.name AS follower, e.since AS follows_since;
 ```
-```
+```table
 ┌─────────┬──────────┬───────────────┐
 │ user    │ follower │ follows_since │
 │ STRING  │ STRING   │ INT64         │

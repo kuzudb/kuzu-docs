@@ -9,7 +9,7 @@ You can read, write, or glob files hosted on object storage servers using the
 
 Accessing GCS storage is implemented as a feature of the `httpfs` extension.
 
-```sql
+```cypher
 INSTALL httpfs;
 LOAD httpfs;
 ```
@@ -17,7 +17,7 @@ LOAD httpfs;
 ### Configure the connection
 
 Before reading and writing from private GCS buckets, you have to configure the connection using [CALL](/cypher/configuration) statements.
-```sql
+```cypher
 CALL <option_name>=<option_value>
 ```
 
@@ -54,7 +54,7 @@ Files in GCS can be accessed through URLs with the formats
 
 For example, if you wish to scan the file `follows.parquet` located in the root directory of bucket `kuzu-datasets` you could use the following query:
 
-```sql
+```cypher
 LOAD FROM 'gs://kuzu-datasets/follows.parquet'
 RETURN *;
 ```
@@ -65,7 +65,7 @@ You can glob data from GCS just as you would from a local file system.
 
 For example, the following query will copy the contents of all files matching the pattern `vPerson*.csv` into the table `person`:
 
-```sql
+```cypher
 COPY person FROM "gs://tinysnb/vPerson*.csv"(header=true);
 ```
 
@@ -77,7 +77,7 @@ You can also write to files in GCS using URLs in the formats
 
 For example, the following query will write to the file located at path `saved/location.parquet` in the bucket `kuzu-datasets`:
 
-```sql
+```cypher
 COPY (
     MATCH (p:Location)
     RETURN p.*

@@ -6,7 +6,7 @@ The `sqlite` extension allows you to [attach](/extensions/attach/rdbms) SQLite d
 
 ## Usage
 
-```sql
+```cypher
 INSTALL sqlite;
 LOAD sqlite;
 ```
@@ -33,7 +33,7 @@ conn.close()
 
 To attach a SQLite database, use the `ATTACH` statement.
 
-```sql
+```cypher
 ATTACH
   <DB_PATH> AS <alias>
   (dbtype sqlite, skip_unsupported_table = <OPTION>)
@@ -47,7 +47,7 @@ ATTACH
 
 For example, the `university.db` SQLite database can be attached to Kuzu using the alias `uw`:
 
-```sql
+```cypher
 ATTACH 'university.db' AS uw (dbtype sqlite);
 ```
 
@@ -70,29 +70,26 @@ The following table shows the mapping from SQLite's data types to Kuzu's data ty
 
 Use the `LOAD FROM` statement to scan the `person` table.
 
-```sql
+```cypher
 LOAD FROM uw.person
 RETURN *;
 ```
-```
----------------
-| name  | age |
----------------
-| Alice | 30  |
----------------
-| Bob   | 27  |
----------------
-| Carol | 19  |
----------------
-| Dan   | 25  |
----------------
+```table
+┌─────────┬───────┐
+│ name    │ age   │
+├─────────┼───────┤
+│ Alice   │ 30    │
+│ Bob     │ 27    │
+│ Carol   │ 19    │
+│ Dan     │ 25    │
+└─────────┴───────┘
 ```
 
 Note: SQLite uses a [dynamic type system](https://www.sqlite.org/datatype3.html),
 meaning that columns in SQLite can store values with different types.
 Set `sqlite_all_varchar_option` to `True` to scan such columns in Kuzu.
 
-```sql
+```cypher
 CALL sqlite_all_varchar_option=<OPTION>
 ```
 If set to `True`, all SQLite columns will be treated and scanned as `STRING` columns.
@@ -104,7 +101,7 @@ You can set a default database name to avoid having to specify the full database
 
 The above example can be simplified as:
 
-```sql
+```cypher
 ATTACH 'university.db' AS uw (dbtype sqlite);
 USE uw;
 LOAD FROM person
@@ -123,13 +120,13 @@ CREATE NODE TABLE Person (name STRING PRIMARY KEY, age INT32);
 
 When the schemas are the same, you can copy the data from the external DBMS table to the Kuzu table simply as:
 
-```sql
+```cypher
 COPY Person FROM uw.person;
 ```
 If the schemas are not the same, e.g., `Person` contains only the `name` property while the external `uw.person` contains
 `name` and `age`, you can still use `COPY FROM` but with a subquery as:
 
-```sql
+```cypher
 COPY Person FROM (LOAD FROM uw.person RETURN name);
 ```
 
@@ -139,18 +136,15 @@ You can verify that the data was successfully imported:
 MATCH (p:Person) RETURN p.*;
 ```
 
-```
-------------------
-| p.name | p.age |
-------------------
-| Alice  | 30    |
-------------------
-| Bob    | 27    |
-------------------
-| Carol  | 19    |
-------------------
-| Dan    | 25    |
-------------------
+```table
+┌─────────┬───────┐
+│ p.name  │ p.age │
+├─────────┼───────┤
+│ Alice   │ 30    │
+│ Bob     │ 27    │
+│ Carol   │ 19    │
+│ Dan     │ 25    │
+└─────────┴───────┘
 ```
 
 ### Clear the schema cache
@@ -161,7 +155,7 @@ via an alternate connection to attached RDBMSs, such as creation or deletion of 
 schema data may become obsolete. You can use the `clear_attached_db_cache()` function to refresh the cached
 schema information in such cases.
 
-```sql
+```cypher
 CALL clear_attached_db_cache();
 ```
 
@@ -174,6 +168,6 @@ this call will clear the cache for _all_ of them.
 
 To detach a database, use `DETACH [ALIAS]` as follows:
 
-```sql
+```cypher
 DETACH uw;
 ```

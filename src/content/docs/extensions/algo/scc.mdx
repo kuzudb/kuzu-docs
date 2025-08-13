@@ -110,7 +110,7 @@ CALL strongly_connected_components_kosaraju('Graph')
 RETURN group_id, collect(node.name)
 ORDER BY group_id;
 ```
-```
+```table
 ┌──────────┬──────────────────────────────┐
 │ group_id │ COLLECT(node.name)           │
 │ INT64    │ STRING[]                     │

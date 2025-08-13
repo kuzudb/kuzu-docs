@@ -2,6 +2,8 @@
 title: "Create your first graph"
 ---
 
+<div class="font-nunito">
+
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import {version} from '../../../version.json';
 import { Code } from 'astro-expressive-code/components';
@@ -53,7 +55,6 @@ let package = Package(
 )`
 
 }
-
 
 Kuzu implements a **structured property graph model** and requires a pre-defined schema.
 
@@ -107,7 +108,8 @@ Because Kuzu is an embedded database, there are no servers to set up. You can si
 `kuzu` module in your code and run queries on the database. The examples for different client APIs
 below demonstrate how to create a graph schema and import data into an on-disk Kuzu database.
 
-<Tabs>
+<Tabs syncKey="client-apis">
+
 <TabItem label="Python">
 
 ```py
@@ -218,7 +220,7 @@ response = conn.execute(
 print(response.get_as_pl())
 ```
 
-```bash
+```table
 shape: (4, 3)
 ┌─────────┬─────────┬─────────┐
 │ a.name  ┆ b.name  ┆ f.since │
@@ -877,7 +879,7 @@ RETURN a.name, b.name, f.since;
 
 The following result is obtained:
 
-```bash
+```table
 ┌─────────┬─────────┬─────────┐
 │ a.name  │ b.name  │ f.since │
 │ STRING  │ STRING  │ INT64   │
@@ -898,3 +900,5 @@ The following result is obtained:
 :::tip[Congratulations]
 You've now created and queried your first graph in Kuzu!
 :::
+
+</div>

@@ -12,7 +12,7 @@ Kuzu implements a parallelized version of PageRank based on [Ligra](https://jshu
 
 ## Syntax
 
-```sql
+```cypher
 CALL page_rank(
     <GRAPH_NAME>,
     dampingFactor := 0.85, 
@@ -80,7 +80,7 @@ CALL page_rank('Graph')
 RETURN node.name, rank
 ORDER BY rank DESC;
 ```
-```
+```table
 ┌───────────┬──────────┐
 │ node.name │ rank     │
 │ STRING    │ DOUBLE   │

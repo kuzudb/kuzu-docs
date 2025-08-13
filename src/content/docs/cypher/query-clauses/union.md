@@ -25,25 +25,22 @@ WHERE u4.name = 'Karissa'
 RETURN u3.age;
 ```
 
-```
-----------
-| u1.age |
-----------
-| 30     |
-----------
-| 40     |
-----------
-| 30     |
-----------
+```table
+┌─────────┐
+│ u1.age  │
+├─────────┤
+│ 30      │
+│ 40      │
+│ 30      │
+└─────────┘
 ```
 
 If you changed `UNION ALL` to `UNION` in the above query, one of the 30's in the output
 would be removed. So the result would be:
 
-```
-------
-| 30 |
-------
-| 40 |
-------
+```table
+┌─────┐
+│ 30  │
+│ 40  │
+└─────┘
 ```

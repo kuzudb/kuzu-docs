@@ -2,6 +2,8 @@
 title: Install Kuzu
 ---
 
+<div class="padauk-regular">
+
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { version } from '../../version.json';
 import { Code } from 'astro-expressive-code/components';
@@ -53,7 +55,7 @@ After installation, you can learn how to run Kuzu by [creating your first graph]
 If you don't need Kuzu embedded in your application, you can use the CLI shell. This is a standalone
 executable with no dependencies that can be used to interact with a Kuzu database using just Cypher.
 
-<Tabs>
+<Tabs syncKey="cli">
 <TabItem label="Linux">
 
 Use a tool like `curl` to download the latest version of the Kuzu CLI to your local machine.
@@ -130,7 +132,7 @@ Alternatively, you can install Kuzu declaratively using [NixOS](https://nixos.or
 You can use `uv`, `pip`, or `nix` to install the Kuzu Python client library.
 The instructions are the same for Linux, macOS, and Windows.
 
-<Tabs>
+<Tabs syncKey="python-package-manager">
 
 <TabItem label="uv">
 
@@ -224,7 +226,7 @@ The Kuzu C++ client is distributed as a so/dylib/dll+lib library file along with
 Once you've downloaded and extracted the C++ files into a directory, you can link it to your C++
 program by adding the directory to your build system's search paths.
 
-<Tabs>
+<Tabs syncKey="cli">
 
 <TabItem label="Linux">
 
@@ -268,3 +270,5 @@ If you want access to the latest features in development, you can use our nightl
 - Java: The latest snapshot version is available on [GitHub Packages](https://github.com/kuzudb/kuzu/packages/2258307)
 - For the CLI, C/C++ shared libraries, and Rust crate, the latest nightly versions for each can be
 downloaded from the latest run of [this GitHub Actions workflow](https://github.com/kuzudb/kuzu/actions/workflows/build-and-deploy.yml).
+
+</div>

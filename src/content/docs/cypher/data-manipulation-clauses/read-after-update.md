@@ -8,7 +8,7 @@ For `CREATE`, the data available to the immediately following `RETURN` statement
 ```cypher
 CREATE (u:User {name: 'Alice', age: 35}) RETURN u.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ u.name │ u.age │
 │ STRING │ INT64 │
@@ -22,7 +22,7 @@ For `SET`, the data available to the `RETURN` statement is the updated value.
 MATCH (u:User) WHERE u.name = "Adam"
 SET u.name = "Aisha" RETURN u.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ u.name │ u.age │
 │ STRING │ INT64 │
@@ -36,7 +36,7 @@ For `DELETE`, the data available to the `RETURN` statement is the deleted node/r
 MATCH (u:User) WHERE u.name = 'Adam' 
 DETACH DELETE u RETURN u.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ u.name │ u.age │
 │ STRING │ INT64 │
