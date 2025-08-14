@@ -43,9 +43,9 @@ Optional arguments:
 
 Returns:
 
-- `src`: A node object representing the source node of the rel.
-- `dst`: The internal id of the destination node on the rel.
-- `rel`: The internal id of the rel.
+- `src`: A node object representing the source node of the `rel`.
+- `dst`: A node object representing the destination node of the `rel`.
+- `rel`: A rel object representing a rel in the forest.
 - `forest_id`: An id indicating the tree (component) the `rel` belong to.
 
 ## Example
@@ -88,12 +88,8 @@ CALL PROJECT_GRAPH('Graph', ['Node'], ['Edge']);
 Run SpanningForest on the projected graph:
 ```cypher
 CALL spanning_forest('Graph')
-    YIELD src, dst, rel, forest_id
-    MATCH (n) WHERE ID(n) = dst
-    MATCH ()-[r]->()
-    WHERE ID(r) = rel
-    RETURN src.id AS src, n.id AS dst, r.weight as weight, forest_id
-    ORDER BY forest_id;
+    RETURN src.id AS src, dst.id AS dst, rel.weight as weight, forest_id
+    ORDER BY src.id;
 ```
 ```table
 ┌───────┬───────┬────────┬───────────┐
@@ -115,11 +111,7 @@ CALL spanning_forest('Graph')
 Run SpanningForest on the projected graph (min variant):
 ```cypher
 CALL spanning_forest('Graph', variant:='min', weight_property:='weight')
-    YIELD src, dst, rel, forest_id
-    MATCH (n) WHERE ID(n) = dst
-    MATCH ()-[r]->()
-    WHERE ID(r) = rel
-    RETURN src.id AS src, n.id AS dst, r.weight as weight, forest_id
+    RETURN src.id AS src, dst.id AS dst, rel.weight as weight, forest_id
     ORDER BY src.id;
 ```
 ```table
@@ -142,11 +134,7 @@ CALL spanning_forest('Graph', variant:='min', weight_property:='weight')
 Run SpanningForest on the projected graph (max variant):
 ```cypher
 CALL spanning_forest('Graph', variant:='max', weight_property:='weight')
-    YIELD src, dst, rel, forest_id
-    MATCH (n) WHERE ID(n) = dst
-    MATCH ()-[r]->()
-    WHERE ID(r) = rel
-    RETURN src.id AS src, n.id AS dst, r.weight as weight, forest_id
+    RETURN src.id AS src, dst.id AS dst, rel.weight as weight, forest_id
     ORDER BY src.id;
 ```
 ```table
