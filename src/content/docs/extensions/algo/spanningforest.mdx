@@ -85,6 +85,23 @@ Create a projected graph from the node and relationship tables:
 CALL PROJECT_GRAPH('Graph', ['Node'], ['Edge']);
 ```
 
+:::note[Tip]
+The algorithm can be run in three modes, depending on whether you specify a `weight_property` and `variant`:
+
+**Unweighted** (no `weight_property` provided)
+All edges are treated equally, and the algorithm returns an arbitrary spanning forest.
+Use this when weights are irrelevant or unavailable.
+
+**Minimum spanning forest** (`variant:='min'`)
+Finds the forest with the smallest possible total edge weight.
+Use this when you want the most cost-efficient connections, such as for network design or infrastructure planning.
+
+**Maximum spanning forest** (`variant:='max'`)
+Finds the forest with the largest possible total edge weight.
+Use this to highlight the strongest, most important, or most reliable connections in your network.
+:::
+
+
 Run the spanning forest algorithm on the projected graph:
 ```cypher
 CALL spanning_forest('Graph')
