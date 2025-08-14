@@ -2,11 +2,12 @@
 title: Spanning Forest
 ---
 
-The Spanning Forest algorithm finds a minimal set of edges that connect all nodes within each connected component
-of a graph without forming cycles. This algorithm treats all edges as undirected during processing. The result is
-a table of edges that belong to the spanning forest, so isolated vertices are not included. Spanning forests are
-commonly used in tasks such as extracting the main connectivity structure of large graphs, clustering nodes based
-on connectivity, and building tree-based indexes for efficient graph traversal.
+The Spanning Forest algorithm (also known as Minimum Spanning Forest when run in its cost-minimizing form)
+finds a minimal set of edges that connect all nodes within each connected component of a graph without forming
+cycles. This algorithm treats all edges as undirected during processing. The result is a table of edges that
+belong to the spanning forest, so isolated vertices are not included. Spanning forests are commonly used in
+tasks such as extracting the main connectivity structure of large graphs, clustering nodes based on connectivity,
+and building tree-based indexes for efficient graph traversal.
 
 Kuzu implements a serial version of Kruskal's algorithm based on [Graaf lib](https://bobluppes.github.io/graaf/).
 
@@ -100,7 +101,6 @@ Use this when you want the most cost-efficient connections, such as for network 
 Finds the forest with the largest possible total edge weight.
 Use this to highlight the strongest, most important, or most reliable connections in your network.
 :::
-
 
 Run the spanning forest algorithm on the projected graph:
 ```cypher
