@@ -85,7 +85,7 @@ Create a projected graph from the node and relationship tables:
 CALL PROJECT_GRAPH('Graph', ['Node'], ['Edge']);
 ```
 
-Run SpanningForest on the projected graph:
+Run the spanning forest algorithm on the projected graph:
 ```cypher
 CALL spanning_forest('Graph')
     RETURN src.id AS src, dst.id AS dst, rel.weight as weight, forest_id
