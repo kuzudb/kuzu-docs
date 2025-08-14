@@ -108,7 +108,7 @@ CALL spanning_forest('Graph')
 └───────┴───────┴────────┴───────────┘
 ```
 
-Run SpanningForest on the projected graph (min variant):
+Run the spanning forest algorithm (min variant) on the projected graph:
 ```cypher
 CALL spanning_forest('Graph', variant:='min', weight_property:='weight')
     RETURN src.id AS src, dst.id AS dst, rel.weight as weight, forest_id
