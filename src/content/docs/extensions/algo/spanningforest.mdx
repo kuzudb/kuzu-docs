@@ -1,0 +1,164 @@
+---
+title: Spanning Forest
+---
+
+The Spanning Forest algorithm finds a minimal set of edges that connect all nodes within each connected component
+of a graph without forming cycles. This algorithm treats all edges as undirected during processing. The result is
+a table of edges that belong to the spanning forest, so isolated vertices are not included. Spanning forests are
+commonly used in tasks such as extracting the main connectivity structure of large graphs, clustering nodes based
+on connectivity, and building tree-based indexes for efficient graph traversal.
+
+Kuzu implements a serial version of Kruskal's algorithm based on [Graaf lib](https://bobluppes.github.io/graaf/).
+
+## Syntax
+
+```cypher
+CALL spanning_forest(
+    <GRAPH_NAME>,
+    weight_property:='age',
+    variant:='min
+)
+RETURN src, dst, rel, forest_id;
+```
+
+**Alias**: `sf`
+
+Required arguments:
+
+- `GRAPH_NAME`: Name of the projected graph to run the algorithm on
+    - Type: `STRING`
+
+:::note[Note]
+This algorithm currently only works on one node table and one rel table.
+:::
+
+Optional arguments:
+
+- `weight_property`: Some numerical on the rel table to be used as a weight.
+    - Type: `STRING`
+    - Default: If omitted, the algorithm will run treating all edges with weight 1.
+- `variant`: Sets the objective of the algorithm to retrieve either a minimum, `min` or maximum, `max` spanning forest.
+    - Type: `STRING`
+    - Default: 'min'
+
+Returns:
+
+- `src`: A node object representing the source node of the rel.
+- `dst`: The internal id of the destination node on the rel.
+- `rel`: The internal id of the rel.
+- `forest_id`: An id indicating the tree (component) the `rel` belong to.
+
+## Example
+
+Create the node and relationship tables:
+```cypher
+CREATE NODE TABLE Node(id INT64 PRIMARY KEY);
+CREATE REL TABLE Edge(FROM Node to Node, weight INT64);
+```
+Insert nodes and edges:
+```cypher
+CREATE (u0:Node {id: 0}),
+            (u1:Node {id: 1}),
+            (u2:Node {id: 2}),
+            (u3:Node {id: 3}),
+            (u4:Node {id: 4}),
+            (u5:Node {id: 5}),
+            (u6:Node {id: 6}),
+            (u7:Node {id: 7}),
+            (u8:Node {id: 8}),
+            (u9:Node {id: 9}),
+            (u0)-[:Edge {weight: 5}]->(u1),
+            (u0)-[:Edge {weight: 6}]->(u2),
+            (u1)-[:Edge {weight: 8}]->(u2),
+            (u2)-[:Edge {weight: 3}]->(u3),
+            (u3)-[:Edge {weight: 3}]->(u4),
+            (u5)-[:Edge {weight: 10}]->(u6),
+            (u5)-[:Edge {weight: 10}]->(u7),
+            (u6)-[:Edge {weight: 3}]->(u7),
+            (u7)-[:Edge {weight: 10}]->(u8),
+            (u8)-[:Edge {weight: 3}]->(u9),
+            (u2)-[:Edge {weight: 15}]->(u5),
+            (u4)-[:Edge {weight: 2}]->(u9);
+```
+Create a projected graph from the node and relationship tables:
+```cypher
+CALL PROJECT_GRAPH('Graph', ['Node'], ['Edge']);
+```
+
+Run SpanningForest on the projected graph:
+```cypher
+CALL spanning_forest('Graph')
+YIELD src, dst, rel, forest_id MATCH (n) WHERE ID(n) = dst
+MATCH ()-[r]->()
+WHERE ID(r) = rel
+RETURN src.id AS src, n.id AS dst, r.weight as weight, forest_id
+ORDER BY forest_id;
+```
+```table
+┌───────┬───────┬────────┬───────────┐
+│ src   │ dst   │ weight │ FOREST_ID │
+│ INT64 │ INT64 │ INT64  │ UINT64    │
+├───────┼───────┼────────┼───────────┤
+│ 0     │ 2     │ 6      │ 0         │
+│ 1     │ 2     │ 8      │ 0         │
+│ 2     │ 5     │ 15     │ 0         │
+│ 2     │ 3     │ 3      │ 0         │
+│ 3     │ 4     │ 3      │ 0         │
+│ 4     │ 9     │ 2      │ 0         │
+│ 5     │ 7     │ 10     │ 0         │
+│ 5     │ 6     │ 10     │ 0         │
+│ 8     │ 9     │ 3      │ 0         │
+└───────┴───────┴────────┴───────────┘
+```
+
+Run SpanningForest on the projected graph (min variant):
+```cypher
+CALL spanning_forest('Graph', variant:='min', weight_property:='weight')
+YIELD src, dst, rel, forest_id MATCH (n) WHERE ID(n) = dst
+MATCH ()-[r]->()
+WHERE ID(r) = rel
+RETURN src.id AS src, n.id AS dst, r.weight as weight, forest_id
+ORDER BY src.id;
+```
+```table
+┌───────┬───────┬────────┬───────────┐
+│ src   │ dst   │ weight │ FOREST_ID │
+│ INT64 │ INT64 │ INT64  │ UINT64    │
+├───────┼───────┼────────┼───────────┤
+│ 0     │ 1     │ 5      │ 0         │
+│ 0     │ 2     │ 6      │ 0         │
+│ 2     │ 3     │ 3      │ 0         │
+│ 3     │ 4     │ 3      │ 0         │
+│ 4     │ 9     │ 2      │ 0         │
+│ 5     │ 7     │ 10     │ 0         │
+│ 6     │ 7     │ 3      │ 0         │
+│ 7     │ 8     │ 10     │ 0         │
+│ 8     │ 9     │ 3      │ 0         │
+└───────┴───────┴────────┴───────────┘
+```
+
+Run SpanningForest on the projected graph (max variant):
+```cypher
+CALL spanning_forest('Graph', variant:='max', weight_property:='weight')
+YIELD src, dst, rel, forest_id MATCH (n) WHERE ID(n) = dst
+MATCH ()-[r]->()
+WHERE ID(r) = rel
+RETURN src.id AS src, n.id AS dst, r.weight as weight, forest_id
+ORDER BY src.id;
+```
+```table
+┌───────┬───────┬────────┬───────────┐
+│ src   │ dst   │ weight │ FOREST_ID │
+│ INT64 │ INT64 │ INT64  │ UINT64    │
+├───────┼───────┼────────┼───────────┤
+│ 0     │ 2     │ 6      │ 2         │
+│ 1     │ 2     │ 8      │ 2         │
+│ 2     │ 5     │ 15     │ 2         │
+│ 2     │ 3     │ 3      │ 2         │
+│ 3     │ 4     │ 3      │ 2         │
+│ 5     │ 6     │ 10     │ 2         │
+│ 5     │ 7     │ 10     │ 2         │
+│ 7     │ 8     │ 10     │ 2         │
+│ 8     │ 9     │ 3      │ 2         │
+└───────┴───────┴────────┴───────────┘
+```
