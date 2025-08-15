@@ -2,22 +2,24 @@
 title: Spanning Forest
 ---
 
-The Spanning Forest algorithm (also known as Minimum Spanning Forest when run in its cost-minimizing form)
-finds a minimal set of edges that connect all nodes within each connected component of a graph without forming
-cycles. This algorithm treats all edges as undirected during processing. The result is a table of edges that
-belong to the spanning forest, so isolated vertices are not included. Spanning forests are commonly used in
+The Spanning Forest algorithm finds a minimal set of edges that connect all nodes within each
+connected component of a graph without forming cycles. This algorithm treats all edges as
+undirected during processing. The result is a table of edges that belong to the spanning forest,
+so isolated vertices are not included. Spanning forests are commonly used in
 tasks such as extracting the main connectivity structure of large graphs, clustering nodes based on connectivity,
 and building tree-based indexes for efficient graph traversal.
 
-Kuzu implements a serial version of Kruskal's algorithm based on [Graaf lib](https://bobluppes.github.io/graaf/).
+Kuzu implements a serial version of Kruskal's algorithm based on [Graaf](https://bobluppes.github.io/graaf/).
+In Kuzu, both base and projected graphs are directed. The Spanning Forest implementation in Kuzu operates on
+an undirected version of the projected graph, i.e., each edge is treated as undirected.
 
 ## Syntax
 
 ```cypher
 CALL spanning_forest(
     <GRAPH_NAME>,
-    weight_property:='age',
-    variant:='min
+    weight_property:=<WEIGHT_PROPERTY>,
+    variant:='min' OR 'max'
 )
 RETURN src, dst, rel, forest_id;
 ```
@@ -29,25 +31,26 @@ Required arguments:
 - `GRAPH_NAME`: Name of the projected graph to run the algorithm on
     - Type: `STRING`
 
-:::note[Note]
-This algorithm currently only works on one node table and one rel table.
-:::
-
 Optional arguments:
 
-- `weight_property`: Some numerical on the rel table to be used as a weight.
+- `weight_property`: Some numerical property on the rel table to be used as a weight.
     - Type: `STRING`
-    - Default: If omitted, the algorithm will run treating all edges with weight 1.
+    - Default: If omitted, the algorithm will run assuming all edges have weight 1.
 - `variant`: Sets the objective of the algorithm to retrieve either a minimum, `min` or maximum, `max` spanning forest.
     - Type: `STRING`
-    - Default: 'min'
+    - Valid values: `min`, `max`
+    - Default: `min`
 
 Returns:
 
 - `src`: A node object representing the source node of the `rel`.
 - `dst`: A node object representing the destination node of the `rel`.
 - `rel`: A rel object representing an edge in the forest.
-- `forest_id`: An id indicating the tree (component) the `rel` belong to.
+- `forest_id`: An id indicating the tree (component) the `rel` belongs to.
+
+:::note[Note]
+This algorithm currently only works on projected graphs with one node table and one rel table.
+:::
 
 ## Example
 
@@ -105,7 +108,7 @@ Use this to highlight the strongest, most important, or most reliable connection
 Run the spanning forest algorithm on the projected graph:
 ```cypher
 CALL spanning_forest('Graph')
-    RETURN src.id AS src, dst.id AS dst, rel.weight as weight, forest_id
+    RETURN src.id AS src, dst.id AS dst, rel.weight AS weight, forest_id
     ORDER BY src.id;
 ```
 ```table
@@ -128,7 +131,7 @@ CALL spanning_forest('Graph')
 Run the spanning forest algorithm (min variant) on the projected graph:
 ```cypher
 CALL spanning_forest('Graph', variant:='min', weight_property:='weight')
-    RETURN src.id AS src, dst.id AS dst, rel.weight as weight, forest_id
+    RETURN src.id AS src, dst.id AS dst, rel.weight AS weight, forest_id
     ORDER BY src.id;
 ```
 ```table
@@ -151,7 +154,7 @@ CALL spanning_forest('Graph', variant:='min', weight_property:='weight')
 Run the spanning forest algorithm (max variant) on the projected graph:
 ```cypher
 CALL spanning_forest('Graph', variant:='max', weight_property:='weight')
-    RETURN src.id AS src, dst.id AS dst, rel.weight as weight, forest_id
+    RETURN src.id AS src, dst.id AS dst, rel.weight AS weight, forest_id
     ORDER BY src.id;
 ```
 ```table
