@@ -3,11 +3,11 @@ title: Spanning Forest
 ---
 
 The Spanning Forest algorithm finds a minimal set of edges that connect all nodes within each
-connected component of a graph without forming cycles. This algorithm treats all edges as
-undirected during processing. The result is a table of edges that belong to the spanning forest,
-so isolated vertices are not included. Spanning forests are commonly used in
+connected component of a graph without forming cycles. Spanning forests are commonly used in
 tasks such as extracting the main connectivity structure of large graphs, clustering nodes based on connectivity,
 and building tree-based indexes for efficient graph traversal.
+
+
 
 Kuzu implements a serial version of Kruskal's algorithm based on [Graaf](https://bobluppes.github.io/graaf/).
 In Kuzu, both base and projected graphs are directed. The Spanning Forest implementation in Kuzu operates on
@@ -43,10 +43,13 @@ Optional arguments:
 
 Returns:
 
-- `src`: A node object representing the source node of the `rel`.
-- `dst`: A node object representing the destination node of the `rel`.
+Each row in the output table represents an edge that belongs to the spanning forest.
+Isolated vertices are not included.
+
+- `src`: A node object representing the source node of `rel`.
+- `dst`: A node object representing the destination node of `rel`.
 - `rel`: A rel object representing an edge in the forest.
-- `forest_id`: An id indicating the tree (component) the `rel` belongs to.
+- `forest_id`: An ID of the individual tree that `rel` belongs to.
 
 :::note[Note]
 This algorithm currently only works on projected graphs with one node table and one rel table.
@@ -56,45 +59,39 @@ This algorithm currently only works on projected graphs with one node table and 
 
 Create the node and relationship tables:
 ```cypher
-CREATE NODE TABLE Node(id INT64 PRIMARY KEY);
-CREATE REL TABLE Edge(FROM Node to Node, weight INT64);
+CREATE NODE TABLE Person(id INT64 PRIMARY KEY, name STRING);
+CREATE REL TABLE KNOWS(FROM Person to Person, weight INT64);
 ```
 Insert nodes and edges:
 ```cypher
-CREATE (u0:Node {id: 0}),
-            (u1:Node {id: 1}),
-            (u2:Node {id: 2}),
-            (u3:Node {id: 3}),
-            (u4:Node {id: 4}),
-            (u5:Node {id: 5}),
-            (u6:Node {id: 6}),
-            (u7:Node {id: 7}),
-            (u8:Node {id: 8}),
-            (u9:Node {id: 9}),
-            (u0)-[:Edge {weight: 5}]->(u1),
-            (u0)-[:Edge {weight: 6}]->(u2),
-            (u1)-[:Edge {weight: 8}]->(u2),
-            (u2)-[:Edge {weight: 3}]->(u3),
-            (u3)-[:Edge {weight: 3}]->(u4),
-            (u5)-[:Edge {weight: 10}]->(u6),
-            (u5)-[:Edge {weight: 10}]->(u7),
-            (u6)-[:Edge {weight: 3}]->(u7),
-            (u7)-[:Edge {weight: 10}]->(u8),
-            (u8)-[:Edge {weight: 3}]->(u9),
-            (u2)-[:Edge {weight: 15}]->(u5),
-            (u4)-[:Edge {weight: 2}]->(u9);
+CREATE (u0:Person {id: 0, name: 'Alice'}),
+            (u1:Person {id: 1, name: 'Bob'}),
+            (u2:Person {id: 2, name: 'Charlie'}),
+            (u3:Person {id: 3, name: 'Derek'}),
+            (u4:Person {id: 4, name: 'Eve'}),
+            (u5:Person {id: 5, name: 'Frank'}),
+            (u6:Person {id: 6, name: 'George'}),
+            (u7:Person {id: 7, name: 'Hina'}),
+            (u8:Person {id: 8, name: 'Ivy'}),
+            (u9:Person {id: 9, name: 'Jack'}),
+            (u0)-[:KNOWS {weight: 5}]->(u1),
+            (u0)-[:KNOWS {weight: 6}]->(u2),
+            (u1)-[:KNOWS {weight: 8}]->(u2),
+            (u2)-[:KNOWS {weight: 3}]->(u3),
+            (u3)-[:KNOWS {weight: 3}]->(u4),
+            (u5)-[:KNOWS {weight: 10}]->(u6),
+            (u5)-[:KNOWS {weight: 10}]->(u7),
+            (u6)-[:KNOWS {weight: 3}]->(u7),
+            (u7)-[:KNOWS {weight: 10}]->(u8),
+            (u8)-[:KNOWS {weight: 3}]->(u9);
 ```
 Create a projected graph from the node and relationship tables:
 ```cypher
-CALL PROJECT_GRAPH('Graph', ['Node'], ['Edge']);
+CALL PROJECT_GRAPH('ProjectedGraph', ['Person'], ['KNOWS']);
 ```
 
 :::note[Tip]
 The algorithm can be run in three modes, depending on whether you specify a `weight_property` and `variant`:
-
-**Unweighted** (no `weight_property` provided)
-All edges are treated equally, and the algorithm returns an arbitrary spanning forest.
-Use this when weights are irrelevant or unavailable.
 
 **Minimum spanning forest** (`variant:='min'`)
 Finds the forest with the smallest possible total edge weight.
@@ -103,73 +100,52 @@ Use this when you want the most cost-efficient connections, such as for network 
 **Maximum spanning forest** (`variant:='max'`)
 Finds the forest with the largest possible total edge weight.
 Use this to highlight the strongest, most important, or most reliable connections in your network.
+
+**Unweighted** (no `weight_property` provided)
+All edges are treated equally, and the algorithm returns an arbitrary spanning forest.
+Use this when weights are irrelevant or unavailable.
 :::
 
 Run the spanning forest algorithm on the projected graph:
 ```cypher
-CALL spanning_forest('Graph')
-    RETURN src.id AS src, dst.id AS dst, rel.weight AS weight, forest_id
-    ORDER BY src.id;
+CALL spanning_forest('ProjectedGraph')
+    RETURN src.name AS src, dst.name AS dst, rel.weight AS weight, forest_id
+    ORDER BY forest_id, src.name;
 ```
 ```table
-┌───────┬───────┬────────┬───────────┐
-│ src   │ dst   │ weight │ FOREST_ID │
-│ INT64 │ INT64 │ INT64  │ UINT64    │
-├───────┼───────┼────────┼───────────┤
-│ 0     │ 2     │ 6      │ 0         │
-│ 1     │ 2     │ 8      │ 0         │
-│ 2     │ 5     │ 15     │ 0         │
-│ 2     │ 3     │ 3      │ 0         │
-│ 3     │ 4     │ 3      │ 0         │
-│ 4     │ 9     │ 2      │ 0         │
-│ 5     │ 7     │ 10     │ 0         │
-│ 5     │ 6     │ 10     │ 0         │
-│ 8     │ 9     │ 3      │ 0         │
-└───────┴───────┴────────┴───────────┘
+┌─────────┬─────────┬────────┬───────────┐
+│ src     │ dst     │ weight │ FOREST_ID │
+│ STRING  │ STRING  │ INT64  │ UINT64    │
+├─────────┼─────────┼────────┼───────────┤
+│ Alice   │ Charlie │ 6      │ 0         │
+│ Bob     │ Charlie │ 8      │ 0         │
+│ Charlie │ Derek   │ 3      │ 0         │
+│ Derek   │ Eve     │ 3      │ 0         │
+│ Frank   │ Hina    │ 10     │ 5         │
+│ George  │ Hina    │ 3      │ 5         │
+│ Hina    │ Ivy     │ 10     │ 5         │
+│ Ivy     │ Jack    │ 3      │ 5         │
+└─────────┴─────────┴────────┴───────────┘
 ```
 
-Run the spanning forest algorithm (min variant) on the projected graph:
+Run the max variant of the spanning forest algorithm on the projected graph:
 ```cypher
-CALL spanning_forest('Graph', variant:='min', weight_property:='weight')
-    RETURN src.id AS src, dst.id AS dst, rel.weight AS weight, forest_id
-    ORDER BY src.id;
+CALL spanning_forest('ProjectedGraph', variant:='max', weight_property:='weight')
+    RETURN src.name AS src, dst.name AS dst, rel.weight AS weight, forest_id
+    ORDER BY forest_id, src.name;
 ```
 ```table
-┌───────┬───────┬────────┬───────────┐
-│ src   │ dst   │ weight │ FOREST_ID │
-│ INT64 │ INT64 │ INT64  │ UINT64    │
-├───────┼───────┼────────┼───────────┤
-│ 0     │ 1     │ 5      │ 0         │
-│ 0     │ 2     │ 6      │ 0         │
-│ 2     │ 3     │ 3      │ 0         │
-│ 3     │ 4     │ 3      │ 0         │
-│ 4     │ 9     │ 2      │ 0         │
-│ 5     │ 7     │ 10     │ 0         │
-│ 6     │ 7     │ 3      │ 0         │
-│ 7     │ 8     │ 10     │ 0         │
-│ 8     │ 9     │ 3      │ 0         │
-└───────┴───────┴────────┴───────────┘
-```
-
-Run the spanning forest algorithm (max variant) on the projected graph:
-```cypher
-CALL spanning_forest('Graph', variant:='max', weight_property:='weight')
-    RETURN src.id AS src, dst.id AS dst, rel.weight AS weight, forest_id
-    ORDER BY src.id;
-```
-```table
-┌───────┬───────┬────────┬───────────┐
-│ src   │ dst   │ weight │ FOREST_ID │
-│ INT64 │ INT64 │ INT64  │ UINT64    │
-├───────┼───────┼────────┼───────────┤
-│ 0     │ 2     │ 6      │ 2         │
-│ 1     │ 2     │ 8      │ 2         │
-│ 2     │ 5     │ 15     │ 2         │
-│ 2     │ 3     │ 3      │ 2         │
-│ 3     │ 4     │ 3      │ 2         │
-│ 5     │ 6     │ 10     │ 2         │
-│ 5     │ 7     │ 10     │ 2         │
-│ 7     │ 8     │ 10     │ 2         │
-│ 8     │ 9     │ 3      │ 2         │
-└───────┴───────┴────────┴───────────┘
+┌─────────┬─────────┬────────┬───────────┐
+│ src     │ dst     │ weight │ FOREST_ID │
+│ STRING  │ STRING  │ INT64  │ UINT64    │
+├─────────┼─────────┼────────┼───────────┤
+│ Alice   │ Charlie │ 6      │ 2         │
+│ Bob     │ Charlie │ 8      │ 2         │
+│ Charlie │ Derek   │ 3      │ 2         │
+│ Derek   │ Eve     │ 3      │ 2         │
+│ Frank   │ George  │ 10     │ 8         │
+│ Frank   │ Hina    │ 10     │ 8         │
+│ Hina    │ Ivy     │ 10     │ 8         │
+│ Ivy     │ Jack    │ 3      │ 8         │
+└─────────┴─────────┴────────┴───────────┘
 ```
