@@ -266,7 +266,7 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         { label: 'Overview', link: '/extensions'},
-                        { 
+                        {
                             label: 'Cloud storage systems',
                             collapsed: true,
                             items: [
@@ -285,6 +285,7 @@ export default defineConfig({
                                 { label: 'K-Core Decomposition', link: '/extensions/algo/kcore'},
                                 { label: 'Louvain', link: '/extensions/algo/louvain'},
                                 { label: 'PageRank', link: '/extensions/algo/pagerank'},
+                                { label: 'Spanning Forest', link: '/extensions/algo/spanning-forest'},
                                 { label: 'Shortest paths', link: '/extensions/algo/path'},
                                 { label: 'Strongly Connected Components', link: '/extensions/algo/scc'},
                                 { label: 'Weakly Connected Components', link: '/extensions/algo/wcc'},
