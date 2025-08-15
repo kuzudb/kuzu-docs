@@ -25,7 +25,7 @@ CALL spanning_forest(
     weight_property:=<WEIGHT_PROPERTY>,
     variant:='min' OR 'max'
 )
-RETURN src, dst, rel, forest_id;
+RETURN rel, src, dst, forest_id;
 ```
 
 **Alias**: `sf`
@@ -50,9 +50,9 @@ Returns:
 Each row in the output table represents an edge that belongs to the spanning forest.
 Isolated vertices are not included.
 
+- `rel`: A rel object representing an edge in the forest.
 - `src`: A node object representing the source node of `rel`.
 - `dst`: A node object representing the destination node of `rel`.
-- `rel`: A rel object representing an edge in the forest.
 - `forest_id`: An ID of the individual tree that `rel` belongs to.
 
 :::note[Note]
@@ -113,65 +113,65 @@ Use this when weights are irrelevant or unavailable.
 Run the unweighted variant of the spanning forest algorithm on the projected graph:
 ```cypher
 CALL spanning_forest('ProjectedGraph')
-    RETURN src.name AS src, dst.name AS dst, rel.weight AS weight, forest_id
+    RETURN rel.weight AS weight, src.name AS src, dst.name AS dst, forest_id
     ORDER BY forest_id, src.name;
 ```
 ```table
-┌─────────┬─────────┬────────┬───────────┐
-│ src     │ dst     │ weight │ FOREST_ID │
-│ STRING  │ STRING  │ INT64  │ UINT64    │
-├─────────┼─────────┼────────┼───────────┤
-│ Alice   │ Charlie │ 6      │ 0         │
-│ Bob     │ Charlie │ 8      │ 0         │
-│ Charlie │ Derek   │ 3      │ 0         │
-│ Derek   │ Eve     │ 3      │ 0         │
-│ Frank   │ Hina    │ 10     │ 5         │
-│ George  │ Hina    │ 3      │ 5         │
-│ Hina    │ Ivy     │ 10     │ 5         │
-│ Ivy     │ Jack    │ 3      │ 5         │
-└─────────┴─────────┴────────┴───────────┘
+┌────────┬─────────┬─────────┬───────────┐
+│ weight │ src     │ dst     │ FOREST_ID │
+│ INT64  │ STRING  │ STRING  │ UINT64    │
+├────────┼─────────┼─────────┼───────────┤
+│ 6      │ Alice   │ Charlie │ 0         │
+│ 8      │ Bob     │ Charlie │ 0         │
+│ 3      │ Charlie │ Derek   │ 0         │
+│ 3      │ Derek   │ Eve     │ 0         │
+│ 10     │ Frank   │ Hina    │ 5         │
+│ 3      │ George  │ Hina    │ 5         │
+│ 10     │ Hina    │ Ivy     │ 5         │
+│ 3      │ Ivy     │ Jack    │ 5         │
+└────────┴─────────┴─────────┴───────────┘
 ```
 
 Run the min variant of the spanning forest algorithm on the projected graph:
 ```cypher
 CALL spanning_forest('ProjectedGraph', variant:='min', weight_property:='weight')
-RETURN src.name AS src, dst.name AS dst, rel.weight AS weight, forest_id
-ORDER BY forest_id, src.name;
+    RETURN rel.weight AS weight, src.name AS src, dst.name AS dst, forest_id
+    ORDER BY forest_id, src.name;
 ```
 ```table
-┌─────────┬─────────┬────────┬───────────┐
-│ src     │ dst     │ weight │ FOREST_ID │
-│ STRING  │ STRING  │ INT64  │ UINT64    │
-├─────────┼─────────┼────────┼───────────┤
-│ Alice   │ Bob     │ 5      │ 0         │
-│ Alice   │ Charlie │ 6      │ 0         │
-│ Charlie │ Derek   │ 3      │ 0         │
-│ Derek   │ Eve     │ 3      │ 0         │
-│ Frank   │ Hina    │ 10     │ 5         │
-│ George  │ Hina    │ 3      │ 5         │
-│ Hina    │ Ivy     │ 10     │ 5         │
-│ Ivy     │ Jack    │ 3      │ 5         │
-└─────────┴─────────┴────────┴───────────┘
+┌────────┬─────────┬─────────┬───────────┐
+│ weight │ src     │ dst     │ FOREST_ID │
+│ INT64  │ STRING  │ STRING  │ UINT64    │
+├────────┼─────────┼─────────┼───────────┤
+│ 5      │ Alice   │ Bob     │ 0         │
+│ 6      │ Alice   │ Charlie │ 0         │
+│ 3      │ Charlie │ Derek   │ 0         │
+│ 3      │ Derek   │ Eve     │ 0         │
+│ 10     │ Frank   │ Hina    │ 5         │
+│ 3      │ George  │ Hina    │ 5         │
+│ 10     │ Hina    │ Ivy     │ 5         │
+│ 3      │ Ivy     │ Jack    │ 5         │
+└────────┴─────────┴─────────┴───────────┘
 ```
 
 Run the max variant of the spanning forest algorithm on the projected graph:
 ```cypher
 CALL spanning_forest('ProjectedGraph', variant:='max', weight_property:='weight')
-    RETURN src.name AS src, dst.name AS dst, rel.weight AS weight, forest_id
+    RETURN rel.weight AS weight, src.name AS src, dst.name AS dst, forest_id
     ORDER BY forest_id, src.name;
 ```
 ```table
-┌─────────┬─────────┬────────┬───────────┐
-│ src     │ dst     │ weight │ FOREST_ID │
-│ STRING  │ STRING  │ INT64  │ UINT64    │
-├─────────┼─────────┼────────┼───────────┤
-│ Alice   │ Charlie │ 6      │ 2         │
-│ Bob     │ Charlie │ 8      │ 2         │
-│ Charlie │ Derek   │ 3      │ 2         │
-│ Derek   │ Eve     │ 3      │ 2         │
-│ Frank   │ George  │ 10     │ 8         │
-│ Frank   │ Hina    │ 10     │ 8         │
-│ Hina    │ Ivy     │ 10     │ 8         │
-│ Ivy     │ Jack    │ 3      │ 8         │
-└─────────┴─────────┴────────┴───────────┘
+┌────────┬─────────┬─────────┬───────────┐
+│ weight │ src     │ dst     │ FOREST_ID │
+│ INT64  │ STRING  │ STRING  │ UINT64    │
+├────────┼─────────┼─────────┼───────────┤
+│ 6      │ Alice   │ Charlie │ 2         │
+│ 8      │ Bob     │ Charlie │ 2         │
+│ 3      │ Charlie │ Derek   │ 2         │
+│ 3      │ Derek   │ Eve     │ 2         │
+│ 10     │ Frank   │ George  │ 8         │
+│ 10     │ Frank   │ Hina    │ 8         │
+│ 10     │ Hina    │ Ivy     │ 8         │
+│ 3      │ Ivy     │ Jack    │ 8         │
+└────────┴─────────┴─────────┴───────────┘
 ```
