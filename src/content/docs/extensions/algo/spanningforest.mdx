@@ -7,7 +7,11 @@ connected component of a graph without forming cycles. Spanning forests are comm
 tasks such as extracting the main connectivity structure of large graphs, clustering nodes based on connectivity,
 and building tree-based indexes for efficient graph traversal.
 
-
+A spanning forest differs from a minimum spanning tree (MST) in that it can handle disconnected graphs.
+While an MST connects all nodes in a single connected graph with minimum total edge weight, a spanning
+forest produces multiple trees, each representing a connected component. This makes spanning forests particularly
+useful for analyzing graphs with isolated clusters or when you need to preserve the natural partitioning
+of your data while still finding optimal connections within each component.
 
 Kuzu implements a serial version of Kruskal's algorithm based on [Graaf](https://bobluppes.github.io/graaf/).
 In Kuzu, both base and projected graphs are directed. The Spanning Forest implementation in Kuzu operates on
@@ -60,30 +64,30 @@ This algorithm currently only works on projected graphs with one node table and 
 Create the node and relationship tables:
 ```cypher
 CREATE NODE TABLE Person(id INT64 PRIMARY KEY, name STRING);
-CREATE REL TABLE KNOWS(FROM Person to Person, weight INT64);
+CREATE REL TABLE KNOWS(FROM Person TO Person, weight INT64);
 ```
 Insert nodes and edges:
 ```cypher
 CREATE (u0:Person {id: 0, name: 'Alice'}),
-            (u1:Person {id: 1, name: 'Bob'}),
-            (u2:Person {id: 2, name: 'Charlie'}),
-            (u3:Person {id: 3, name: 'Derek'}),
-            (u4:Person {id: 4, name: 'Eve'}),
-            (u5:Person {id: 5, name: 'Frank'}),
-            (u6:Person {id: 6, name: 'George'}),
-            (u7:Person {id: 7, name: 'Hina'}),
-            (u8:Person {id: 8, name: 'Ivy'}),
-            (u9:Person {id: 9, name: 'Jack'}),
-            (u0)-[:KNOWS {weight: 5}]->(u1),
-            (u0)-[:KNOWS {weight: 6}]->(u2),
-            (u1)-[:KNOWS {weight: 8}]->(u2),
-            (u2)-[:KNOWS {weight: 3}]->(u3),
-            (u3)-[:KNOWS {weight: 3}]->(u4),
-            (u5)-[:KNOWS {weight: 10}]->(u6),
-            (u5)-[:KNOWS {weight: 10}]->(u7),
-            (u6)-[:KNOWS {weight: 3}]->(u7),
-            (u7)-[:KNOWS {weight: 10}]->(u8),
-            (u8)-[:KNOWS {weight: 3}]->(u9);
+        (u1:Person {id: 1, name: 'Bob'}),
+        (u2:Person {id: 2, name: 'Charlie'}),
+        (u3:Person {id: 3, name: 'Derek'}),
+        (u4:Person {id: 4, name: 'Eve'}),
+        (u5:Person {id: 5, name: 'Frank'}),
+        (u6:Person {id: 6, name: 'George'}),
+        (u7:Person {id: 7, name: 'Hina'}),
+        (u8:Person {id: 8, name: 'Ivy'}),
+        (u9:Person {id: 9, name: 'Jack'}),
+        (u0)-[:KNOWS {weight: 5}]->(u1),
+        (u0)-[:KNOWS {weight: 6}]->(u2),
+        (u1)-[:KNOWS {weight: 8}]->(u2),
+        (u2)-[:KNOWS {weight: 3}]->(u3),
+        (u3)-[:KNOWS {weight: 3}]->(u4),
+        (u5)-[:KNOWS {weight: 10}]->(u6),
+        (u5)-[:KNOWS {weight: 10}]->(u7),
+        (u6)-[:KNOWS {weight: 3}]->(u7),
+        (u7)-[:KNOWS {weight: 10}]->(u8),
+        (u8)-[:KNOWS {weight: 3}]->(u9);
 ```
 Create a projected graph from the node and relationship tables:
 ```cypher
