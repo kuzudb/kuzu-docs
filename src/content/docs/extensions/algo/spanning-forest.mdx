@@ -110,7 +110,7 @@ All edges are treated equally, and the algorithm returns an arbitrary spanning f
 Use this when weights are irrelevant or unavailable.
 :::
 
-Run the spanning forest algorithm on the projected graph:
+Run the unweighted variant of the spanning forest algorithm on the projected graph:
 ```cypher
 CALL spanning_forest('ProjectedGraph')
     RETURN src.name AS src, dst.name AS dst, rel.weight AS weight, forest_id
@@ -123,6 +123,28 @@ CALL spanning_forest('ProjectedGraph')
 ├─────────┼─────────┼────────┼───────────┤
 │ Alice   │ Charlie │ 6      │ 0         │
 │ Bob     │ Charlie │ 8      │ 0         │
+│ Charlie │ Derek   │ 3      │ 0         │
+│ Derek   │ Eve     │ 3      │ 0         │
+│ Frank   │ Hina    │ 10     │ 5         │
+│ George  │ Hina    │ 3      │ 5         │
+│ Hina    │ Ivy     │ 10     │ 5         │
+│ Ivy     │ Jack    │ 3      │ 5         │
+└─────────┴─────────┴────────┴───────────┘
+```
+
+Run the min variant of the spanning forest algorithm on the projected graph:
+```cypher
+CALL spanning_forest('ProjectedGraph', variant:='min', weight_property:='weight')
+RETURN src.name AS src, dst.name AS dst, rel.weight AS weight, forest_id
+ORDER BY forest_id, src.name;
+```
+```table
+┌─────────┬─────────┬────────┬───────────┐
+│ src     │ dst     │ weight │ FOREST_ID │
+│ STRING  │ STRING  │ INT64  │ UINT64    │
+├─────────┼─────────┼────────┼───────────┤
+│ Alice   │ Bob     │ 5      │ 0         │
+│ Alice   │ Charlie │ 6      │ 0         │
 │ Charlie │ Derek   │ 3      │ 0         │
 │ Derek   │ Eve     │ 3      │ 0         │
 │ Frank   │ Hina    │ 10     │ 5         │
