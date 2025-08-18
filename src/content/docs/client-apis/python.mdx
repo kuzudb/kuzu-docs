@@ -27,7 +27,7 @@ curl -L -o ./data/follows.csv https://raw.githubusercontent.com/kuzudb/kuzu/refs
 curl -L -o ./data/lives-in.csv https://raw.githubusercontent.com/kuzudb/kuzu/refs/heads/master/dataset/demo-db/csv/lives-in.csv
 ```
 
-<Tabs>
+<Tabs syncKey="sync">
 
 <TabItem label="Sync API">
 
@@ -179,7 +179,7 @@ allows you to leverage the data manipulation capabilities of these libraries in 
 You can output the results of a Cypher query to a Pandas DataFrame, Polars DataFrame, or PyArrow Table.
 The following examples show how to output query results to each of these data structures.
 
-<Tabs>
+<Tabs syncKey="python">
 
 <TabItem label="Pandas">
 
@@ -239,7 +239,7 @@ conn.execute("CREATE (a:Person {name: 'Zhang', age: 50})")
 result = conn.execute("MATCH (p:Person) RETURN p.*")
 print(result.get_as_pl())
 ```
-```
+```table
 shape: (3, 2)
 ┌─────────┬───────┐
 │ p.name  ┆ p.age │
@@ -256,7 +256,7 @@ Return specific columns by name and optionally alias them as follows:
 result = conn.execute("MATCH (p:Person) RETURN p.name AS name")
 print(result.get_as_pl())
 ```
-```
+```table
 shape: (3, 1)
 ┌─────────┐
 │ name    │
@@ -308,7 +308,7 @@ p.age: [[30,40,50]]
 You can scan a Pandas DataFrame, Polars DataFrame, or PyArrow Table in Kuzu using the `LOAD FROM` clause.
 Scanning a DataFrame or Table does *not* copy the data into Kuzu, it only reads the data.
 
-<Tabs>
+<Tabs syncKey="python">
 
 <TabItem label="Pandas">
 
@@ -352,7 +352,7 @@ df = pl.DataFrame({
 result = conn.execute("LOAD FROM df RETURN *")
 print(result.get_as_pl())
 ```
-```
+```table
 shape: (3, 2)
 ┌─────────┬─────┐
 │ name    ┆ age │
@@ -397,7 +397,7 @@ age: [[30,40,50]]
 
 ### COPY FROM
 
-<Tabs>
+<Tabs syncKey="python">
 
 <TabItem label="Pandas">
 
@@ -453,7 +453,7 @@ conn.execute("COPY Person FROM df")
 result = conn.execute("MATCH (p:Person) RETURN p.*")
 print(result.get_as_pl())
 ```
-```
+```table
 shape: (3, 2)
 ┌─────────┬───────┐
 │ p.name  ┆ p.age │

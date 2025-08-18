@@ -20,7 +20,7 @@ WHERE a.age > 45 OR starts_with(a.name, "Kar")
 RETURN *;
 ```
 
-```
+```table
 ┌──────────────────────────────────────────────────┐
 │ a                                                │
 │ NODE                                             │
@@ -43,7 +43,7 @@ WHERE a.age IS NOT NULL AND starts_with(a.name, "Kar")
 RETURN *;
 ```
 
-```
+```table
 ┌──────────────────────────────────────────────────┐
 │ a                                                │
 │ NODE                                             │
@@ -61,7 +61,7 @@ MATCH (a:User)
 WHERE (a)-[r1:Follows]->(b:User {name: "Noura"})-[r2:LivesIn]->(c:City {name: "Guelph"})
 RETURN a;
 ```
-```
+```table
 ┌────────────────────────────────────────────────┐
 │ a                                              │
 │ NODE                                           │

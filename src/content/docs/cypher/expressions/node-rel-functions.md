@@ -25,7 +25,7 @@ Returns the internal ID of node/rel.
 MATCH (a:User) RETURN ID(a) AS ID LIMIT 1;
 ```
 
-```
+```table
 ┌─────────────┐
 │ ID          │
 │ INTERNAL_ID │
@@ -47,7 +47,7 @@ Returns the label name of node/rel. The alias `LABELS` can also be used.
 MATCH (a) RETURN LABEL(a) AS LABEL LIMIT 1;
 ```
 
-```
+```table
 ┌────────┐
 │ LABEL  │
 │ STRING │
@@ -69,7 +69,7 @@ Returns the offset of the internal ID.
 MATCH (a) RETURN OFFSET(ID(a)) AS OFFSET LIMIT 1;
 ```
 
-```
+```table
 ┌────────┐
 │ OFFSET │
 │ INT64  │

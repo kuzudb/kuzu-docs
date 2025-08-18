@@ -74,6 +74,8 @@ Then if you run the following query, Kuzu will infer the column names `name` and
 
 ```cypher
 LOAD FROM "user.csv" (header = true) RETURN *;
+```
+```table
 ┌─────────┬───────┐
 │ name    │ age   │
 │ STRING  │ INT64 │
@@ -95,6 +97,8 @@ Zhang,50
 
 ```cypher
 LOAD FROM "user.csv" (header = false) RETURN *;
+```
+```table
 ┌─────────┬─────────┐
 │ column0 │ column1 │
 │ STRING  │ STRING  │
@@ -115,6 +119,8 @@ and the same content as in the `user.csv` file above. Then the query below will 
 
 ```cypher
 LOAD FROM "user.parquet" RETURN *;
+```
+```table
 ┌─────────┬───────┐
 │ f0      │  f1   │
 │ STRING  │ INT64 │
@@ -180,7 +186,7 @@ df = pl.DataFrame({
 res = conn.execute("LOAD FROM df RETURN *")
 print(res.get_as_pl())
 ```
-```
+```table
 shape: (3, 2)
 ┌─────────┬─────┐
 │ name    ┆ age │
@@ -254,7 +260,7 @@ LOAD json;
 // Scan the JSON file
 LOAD FROM "user.json" RETURN *;
 ```
-```
+```table
 ┌─────────┬─────┐
 │ name    ┆ age │
 │ ---     ┆ --- │
@@ -287,7 +293,7 @@ for the Kuzu table.
 // This is the JSON string we get from the REST API
 '[{"name": "Rebecca", "age": 25}, {"name": "Gregory", "age": 30}, {"name": "Alicia", "age": 28}]'
 ```
-```
+```table
 ┌───────────────────────────────────────┐
 │ structure                             │
 │ STRING                                │
@@ -328,7 +334,7 @@ WHERE age > 25
 RETURN COUNT(*);
 ```
 This returns:
-```
+```table
 ┌──────────────┐
 │ COUNT_STAR() │
 │ INT64        │
@@ -359,7 +365,7 @@ CREATE (:User {name: name, age: CAST(age AS INT64)});
 // Return the nodes we just created
 MATCH (u:User) RETURN u.name, u.age;
 ```
-```
+```table
 ┌─────────┬───────┐
 │ u.name  │ u.age │
 │ STRING  │ INT64 │
@@ -382,7 +388,7 @@ input file has more columns specified in a different order.
 LOAD FROM "user.csv" (header = true)
 RETURN age, name LIMIT 3;
 ```
-```
+```table
 ┌───────┬─────────┐
 │ age   │ name    │
 │ INT64 │ STRING  │
@@ -413,7 +419,7 @@ LOAD WITH HEADERS (name STRING, age INT64) FROM "user.csv" (header = true)
 WHERE name =~ 'Adam*'
 RETURN name, age;
 ```
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT64 │
@@ -450,7 +456,7 @@ By setting `IGNORE_ERRORS` to true, instead of erroring, we can make `LOAD FROM`
 LOAD WITH HEADERS (name STRING, age INT32) FROM "user.csv" (ignore_errors = true)
 RETURN name, age;
 ```
-```
+```table
 ┌────────┬───────┐
 │ name   │ age   │
 │ STRING │ INT32 │

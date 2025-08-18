@@ -19,7 +19,7 @@ is a shortcut in Cypher to return all properties of the node together with the l
 MATCH (a:User)
 RETURN a;
 ```
-```
+```table
 ┌──────────────────────────────────────────────────┐
 │ a                                                │
 │ NODE                                             │
@@ -39,7 +39,7 @@ MATCH (a:User:City)
 RETURN a;
 ```
 
-```
+```table
 ┌───────────────────────────────────────────────────────────────┐
 │ a                                                             │
 │ NODE                                                          │
@@ -62,7 +62,7 @@ MATCH (a)
 RETURN a;
 ```
 
-```
+```table
 ┌───────────────────────────────────────────────────────────────┐
 │ a                                                             │
 │ NODE                                                          │
@@ -87,7 +87,7 @@ MATCH (a:User)-[e:Follows]->(b:User)
 RETURN a.name, e, b.name;
 ```
 
-```
+```table
 ┌─────────┬───────────────────────────────────────────────────────┬─────────┐
 │ a.name  │ e                                                     │ b.name  │
 │ STRING  │ REL                                                   │ STRING  │
@@ -105,7 +105,7 @@ MATCH (a:User)<-[e:Follows]-(b:User)
 RETURN a.name, e, b.name;
 ```
 
-```
+```table
 ┌─────────┬───────────────────────────────────────────────────────┬─────────┐
 │ a.name  │ e                                                     │ b.name  │
 │ STRING  │ REL                                                   │ STRING  │
@@ -125,7 +125,7 @@ MATCH (a:User)-[e:Follows|:LivesIn]->(b:User:City)
 RETURN a.name, e, b.name;
 ```
 
-```
+```table
 ┌─────────┬───────────────────────────────────────────────────────┬───────────┐
 │ a.name  │ e                                                     │ b.name    │
 │ STRING  │ REL                                                   │ STRING    │
@@ -148,7 +148,7 @@ MATCH ()-[e]->()
 RETURN e;
 ```
 
-```
+```table
 ┌───────────────────────────────────────────────────────┐
 │ e                                                     │
 │ REL                                                   │
@@ -173,7 +173,7 @@ WHERE a.name = 'Karissa'
 RETURN b.name;
 ```
 
-```
+```table
 ┌────────┐
 │ b.name │
 │ STRING │
@@ -195,7 +195,7 @@ WHERE a.name = "Adam"
 RETURN a, c.name, c.population;
 ```
 
-```
+```table
 ┌───────────────────────────────────────────────┬───────────┬──────────────┐
 │ a                                             │ c.name    │ c.population │
 │ NODE                                          │ STRING    │ INT64        │
@@ -215,7 +215,7 @@ MATCH (a:User)-[:Follows]->(b:User)-[:Follows]->(c:User), (a)-[:Follows]->(c)
 RETURN a.name, b.name, c.name;
 ```
 
-```
+```table
 ┌────────┬─────────┬────────┐
 │ a.name │ b.name  │ c.name │
 │ STRING │ STRING  │ STRING │
@@ -246,7 +246,7 @@ WHERE e.since = 2020 AND b.name = "Zhang"
 RETURN a, e.since, b.name;
 ```
 and both queries output:
-```
+```table
 ┌───────────────────────────────────────────────┬─────────┬────────┐
 │ a                                             │ e.since │ b.name │
 │ NODE                                          │ INT64   │ STRING │
@@ -267,7 +267,7 @@ WHERE a.name = 'Adam'
 RETURN b.name, length(e) AS length;
 ```
 
-```
+```table
 ┌─────────┬────────┐
 │ b.name  │ length │
 │ STRING  │ INT64  │
@@ -290,7 +290,7 @@ WHERE a.name = 'Noura' AND b.name <> 'Noura'
 RETURN b.name, length(e) AS length;
 ```
 
-```
+```table
 ┌───────────┬────────┐
 │ b.name    │ length │
 │ STRING    │ INT64  │
@@ -313,7 +313,7 @@ WHERE a.name = 'Zhang'
 RETURN b.name, properties(nodes(e), 'name'), properties(rels(e), '_ID');
 ```
 
-```
+```table
 ┌─────────┬───────────────────────────┬─────────────────────────┐
 │ b.name  │ PROPERTIES(NODES(e),name) │ PROPERTIES(RELS(e),_ID) │
 │ STRING  │ STRING[]                  │ INTERNAL_ID[]           │
@@ -351,13 +351,13 @@ Kuzu also supports `TRAIL` and `ACYCLIC` semantics, which can be specified insid
 
 A `TRAIL` is a walk in which all relationships are distinct.
 
-```
+```cypher
 MATCH (a:User)-[e:Follows* trail 4..4]-(b:User)
       WHERE a.name = 'Zhang'
       RETURN b.name, properties(nodes(e), 'name');
 ```
 
-```
+```table
 ┌────────┬───────────────────────────┐
 │ b.name │ PROPERTIES(NODES(e),name) │
 │ STRING │ STRING[]                  │
@@ -370,13 +370,13 @@ MATCH (a:User)-[e:Follows* trail 4..4]-(b:User)
 The example above doesn't include any recursive relationships that contain redundant internal IDs.
 
 A `ACYCLIC` is a walk in which all nodes are distinct.
-```
+```cypher
 MATCH (a:User)-[e:Follows* acyclic 4..4]-(b:User)
       WHERE a.name = 'Zhang'
       RETURN b.name, properties(nodes(e), 'name');
 ```
 
-```
+```table
 ┌─────────┬───────────────────────────┐
 │ b.name  │ PROPERTIES(NODES(e),name) │
 │ STRING  │ STRING[]                  │
@@ -404,7 +404,7 @@ The example above doesn't include recursive patterns that contain any repeated n
 
 :::note[Note]
 An `ACYCLIC` recursive relationship is different from an `acyclic` path in that the acyclic recursive relationship doesn't take the source and destination nodes into consideration, while the acyclic path takes both into consideration.
-```
+```cypher
 MATCH p=(a:User)-[e:Follows* 4..4]-(b:User)
             WHERE a.name = 'Zhang' and is_acyclic(p)
             RETURN p;
@@ -422,7 +422,7 @@ WHERE a.name = 'Adam'
 RETURN b.name, COUNT(*);
 ```
 
-```
+```table
 ┌─────────┬──────────────┐
 │ b.name  │ COUNT_STAR() │
 │ STRING  │ INT64        │
@@ -450,7 +450,7 @@ MATCH (a:User)-[e:Follows*1..2 (r, n | WHERE r.since > 2020 | {r.since}, {n.name
 RETURN nodes(e), rels(e);
 ```
 Returns:
-```
+```table
 ┌─────────────────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ NODES(e)                                │ RELS(e)                                                                                                       │
 │ NODE[]                                  │ REL[]                                                                                                         │
@@ -481,7 +481,7 @@ WHERE a.name = 'Adam'
 RETURN b.name, length(e) AS length;
 ```
 
-```
+```table
 ┌───────────┬────────┐
 │ b.name    │ length │
 │ STRING    │ INT64  │
@@ -505,7 +505,7 @@ WHERE a.name = 'Zhang' AND b.name = 'Waterloo'
 RETURN COUNT(*) AS num_shortest_path;
 ```
 
-```
+```table
 ┌───────────────────┐
 │ num_shortest_path │
 │ INT64             │
@@ -524,8 +524,10 @@ RETURN COUNT(*) AS num_shortest_path;
 **Example**
 
 We add a `score` property to `Follows` and manually assign a score to each `Follows` edge. The modified database is shown as
-```
+```cypher
 MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
+```
+```table
 ┌─────────┬─────────┬───────────┬─────────┐
 │ a.name  │ e.since │ e.score   │ b.name  │
 │ STRING  │ INT64   │ DOUBLE    │ STRING  │
@@ -537,10 +539,12 @@ MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
 └─────────┴─────────┴───────────┴─────────┘
 ```
 And then we query the weighted shortest path from `Adam` to other users through `score` property.
-```
+```cypher
 MATCH p=(a:User)-[e:Follows* WSHORTEST(score)]->(b:User) 
 WHERE a.name='Adam' 
 RETURN properties(nodes(p), 'name'), cost(e);
+```
+```table
 ┌────────────────────────────┬───────────┐
 │ PROPERTIES(NODES(p),name)  │ e_cost    │
 │ STRING[]                   │ DOUBLE    │
@@ -560,8 +564,10 @@ RETURN properties(nodes(p), 'name'), cost(e);
 **Example**
 
 We insert one more `Follows` edge between `Adam` and `Zhang` with score=11. The modified database is shown as
-```
+```cypher
 MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
+```
+```table
 ┌─────────┬─────────┬───────────┬─────────┐
 │ a.name  │ e.since │ e.score   │ b.name  │
 │ STRING  │ INT64   │ DOUBLE    │ STRING  │
@@ -574,10 +580,12 @@ MATCH (a:User)-[e:Follows]->(b:User) RETURN a.name, e.*, b.name;
 └─────────┴─────────┴───────────┴─────────┘
 ```
 Then we can query all shortest paths from `Adam` to other users through `score` property.
-```
+```cypher
 MATCH p=(a:User)-[e:Follows* ALL WSHORTEST(score)]->(b:User) 
 WHERE a.name='Adam' 
 RETURN properties(nodes(p), 'name'), cost(e);
+```
+```table
 ┌────────────────────────────┬───────────┐
 │ PROPERTIES(NODES(p),name)  │ e_cost    │
 │ STRING[]                   │ DOUBLE    │
@@ -607,12 +615,12 @@ WHERE a.name = 'Adam' AND b.name = 'Karissa'
 RETURN p;
 ```
 
-```
-------------------------------------------------------------------------------------
-| p                                                                                |
-------------------------------------------------------------------------------------
-| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us... |
-------------------------------------------------------------------------------------
+```table
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ p                                                                                   │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│ {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us...    │
+└─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 Named paths can also be assigned to recursive graph patterns.
 ```cypher
@@ -621,18 +629,15 @@ WHERE a.name = 'Adam'
 RETURN p;
 ```
 
-```
-------------------------------------------------------------------------------------
-| p                                                                                |
-------------------------------------------------------------------------------------
-| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:1, _LABEL: ... |
-------------------------------------------------------------------------------------
-| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:2, _LABEL: ... |
-------------------------------------------------------------------------------------
-| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:1, _LABEL: ... |
-------------------------------------------------------------------------------------
-| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:2, _LABEL: ... |
-------------------------------------------------------------------------------------
+```table
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ p                                                                                   │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│ {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:1, _LABEL: ...    │
+│ {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:2, _LABEL: ...    │
+│ {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:1, _LABEL: ...    │
+│ {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30, },{_ID: 0:2, _LABEL: ...    │
+└─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 Multiple named path can appear in a single `MATCH` clause.
 ```cypher
@@ -641,14 +646,13 @@ WHERE a.name = 'Adam'
 RETURN p1, p2;
 ```
 
-```
------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| p1                                                                               | p2                                                                               |
------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us... | {_NODES: [{_ID: 0:1, _LABEL: User, name: Karissa, age: 40, },{_ID: 1:0, _LABE... |
------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: Us... | {_NODES: [{_ID: 0:2, _LABEL: User, name: Zhang, age: 50, },{_ID: 1:1, _LABEL:... |
------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+```table
+┌────────────────────────────────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────┐
+│ p1                                                                                     │ p2                                                                                  │
+├────────────────────────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
+│ {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: Us...       │ {_NODES: [{_ID: 0:1, _LABEL: User, name: Karissa, age: 40, },{_ID: 1:0, _LABE...    │
+│ {_NODES: [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: Us...       │ {_NODES: [{_ID: 0:2, _LABEL: User, name: Zhang, age: 50, },{_ID: 1:1, _LABEL=...    │
+└────────────────────────────────────────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Extracting nodes and relationships from a path
@@ -660,18 +664,15 @@ WHERE a.name = 'Adam'
 RETURN nodes(p), (rels(p)[1]).since AS since;
 ```
 
-```
---------------------------------------------------------------------------------------------
-| NODES(p)                                                                         | since |
---------------------------------------------------------------------------------------------
-| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name:... | 2020  |
---------------------------------------------------------------------------------------------
-| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name:... | 2020  |
---------------------------------------------------------------------------------------------
-| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
---------------------------------------------------------------------------------------------
-| [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:... | 2020  |
---------------------------------------------------------------------------------------------
+```table
+┌─────────────────────────────────────────────────────────────────────────────────────┬─────────┐
+│ NODES(p)                                                                            │ since   │
+├─────────────────────────────────────────────────────────────────────────────────────┼─────────┤
+│ [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name:...    │ 2020    │
+│ [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:1, _LABEL: User, name:...    │ 2020    │
+│ [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:...    │ 2020    │
+│ [{_ID: 0:0, _LABEL: User, name: Adam, age: 30},{_ID: 0:2, _LABEL: User, name:...    │ 2020    │
+└─────────────────────────────────────────────────────────────────────────────────────┴─────────┘
 ```
 More recursive relationship functions can be found [here](/cypher/expressions/recursive-rel-functions).
 

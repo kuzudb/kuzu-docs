@@ -24,7 +24,7 @@ See our YouTube video for a walkthrough on how to use the JSON extension:
 
 ## Usage
 
-```sql
+```cypher
 INSTALL json;
 LOAD json;
 ```
@@ -36,7 +36,7 @@ We have 3 JSON files that contain information about patients and their medical c
 files are organized into two node files (`patient.json` and `condition.json`) and one relationship
 file (`has_condition.json`).
 
-<Tabs>
+<Tabs syncKey="json-files">
 <TabItem label="patient.json">
 
 ```json
@@ -160,7 +160,7 @@ To scan the file above, you can do the following:
 ```cypher
 LOAD FROM 'patient.json' RETURN *;
 ```
-```
+```table
 ┌────────┬─────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ p_id   │ name    │ info                                                                                                                                                                                                     │
 │ STRING │ STRING  │ STRUCT(height DOUBLE, weight DOUBLE, age UINT8, insurance_provider STRUCT(type STRING, name STRING, policy_number STRING)[])                                                                             │
@@ -184,7 +184,7 @@ weight and insurance provider of all patients:
 LOAD FROM 'patient.json'
 RETURN name, info.age, info.height, info.weight, info.insurance_provider;
 ```
-```
+```table
 ┌─────────┬──────────────────────────┬─────────────────────────────┬─────────────────────────────┬─────────────────────────────────────────────────────────────────┐
 │ name    │ STRUCT_EXTRACT(info,age) │ STRUCT_EXTRACT(info,height) │ STRUCT_EXTRACT(info,weight) │ STRUCT_EXTRACT(info,insurance_provider)                         │
 │ STRING  │ UINT8                    │ DOUBLE                      │ DOUBLE                      │ STRUCT(type STRING, name STRING, policy_number STRING)[]        │
@@ -224,7 +224,7 @@ FROM 'patient.json'
 RETURN name, info.height, info.weight;
 ```
 We can see that the types inside the `info` STRUCT are now `FLOAT` rather than `DOUBLE`.
-```
+```table
 ┌─────────┬─────────────────────────────┬─────────────────────────────┐
 │ name    │ STRUCT_EXTRACT(info,height) │ STRUCT_EXTRACT(info,weight) │
 │ STRING  │ FLOAT                       │ FLOAT                       │
@@ -255,7 +255,7 @@ First, start by defining a node table schema that conforms to the JSON structure
 we declare a `STRUCT` where necessary.
 
 Example:
-```sql
+```cypher
 CREATE NODE TABLE IF NOT EXISTS Patient(
     p_id STRING,
     name STRING,
@@ -283,7 +283,7 @@ COPY Patient FROM 'patient.json';
 
 Similarly, we can define the node table for the patients' medical conditions.
 
-```sql
+```cypher
 CREATE NODE TABLE IF NOT EXISTS Condition(
     c_id STRING,
     name STRING,
@@ -292,7 +292,7 @@ CREATE NODE TABLE IF NOT EXISTS Condition(
 );
 ```
 And copy the contents of `condition.json` to the node table as follows:
-```sql
+```cypher
 COPY Condition FROM 'condition.json';
 ```
 
@@ -320,7 +320,7 @@ In the example dataset for `has_condition.json`, we have these keys defined:
 Any other keys that are not `"from"` or `"to"` are treated as relationship properties.
 
 Let's create a relationship table schema:
-```sql
+```cypher
 CREATE REL TABLE IF NOT EXISTS HAS_CONDITION(
     FROM Patient TO Condition,
     since UINT16
@@ -351,7 +351,7 @@ WITH name, age, provider, condition
 WHERE provider.type = "health"
 RETURN name, age, condition, provider.name AS health_insurance_provider;
 ```
-```
+```table
 ┌─────────┬───────┬───────────────────┬───────────────────────────┐
 │ name    │ age   │ condition         │ health_insurance_provider │
 │ STRING  │ UINT8 │ STRING            │ STRING                    │
@@ -371,7 +371,7 @@ to capture the relationships between patients and their insurance providers.
 
 Let's model this using a new node table, `InsuranceProvider`, and a new relationship table `HAS_PROVIDER`.
 
-```sql
+```cypher
 CREATE NODE TABLE IF NOT EXISTS InsuranceProvider(
     name STRING,
     type STRING,
@@ -436,7 +436,7 @@ Once you have the data in a graph, you can begin querying it in Cypher. You can 
 statement to write the results of a query to a JSON file. Any query results of the type `STRUCT`
 will be written as nested JSON. Two examples are shown below.
 
-<Tabs>
+<Tabs syncKey="json-examples">
 <TabItem label="Example 1">
 
 Say you want to write health insurance provider information and patient names for patients with the
@@ -542,7 +542,7 @@ CREATE (p:Person {id: 20, description: to_json({height: 52, age: 32, scores: [1,
 CREATE (p:Person {id: 40, description: to_json({age: 55, scores: [1,32,5,null], name: 'dan'})});
 MATCH (p:Person) RETURN p.*;
 ```
-```
+```table
 ┌───────┬────────────────────────────────────────────────┐
 │ p.id  │ p.description                                  │
 │ INT64 │ json                                           │
@@ -559,7 +559,7 @@ MATCH (p:Person)
 WHERE json_extract(p.description, 'age') < 50
 RETURN p.id AS id, json_extract(p.description, 'age') AS age;
 ```
-```
+```table
 ┌───────┬──────┐
 │ id    │ age  │
 │ INT64 │ json │
@@ -582,7 +582,7 @@ Example 1:
 ```cypher
 RETURN to_json('{"name": "Gregory"}') AS person;
 ```
-```
+```table
 ┌────────────────────┐
 │ person             │
 │ json               │
@@ -596,7 +596,7 @@ Example 2:
 ```cypher
 RETURN to_json([1,2,3]) AS json_array;
 ```
-```
+```table
 ┌────────────┐
 │ json_array │
 │ json       │
@@ -610,7 +610,7 @@ Example 3:
 ```cypher
 RETURN to_json('Alicia') AS simple_string;
 ```
-```
+```table
 ┌───────────────┐
 │ simple_string │
 │ json          │
@@ -637,7 +637,7 @@ Example:
 ```cypher
 RETURN cast('{"name": "Alicia", "age": 28}' AS JSON);
 ```
-```
+```table
 ┌───────────────────────────────────────────┐
 │ CAST({"name": "Alicia", "age": 28}, json) │
 │ json                                      │
@@ -660,7 +660,7 @@ Example 1:
 ```cypher
 RETURN json_object("name", "Alicia");
 ```
-```
+```table
 ┌──────────────────────────┐
 │ json_object(name,Alicia) │
 │ json                     │
@@ -672,7 +672,7 @@ Example 2:
 ```cypher
 RETURN json_object("name", "Alicia", "age", 28);
 ```
-```
+```table
 ┌─────────────────────────────────┐
 │ json_object(name,Alicia,age,28) │
 │ json                            │
@@ -690,7 +690,7 @@ Example:
 ```cypher
 RETURN json_array("Alicia", "25", NULL);
 ```
-```
+```table
 ┌────────────────────────┐
 │ json_array(Alicia,25,) │
 │ json                   │
@@ -709,7 +709,7 @@ Example 1:
 ```cypher
 RETURN json_merge_patch('{"name": "Alicia"}', '{"age": 28}');
 ```
-```
+```table
 ┌──────────────────────────────────────────────────┐
 │ json_merge_patch({"name": "Alicia"},{"age": 28}) │
 │ json                                             │
@@ -724,7 +724,7 @@ Merging with a `NULL` argument results in a `NULL` output.
 ```cypher
 RETURN json_merge_patch("3", NULL);
 ```
-```
+```table
 ┌──────────────────────┐
 │ json_merge_patch(3,) │
 │ json                 │
@@ -752,7 +752,7 @@ RETURN
         'Software/Database/1'
     ) AS extracted;
 ```
-```
+```table
 ┌───────────┐
 │ extracted │
 │ json      │
@@ -772,7 +772,7 @@ RETURN
         ['Software/Database/1', 'Software/Database/0']
     ) AS extracted;
 ```
-```
+```table
 ┌─────────────────┐
 │ extracted       │
 │ json[]          │
@@ -789,7 +789,7 @@ we want to extract.
 ```cypher
 RETURN json_extract('[1, 2, 42]', 2) AS nums;
 ```
-```
+```table
 ┌──────┐
 │ nums │
 │ json │
@@ -807,7 +807,7 @@ RETURN
         ""
     ) AS extracted;
 ```
-```
+```table
 ┌───────────┐
 │ extracted │
 │ json      │
@@ -825,7 +825,7 @@ Example 1:
 ```cypher
 RETURN json_array_length('["1", "1", "4", null]') AS len;
 ```
-```
+```table
 ┌────────┐
 │ len    │
 │ UINT32 │
@@ -841,7 +841,7 @@ this isn't a valid JSON array.
 ```cypher
 RETURN json_array_length('{"kuzu": ["1", "1", "4", null]}') AS len;
 ```
-```
+```table
 ┌────────┐
 │ len    │
 │ UINT32 │
@@ -860,7 +860,7 @@ Example 1:
 ```cypher
 RETURN JSON_CONTAINS('{"name": "Alicia"}', '"Alicia"') AS found_name;
 ```
-```
+```table
 ┌────────────┐
 │ found_name │
 │ BOOL       │
@@ -872,7 +872,7 @@ Example 2:
 ```cypher
 RETURN JSON_CONTAINS('{"age": 28}', '28') AS found_age;
 ```
-```
+```table
 ┌───────────┐
 │ found_age │
 │ BOOL      │
@@ -893,7 +893,7 @@ RETURN
         '{ "family": "anatidae", "species": [ "duck", "goose", "swan", null ] }'
     ) AS keys;
 ```
-```
+```table
 ┌──────────────────┐
 │ keys             │
 │ STRING[]         │
@@ -913,7 +913,7 @@ RETURN
         '[{"a": -1, "b": [1000, 2000, 3000]}, {"a": 2, "c": "hi"}]'
     ) AS structure;
 ```
-```
+```table
 ┌─────────────────────────────────────────┐
 │ structure                               │
 │ STRING                                  │
@@ -931,7 +931,7 @@ Example 1:
 ```cypher
 RETURN json_valid('{"name": "Alicia", "age": 28}') AS is_valid;
 ```
-```
+```table
 ┌──────────┐
 │ is_valid │
 │ BOOL     │
@@ -943,7 +943,7 @@ Example 2:
 ```cypher
 RETURN json_valid('"name": "Alicia", "age": 28') AS is_valid;
 ```
-```
+```table
 ┌──────────┐
 │ is_valid │
 │ BOOL     │
@@ -965,7 +965,7 @@ UNWIND
 RETURN
     json(arr);
 ```
-```
+```table
 ┌───────────────────────────────┐
 │ json(arr)                     │
 │ json                          │

@@ -33,7 +33,7 @@ justifying our choice of using the term "table" in our design of the system.
 
 To create a node table, use the `CREATE NODE TABLE` statement as shown below:
 
-```sql
+```cypher
 CREATE NODE TABLE User (
     name STRING,
     age INT64 DEFAULT 0,
@@ -43,7 +43,7 @@ CREATE NODE TABLE User (
 ```
 
 Alternatively, you can specify the keyword `PRIMARY KEY` immediately after the column name, as follows:
-```sql
+```cypher
 CREATE NODE TABLE User (
     name STRING PRIMARY KEY,
     age INT64 DEFAULT 0,
@@ -70,7 +70,7 @@ Alternatively, you can use the [`SERIAL`](/cypher/data-types/#serial) data type 
 
 Each property in a table can have a default value. If not specified, the default value is `NULL`.
 
-```sql
+```cypher
 CREATE NODE TABLE User(
     name STRING PRIMARY KEY,
     age INT64 DEFAULT 0,
@@ -97,14 +97,14 @@ CREATE NODE TABLE User(
 Once you create node tables, you can define relationships between them using the `CREATE REL TABLE` statement.
 The following statement adds to the catalog a `Follows` relationship table between `User` and `User` with one `date` property on the relationship.
 
-```sql
+```cypher
 CREATE REL TABLE Follows(FROM User TO User, since DATE);
 ```
 
 Defining a relationship table with multiple node table pairs is also possible. The following statement
 adds a `Knows` relationship table between two node table pairs: (i) `User` and `User`, and (ii) `User` and `City`.
 
-```sql
+```cypher
 CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
 ```
 
@@ -118,7 +118,7 @@ CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
 
 For any relationship label `E`, by default there can be multiple relationships from any node `v` both in the forward and backward direction. In database terminology, relationships are by default many-to-many. In the first `Follows` example above: (i) `v` can follow multiple other user nodes; and (ii) `v` can be followed by multiple other user nodes.
 
-You can optionally constrain the multiplicity to _at most 1_ in either direction, using the `MANY_ONE`, `ONE_MANY`, `MANY_ONE`, or `ONE_ONE` clauses.
+You can optionally constrain the multiplicity to _at most 1_ in either direction, using the `MANY_ONE`, `ONE_MANY`, `MANY_MANY` or `ONE_ONE` clauses.
 
 :::note[Note]
 We don't yet support "exactly 1" semantics as you may be used to via foreign key constraints in relational systems. This is planned for a future release.
@@ -126,7 +126,7 @@ We don't yet support "exactly 1" semantics as you may be used to via foreign key
 
 We show a few examples below:
 
-```sql
+```cypher
 CREATE REL TABLE LivesIn(FROM User TO City, MANY_ONE);
 ```
 
@@ -134,7 +134,7 @@ The `LivesIn` relationship has `n-to-1` multiplicity, implying that each user ca
 It does not put any constraint in the "backward" direction, i.e., there can be multiple users living in the same city.
 
 
-```sql
+```cypher
 CREATE REL TABLE Likes(FROM Pet TO User, ONE_MANY);
 ```
 
@@ -154,7 +154,7 @@ Relationship table group has been deprecated since our v0.8.0 release. You can n
 You can use relationship table groups to gain added flexibility in your data modelling, by defining a relationship table with multiple node table pairs. This is done via the `CREATE REL TABLE GROUP` statement. This has a similar syntax to `CREATE REL TABLE`, but uses multiple `FROM ... TO ...` clauses. Internally, a relationship table group defines a relationship table for _each_ `FROM ... TO ...` block. Any query to a relationship table group is treated as a query on the union of _all_ relationship tables in the group.
 
 
-```sql
+```cypher
 CREATE REL TABLE GROUP Knows(FROM User TO User, FROM User TO City, year INT64);
 ```
 
@@ -182,7 +182,7 @@ If the given table name already exists in the database, Kuzu throws an exception
 You can use the `IF NOT EXISTS` clause to avoid the error. This tells Kuzu to do nothing when
 the given table name already exists in the database. For example:
 
-```sql
+```cypher
 CREATE NODE TABLE IF NOT EXISTS User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE);
 CREATE NODE TABLE IF NOT EXISTS User (name STRING PRIMARY KEY, age INT64 DEFAULT 0, reg_date DATE);
 CREATE REL TABLE IF NOT EXISTS Follows(FROM User TO User, since DATE);
@@ -199,14 +199,14 @@ You can simplify this process by using the `CREATE NODE TABLE AS` or `CREATE REL
 
 Say you want to create a `Person` node table and insert data from a CSV file:
 
-```sql
+```cypher
 CREATE NODE TABLE Person(id INT64 PRIMARY KEY, name STRING, city STRING, age INT64);
 COPY Person FROM "person.csv";
 ```
 
 You can instead use `CREATE NODE TABLE AS` to perform the two operations in a single query:
 
-```sql
+```cypher
 CREATE NODE TABLE Person AS
     LOAD FROM "person.csv"
     RETURN *;
@@ -218,7 +218,7 @@ the CSV file header, which in turn is used to define the schema of the `Person` 
 
 Another example is to use a `MATCH` clause to create a new node table from an existing one:
 
-```sql
+```cypher
 CREATE NODE TABLE YoungPerson AS
     MATCH (p:Person)
     WHERE p.age < 25

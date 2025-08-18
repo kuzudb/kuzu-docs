@@ -1,3 +1,7 @@
+
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap');
+
 /**
 See all the properties that can be customized for the Astro Starlight theme here:
 https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.css
@@ -14,10 +18,6 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-color-gray-6: #23262f;
   --sl-color-black: #17181c;
 
-  /* Asides box colors for tips */
-  --sl-color-green-low: hsl(var(--sl-hue-green), 15%, 15%);
-  --sl-color-green: hsl(var(--sl-hue-green), 65%, 55%);
-  --sl-color-green-high: hsl(var(--sl-hue-green), 82%, 75%);
 
   --sl-color-accent-low: #ca5921;
   --sl-color-accent: #dc6428;
@@ -70,11 +70,12 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-line-height: 1.8;
   --sl-line-height-headings: 1.2;
 
-  --sl-font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+
+  --sl-font-system: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
-  --sl-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
+    --sl-font-system-mono: 'SF Mono', SFMono-Regular, 'Fira Code', 'Fira Mono', 'DejaVu Sans Mono', 
+    Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --__sl-font: var(--sl-font, var(--sl-font-system)), var(--sl-font-system);
   --__sl-font-mono: var(--sl-font-mono, var(--sl-font-system-mono)), var(--sl-font-system-mono);
 
@@ -85,7 +86,7 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-mobile-toc-height: 3rem;
   --sl-sidebar-width: 18.75rem;
   --sl-sidebar-pad-x: 1rem;
-  --sl-content-width: 45rem;
+  --sl-content-width: 100rem;
   --sl-content-pad-x: 1rem;
   --sl-menu-button-size: 2rem;
   --sl-nav-gap: var(--sl-content-pad-x);
@@ -97,6 +98,23 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
   --sl-z-index-menu: 5;
   --sl-z-index-navbar: 10;
   --sl-z-index-skiplink: 20;
+}
+
+body {
+  font-family: 'Overpass', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.font-nunito {
+  font-family: 'Nunito', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.font-overpass {
+  font-family: 'Overpass', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+.padauk-regular {
+  font-family: "Padauk", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 :root[data-theme='light'],
@@ -149,7 +167,7 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
 
 @media (min-width: 72rem) {
   :root {
-    --sl-content-pad-x: 1.5rem;
+    --sl-content-pad-x: 4rem;
     --sl-mobile-toc-height: 0rem;
   }
 }
@@ -170,8 +188,6 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
     justify-content: center;
     border-radius: 4px;
     margin-bottom: 1em;
-    margin-left: auto;
-    margin-right: auto;
     background-color: #fff;
   }
 }
@@ -195,6 +211,38 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
     height: 100%;
 }
 
+.expressive-code pre,
+.expressive-code code,
+.sl-markdown-content pre {
+    font-family: var(--__sl-font-mono) !important;
+    line-height: 1.6 !important;
+    letter-spacing: 0 !important;
+    font-variant-ligatures: none !important;
+}
+
+/* Table code blocks - tighter line height */
+.expressive-code pre.table,
+.expressive-code pre.table code,
+.sl-markdown-content pre.table,
+.expressive-code pre[data-language="table"],
+.expressive-code pre[data-language="table"] code,
+.sl-markdown-content pre[data-language="table"],
+/* Additional selectors for different rendering scenarios */
+pre[data-language="table"],
+pre[data-language="table"] code,
+code[data-language="table"],
+.language-table,
+.language-table code {
+    line-height: 1.2 !important;
+}
+
+/* Ensure proper rendering of Unicode box-drawing characters */
+.expressive-code,
+.sl-markdown-content pre {
+    font-feature-settings: "liga" 0, "calt" 0 !important;
+    text-rendering: optimizeSpeed !important;
+}
+
 /* Heading link styling */
 .heading-link::after {
     content: '#';
@@ -210,4 +258,14 @@ https://github.com/withastro/starlight/blob/main/packages/starlight/style/props.
 .heading-link {
     text-decoration: none;
     color: var(--sl-color-text) !important;
+}
+/* global.css or your starlight override */
+/* This rule applies user-select: none to the first span in code blocks */
+/* To make it only apply when the first character is $, you would need to add a class or data attribute */
+/* For example: <span class="starts-with-dollar">$command</span> */
+pre[data-language] code > div.ec-line > div.code > span:first-child.starts-with-dollar {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }

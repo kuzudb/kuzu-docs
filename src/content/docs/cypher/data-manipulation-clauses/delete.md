@@ -18,7 +18,7 @@ MATCH (u:User) WHERE u.name = 'Alice'
 DELETE u
 RETURN u.*;
 ```
-```
+```table
 ┌────────┬───────┐
 │ u.name │ u.age │
 │ STRING │ INT64 │
@@ -37,7 +37,7 @@ WHERE u.name = 'A'
 DELETE u
 RETURN u.*;
 ```
-```
+```table
 ┌────────┬───────┬──────────────┐
 │ u.name │ u.age │ u.population │
 │ STRING │ INT64 │ INT64        │
@@ -54,7 +54,7 @@ a single clause, use `DETACH DELETE`.
 ```cypher
 MATCH ()-[e]->() RETURN COUNT(e) AS num_rels;
 ```
-```
+```table
 ┌──────────┐
 │ num_rels │
 │ INT64    │
@@ -66,7 +66,7 @@ MATCH ()-[e]->() RETURN COUNT(e) AS num_rels;
 MATCH (u:User) WHERE u.name = 'Adam' DETACH DELETE u;
 MATCH ()-[]->() RETURN COUNT(*) AS num_rels;
 ```
-```
+```table
 ┌──────────┐
 │ num_rels │
 │ INT64    │
@@ -84,7 +84,7 @@ MATCH (n) DETACH DELETE n;
 
 ### Delete single label relationships
 The following query deletes the `Follows` relationship between `Adam` and `Karissa`:
-```
+```cypher
 MATCH (u:User)-[f:Follows]->(u1:User)
 WHERE u.name = 'Adam' AND u1.name = 'Karissa'
 DELETE f;
@@ -99,7 +99,7 @@ MATCH (u:User)-[f]->(u1)
 WHERE u.name = 'Karissa' 
 RETURN u.name, u1.name;
 ```
-```
+```table
 ┌─────────┬──────────┐
 │ u.name  │ u1.name  │
 │ STRING  │ STRING   │
@@ -117,7 +117,7 @@ MATCH (u:User)-[f]->(u1)
 WHERE u.name = 'Karissa' 
 RETURN u.name, u1.name;
 ```
-```
+```table
 ┌────────┬─────────┐
 │ u.name │ u1.name │
 │ STRING │ STRING  │

@@ -13,6 +13,8 @@ The `LOAD FROM` clause can be used to scan the Parquet file and to verify that t
 
 ```cypher
 > LOAD FROM 'user.parquet' RETURN *;
+```
+```table
 ┌─────────┬───────┐
 │ u.name  │ u.AGE │
 │ STRING  │ INT64 │

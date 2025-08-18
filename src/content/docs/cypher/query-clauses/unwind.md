@@ -17,7 +17,7 @@ UNWIND ["Amy", "Bob", "Carol"] AS x
 RETURN x;
 ```
 
-```
+```table
 ┌────────┐
 │ x      │
 │ STRING │
@@ -37,7 +37,7 @@ UNWIND [["Amy"], ["Bob", "Carol"]] AS x
 RETURN x;
 ```
 
-```
+```table
 ┌─────────────┐
 │ x           │
 │ STRING[]    │
@@ -76,7 +76,7 @@ WHERE x > 2
 RETURN x;
 ```
 
-```
+```table
 ┌───────┐
 │ x     │
 │ INT64 │

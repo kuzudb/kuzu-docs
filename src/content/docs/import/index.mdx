@@ -56,7 +56,7 @@ The following sections show how to bulk import data using `COPY FROM` on various
 Similar to the [LOAD FROM](/cypher/query-clauses/load-from) clause, the `COPY FROM` clause determines the file format based on the file extension if the `file_format` option is not provided. Alternatively, the `file_format` option can be used in the `COPY FROM` clause to explicitly specify the file format.
 
 Example: To copy from a file ending with an arbitrary extension like `.dsv`, use the `file_format = 'csv'` option to explicitly tell Kuzu to treat the file as a `CSV` file.
-```
+```cypher
 COPY person FROM 'person.dsv' (file_format = 'csv')
 ```
 :::
@@ -74,7 +74,7 @@ i.e., the address they live in, initially populated as nulls but to be filled in
 values at a later time.
 
 The DDL for the `Person` node table is as follows:
-```sql
+```cypher
 CREATE NODE TABLE Person(id INT64 PRIMARY KEY, name STRING, age INT64, address STRING);
 ```
 
@@ -84,7 +84,7 @@ obtained from another source.
 In such a case, you can explicitly tell the `COPY` pipeline to partially fill the node table and
 only map the named columns from the CSV file as follows:
 
-```sql
+```cypher
 COPY Person(id, name, age) FROM 'person.csv'
 ```
 
@@ -102,7 +102,7 @@ lead to a Runtime error because of a column number mismatch.
 Given a relationship table with multiple from-to connections, internally Kuzu will create a child table per connection.
 
 Consider the following statement
-```
+```cypher
 CREATE REL TABLE Knows(FROM User TO User, FROM User TO City);
 ```
 Two children tables will be created internally
@@ -112,13 +112,13 @@ Knows_User_City
 ```
 
 When bulk inserting into a relationship table with multiple from-to pairs, you need to specify which child table to insert through `from, to` options, e.g.
-```sql
+```cypher
 COPY Knows FROM 'knows_user_user.csv' (from='User', to='User');
 COPY Knows FROM 'knows_user_city.csv' (from='User', to='City');
 ```
 
 Alternatively, you can also directly copy into a child table. This approach is **deprecated** since v0.11.
-```sql
+```cypher
 COPY Knows_User_User FROM 'knows_user_user.csv';
 COPY Knows_User_City FROM 'knows_user_city.csv';
 ```
@@ -173,7 +173,7 @@ To check that only one `User` node has been inserted, we can run the following q
 MATCH (a:User) RETURN count(*)
 ```
 
-```
+```table
 ┌──────────┬
 │ count(*) │
 │ UINT64   │
@@ -198,7 +198,7 @@ you can run the [`SHOW_WARNINGS`](/cypher/query-clauses/call#show_warnings) func
 CALL show_warnings() RETURN *;
 ```
 
-```
+```table
 ┌──────────┬─────────────────────────────────────────────────────────────────────────────┬───────────┬─────────────┬────────────────────────┐
 │ query_id │ message                                                                     │ file_path │ line_number │ skipped_line_or_record │
 │ UINT64   │ STRING                                                                      │ STRING    │ UINT64      │ STRING                 │
@@ -219,7 +219,7 @@ After clearing the warnings, the Warnings table will be empty.
 CALL show_warnings() RETURN *;
 ```
 
-```
+```table
 ┌──────────┬─────────┬───────────┬─────────────┬────────────────────────┐
 │ query_id │ message │ file_path │ line_number │ skipped_line_or_record │
 │ UINT64   │ STRING  │ STRING    │ UINT64      │ STRING                 │

@@ -3,15 +3,18 @@ import type { Props } from "@astrojs/starlight/props";
 import SiteTitle from "@astrojs/starlight/components/SiteTitle.astro";
 import Search from "@astrojs/starlight/components/Search.astro";
 import SocialIcons from "@astrojs/starlight/components/SocialIcons.astro";
-import ThemeSelect from "@astrojs/starlight/components/ThemeSelect.astro";
 import { Icon } from "@astrojs/starlight/components";
 import Banner from './Banner.astro';
+import ThemeSelect from './ThemeSelect.astro';
 ---
 <div class="header sl-flex">
- 
-  <div class="sl-flex">
-    <SiteTitle {...Astro.props} />
+  <!-- Site Title - shows when sidebars collapse -->
+  <div class="header-site-title">
+    <a href="/" class="site-title">
+      <SiteTitle />
+    </a>
   </div>
+ 
   <div class="sl-flex">
     <Search {...Astro.props} />
   </div>
@@ -30,7 +33,7 @@ import Banner from './Banner.astro';
     <div class="sl-flex social-icons">
       <SocialIcons {...Astro.props} />
     </div>
-    <ThemeSelect {...Astro.props} />
+    <ThemeSelect />
   </div>
 </div>
 
@@ -41,11 +44,47 @@ import Banner from './Banner.astro';
     align-items: center;
     height: 100%;
   }
+
+  /* Header Site Title Styles */
+  .header-site-title {
+    display: none; /* Hidden by default */
+  }
+
+  .site-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--sl-color-white);
+    font-weight: 600;
+    font-size: 1.25rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .site-title:hover {
+    opacity: 0.8;
+  }
+
+  .site-logo {
+    height: 2rem;
+    width: auto;
+  }
+
+  .site-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
   .external-link-header {
     font-weight: 400;
     font-size: 0.875rem;
   }
-  .right-group,
+  .right-group {
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
   .social-icons {
     gap: 1rem;
     align-items: center;
@@ -78,7 +117,7 @@ import Banner from './Banner.astro';
       );
       display: grid;
       grid-template-columns:
-        /* 1 (site title): runs up until the main content column’s left edge or the width of the title, whichever is the largest  */
+        /* 1 (site title): runs up until the main content column's left edge or the width of the title, whichever is the largest  */
         minmax(
           calc(
             var(--__sidebar-width) +
@@ -91,6 +130,31 @@ import Banner from './Banner.astro';
         /* 3 (right items): use the space that these need. */
         auto;
       align-content: center;
+    }
+  }
+
+  /* Show header site title when sidebars are collapsed */
+  @media (max-width: 71.99rem) {
+    .header-site-title {
+      display: block;
+    }
+  }
+
+  /* Show header site title when only one sidebar is present */
+  @media (min-width: 72rem) {
+    /* Show when no left sidebar */
+    :global(:root:not([data-has-sidebar])) .header-site-title {
+      display: block;
+    }
+    
+    /* Show when no right sidebar (TOC) */
+    :global(:root:not([data-has-toc])) .header-site-title {
+      display: block;
+    }
+    
+    /* Hide when both sidebars are present */
+    :global(:root[data-has-sidebar][data-has-toc]) .header-site-title {
+      display: none;
     }
   }
 
@@ -128,46 +192,11 @@ import Banner from './Banner.astro';
     gap: 1rem;
   }
 
-  /* Enterprise Waitlist Link Custom CSS */
-  .enterprise-waitlist-link {
-    background-color: rgba(249, 115, 22, 0.3); /* Tailwind's orange-500 is #f97316 */
-    border: 1px solid #f97316;
-    border-radius: 10px; 
+  .toggle-wrapper {
     display: flex;
     align-items: center;
-    text-align: center;
-    justify-content: center;
-    gap: 0.5rem; /* gap-2 */
-    padding-left: 1rem;  /* px-6 */
-    padding-right: 1.5rem;
-    padding-top: 0.25em;   /* py-2 */
-    padding-bottom: 0.25rem;
-    text-decoration: none;
-    max-width: 100%;
-    overflow: hidden;
+    height: 100%;
   }
-  .enterprise-waitlist-text {
-    color: var(--sl-color-text);
-    font-size: 0.875rem; /* text-sm */
-    animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    display: inline-block;
-  }
-  @media (min-width: 768px) {
-    .enterprise-waitlist-text {
-      font-size: 0.875rem; /* text-lg */
-    }
-  }
-  @media (prefers-color-scheme: dark) {
-    .enterprise-waitlist-text {
-      color: var(--sl-color-text); /* white text for dark mode */
-    }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .5; }
-  }
+
 </style>
+

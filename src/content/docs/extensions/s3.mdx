@@ -9,7 +9,7 @@ You can read, write, or glob files hosted on object storage servers using the
 
 Accessing S3 storage is implemented as a feature of the `httpfs` extension.
 
-```sql
+```cypher
 INSTALL httpfs;
 LOAD httpfs;
 ```
@@ -18,7 +18,7 @@ LOAD httpfs;
 
 Once the `httpfs` extension is loaded, you can configure the S3 connection using
 [CALL](/cypher/configuration) statements in Cypher.
-```sql
+```cypher
 CALL <option_name>=<option_value>
 ```
 
@@ -49,7 +49,7 @@ You can alternatively set the following environment variables:
 
 The example below shows how to scan data from a Parquet file hosted on S3.
 
-```sql
+```cypher
 LOAD FROM 's3://kuzu-datasets/follows.parquet'
 RETURN *;
 ```
@@ -59,7 +59,7 @@ RETURN *;
 You can glob data from S3 just as you would from a local file system.
 Globbing is implemented using the S3 [ListObjectV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html) API.
 
-```sql
+```cypher
 CREATE NODE TABLE tableOfTypes (
     id INT64,
     int64Column INT64,
@@ -81,7 +81,7 @@ FROM "s3://kuzu-datasets/types/types_50k_*.parquet";
 
 Writing to S3 uses the AWS [multipart upload API](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html).
 
-```sql
+```cypher
 COPY (
     MATCH (p:Location)
     RETURN p.*

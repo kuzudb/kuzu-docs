@@ -12,7 +12,7 @@ issues or to discuss your use case, please reach out to us on GitHub or Discord.
 
 ## Usage
 
-```sql
+```cypher
 INSTALL unity_catalog;
 LOAD unity_catalog;
 ```
@@ -28,7 +28,7 @@ bin/start-uc-server
 
 ### Attach to a Unity Catalog
 
-```sql
+```cypher
 ATTACH [CATALOG_NAME] AS [alias] (dbtype UC_CATALOG)
 ```
 
@@ -65,12 +65,12 @@ The table below shows the mapping from Unity Catalog types to Kuzu types:
 You can use the `LOAD FROM` statement to scan the `numbers` table. Note that you need to prefix the 
 external `numbers` table with the database alias (in our example `unity`).
 
-```sql
+```cypher
 LOAD FROM unity.numbers
 RETURN *
 ```
 
-```
+```table
 ┌────────┬────────────┐
 │ as_int │ as_double  │
 │ INT32  │ DOUBLE     │
@@ -103,7 +103,7 @@ You can attach a Unity Catalog with a default name using the `USE` statement, to
 
 For example, for the Unity Catalog above:
 
-```sql
+```cypher
 ATTACH 'unity' AS unity (dbtype UC_CATALOG);
 USE unity;
 LOAD FROM numbers
@@ -122,12 +122,12 @@ CREATE NODE TABLE numbers (id INT32 PRIMARY KEY, score DOUBLE);
 
 Then, copy the data from the external Unity Catalog table to the Kuzu table.
 
-```sql
+```cypher
 copy numbers from unity.numbers;
 ```
 
 You can also use a subquery to copy only a subset of the columns:
-```sql
+```cypher
 COPY numbers FROM (LOAD FROM unity.numbers RETURN score);
 ```
 
@@ -137,7 +137,7 @@ You can verify that the data has been copied successfully:
 MATCH (n:numbers) RETURN n.*;
 ```
 
-```
+```table
 ┌───────┬────────────┐
 │ n.id  │ n.score    │
 │ INT32 │ DOUBLE     │
@@ -162,6 +162,6 @@ MATCH (n:numbers) RETURN n.*;
 
 ### Detach a Unity Catalog
 
-```sql
+```cypher
 DETACH unity;
 ```

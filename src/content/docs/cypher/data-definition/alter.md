@@ -11,7 +11,7 @@ Column names must be unique within a node or relationship table.
 
 For example, consider that you try to run the following command to add a column `age`, but it
 already exists in the `User` table:
-```sql
+```cypher
 ALTER TABLE User ADD age INT64;
 ```
 The query will raise the following exception:
@@ -20,12 +20,12 @@ The query will raise the following exception:
 ```
 
 The following query adds a new column with the default value `NULL` to the User table.
-```sql
+```cypher
 ALTER TABLE User ADD grade INT64;
 ```
 
 You can also specify the default value of the added column.
-```sql
+```cypher
 ALTER TABLE User ADD grade INT64 DEFAULT 40;
 ```
 
@@ -36,7 +36,7 @@ To avoid the exception being raised, use the `IF NOT EXISTS` modifier. This tell
 the given column name already exists in the table.
 
 Example:
-```sql
+```cypher
 ALTER TABLE User ADD IF NOT EXISTS grade INT64;
 ```
 This query tells Kuzu to only create the `grade` column if it doesn't exist.
@@ -48,7 +48,7 @@ The same applies to relationship tables.
 `DROP COLUMN` allows you to remove a column from a table.
 
 The following query drops the age column from the User table.
-```sql
+```cypher
 ALTER TABLE User DROP age;
 ```
 
@@ -59,7 +59,7 @@ To avoid the exception being raised, use the `IF EXISTS` modifier. This tells Ku
 the given column name does not exist in the table.
 
 Example:
-```sql
+```cypher
 ALTER TABLE User DROP IF EXISTS grade;
 ```
 This query tells Kuzu to only drop the `grade` column if it exists.
@@ -71,7 +71,7 @@ The same applies to relationship tables.
 `ADD FROM <node_table_name> TO <node_table_name>` allows you to add a connection between two node tables into an existing relationship table.
 
 The following example creates a node table `Celebrity` and adds `User` follows `Celebrity` into `Follows` relationship table.
-```sql
+```cypher
 CREATE NODE TABLE Celebrity(name STRING PRIMARY KEY);
 ALTER TABLE Follows ADD FROM User TO Celebrity;
 ```
@@ -81,7 +81,7 @@ ALTER TABLE Follows ADD FROM User TO Celebrity;
 Use the `IF NOT EXISTS` modifier to do nothing if the given connection already exists.
 
 Example:
-```sql
+```cypher
 ALTER TABLE Follows ADD IF NOT EXISTS FROM User TO Celebrity;
 ```
 
@@ -90,7 +90,7 @@ ALTER TABLE Follows ADD IF NOT EXISTS FROM User TO Celebrity;
 `DROP FROM <node_table_name> TO <node_table_name>` allows you to drop a connection between two node tables from an existing relationship table.
 
 The following example drops the connection between `User` and `Celebrity` from `Follows` relationship table.
-```sql
+```cypher
 ALTER TABLE Follows DROP FROM User TO Celebrity;
 ```
 
@@ -99,7 +99,7 @@ ALTER TABLE Follows DROP FROM User TO Celebrity;
 Use the `IF  EXISTS` modifier to do nothing if the given connection does not exist.
 
 Example:
-```sql
+```cypher
 ALTER TABLE Follows DROP IF EXISTS FROM User TO Celebrity;
 ```
 
@@ -108,7 +108,7 @@ ALTER TABLE Follows DROP IF EXISTS FROM User TO Celebrity;
 `RENAME TABLE` allows you to rename a table.
 
 The following query renames table User to Student.
-```sql
+```cypher
 ALTER TABLE User RENAME TO Student;
 ```
 
@@ -117,7 +117,7 @@ ALTER TABLE User RENAME TO Student;
 `RENAME COLUMN` allows you to rename a column of a table.<br />
 
 The following query renames the age column to grade.
-```sql
+```cypher
 ALTER TABLE User RENAME age TO grade;
 ```
 
@@ -126,18 +126,19 @@ ALTER TABLE User RENAME age TO grade;
 `COMMENT ON` allows you to add comments to a table.
 
 The following query adds a comment to `User` table.
-```sql
+```cypher
 COMMENT ON TABLE User IS 'User information';
 ```
 Comments can be extracted through the `SHOW_TABLES()` function. See [CALL](/cypher/query-clauses/call) for more information.
-```sql
+```cypher
 CALL SHOW_TABLES() RETURN *;
---------------------------------------------
-| TableName | TableType | TableComment     |
---------------------------------------------
-| User      | NODE      | User information |
---------------------------------------------
-| City      | NODE      |                  |
---------------------------------------------
+```
+```table
+┌───────────┬───────────┬──────────────────┐
+│ TableName │ TableType │ TableComment     │
+├───────────┼───────────┼──────────────────┤
+│ User      │ NODE      │ User information │
+│ City      │ NODE      │                  │
+└───────────┴───────────┴──────────────────┘
 ```
 
