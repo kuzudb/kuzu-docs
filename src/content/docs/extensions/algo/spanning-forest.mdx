@@ -25,7 +25,7 @@ CALL spanning_forest(
     weight_property:=<WEIGHT_PROPERTY>,
     variant:='min' OR 'max'
 )
-RETURN src, dst, rel, forest_id;
+RETURN rel, src, dst, forest_id;
 ```
 
 **Alias**: `sf`
@@ -50,9 +50,9 @@ Returns:
 Each row in the output table represents an edge that belongs to the spanning forest.
 Isolated vertices are not included.
 
+- `rel`: A rel object representing an edge in the forest.
 - `src`: A node object representing the source node of `rel`.
 - `dst`: A node object representing the destination node of `rel`.
-- `rel`: A rel object representing an edge in the forest.
 - `forest_id`: An ID of the individual tree that `rel` belongs to.
 
 :::note[Note]
