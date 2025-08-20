@@ -44,7 +44,7 @@ It is only created when write transactions are committed in the database and is 
 This is a **temporary file** that is created to help run checkpoint operations. It is only created during a checkpoint, and is removed when the checkpoint succeeds.
 
 :::caution[Note]
-Kuzu uses the WAL and shadow files to recover committed but uncheckpointed changes if the process running the database crashes. When deleting a kuzu database file (e.g. when you wish to create a fresh database instance at the same path), please also delete the WAL and shadow files if they exist as they serve no purpose for future databases.
+Kuzu uses `.wal` and `.shadow` files to recover committed but uncheckpointed changes if the process running the database crashes. When deleting a Kuzu database file (e.g. when you wish to create a fresh database instance at the same path), you should also delete the corresponding `.wal` and `.shadow` files, if any. Loading a new (empty) Kuzu database with any leftover temporary files will result in an error.
 :::
 
 #### Temporary file
