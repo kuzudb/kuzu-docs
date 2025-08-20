@@ -8,10 +8,10 @@ The dataset used in the tutorials is a social network dataset of users and posts
 
 ## Download the data
 
-You can download the zipped data by clicking on [this link](https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip),
+You can download the zipped data by clicking on [this link](https://kuzudb.com/data/tutorial/tutorial_data.zip),
 or use curl as shown below. Once downloaded, unzip the files to your current working directory.
 ```bash
-curl -o tutorial_data.zip https://rgw.cs.uwaterloo.ca/kuzu-test/tutorial/tutorial_data.zip
+curl -o tutorial_data.zip https://kuzudb.com/data/tutorial/tutorial_data.zip
 unzip tutorial_data.zip
 ```
 
