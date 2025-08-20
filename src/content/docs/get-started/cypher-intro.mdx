@@ -36,11 +36,16 @@ Run the appropriate version of Kuzu Explorer via Docker as follows:
 docker run --rm -p 8000:8000 \
     -v /path/to/example.kuzu:/database \
     kuzudb/explorer:latest
+
+docker run -p 8000:8000 \
+           -v /path/to/local/directory:/database \
+           -e KUZU_FILE=example.kuzu \
+           --rm kuzudb/explorer:latest
 ```
 
 :::note[Note]
 You can alternatively install a specific version of Kuzu Explorer by replacing `latest` with the version number,
-such as `kuzudb/explorer:0.10.0`. The explorer version must match the Kuzu version used to create
+such as `kuzudb/explorer:0.xx.0`. The explorer version must match the Kuzu version used to create
 any existing database in the provided path to ensure storage format compatibility.
 :::
 
