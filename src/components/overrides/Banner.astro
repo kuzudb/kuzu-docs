@@ -5,25 +5,25 @@
     const banner = document.getElementById('top-banner');
     const closeButton = document.getElementById('close-banner');
     if (!banner || !closeButton) return;
-    if (localStorage.getItem('kuzuBannerClosed_v2') !== 'true') {
+    if (localStorage.getItem('kuzuBannerClosed') !== 'true') {
       banner.classList.remove('hidden');
     }
-    if (localStorage.getItem('kuzuBannerClosed_v2') === 'true') {
+    if (localStorage.getItem('kuzuBannerClosed') === 'true') {
       banner.style.display = 'none';
       return;
     }
     closeButton.addEventListener('click', () => {
       banner.style.display = 'none';
-      localStorage.setItem('kuzuBannerClosed_v2', 'true');
+      localStorage.setItem('kuzuBannerClosed', 'true');
     });
   });
 </script> 
 
 <div class="sl-banner hidden" id="top-banner">
   <div class="banner-content">
-    <a href="https://forms.gle/hHbooDCWNQnx56ve8" target="_blank" rel="noopener noreferrer" class="banner-link">
+    <a href="https://kuzudb.com/product" target="_blank" rel="noopener noreferrer" class="banner-link">
       <span class="enterprise-waitlist-text">
-        🙏 Help us improve by filling out this survey →
+        ⭐ Join our Enterprise Edition Waitlist →
       </span>
     </a>
   </div>
@@ -36,7 +36,7 @@
   }
 
   .sl-banner {
-    background-color: rgba(22, 173, 249, 0.3);
+    background-color: rgba(249, 115, 22, 0.3);
     display: flex;
     flex-direction: row;
     align-items: center;
