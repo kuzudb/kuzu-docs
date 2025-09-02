@@ -668,8 +668,10 @@ int main() {
     // Output query result.
     while (result->hasNext()) {
         auto row = result->getNext();
-        std::cout << row->getValue(0)->getValue<string>() << " " << row->getValue(1)->getValue<int64_t>() << " "
-                  << row->getValue(2)->getValue<string>() << std::endl;
+        std::cout
+            << row->getValue(0)->getValue<string>() << " | "
+            << row->getValue(1)->getValue<int64_t>() << " | "
+            << row->getValue(2)->getValue<string>() << std::endl;
     }
     return 0;
 }
@@ -729,10 +731,10 @@ cmake --build build
 ```
 
 ```
-Adam 2020 Karissa
-Adam 2020 Zhang
-Karissa 2021 Zhang
-Zhang 2022 Noura
+Adam | 2020 | Karissa
+Adam | 2020 | Zhang
+Karissa | 2021 | Zhang
+Zhang | 2022 | Noura
 ```
 
 </TabItem>
