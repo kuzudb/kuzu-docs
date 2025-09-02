@@ -70,37 +70,136 @@ conn.execute(
 
 <TabItem label="C++">
 
-We show how to create prepared statements in the C++ API using the `fts` extension.
-
-Let's parameterize the `CALL QUERY_FTS_INDEX` calls to search for books on different topics. 
-
-We first prepare a Cypher statement with a `query` parameter.
-
 ```cpp
-auto preparedStatement = conn->prepare(
-    "CALL QUERY_FTS_INDEX('Book', 'book_index', $query) RETURN node.ID, score;"
-);
+// main.cpp
+#include <cassert>
+#include <iostream>
+#include <ranges>
+
+#include "kuzu.hpp"
+
+using namespace kuzu::main;
+using namespace std;
+
+unique_ptr<QueryResult> runQuery(const string_view &query, unique_ptr<Connection> &connection) {
+    auto results = connection->query(query);
+    if (!results->isSuccess()) {
+        throw std::runtime_error(results->getErrorMessage());
+    }
+    return results;
+}
+
+unique_ptr<QueryResult>
+runPreparedQuery(const string_view &query,
+                 std::unordered_map<std::string, std::unique_ptr<kuzu::common::Value>> inputParams,
+                 const unique_ptr<Connection> &connection) {
+    auto prepared_stmt = connection->prepare(query);
+    if (!prepared_stmt->isSuccess()) {
+        throw std::runtime_error(prepared_stmt->getErrorMessage());
+    }
+
+    auto results = connection->executeWithParams(prepared_stmt.get(), std::move(inputParams));
+    if (!results->isSuccess()) {
+        throw std::runtime_error(results->getErrorMessage());
+    }
+
+    return results;
+}
+
+int main() {
+    // Remove example.kuzu
+    remove("example.kuzu");
+    remove("example.kuzu.wal");
+
+    // Create an empty on-disk database and connect to it
+    SystemConfig systemConfig;
+    auto database = make_unique<Database>("example.kuzu", systemConfig);
+    auto connection = make_unique<Connection>(database.get());
+
+    // Create the schema.
+    runQuery("CREATE NODE TABLE N(id SERIAL PRIMARY KEY, name STRING, age INT64, embedding FLOAT[])", connection);
+
+    // Create a node.
+    runQuery("CREATE (:N {name: 'Alice', embedding: [10.0, 20.0, 30.0], age: 25});", connection);
+
+    std::unordered_map<std::string, unique_ptr<kuzu::common::Value>> args;
+
+    // `name` parameter.
+    args.emplace("name", make_unique<kuzu::common::Value>("Bob"));
+
+    // `age` parameter.
+    uint64_t age = 30;
+    args.emplace("age", make_unique<kuzu::common::Value>(age));
+
+    // `embedding` parameter.
+    auto type = kuzu::common::LogicalType::LIST(kuzu::common::LogicalType::FLOAT());
+    vector<unique_ptr<kuzu::common::Value>> data;
+    data.push_back(make_unique<kuzu::common::Value>((float)40.0));
+    data.push_back(make_unique<kuzu::common::Value>((float)50.1));
+    data.push_back(make_unique<kuzu::common::Value>((float)60.0));
+    args.emplace("embedding", make_unique<kuzu::common::Value>(std::move(type), std::move(data)));
+
+    // Create a node using parameters.
+    runPreparedQuery("CREATE (:N {name: $name, age: $age, embedding: $embedding});", std::move(args), connection);
+
+    // Execute a match query.
+    auto result = runQuery("MATCH (n) RETURN n.name, n.age, n.embedding;", connection);
+
+    // Print the column names.
+    auto columns = result->getColumnNames();
+    for (auto i = 0u; i < columns.size(); ++i) {
+        if (i != 0) {
+            cout << " | ";
+        }
+        cout << columns[i];
+    }
+    cout << "\n";
+
+    // Print the rows.
+    while (result->hasNext()) {
+        auto row = result->getNext();
+
+        // Print `name`.
+        auto value_name = row->getValue(0);
+        KU_ASSERT_UNCONDITIONAL(value_name->getDataType().getLogicalTypeID() == kuzu::common::LogicalTypeID::STRING);
+        cout << value_name->getValue<string>() << " | ";
+
+        // Print `age`.
+        auto value_int64 = row->getValue(1);
+        KU_ASSERT_UNCONDITIONAL(value_int64->getDataType().getLogicalTypeID() == kuzu::common::LogicalTypeID::INT64);
+        cout << value_int64->getValue<int64_t>() << " | ";
+
+        // Print `embedding`.
+        auto value_embedding = row->getValue(2);
+        KU_ASSERT_UNCONDITIONAL(value_embedding->getDataType().getLogicalTypeID() == kuzu::common::LogicalTypeID::LIST);
+        auto length = value_embedding->getChildrenSize();
+        vector<float> embedding;
+        for (auto i = 0u; i < length; ++i) {
+            auto element = kuzu::common::NestedVal::getChildVal(value_embedding, i);
+            KU_ASSERT_UNCONDITIONAL(element->getDataType().getLogicalTypeID() == kuzu::common::LogicalTypeID::FLOAT);
+            embedding.push_back(element->getValue<float>());
+        }
+        auto join = [](const std::vector<float>& vec, const std::string& sep) {
+            std::ostringstream oss;
+            for (size_t i = 0; i < vec.size(); i++) {
+                if (i > 0) oss << sep;
+                oss << vec[i];
+            }
+            return oss.str();
+        };
+        cout << "[" << join(embedding, ", ") << "]\n";
+    }
+    return 0;
+}
 ```
-
-Now, we can find books on multiple topics using the prepared statement.
-
-For example, to query the index with keywords `machine learning`:
-
-```cpp
-auto result = conn->execute(
-    prepared.get(),
-    std::make_pair(std::string("query"), std::string("machine learning"))
-);
 ```
-
-Similarly, to query the index with the keyword `dragons`:
-
-```cpp
-auto result = conn->execute(
-    prepared.get(),
-    std::make_pair(std::string("query"), std::string("dragons"))
-);
+n.name | n.age | n.embedding
+Alice | 25 | [10, 20, 30]
+Bob | 30 | [40, 50.1, 60]
 ```
+See the C++ example ong the [getting started](/getting-started) page for
+instructions on how to compile and run the code.
+
 </TabItem>
 
 </Tabs>
