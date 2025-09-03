@@ -21,7 +21,7 @@ Download the dataset to your local directory and unzip it.
 The nodes in the dataset are scholars who won Nobel prizes (laureates), as well as other
 scholars who didn't win prizes but were involved in mentoring them. The edges represent
 mentor-mentee relationships between the scholars. Laureates who won prizes in Physics, Chemistry,
-Medicine and Economics are in the datastet.
+Medicine and Economics are in the dataset.
 
 To run the code examples below, you can install the following dependencies:
 ```bash
