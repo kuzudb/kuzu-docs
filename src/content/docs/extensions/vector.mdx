@@ -329,10 +329,11 @@ result = conn.execute(
             'open-ai', 'text-embedding-3-small',
             384
         ),
-        2
+        $limit
     )
     RETURN node.title ORDER BY distance;
-    """)
+    """,
+    {"limit": 2})
 
 print(result.get_as_pl())
 ```
@@ -364,9 +365,9 @@ result = conn.execute(
     MATCH (n)-[:PublishedBy]->(p:Publisher)
     RETURN p.name AS publisher, n.title AS book, distance
     ORDER BY distance
-    LIMIT 5;
+    LIMIT $limit;
     """,
-    {"query_vector": query_vector})
+    {"query_vector": query_vector, "limit": 2})
 print(result.get_as_pl())
 ```
 The above query asks for the 2 nearest neighbors of the query vector "quantum machine learning".
@@ -440,7 +441,7 @@ result = conn.execute("""
         'filtered_book',
         'book_title_index',
         $query_vector,
-        2
+        $limit
     )
     WITH node AS n, distance as dist
     MATCH (n)-[:PublishedBy]->(p:Publisher)
@@ -449,7 +450,7 @@ result = conn.execute("""
             p.name AS publisher
     ORDER BY dist;
     """,
-    {"query_vector": query_vector})
+    {"query_vector": query_vector, "limit": 2})
 print(result.get_as_pl())
 ```
 </TabItem>
