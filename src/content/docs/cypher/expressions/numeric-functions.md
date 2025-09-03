@@ -71,3 +71,8 @@ ORDER BY r LIMIT 3
 ```
 
 Setting the seed will ensure that the results are always returned in the same order.
+
+:::caution[Note]
+The `setseed(y)` function applies globally, meaning that other functions that depend
+on random number generation, like `gen_rand_uuid()`, are also affected by setting the seed value.
+:::
