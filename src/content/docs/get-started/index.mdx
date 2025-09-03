@@ -104,7 +104,7 @@ curl -L -o ./data/lives-in.csv https://raw.githubusercontent.com/kuzudb/kuzu/ref
 
 In this example, we will create a graph with two node types, `User` and `City`, and two relationship types, `Follows` and `LivesIn`.
 
-Because Kuzu is an embedded database, there are no servers to set up. You can simply import the 
+Because Kuzu is an embedded database, there are no servers to set up. You can simply import the
 `kuzu` module in your code and run queries on the database. The examples for different client APIs
 below demonstrate how to create a graph schema and import data into an on-disk Kuzu database.
 
@@ -121,7 +121,7 @@ def main():
     db = kuzu.Database("example.kuzu")
     conn = kuzu.Connection(db)
 
-    # Create schema 
+    # Create schema
     conn.execute("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)")
     conn.execute("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)")
     conn.execute("CREATE REL TABLE Follows(FROM User TO User, since INT64)")
@@ -577,7 +577,7 @@ swift build -c release
 Copy the output executable so that it can access the `data` directory:
 
 ```bash
-cp ./.build/arm64-apple-macosx/release/kuzu-swift-example . 
+cp ./.build/arm64-apple-macosx/release/kuzu-swift-example .
 ```
 
 If you are using an Intel Mac or Linux, replace `arm64-apple-macosx` with your specific architecture.
@@ -602,25 +602,26 @@ You should see the following output:
 <TabItem label="C++">
 
 The Kuzu C++ client is distributed as `so`/`dylib`/`dll+lib` library files along with a header file (`kuzu.hpp`).
-Once you've downloaded and extracted the C++ files into a directory, it's ready to use without
-any additional installation. You just need to specify the library search path for the linker.
+Once you've downloaded and extracted the C++ files into a directory, they are ready to use without
+any additional installation. You just need to specify the library and include file search paths.
 
-In the following example, we assume that the `so`/`dylib`/`dll+lib`, the header file, the CSV files, and
-the cpp code file are all under the same directory as follows:
+For example, organize the files and directories as follows:
 
 ```bash
 ├── include
 │   ├── kuzu.hpp
 │   └── ......
-├── libkuzu.so / libkuzu.dylib / kuzu_shared.dll + kuzu_shared.lib
+├── lib
+│   ├── libkuzu.so / libkuzu.dylib / kuzu_shared.dll + kuzu_shared.lib
+│   └── ......
+├── data
+│   ├── city.csv
+│   ├── follows.csv
+│   ├── lives-in.csv
+│   └── user.csv
 ├── main.cpp
-├── user.csv
-├── city.csv
-├── follows.csv
-└── lives-in.csv
+├── CMakeLists.txt
 ```
-
-The `main.cpp` file contains the following code:
 
 ```cpp
 // main.cpp
@@ -631,70 +632,109 @@ The `main.cpp` file contains the following code:
 using namespace kuzu::main;
 using namespace std;
 
+unique_ptr<QueryResult> runQuery(const string_view &query, unique_ptr<Connection> &connection) {
+    auto results = connection->query(query);
+    if (!results->isSuccess()) {
+        throw std::runtime_error(results->getErrorMessage());
+    }
+    return results;
+}
+
 int main() {
+    // Remove example.kuzu
+    remove("example.kuzu");
+    remove("example.kuzu.wal");
+
     // Create an empty on-disk database and connect to it
     SystemConfig systemConfig;
     auto database = make_unique<Database>("example.kuzu", systemConfig);
-
-    // Connect to the database.
     auto connection = make_unique<Connection>(database.get());
 
     // Create the schema.
-    connection->query("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)");
-    connection->query("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)");
-    connection->query("CREATE REL TABLE Follows(FROM User TO User, since INT64)");
-    connection->query("CREATE REL TABLE LivesIn(FROM User TO City)");
+    runQuery("CREATE NODE TABLE User(name STRING PRIMARY KEY, age INT64)", connection);
+    runQuery("CREATE NODE TABLE City(name STRING PRIMARY KEY, population INT64)", connection);
+    runQuery("CREATE REL TABLE Follows(FROM User TO User, since INT64)", connection);
+    runQuery("CREATE REL TABLE LivesIn(FROM User TO City)", connection);
 
     // Load data.
-    connection->query("COPY User FROM \"user.csv\"");
-    connection->query("COPY City FROM \"city.csv\"");
-    connection->query("COPY Follows FROM \"follows.csv\"");
-    connection->query("COPY LivesIn FROM \"lives-in.csv\"");
+    runQuery("COPY User FROM 'data/user.csv'", connection);
+    runQuery("COPY City FROM 'data/city.csv'", connection);
+    runQuery("COPY Follows FROM 'data/follows.csv'", connection);
+    runQuery("COPY LivesIn FROM 'data/lives-in.csv'", connection);
 
     // Execute a simple query.
-    auto result =
-        connection->query("MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;");
+    auto result = runQuery("MATCH (a:User)-[f:Follows]->(b:User) RETURN a.name, f.since, b.name;", connection);
 
     // Output query result.
     while (result->hasNext()) {
         auto row = result->getNext();
-        std::cout << row->getValue(0)->getValue<string>() << " "
-                  << row->getValue(1)->getValue<int64_t>() << " "
-                  << row->getValue(2)->getValue<string>() << std::endl;
+        std::cout
+            << row->getValue(0)->getValue<string>() << " | "
+            << row->getValue(1)->getValue<int64_t>() << " | "
+            << row->getValue(2)->getValue<string>() << std::endl;
     }
     return 0;
 }
 ```
 
-Compile and run `main.cpp`. Since we did not install the `libkuzu` as a system library, we need to
-override the linker search path to correctly compile the C++ code and run the compiled program.
-On Linux:
+```cmake
+// CMakeLists.txt
+cmake_minimum_required(VERSION 3.15)
+project(kuzu-cpp)
 
-```bash
-env LIBRARY_PATH=. LD_LIBRARY_PATH=. g++ main.cpp -std=c++20 -lkuzu -lpthread
-env LIBRARY_PATH=. LD_LIBRARY_PATH=. ./a.out
+set(CMAKE_CXX_STANDARD 20)
+
+if(MSVC)
+    # Required for M_PI on Windows
+    add_compile_definitions(_USE_MATH_DEFINES)
+    add_compile_definitions(NOMINMAX)
+    add_compile_definitions(SERD_STATIC)
+    # Non-english windows system may use other encodings other than utf-8 (e.g. Chinese use GBK).
+    add_compile_options("/utf-8")
+    # Enables support for custom hardware exception handling
+    add_compile_options("/EHa")
+    # Reduces the size of the static library by roughly 1/2
+    add_compile_options("/Zc:inline")
+    # Disable type conversion warnings
+    add_compile_options(/wd4244 /wd4267)
+    # Remove the default to avoid warnings
+    STRING(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    STRING(REPLACE "/EHs" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    # Store all libraries and binaries in the same directory so that kuzu_shared.dll is found at runtime
+    set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/src")
+    set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/src")
+    # This is a workaround for regex stackoverflow issue on windows in gtest.
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:8388608")
+
+    string(REGEX REPLACE "/W[3|4]" "/w" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    add_compile_options($<$<CONFIG:Release>:/W0>)
+else()
+    add_compile_options(-Wall -Wextra)
+    # Disable warnings for unknown pragmas, which is used by several third-party libraries
+    add_compile_options(-Wno-unknown-pragmas)
+endif()
+
+add_executable(kuzu-cpp main.cpp)
+
+# Find and link kuzu library
+find_library(KUZU_LIB kuzu PATHS ${CMAKE_SOURCE_DIR}/lib REQUIRED)
+target_link_libraries(kuzu-cpp PRIVATE ${KUZU_LIB})
+target_include_directories(kuzu-cpp PRIVATE ${CMAKE_SOURCE_DIR}/include)
 ```
 
-On macOS:
+Compile and run `main.cpp`:
 
 ```bash
-env DYLD_LIBRARY_PATH=. LIBRARY_PATH=. clang++ main.cpp -std=c++20 -lkuzu
-env DYLD_LIBRARY_PATH=. LIBRARY_PATH=. ./a.out
+cmake -S . -B build
+cmake --build build
+./build/kuzu-cpp
 ```
 
-On Windows, the library file is passed to the compiler directly and the current directory is used
-automatically when searching for `kuzu_shared.dll` at runtime:
-
-```cmd
-cl /std:c++20 /EHsc main.cpp kuzu_shared.lib
-./main.exe
 ```
-
-```bash
-Adam 2020 Karissa
-Adam 2020 Zhang
-Karissa 2021 Zhang
-Zhang 2022 Noura
+Adam | 2020 | Karissa
+Adam | 2020 | Zhang
+Karissa | 2021 | Zhang
+Zhang | 2022 | Noura
 ```
 
 </TabItem>
@@ -842,7 +882,7 @@ kuzu example.kuzu
 ```
 Opened the database example.kuzu in read-write mode.
 Enter ":help" for usage hints.
-kuzu> 
+kuzu>
 ```
 
 :::note[In-memory database]
@@ -851,7 +891,7 @@ This will create a database in memory that will be lost when the process finishe
 ```
 Opened the database under in-memory mode.
 Enter ":help" for usage hints.
-kuzu> 
+kuzu>
 ```
 :::
 
