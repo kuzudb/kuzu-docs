@@ -404,7 +404,7 @@ betweenness centrality scores.
 
 ## Conclusions
 
-By using a centrality metrics like PageRank and betwenness centrality to analyze the neighbourhood of nodes in the mentorship graph of Nobel laureates and scholars, we were able to gain new insights without much prior knowledge of
+By using centrality metrics like PageRank and betweenness centrality to analyze the neighborhood of nodes in the mentorship graph of Nobel laureates and scholars, we were able to gain new insights without much prior knowledge of
 the data. This demonstrates the power of graph algorithms and network analysis in uncovering insights from
 complex data.
 
