@@ -2,14 +2,12 @@
 title: "Run graph algorithms"
 ---
 
-Network analysis is the process of analyzing the structure relationships in a system
-of connected entities to understand patterns in the data. It's incredibly common in a variety
-of domains, from finance, to social networks, transportation and healthcare applications.
+Network analysis is a field of data science and graph theory focused on understanding the connections and interactions between entities in a graph. By examining the structure and dynamics of these networks, analysts can reveal important properties such as influential nodes, community structures, and information flow. Applications of network analysis span diverse areas, including identifying key players in social networks, detecting fraud in financial systems, optimizing transportation routes, and mapping the spread of diseases in healthcare.
 
 When working with Kuzu, you can run graph algorithms in one of two ways:
 
-1. `algo` extension: Run graph algorithms natively in Kuzu via the algo extension.
-2. NetworkX: Use the [NetworkX](https://networkx.org/documentation/stable/reference/index.html) library
+1. `algo` extension: Run graph algorithms natively in Kuzu via the [algo extension](/extensions/algo).
+2. `networkx`: Use the [NetworkX](https://networkx.org/documentation/stable/reference/index.html) library
 in Python to run almost any graph algorithm on a Kuzu subgraph.
 
 ## Dataset
@@ -18,20 +16,20 @@ A dataset of Nobel laureates and their mentorship network is provided
 [here](https://raw.githubusercontent.com/kuzudb/tutorials/main/src/network_analysis/data.zip).
 Download the dataset to your local directory and unzip it.
 
-The nodes in the dataset are scholars who won Nobel prizes (laureates), as well as other
+The nodes in the dataset are scholars who won Nobel prizes, as well as other
 scholars who didn't win prizes but were involved in mentoring them. The edges represent
 mentor-mentee relationships between the scholars. Laureates who won prizes in Physics, Chemistry,
-Medicine and Economics are in the dataset.
+Medicine, and Economics are in the dataset.
 
 To run the code examples below, you can install the following dependencies:
 ```bash
-pip install kuzu polars pyarrow networkx numpy scipy
+uv init
+uv add kuzu polars pyarrow networkx numpy scipy
 ```
 
 ## Create graph
 
-Once the dataset is downloaded and unzipped, we can create a graph using the code below. First,
-we initialize a connection to a new Kuzu database named `example.kuzu`.
+First, initialize a connection to a new Kuzu database named `example.kuzu`:
 
 ```py
 from pathlib import Path
@@ -40,12 +38,13 @@ import kuzu
 db_path = "example.kuzu"
 
 Path(db_path).unlink(missing_ok=True)
+Path(db_path + ".wal").unlink(missing_ok=True)
+
 db = kuzu.Database(db_path)
 conn = kuzu.Connection(db)
 ```
 
-There will be one node table `Scholar`, and one relationship table `MENTORED` in this graph. The
-schema is defined as follows:
+There will be one node table `Scholar`, and one relationship table `MENTORED` in this graph:
 
 ```py
 # Node table schema
@@ -56,11 +55,11 @@ conn.execute(
         prize STRING,
         year INT64,
         is_laureate BOOLEAN DEFAULT false
-    )
+    );
     """
 )
 # Relationship table schema
-conn.execute("CREATE REL TABLE MENTORED(FROM Scholar TO Scholar)")
+conn.execute("CREATE REL TABLE MENTORED(FROM Scholar TO Scholar);")
 ```
 
 The node data can be ingested into Kuzu using `MERGE` commands as follows:
@@ -69,26 +68,30 @@ res = conn.execute(
     """
     LOAD FROM './data/scholars.csv' (header=true)
     MERGE (s:Scholar {name: name})
-    SET s.prize = category, s.year = year, s.is_laureate = is_laureate
-    RETURN COUNT(s) AS num_scholars
+    SET
+        s.prize = category,
+        s.year = year,
+        s.is_laureate = is_laureate
+    RETURN
+        COUNT(s) AS num_scholars;
     """
 )
 print(f"Merged {res.get_as_pl()['num_scholars'][0]} scholar nodes into the database")
 ```
 
-The relationship data can also be ingested using similar means:
+The relationship data can also be similarly ingested:
 ```py
 res = conn.execute(
     """
     LOAD FROM './data/mentorships.csv' (header=true)
     MATCH (s1:Scholar {name: mentor}), (s2:Scholar {name: mentee})
     MERGE (s1)-[:MENTORED]->(s2)
-    RETURN COUNT(*) AS num_mentorships
+    RETURN COUNT(*) AS num_mentorships;
     """
 )
 print(f"Merged {res.get_as_pl()['num_mentorships'][0]} mentorship relationships into the database")
 ```
-Once the code is run, the following output will be produced:
+You should see the following output:
 ```
 Merged 3384 scholar nodes into the database
 Merged 5657 mentorship relationships into the database
@@ -99,13 +102,11 @@ and shows rich connections between scholars who mentored one another.
 
 <img src="/img/graph-algorithms/mentorship-graph.png" />
 
-Now that the mentorship graph is created, we're ready to run graph algorithms on it!
+Now that you've loaded the mentorship graph, you're ready to run graph algorithms on it!
 
 ## Method 1: Kuzu `algo` extension
 
-The first method to run a graph algorithm in Kuzu is using the Kuzu `algo` extension, which
-runs algorithms natively on a Kuzu subgraph. First, we create a new connection to the Kuzu
-database file `example.kuzu` and install and load the `algo` extension.
+The first method to run a graph algorithm natively in Kuzu is using the `algo` extension.
 
 #### Install and load the extension
 
@@ -125,58 +126,54 @@ conn.execute("INSTALL algo; LOAD algo;")
 
 When using the `algo` extension in Kuzu, graph algorithms run
 on a [projected subgraph](/extensions/algo/#projected-graphs).
-The parameters to the `project_graph` function include the name of the subgraph,
-the node labels to include, and the relationship types to include.
 
 ```py
 conn.execute("CALL project_graph('MentorshipGraph', ['Scholar'], ['MENTORED']);")
 ```
-#### Run PageRank algorithm
+#### Run PageRank
 
-We run the PageRank algorithm on the projected subgraph and collect the results in a Polars DataFrame
-(you can do the same via Pandas DataFrames if you wish).
+Run the PageRank algorithm on the projected subgraph and collect the results in a Polars DataFrame. You can alternatively use Pandas DataFrames if you wish.
 ```py
 # Run PageRank on the projected graph
 res = conn.execute(
     """
     CALL page_rank('MentorshipGraph')
-    RETURN node.name AS name, rank AS pagerank
+    RETURN node.name AS name, rank AS pagerank;
     """
 )
 # Get the PageRank results in a Polars DataFrame
 pagerank_df = res.get_as_pl()
 ```
 
-#### Write algo results to Kuzu
+#### Write results to Kuzu
 
 The above steps computed the PageRank metrics for the nodes, but didn't persist them to the Kuzu database.
-To do this, we'll use the `pagerank_df` DataFrame to write the PageRank scores to the `Scholar` node table.
+To do this, you can use the `pagerank_df` DataFrame to write the PageRank scores to the `Scholar` node table.
 
-To ingest the data back in, we need to first run the the `ALTER TABLE` command to add a new column
-`pagerank` to the `Scholar` node table.
+To ingest the data back in, first run `ALTER TABLE` to add a new column
+`pagerank` to the `Scholar` node table:
 
 ```py
-# Update Kuzu database with PageRank metric values
-# First, add a new column pagerank to the Scholar node table
-conn.execute("ALTER TABLE Scholar ADD IF NOT EXISTS pagerank DOUBLE DEFAULT 0.0")
+# Add a new column pagerank to the Scholar node table
+conn.execute("ALTER TABLE Scholar ADD IF NOT EXISTS pagerank DOUBLE DEFAULT 0.0;")
 ```
 
-We can then `MERGE` the scholar names from the DataFrame (which will match on the existing `name` value
-in the `Scholar` node table) and persist the PageRank scores to the node table.
+Then, `MERGE` the scholar names from the DataFrame (which will match on the existing `name` value
+in the `Scholar` node table) and persist the PageRank scores to the node table:
 
 ```py
 conn.execute(
     """
     LOAD FROM pagerank_df
     MERGE (s:Scholar {name: name})
-    SET s.pagerank = pagerank
+    SET s.pagerank = pagerank;
     """
 )
 print("Finished adding graph algorithm metric scores to Kuzu database")
 ```
 
-We can test that the results were ingested correctly in Kuzu by running the following Cypher
-query:
+You can test that the results were ingested correctly in Kuzu by running the
+following query:
 
 ```py
 res = conn.execute(
@@ -184,14 +181,12 @@ res = conn.execute(
     MATCH (s:Scholar)
     WHERE s.prize = "Physics"
     RETURN s.name, s.pagerank
-    ORDER BY s.pagerank DESC LIMIT 5
+    ORDER BY s.pagerank DESC
+    LIMIT 5;
     """
 )
 print(res.get_as_pl())
 ```
-
-The following result is obtained:
-
 ```table
 ┌────────────────────────┬────────────┐
 │ s.name                 ┆ s.pagerank │
@@ -206,27 +201,29 @@ The following result is obtained:
 └────────────────────────┴────────────┘
 ```
 
-The query below can be run in Kuzu Explorer to visualize the tree structure that led to the
+You can also run the following query in Kuzu Explorer to visualize the tree structure that led to the
 person with the highest PageRank score:
 
 ```py
-MATCH (a:Scholar)-[r*1..10]-(b) where a.name = "Adam Riess"
-RETURN * limit 10
+MATCH (a:Scholar)-[r*1..10]-(b)
+WHERE a.name = "Adam Riess"
+RETURN *
+LIMIT 10;
 ```
 
 <img src="/img/graph-algorithms/pagerank-result.png" />
 
-Adam Reiss, who has the highest PageRank score, has notable academic ancestors such as Kip Thorne,
+Adam Riess, who has the highest PageRank score, has notable academic ancestors such as Kip Thorne,
 John Wheeler, Niels Bohr, going all the way back to Ernest Rutherford and J.J. Thomson!
 The high PageRank score for Adam Riess can be
-attributed to his presence in a part of the network that has a lot of other influential scholars, like
-Niels Bohr, Ernest Rutherford, J.J. Thomson, Edward Teller and Linus Pauling.
+attributed to his presence in a part of the network that has many other influential scholars, such as
+Niels Bohr, Ernest Rutherford, J.J. Thomson, Edward Teller, and Linus Pauling.
 
 ---
 
 ## Method 2: NetworkX
 
-We can also run graph algorithms via NetworkX. This involves transforming a Kuzu subgraph into
+You can also run graph algorithms via NetworkX. This involves transforming a Kuzu subgraph into
 a NetworkX graph object, running the algorithm on it, and then writing the results back to Kuzu.
 
 :::note[Note]
@@ -262,7 +259,7 @@ res = conn.execute(
 nx_graph = res.get_as_networkx()
 ```
 
-We can then run the PageRank algorithm on the NetworkX graph as follows:
+Then, run the PageRank algorithm on the NetworkX graph as follows:
 
 ```py
 import networkx as nx
@@ -281,30 +278,29 @@ are renamed appropriately, to match with the node table's columns in Kuzu.
 
 #### Write NetworkX results to Kuzu
 
-To ingest the data back in, we need to first run the the `ALTER TABLE` command to add a new column
-`pagerank` to the `Scholar` node table. This is followed by scanning the data from the Polars
+To ingest the data back in, first run `ALTER TABLE` to add a new column
+`pagerank` to the `Scholar` node table. Then, scan the data from the Polars
 DataFrame and merging the results into the `Scholar` node table.
 
 ```py
-# Update Kuzu database with PageRank metric values
-# First, add a new column pagerank to the Scholar node table
-conn.execute("ALTER TABLE Scholar ADD IF NOT EXISTS pagerank DOUBLE DEFAULT 0.0")
+# Add a new column pagerank to the Scholar node table
+conn.execute("ALTER TABLE Scholar ADD IF NOT EXISTS pagerank DOUBLE DEFAULT 0.0;")
 
 conn.execute(
     """
     LOAD FROM pagerank_df
     MERGE (s:Scholar {name: name})
-    SET s.pagerank = metric
+    SET s.pagerank = metric;
     """
 )
 print("Finished adding graph algorithm metric scores to Kuzu database")
 ```
 
-We can test that the results were ingested correctly in Kuzu by running the following Cypher
-query:
+We can test that the results were ingested correctly in Kuzu by running the
+following Cypher query:
 
 ```py
-# Query scholars with the highest PageRank scores who won Nobel prizes in Physics 
+# Query scholars with the highest PageRank scores who won Nobel prizes in Physics
 res = conn.execute(
     """
     MATCH (s:Scholar)
@@ -315,9 +311,6 @@ res = conn.execute(
 )
 print(res.get_as_pl())
 ```
-
-The same results as [above](#write-algo-results-to-kuzu) (when using the `algo` extension) are obtained.
-
 ```table
 ┌────────────────────────┬────────────┐
 │ s.name                 ┆ s.pagerank │
@@ -335,7 +328,7 @@ The same results as [above](#write-algo-results-to-kuzu) (when using the `algo` 
 #### Run any other algorithm in NetworkX
 
 You can just as easily run any other algorithms supported by NetworkX. The example below shows the results
-of a betweenness centrality algorithm run on the same graph.
+of the betweenness centrality algorithm run on the same graph.
 
 ```py
 # Run betweenness centrality
@@ -348,23 +341,23 @@ betweenness_centrality_df = (
 )
 ```
 
-The following command adds a new column `betweenness_centrality` to the `Scholar` node table.
+The following command adds a new column `betweenness_centrality` to the `Scholar` node table:
 ```py
-conn.execute("ALTER TABLE Scholar ADD IF NOT EXISTS betweenness_centrality DOUBLE DEFAULT 0.0")
+conn.execute("ALTER TABLE Scholar ADD IF NOT EXISTS betweenness_centrality DOUBLE DEFAULT 0.0;")
 ```
-We can write the results back to the Kuzu database as before:
+Then, write the results back to the Kuzu database as before:
 ```py
 conn.execute(
     """
     LOAD FROM betweenness_centrality_df
     MERGE (s:Scholar {name: name})
-    SET s.betweenness_centrality = metric
+    SET s.betweenness_centrality = metric;
     """
 )
 print("Finished adding graph algorithm metric scores to Kuzu database")
 ```
 
-The query below shows the top 5 Physics laureates with the highest betweenness centrality scores, and
+The query below shows the top 5 Physics laureates with the highest betweenness centrality scores and
 the number of mentors and mentees for each of them.
 ```py
 res = conn.execute(
@@ -372,20 +365,22 @@ res = conn.execute(
     MATCH (s:Scholar),
           (a:Scholar)-[:MENTORED]->(s)-[:MENTORED]->(b:Scholar)
     WHERE s.prize = "Physics"
-    AND a.is_laureate = true
-    AND b.is_laureate = true
+        AND a.is_laureate = true
+        AND b.is_laureate = true
     RETURN
       s.name,
       s.betweenness_centrality,
       COUNT(DISTINCT a) AS num_mentors,
       COUNT(DISTINCT b) AS num_mentees
-    ORDER BY s.betweenness_centrality DESC LIMIT 5
+    ORDER BY
+        s.betweenness_centrality DESC
+    LIMIT 5;
     """
 )
 print(res.get_as_pl())
 ```
 
-As can be seen, some well-known Physics Nobel laureates emerge as key players based on their
+The results show that some well-known Physics Nobel laureates emerge as key players based on their
 betweenness centrality scores.
 
 ```table
@@ -404,7 +399,7 @@ betweenness centrality scores.
 
 ## Conclusions
 
-By using centrality metrics like PageRank and betweenness centrality to analyze the neighborhood of nodes in the mentorship graph of Nobel laureates and scholars, we were able to gain new insights without much prior knowledge of
+By using centrality metrics like PageRank and betweenness centrality to analyze the neighborhood of nodes in the mentorship graph of Nobel laureates and scholars, you were able to gain new insights without much prior knowledge of
 the data. This demonstrates the power of graph algorithms and network analysis in uncovering insights from
 complex data.
 
