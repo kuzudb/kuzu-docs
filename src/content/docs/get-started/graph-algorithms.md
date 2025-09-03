@@ -10,7 +10,7 @@ When working with Kuzu, you can run graph algorithms in one of two ways:
 2. `networkx`: Use the [NetworkX](https://networkx.org/documentation/stable/reference/index.html) library
 in Python to run almost any graph algorithm on a Kuzu subgraph.
 
-## Dataset
+## Prepare the dataset
 
 A dataset of Nobel laureates and their mentorship network is provided
 [here](https://raw.githubusercontent.com/kuzudb/tutorials/main/src/network_analysis/data.zip).
@@ -27,7 +27,7 @@ uv init
 uv add kuzu polars pyarrow networkx numpy scipy
 ```
 
-## Create graph
+## Create the graph
 
 First, initialize a connection to a new Kuzu database named `example.kuzu`:
 
