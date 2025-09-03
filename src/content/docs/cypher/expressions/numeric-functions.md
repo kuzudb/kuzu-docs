@@ -39,5 +39,40 @@ implemented so far are listed below.
 | `sign(x)` | returns the sign of x | `sign(-451)` | `-1` |
 | `sqrt(x)` | returns the square root of x | `sqrt(4.25)` | `2.061553` |
 | `tan(x)` | returns the tangent of x | `tan(75)` | `-0.420701` |
+| `random(x)` | returns a random number in the range  | `random()` | `0.910543` |
+| `setseed(x)` | sets the seed for the `random()` function above | `setseed(0.2)` | null |
 
 </div>
+
+## Random number generation
+
+The `random()` function returns a floating point number `x` in the range `0.0 <= x <= 1.0`.
+The following example uses the `random()` function to randomize the order of the results
+returned by a query:
+
+```cypher
+// Randomize the order in which results are returned
+MATCH (p1:Person)-[:KNOWS]->(p2:Person)
+RETURN p1.id, p2.id, random() AS r
+ORDER BY r LIMIT 3
+```
+
+If you want to fix the random seed for the random number generator, you can do so by running the
+`setseed(y)` query beforehand.
+
+```cypher
+// Query 1: Set the seed
+RETURN setseed(0.2);
+
+// Query 2: Run the random number generator that uses the specified seed
+MATCH (p1:Person)-[:KNOWS]->(p2:Person)
+RETURN p1.id, p2.id, random() AS r
+ORDER BY r LIMIT 3
+```
+
+Setting the seed will ensure that the results are always returned in the same order.
+
+:::caution[Note]
+The `setseed(y)` function applies globally, meaning that other functions that depend
+on random number generation, like `gen_rand_uuid()`, are also affected by setting the seed value.
+:::
