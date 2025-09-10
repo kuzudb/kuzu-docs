@@ -1,5 +1,6 @@
 ---
 title: Database internals
+description: "Architecture overview of Kuzu's internal modules including parser, binder, planner, and storage"
 ---
 
 ## Database modules

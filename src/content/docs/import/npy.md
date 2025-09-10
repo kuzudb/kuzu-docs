@@ -1,5 +1,6 @@
 ---
 title: Import NumPy
+description: Import numerical data from NumPy .npy files into Kuzu node tables for machine learning and data science applications.
 ---
 
 The `.npy` format is the standard binary file format in [NumPy](https://numpy.org/) for persisting a

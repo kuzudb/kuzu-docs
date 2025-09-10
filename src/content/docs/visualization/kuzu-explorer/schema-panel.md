@@ -1,5 +1,6 @@
 ---
 title: Schema Panel
+description: Explore database schema visually with node and relationship table information in Kuzu Explorer.
 ---
 
 If you click on the `Schema` tab in the top right corner of Kuzu Explorer, you get to the Schema Panel,

@@ -1,5 +1,6 @@
 ---
 title: "Iceberg extension"
+description: Scan and copy from Apache Iceberg tables with metadata access and snapshot management capabilities.
 ---
 
 The `iceberg` extension adds support for scanning and copying from the [Apache Iceberg format](https://iceberg.apache.org/).

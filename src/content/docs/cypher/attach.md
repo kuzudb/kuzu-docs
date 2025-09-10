@@ -1,5 +1,6 @@
 ---
 title: Attach/Detach to External Databases
+description: "Connect to external Kuzu databases and other DBMSs for cross-database queries"
 ---
 Using the `ATTACH` statement, you can connect to external Kuzu databases as well as several relational DBMSs.
 These directories or files of external databases can be either local or in a remote file system. Here is a simple

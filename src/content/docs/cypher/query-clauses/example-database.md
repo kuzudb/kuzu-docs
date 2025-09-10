@@ -1,5 +1,6 @@
 ---
 title: Example database
+description: "Sample graph dataset with User and City nodes used in query clause examples"
 ---
 
 We use the following example graph dataset that

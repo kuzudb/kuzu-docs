@@ -1,5 +1,6 @@
 ---
 title: Data type classes
+description: "Understanding LogicalType and PhysicalType classes in Kuzu's internal architecture"
 ---
 
 There are two data type classes in Kuzu, `LogicalType` and `PhysicalType`.

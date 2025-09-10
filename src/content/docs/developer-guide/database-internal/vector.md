@@ -1,5 +1,6 @@
 ---
 title: Vector types
+description: "Kuzu's column-oriented in-memory data structures for efficient data processing"
 ---
 
 ## ValueVector
