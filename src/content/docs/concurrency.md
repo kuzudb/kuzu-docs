@@ -1,5 +1,6 @@
 ---
 title: "Connections & Concurrency"
+description: "Understanding Kuzu's concurrency model, connection handling, and best practices for parallel access"
 ---
 
 :::caution[Note]

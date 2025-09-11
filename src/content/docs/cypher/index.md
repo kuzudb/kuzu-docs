@@ -1,5 +1,6 @@
 ---
 title: Cypher manual
+description: High-level property graph query language manual with syntax, clauses, and features for graph database queries.
 ---
 
 Cypher is a high-level query language for the property graph data model.

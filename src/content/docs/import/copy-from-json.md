@@ -1,5 +1,6 @@
 ---
 title: "Copy from JSON"
+description: Bulk import data from JSON files into Kuzu node and relationship tables using the JSON extension.
 ---
 
 ## JSON files

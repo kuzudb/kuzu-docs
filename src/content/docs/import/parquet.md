@@ -1,5 +1,6 @@
 ---
 title: Import Parquet
+description: Bulk import data from Apache Parquet columnar files into Kuzu node and relationship tables using COPY FROM.
 ---
 
 [Apache Parquet](https://Parquet.apache.org/docs/) is an open source, column-oriented persistent storage format

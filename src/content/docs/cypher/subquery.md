@@ -1,5 +1,6 @@
 ---
 title: Subqueries
+description: "Use EXISTS and COUNT subqueries to check patterns and aggregate results within queries"
 ---
 
 A subquery is a query that's called from an enclosing outer query, and executes within its own scope.

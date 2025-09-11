@@ -1,5 +1,6 @@
 ---
 title: Export to JSON
+description: Export query results to JSON files with support for nested data structures using the JSON extension.
 ---
 
 The `COPY TO` clause can export query results to a JSON file. To use this feature, you have to install the

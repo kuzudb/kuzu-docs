@@ -1,5 +1,6 @@
 ---
 title: Import data from CSV files
+description: Bulk import data from CSV files into Kuzu using COPY FROM with extensive configuration options and error handling.
 ---
 
 You can bulk import data to node and relationship tables from CSV files

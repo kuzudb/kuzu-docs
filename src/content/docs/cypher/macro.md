@@ -1,5 +1,6 @@
 ---
 title: Create macros
+description: "Define reusable Cypher expressions with parameters and default values using macros"
 ---
 
 Kuzu allows you to define macros via custom C++ code in the catalog using the `create macro` statement.

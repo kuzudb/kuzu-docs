@@ -1,5 +1,6 @@
 ---
 title: Example database
+description: Sample database schemas and datasets for learning and testing Kuzu features with real-world data examples.
 ---
 
 The dataset used in the tutorials is a social network dataset of users and posts that has the following schema.

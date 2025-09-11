@@ -1,5 +1,6 @@
 ---
 title: Testing framework
+description: "End-to-end testing framework for Kuzu using Cypher statements and .test files"
 ---
 
 ## Introduction

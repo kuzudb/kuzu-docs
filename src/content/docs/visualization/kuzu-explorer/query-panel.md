@@ -1,5 +1,6 @@
 ---
 title: Query Panel
+description: Execute Cypher queries in Kuzu Explorer with syntax highlighting, autocomplete, and result visualization options.
 ---
 
 ## Query editor

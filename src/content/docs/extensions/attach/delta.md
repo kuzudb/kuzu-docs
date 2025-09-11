@@ -1,5 +1,6 @@
 ---
 title: "Delta Lake extension"
+description: Scan and copy from Delta Lake tables using the delta extension with support for local and S3-hosted data.
 ---
 
 The `delta` extension adds support for scanning/copying from the [`Delta Lake format`](https://delta.io/).

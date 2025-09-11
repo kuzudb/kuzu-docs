@@ -1,5 +1,6 @@
 ---
 title: RETURN After Update
+description: "Access and return data immediately after CREATE, MERGE, SET, or DELETE operations"
 ---
 
 The `RETURN` clause following an update clause has access to the variables that are used in the immediately preceding update clause.

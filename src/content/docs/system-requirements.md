@@ -1,5 +1,6 @@
 ---
 title: System requirements
+description: Hardware and software requirements for running Kuzu graph database including memory, CPU, and OS specifications.
 ---
 
 ## CLI, C, and C++

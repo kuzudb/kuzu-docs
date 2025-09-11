@@ -1,5 +1,6 @@
 ---
 title: Import Panel
+description: Import data into Kuzu through the Explorer interface with CSV, Parquet, and JSON file upload capabilities.
 ---
 
 The Import Panel allows you to import data into your database from CSV or Parquet files via the UI.

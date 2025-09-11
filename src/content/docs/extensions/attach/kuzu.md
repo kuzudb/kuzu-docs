@@ -1,5 +1,6 @@
 ---
 title: External Kuzu databases
+description: Attach to external Kuzu databases for read-only querying of local and remote database instances.
 ---
 
 Using the `ATTACH` statement, you can connect to an external Kuzu database. The external Kuzu database can be local or remote, for example,

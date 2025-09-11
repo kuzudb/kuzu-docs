@@ -1,5 +1,6 @@
 ---
 title: Merge
+description: Insert small amounts of data into existing Kuzu tables using the MERGE clause with nodes and relationships.
 ---
 
 For small graphs (a few thousand nodes), the `MERGE` [Cypher clause](/cypher/data-manipulation-clauses)
