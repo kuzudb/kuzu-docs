@@ -1,5 +1,6 @@
 ---
 title: Unity Catalog extension
+description: Scan Delta Lake tables registered in Unity Catalog for lakehouse data integration (experimental feature).
 ---
 
 This extension adds the ability to directly scan from delta tables registered in a Unity Catalog using the `LOAD FROM` statement.

@@ -1,5 +1,6 @@
 ---
 title: Migrate your database
+description: "Export and import databases between different Kuzu versions using EXPORT/IMPORT DATABASE commands"
 ---
 
 You can migrate databases between different versions of Kuzu without manually writing DDL and COPY statements.

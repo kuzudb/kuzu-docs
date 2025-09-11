@@ -1,5 +1,6 @@
 ---
 title: Build Kuzu from source
+description: Developer guide for building Kuzu from source code with CMake, Python, and C++20 compiler requirements.
 ---
 
 :::caution[Note]

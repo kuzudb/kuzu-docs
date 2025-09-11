@@ -1,5 +1,6 @@
 ---
 title: Copy from subquery
+description: Bulk import data from MATCH queries or LOAD FROM scans using subqueries in COPY FROM statements.
 ---
 
 You can bulk import the results of a subquery like `MATCH ....` by attaching

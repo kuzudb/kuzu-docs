@@ -1,5 +1,6 @@
 ---
 title: Export Parquet
+description: Export query results to Apache Parquet files with compression support for efficient columnar storage.
 ---
 
 The `COPY TO` clause can export query results to a Parquet file. It can be combined with a subquery

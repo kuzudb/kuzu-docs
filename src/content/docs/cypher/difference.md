@@ -1,5 +1,6 @@
 ---
 title: Differences between Kuzu and Neo4j
+description: "Key differences in syntax, schema requirements, and features between Kuzu and Neo4j"
 ---
 
 If you're coming over from Neo4j, you can find the differences from Neo4j's keywords and syntax

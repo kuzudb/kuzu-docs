@@ -1,5 +1,6 @@
 ---
 title: Transactions
+description: "ACID-compliant transaction management with atomic, durable, and serializable operations"
 ---
 
 Kuzu implements a transaction management subsystem that is atomic, durable and supports serializability.

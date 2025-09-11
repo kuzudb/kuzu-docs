@@ -1,5 +1,6 @@
 ---
 title: Export CSV
+description: Export query results to CSV files with customizable formatting options including headers, delimiters, and quotes.
 ---
 
 The `COPY TO` clause can export query results to a CSV file and is used as follows:

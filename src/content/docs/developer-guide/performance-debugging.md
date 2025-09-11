@@ -1,5 +1,6 @@
 ---
 title: Performance Debugging
+description: "Use EXPLAIN and PROFILE commands to debug query performance and view execution plans"
 ---
 
 To see the query plans that Kuzu uses, you can

@@ -1,5 +1,6 @@
 ---
 title: LIST and ARRAY
+description: "Variable-length LIST and fixed-length ARRAY data types for storing collections"
 ---
 
 Kuzu supports two list-like data types: (i) variable-length lists, simply called `LIST`, and (ii)

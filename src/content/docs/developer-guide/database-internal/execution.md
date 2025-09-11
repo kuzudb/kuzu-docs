@@ -1,5 +1,6 @@
 ---
 title: Execution
+description: "Query execution architecture including pipeline decomposition and morsel-driven parallelism"
 ---
 
 ## Pipeline
