@@ -120,3 +120,20 @@ UNINSTALL <EXTENSION_NAME>;
 :::note[Note]
 Uninstalling a currently loaded extension won't affect the running database instance, but you won't be able to load it again in a new Kuzu instance until it's reinstalled.
 :::
+
+### Host your own extension server
+
+By default, Kuzu installs official extensions from `https://extension.kuzudb.com/`. However, if you are running Kuzu in an environment without internet access (e.g., an air-gapped environment), you can host your own extension server using Docker.
+
+The extension server is based on NGINX and is hosted on [GitHub](https://ghcr.io/kuzudb/extension-repo). You can pull the Docker image and run it in your environment:
+
+```bash
+docker pull ghcr.io/kuzudb/extension-repo:latest
+docker run -d -p 8080:80 ghcr.io/kuzudb/extension-repo:latest
+```
+
+In this example, the extension server will be available at `http://localhost:8080`. You can then install extensions from your server by appending the `FROM` clause to the `INSTALL` command:
+
+```cypher
+INSTALL <EXTENSION_NAME> FROM 'http://localhost:8080/';
+```
