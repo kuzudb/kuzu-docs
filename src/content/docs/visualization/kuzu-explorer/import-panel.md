@@ -120,6 +120,3 @@ The following workflow should be helpful in completing the import process:
   - Remember to choose "Use existing table" for the table that failed to import earlier
 - Click on "Start Import" to re-import the data
 - Verify that the data was imported successfully
-
-If you continue to encounter issues that are hard to resolve with the above described import process,
-please reach out to us on [Discord](https://kuzudb.com/chat).

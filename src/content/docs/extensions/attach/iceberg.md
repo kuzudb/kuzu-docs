@@ -15,12 +15,12 @@ LOAD iceberg;
 
 ### Example dataset
 
-Download [iceberg_tables.zip](https://kuzudb.com/data/iceberg-extension/iceberg_tables.zip) and unzip
+Download [iceberg_tables.zip](https://kuzudb.github.io/data/iceberg-extension/iceberg_tables.zip) and unzip
 it to the `/tmp` directory.
 
 ```shell
 cd /tmp
-wget https://kuzudb.com/data/iceberg-extension/iceberg_tables.zip
+wget https://kuzudb.github.io/data/iceberg-extension/iceberg_tables.zip
 unzip iceberg_tables.zip
 ```
 
