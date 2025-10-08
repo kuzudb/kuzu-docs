@@ -92,9 +92,3 @@ All commands are run from the root of the project, from a terminal:
 
 Check out [Starlight’s docs](https://starlight.astro.build/) and read
 [the Astro documentation](https://docs.astro.build) for further customization of the site.
-
-## Deployment
-
-A CI pipeline is configured to deploy the documentation to the server. The pipeline is triggered
-when a commit is pushed to the main branch. The CI pipeline will automatically build the
-documentation and deploy it to https://kuzudb.github.io/docs.
