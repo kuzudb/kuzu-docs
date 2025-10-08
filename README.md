@@ -97,4 +97,4 @@ Check out [Starlight’s docs](https://starlight.astro.build/) and read
 
 A CI pipeline is configured to deploy the documentation to the server. The pipeline is triggered
 when a commit is pushed to the main branch. The CI pipeline will automatically build the
-documentation and deploy it to https://docs.kuzudb.github.io.
+documentation and deploy it to https://kuzudb.github.io/docs.
