@@ -28,10 +28,6 @@ export default defineConfig({
             },
             social: {
                 github: 'https://github.com/kuzudb/kuzu',
-                discord: 'https://discord.gg/jw7xN2ZhJB',
-                twitter: 'https://twitter.com/kuzudb',
-                linkedin: 'https://www.linkedin.com/company/101059770',
-                youtube: 'https://youtube.com/@kuzudb',
             },
             editLink: {
                 baseUrl: 'https://github.com/kuzudb/kuzu-docs/edit/main',
