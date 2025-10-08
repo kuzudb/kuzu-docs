@@ -49,13 +49,13 @@ Add tag "table" after the three backticks to indicate the table custom css style
 │ column1 │ column2 │ column3 │
 ├─────────┼─────────┼─────────┤
 │ value1  │ value2  │ value3  │
-└─────────┴─────────┴─────────┘ 
+└─────────┴─────────┴─────────┘
 ```
 
 
 ### Tab Synchronization
 
-Include "syncKey=<syncKey_name>" to Tabs tag. To have tabs synchronize, ensure <syncKey_name> are the same across different tabs. 
+Include "syncKey=<syncKey_name>" to Tabs tag. To have tabs synchronize, ensure <syncKey_name> are the same across different tabs.
 The tabitems do not need to be the same. Identical tabitems will have synchronization applied to them when clicked.
 
 **Usage:**
@@ -92,9 +92,3 @@ All commands are run from the root of the project, from a terminal:
 
 Check out [Starlight’s docs](https://starlight.astro.build/) and read
 [the Astro documentation](https://docs.astro.build) for further customization of the site.
-
-## Deployment
-
-A CI pipeline is configured to deploy the documentation to the server. The pipeline is triggered
-when a commit is pushed to the main branch. The CI pipeline will automatically build the
-documentation and deploy it to https://docs.kuzudb.com.

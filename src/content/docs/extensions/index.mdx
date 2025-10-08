@@ -47,10 +47,10 @@ Kuzu requires you to install the extension before loading and using it.
 :::caution[Note]
 Kuzu no longer provides the official extension server, where you can directly install any official extensions.
 
-If you've upgraded to the latest version v0.11.3, Kuzu has pre-installed four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you. 
+If you've upgraded to the latest version v0.11.3, Kuzu has pre-installed four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you.
 You do not need to manually INSTALL these extensions.
 
-For Kuzu version before v0.11.3, or to install extensions that haven't been pre-installed, you'd have to set up a local extension server. 
+For Kuzu version before v0.11.3, or to install extensions that haven't been pre-installed, you'd have to set up a local extension server.
 The instructions of setting up a local extension server can be found [here](extensions#host-your-own-extension-server).
 :::
 
@@ -76,7 +76,7 @@ UPDATE <EXTENSION_NAME>;
 ### Load an extension
 
 :::caution[Note]
-In the latest version v0.11.3, Kuzu has pre-loaded four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you. 
+In the latest version v0.11.3, Kuzu has pre-loaded four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you.
 You do not need to manually LOAD these extensions anymore.
 :::
 
@@ -126,7 +126,7 @@ Uninstalling a currently loaded extension won't affect the running database inst
 
 ### Host your own extension server
 
-By default, Kuzu installs official extensions from `https://extension.kuzudb.com/`. However, if you are running Kuzu in an environment without internet access (e.g., an air-gapped environment), you can host your own extension server using Docker.
+You can host your own extension server for Kuzu using Docker.
 
 The extension server is based on NGINX and is hosted on [GitHub](https://ghcr.io/kuzudb/extension-repo). You can pull the Docker image and run it in your environment:
 
