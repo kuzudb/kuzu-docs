@@ -45,13 +45,13 @@ CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
 Kuzu requires you to install the extension before loading and using it.
 
 :::caution[Note]
-In the latest version v0.11.3, Kuzu has pre-installed four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you. 
-You do not need to manually INSTALL these extensions anymore.
+Kuzu no longer provides the official extension server, where you can directly install any official extensions.
 
-For Kuzu version before v0.11.3, or to install extensions that haven't been pre-installed, you'd have to set up a local extension server, as Kuzu doesn't provide the official extension server anymore.
+If you've upgraded to the latest version v0.11.3, Kuzu has pre-installed four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you. 
+You do not need to manually INSTALL these extensions.
+
+For Kuzu version before v0.11.3, or to install extensions that haven't been pre-installed, you'd have to set up a local extension server. 
 The instructions of setting up a local extension server can be found [here](extensions#host-your-own-extension-server).
-
-
 :::
 
 Official extensions can be installed from a [local extension server](extensions#host-your-own-extension-server) by running the `INSTALL` command.
