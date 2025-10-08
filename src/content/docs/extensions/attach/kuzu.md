@@ -10,10 +10,7 @@ attaching to a local vs. remote Kuzu database works the same way. Therefore, we 
 
 ## Usage
 
-```cypher
-INSTALL httpfs;
-LOAD httpfs;
-```
+Please see [Install an extension](/extensions#install-an-extension) and [Load an extension](/extensions#load-an-extension) first before getting started.
 
 ### Attach a remote Kuzu database
 

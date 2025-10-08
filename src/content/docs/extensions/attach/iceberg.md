@@ -8,10 +8,7 @@ Iceberg is an open-source table format originally developed at Netflix for large
 
 ## Usage
 
-```cypher
-INSTALL iceberg;
-LOAD iceberg;
-```
+Please see [Install an extension](/extensions#install-an-extension) and [Load an extension](/extensions#load-an-extension) first before getting started.
 
 ### Example dataset
 
