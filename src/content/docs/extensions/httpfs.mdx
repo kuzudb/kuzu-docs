@@ -32,7 +32,7 @@ Using the `httpfs` extension, you can read from a file hosted on an HTTP(S) serv
 from a local file. The example below shows how to scan data from a CSV file hosted on an HTTP(S) server.
 
 ```cypher
-LOAD FROM "https://extension.kuzudb.com/dataset/test/city.csv"
+LOAD FROM "https://extension.kuzudb.github.io/dataset/test/city.csv"
 RETURN *;
 ```
 
@@ -76,4 +76,3 @@ COMMIT;
 
 Now the second `LOAD FROM` statement will run much faster because the file is already downloaded
 and cached and the second scan is within the same transaction as the first one.
-
