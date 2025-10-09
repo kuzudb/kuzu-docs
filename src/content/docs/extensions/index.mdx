@@ -7,6 +7,16 @@ Kuzu has an extension API that is designed to dynamically extend its capabilitie
 you to dynamically load the functionality you need at runtime, while helping limit the size of
 the core Kuzu library.
 
+:::caution[Note]
+Kuzu no longer provides the official extension server, where you can directly install any official extensions.
+
+If you've upgraded to the latest version v0.11.3, Kuzu has pre-installed and pre-loaded four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you.
+You do not need to manually INSTALL or LOAD these extensions.
+
+For Kuzu version before v0.11.3, or to install extensions that haven't been pre-installed, you'd have to set up a local extension server.
+The instructions of setting up a local extension server can be found [here](extensions#host-your-own-extension-server).
+:::
+
 ## Available extensions
 
 The following extensions are currently implemented:
@@ -45,13 +55,8 @@ CALL SHOW_OFFICIAL_EXTENSIONS() RETURN *;
 Kuzu requires you to install the extension before loading and using it.
 
 :::caution[Note]
-Kuzu no longer provides the official extension server, where you can directly install any official extensions.
-
-If you've upgraded to the latest version v0.11.3, Kuzu has pre-installed four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you.
+In the latest version v0.11.3 Kuzu has pre-installed four commonly used extensions (`algo`, `fts`, `json`, `vector`) for you.
 You do not need to manually INSTALL these extensions.
-
-For Kuzu version before v0.11.3, or to install extensions that haven't been pre-installed, you'd have to set up a local extension server.
-The instructions of setting up a local extension server can be found [here](extensions#host-your-own-extension-server).
 :::
 
 Official extensions can be installed from a [local extension server](extensions#host-your-own-extension-server) by running the `INSTALL` command.
