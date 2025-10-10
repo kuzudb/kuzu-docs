@@ -9,7 +9,7 @@ const cypherGrammar = JSON.parse(
     fs.readFileSync(path.resolve('./src/styles/cypher.tmLanguage.json'), 'utf8')
   )
 
-const site = "https://docs.kuzudb.com";
+const site = "https://kuzudb.github.io/docs";
 
 process.env.ASTRO_TELEMETRY_DISABLED = '1';
 
