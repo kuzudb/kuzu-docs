@@ -13,10 +13,7 @@ issues or to discuss your use case, please reach out to us on GitHub or Discord.
 
 ## Usage
 
-```cypher
-INSTALL unity_catalog;
-LOAD unity_catalog;
-```
+Please see [Install an extension](/extensions#install-an-extension) and [Load an extension](/extensions#load-an-extension) first before getting started.
 
 #### Set up a Unity Catalog server
 

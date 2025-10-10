@@ -8,19 +8,16 @@ Iceberg is an open-source table format originally developed at Netflix for large
 
 ## Usage
 
-```cypher
-INSTALL iceberg;
-LOAD iceberg;
-```
+Please see [Install an extension](/extensions#install-an-extension) and [Load an extension](/extensions#load-an-extension) first before getting started.
 
 ### Example dataset
 
-Download [iceberg_tables.zip](https://kuzudb.com/data/iceberg-extension/iceberg_tables.zip) and unzip
+Download [iceberg_tables.zip](https://kuzudb.github.io/data/iceberg-extension/iceberg_tables.zip) and unzip
 it to the `/tmp` directory.
 
 ```shell
 cd /tmp
-wget https://kuzudb.com/data/iceberg-extension/iceberg_tables.zip
+wget https://kuzudb.github.io/data/iceberg-extension/iceberg_tables.zip
 unzip iceberg_tables.zip
 ```
 

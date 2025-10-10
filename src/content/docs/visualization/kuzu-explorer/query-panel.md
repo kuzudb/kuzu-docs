@@ -110,5 +110,3 @@ docker run --net=host --rm kuzudb/explorer:latest
 You can now use the AI Query tab to generate Cypher queries from natural language. Simply type in the natural language query and
 run the cell. This will generate a Cypher query using the selected LLM, which you can inspect by clicking back on the "Cypher Query" tab.
 Try out this feature if you're learning Cypher and want to work with an LLM to help you out!
-
-<img src="/img/visualization/ai-query-3.gif" />

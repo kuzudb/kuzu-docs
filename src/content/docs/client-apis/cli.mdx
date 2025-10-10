@@ -14,7 +14,7 @@ Kuzu supports on-disk, as well as in-memory databases. The functionality of the 
 ### On-disk database
 
 You can create an on-disk database in the CLI by specifying a path after
-the `kuzu` command in the terminal. This opens the database on-disk, in read-write mode, and the 
+the `kuzu` command in the terminal. This opens the database on-disk, in read-write mode, and the
 data is persisted to disk after the CLI shell is closed. Note that if the database
 directory does not exist, it will be created for you.
 
@@ -24,7 +24,7 @@ $ kuzu example.kuzu
 ```
 Opened the database example.kuzu in read-write mode.
 Enter ":help" for usage hints.
-kuzu> 
+kuzu>
 ```
 
 ### In-memory database
@@ -38,7 +38,7 @@ kuzu
 ```
 Opened the database under in-memory mode.
 Enter ":help" for usage hints.
-kuzu> 
+kuzu>
 ```
 ## Shell commands
 
@@ -99,10 +99,10 @@ kuzu> :help
     :highlight [on|off]     toggle syntax highlighting on or off
     :render_errors [on|off]     toggle error highlighting on or off
 
-    Note: you can change and see several system configurations, such as num-threads, 
+    Note: you can change and see several system configurations, such as num-threads,
           timeout, and progress_bar using Cypher CALL statements.
           e.g. CALL THREADS=5; or CALL current_setting('threads') return *;
-          See: https://docs.kuzudb.com/cypher/configuration
+          See: https://kuzudb.github.io/docs/cypher/configuration
 ```
 
 #### `:clear`
@@ -115,7 +115,7 @@ Exit from shell. Alternatively, you can use `Ctrl + D` to exit the shell.
 Set maximum number of rows for display. 0 defaults to 20.
 
 #### `:max_width [max_width]`
-Set maximum width in characters for display. Defaults to terminal width if unable to display first and last columns. 
+Set maximum width in characters for display. Defaults to terminal width if unable to display first and last columns.
 
 #### `:mode [mode]`
 Set output mode. The default mode is `box`. See the output modes section below for more details.
@@ -125,7 +125,7 @@ Toggle query statistics on or off. The default is `on`. Query statistics include
 
 #### `:multiline`
 Set multiline editing mode. This is the default editing mode. In multiline editing mode, you can write queries that span multiple lines. In this mode, you are able to go back
-to previous lines and edit them. Comments and newlines will stay when saved into history when using this mode. 
+to previous lines and edit them. Comments and newlines will stay when saved into history when using this mode.
 
 ```bash
 kuzu> :multiline
@@ -155,12 +155,12 @@ kuzu> CREATE NODE TABLE
 ```
 
 #### `:highlight [on|off]`
-Toggle syntax highlighting on or off. The default is `on`. When enabled, the shell will highlight Cypher keywords, 
+Toggle syntax highlighting on or off. The default is `on`. When enabled, the shell will highlight Cypher keywords,
 constants and literals, syntax errors, and comments. Error highlighting and multiline comment highlighting are not available in singleline mode.
 ![](/img/cli/highlighting.png)
 
 #### `:render_errors [on|off]`
-Toggle error highlighting on or off. The default is `on`. When enabled, the shell will highlight syntax errors in red. In particular, 
+Toggle error highlighting on or off. The default is `on`. When enabled, the shell will highlight syntax errors in red. In particular,
 mismatched brackets and unclosed quotes will be highlighted. Error highlighting is not available in singleline mode.
 
 ## Interrupt shell
@@ -209,7 +209,7 @@ Time: 0.09ms (compiling), 11.75ms (executing)
 ## Query progress
 
 For queries that might take a significant amount of time to execute, a progress bar can be enabled that displays
-the number of pipelines that have been executed (each query is broken down into one or more pipelines), 
+the number of pipelines that have been executed (each query is broken down into one or more pipelines),
 as well as the percentage of the data processed in a pipeline. This gives an estimate of how much of a pipeline
 has been executed.
 

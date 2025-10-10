@@ -9,10 +9,7 @@ Using this extension, you can interact with Delta tables directly within Kuzu us
 
 ## Usage
 
-```cypher
-INSTALL DELTA;
-LOAD DELTA;
-```
+Please see [Install an extension](/extensions#install-an-extension) and [Load an extension](/extensions#load-an-extension) first before getting started.
 
 ### Example dataset
 
