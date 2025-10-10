@@ -9,13 +9,14 @@ const cypherGrammar = JSON.parse(
     fs.readFileSync(path.resolve('./src/styles/cypher.tmLanguage.json'), 'utf8')
   )
 
-const site = "https://kuzudb.github.io/docs";
+const site = "https://kuzudb.github.io/";
 
 process.env.ASTRO_TELEMETRY_DISABLED = '1';
 
 // https://astro.build/config
 export default defineConfig({
     site,
+    base: "/docs",
     integrations: [
         sitemap(),
         starlight({
